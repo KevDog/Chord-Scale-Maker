@@ -116,6 +116,16 @@ describe('share links', () => {
     for (const line of ['cells:x', 'cells:', 'cells:1-2-3-4', 'cells']) expect(shareViewFrom({ sheet: 'changes', line })).toEqual({ sheet: 'changes' })
   })
 
+  it("carries a Cells line's Order and Phrase off as ~<order> and ~free (#376), dropping an unknown suffix", async () => {
+    for (const line of ['cells:3rd-3rd~reversed~free', 'cells:1-2-3-5~swapped', 'cells:3rd-3rd~free', 'cells:3rd-3rd'] as const) {
+      const view = { sheet: 'changes', line } as const
+      expect(await decodeShare(await encodeShare({ chart: CHART, view }))).toEqual({ chart: CHART, view })
+    }
+    expect(shareViewFrom({ line: 'cells:3rd-3rd~bogus' })).toEqual({ line: 'cells:3rd-3rd' })
+    expect(shareViewFrom({ line: 'cells:3rd-3rd~as-written~rotated' })).toEqual({ line: 'cells:3rd-3rd~rotated' })
+    expect(shareViewFrom({ line: 'cells:x~reversed' })).toBeUndefined()
+  })
+
   it("carries the Changes sheet's Approach (#298), dropping an unknown one", async () => {
     for (const approach of ['enclosure', 'chromatic-below', 'none'] as const) {
       const view = { sheet: 'changes', line: 'third', approach } as const

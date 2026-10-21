@@ -1,5 +1,5 @@
 import type { Locator, Page } from '@playwright/test'
-import { chooseInstrument, chooseInterface, chooseSheet, closePanel, type Drawn, drawn, expect, openPanel, GLYPH, arpeggiosDrawn, guidesDrawn, openEditor, sheetChord, showArpeggios, showApproach, showCell, showGuides, test, writeChart } from './fixtures'
+import { chooseInstrument, chooseInterface, chooseSheet, closePanel, type Drawn, drawn, expect, openPanel, GLYPH, arpeggiosDrawn, guidesDrawn, openEditor, sheetChord, showArpeggios, showApproach, showCell, showGuides, showOrder, test, writeChart } from './fixtures'
 
 const lines = (page: Page) => page.locator('svg[aria-label^="Bars:"]')
 /** the sheet itself, not the controls above it (whose menus name the same scales) */
@@ -312,6 +312,27 @@ test('Cells (#298): a cell on each beat 1 and 3 of a chord, eighths beamed by th
   await openPanel(visitor, 'Line options')
   await expect(visitor.getByLabel('Arpeggio pattern', { exact: true })).toContainText('Root to root')
   await other.close()
+})
+
+test('Order (#376): 1 2 3 5 reversed plays each cell 5 3 2 1, and the choice stays; Phrase shows for a system, not a cell', async ({ page }) => {
+  await page.goto('/song/autumn-leaves')
+  const line = lines(page).first()
+  await showCell(page, '1 2 3 5')
+  await expect(line).toHaveAttribute('aria-label', /; cells: C5 D5 E♭5 G5 /)
+  await openPanel(page, 'Line options')
+  await expect(page.getByLabel('Order', { exact: true })).toContainText('Order: As written')
+  await expect(page.getByRole('button', { name: 'Phrase', exact: true })).toHaveCount(0) // one cell: nothing to aim
+  await closePanel(page, 'Line options')
+  await showOrder(page, 'Reversed')
+  await expect(line).toHaveAttribute('aria-label', /; cells: G\d E♭\d D\d C\d /) // Cm7's 5 3 2 1
+  await page.reload()
+  await expect(line).toHaveAttribute('aria-label', /; cells: G\d E♭\d D\d C\d /) // remembered
+  await openPanel(page, 'Line options')
+  await expect(page.getByLabel('Order', { exact: true })).toContainText('Reversed')
+  await closePanel(page, 'Line options')
+  await showCell(page, '3rd to 3rd')
+  await openPanel(page, 'Line options')
+  await expect(page.getByRole('button', { name: 'Phrase', exact: true })).toHaveAttribute('aria-pressed', 'true') // a system: on until turned off
 })
 
 test('a share link carries the arpeggio pattern', async ({ page, browser }) => {

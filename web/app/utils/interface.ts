@@ -19,7 +19,7 @@ export const CONTROL_TIERS = {
   spell: 'intermediate', // Spell Scale
   practice: 'intermediate', // the Practice panel
   patterns: 'intermediate', // the Patterns sheet (#298)
-  cells: 'intermediate', // the Cells line's cell choice (#298)
+  cells: 'intermediate', // the Cells line's cell choice (#298), its Order and Phrase (#376)
   approaches: 'intermediate', // the guide tone line's Approach listbox (#298)
   'scale-choice': 'intermediate', // a chord's scale: the scale label picker, ChordChoices' Scale section
   'form-editing': 'intermediate', // Repeat a section, Write out, endings, segno, coda, Jump, New section here, Paste bars

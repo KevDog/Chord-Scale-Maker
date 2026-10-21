@@ -35,7 +35,18 @@ describe('the Cells line (#298)', () => {
   it('puts cells in a share link as cells:<id>, and reads one back', () => {
     expect(shareLineOf('cells', 'third', 'up-root', '3rd-5th')).toBe('cells:3rd-5th')
     expect(shareLineOf('guide', 'third', 'up-root', '3rd-5th')).toBe('third')
-    expect(lineChoiceOf('cells:3rd-5th')).toEqual({ mode: 'cells', cells: '3rd-5th' })
+    expect(lineChoiceOf('cells:3rd-5th')).toEqual({ mode: 'cells', cells: '3rd-5th', order: 'as-written', phrase: true })
+  })
+  it("adds the Order and Phrase off to a share link (#376): ~<order> unless as written, ~free with phrase off", () => {
+    expect(shareLineOf('cells', 'third', 'up-root', '3rd-3rd', 'rotated', false)).toBe('cells:3rd-3rd~rotated~free')
+    expect(shareLineOf('cells', 'third', 'up-root', '3rd-3rd', 'as-written', true)).toBe('cells:3rd-3rd')
+    expect(shareLineOf('cells', 'third', 'up-root', '3rd-3rd', 'as-written', false)).toBe('cells:3rd-3rd~free')
+    expect(shareLineOf('guide', 'third', 'up-root', '3rd-3rd', 'rotated', false)).toBe('third')
+    expect(lineChoiceOf('cells:1-2-3-5~swapped')).toEqual({ mode: 'cells', cells: '1-2-3-5', order: 'swapped', phrase: true })
+    expect(lineChoiceOf('cells:3rd-3rd~reversed~free')).toEqual({ mode: 'cells', cells: '3rd-3rd', order: 'reversed', phrase: false })
+  })
+  it('passes the Order and Phrase on to the cells line (#376)', () => {
+    expect(changesLineOf({ ...base, mode: 'cells', cells: '1-2-3-5', overlay: 'off', order: 'reversed', phrase: false })).toEqual({ kind: 'cells', id: '1-2-3-5', order: 'reversed', phrase: false })
   })
 })
 

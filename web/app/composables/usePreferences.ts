@@ -1,5 +1,5 @@
 import type { Ref, WritableComputedRef } from 'vue'
-import { type Approach, type ArpDirection, type CellId, fitRange, formatPattern, isCellId, parsePattern, type PatternNotes, type ArpeggioPattern, type ArpNotes, type InstrumentName, INSTRUMENTS, isApproach, isArpDirection, isArpeggioPattern, isArpNotes, isInstrumentName, isPairLineShape, isPairShape, isPatternNotes, isPentatonicLeave, type HexatonicBasis, type PairLineShape, type PairShape, type QuartalNotesChoice, type PentatonicBasis, PENTATONIC_LEAVE, type PentatonicLeave, type PentatonicDegree, pentatonicDegreeFrom, type PentatonicSide, type Range, type ShareView } from '@chord-scale-maker/engine'
+import { type Approach, type ArpDirection, type CellId, type CellOrder, fitRange, formatPattern, isCellId, parsePattern, type PatternNotes, type ArpeggioPattern, type ArpNotes, type InstrumentName, INSTRUMENTS, isApproach, isArpDirection, isArpeggioPattern, isArpNotes, isCellOrder, isInstrumentName, isPairLineShape, isPairShape, isPatternNotes, isPentatonicLeave, type HexatonicBasis, type PairLineShape, type PairShape, type QuartalNotesChoice, type PentatonicBasis, PENTATONIC_LEAVE, type PentatonicLeave, type PentatonicDegree, pentatonicDegreeFrom, type PentatonicSide, type Range, type ShareView } from '@chord-scale-maker/engine'
 import { type GuideFrom, type LineMode, lineChoiceOf } from '~/utils/sheetLine'
 import { FUNCTIONS_KEYS } from '~/utils/functionsKey'
 import { isSpell, type Spell } from '~/utils/scaleChoices'
@@ -59,6 +59,10 @@ export function usePreferences() {
   const approach = storedRef<Approach>('csm-approach', (s) => (isApproach(s) && approachesOn ? s : undefined), 'none')
   // the Cells line's system or cell (#298)
   const cells = storedRef<CellId>('csm-cells', (s) => (isCellId(s) ? s : undefined), '3rd-3rd')
+  // its Order and Phrase (#376): as written and on until chosen; with the flag off stored ones read as those but stay stored
+  const phraseOn = useFeature('phraseCells')
+  const cellsOrder = storedRef<CellOrder>('csm-cells-order', (s) => (isCellOrder(s) && phraseOn ? s : undefined), 'as-written')
+  const cellsPhrase = storedRef<boolean>('csm-cells-phrase', (s) => (phraseOn && (s === 'on' || s === 'off') ? s === 'on' : undefined), true, (v) => (v ? 'on' : 'off'))
   // the Arpeggios sheet: 7th chords, extended or triad pairs, the direction, and Triad pairs' shape (#436)
   const arpNotes = storedRef<ArpNotes>('csm-arp-notes', (s) => (isArpNotes(s) ? s : undefined), 'seventh')
   const arpDir = storedRef<ArpDirection>('csm-arp-dir', (s) => (isArpDirection(s) ? s : undefined), 'up')
@@ -88,13 +92,14 @@ export function usePreferences() {
   const source = storedRef<boolean>('csm-source', (s) => s === 'on', false, (v) => (v ? 'on' : 'off'))
   // the /functions page's key: C major until another is picked
   const functionsKey = storedRef<string>('csm-functions-key', (s) => (FUNCTIONS_KEYS.includes(s) ? s : undefined), 'C')
-  return { instrument, range: rangeRef(instrument), spell, intervals, showEditor, numerals, scaleNames, lineMode, guideLine, approach, arpeggio, cells, arpNotes, arpDir, arpShape, pattern, patternNotes, patternDir, overlay, pentRung, pentSide, pentBasis, pentDegree, pentLeave, pairLine, hexBasis, quartNotes, quartPerfect, source, functionsKey }
+  return { instrument, range: rangeRef(instrument), spell, intervals, showEditor, numerals, scaleNames, lineMode, guideLine, approach, arpeggio, cells, cellsOrder, cellsPhrase, arpNotes, arpDir, arpShape, pattern, patternNotes, patternDir, overlay, pentRung, pentSide, pentBasis, pentDegree, pentLeave, pairLine, hexBasis, quartNotes, quartPerfect, source, functionsKey }
 }
 
 /** the same choices, starting from a share link's view over your own, for this visit only (nothing is saved) */
 export function linkPreferences(view: ShareView) {
   const own = usePreferences()
   const choice = lineChoiceOf(view.line)
+  const phraseOn = useFeature('phraseCells')
   // a link's spelling: from the root, its note, or (from, without a note) the key
   const note = PICKER_ROOTS.find((r) => r === view.start)
   const linked: Spell | undefined = view.mode === 'root' ? 'root' : view.mode === 'from' ? (note ?? 'key') : undefined
@@ -111,6 +116,8 @@ export function linkPreferences(view: ShareView) {
     approach: ref<Approach>(useFeature('approaches') ? (view.approach ?? 'none') : 'none'), // a link shows what it was sent with: none without
     arpeggio: ref<ArpeggioPattern>(choice.arpeggio ?? own.arpeggio.value),
     cells: ref<CellId>(choice.cells ?? own.cells.value),
+    cellsOrder: ref<CellOrder>(phraseOn ? (choice.order ?? 'as-written') : 'as-written'), // a link shows what it was sent with: as written and on without (#376)
+    cellsPhrase: ref<boolean>(phraseOn ? (choice.phrase ?? true) : true),
     arpNotes: ref<ArpNotes>(view.arpNotes ?? own.arpNotes.value),
     arpDir: ref<ArpDirection>(view.arpDir ?? own.arpDir.value),
     arpShape: ref<PairShape>(view.arpShape ?? own.arpShape.value),

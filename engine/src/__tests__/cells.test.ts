@@ -94,6 +94,17 @@ describe('cells line', () => {
     expect(noteNames(bars.get(0))).toEqual(['B', 'A', 'G', 'F', 'B', 'D', 'G', 'F'])
     expect(bars.get(0)?.every((n) => n.beats === 0.5)).toBe(true)
   })
+  it('Order reversed plays 1 2 3 5 as 5 3 2 1: D B A G over G7, falling', () => {
+    const { bars } = cellsVoices(seq(['G7', 2]), CONCERT, 4, null, { kind: 'cells', id: '1-2-3-5', order: 'reversed' })
+    expect(noteNames(bars.get(0))).toEqual(['D', 'B', 'A', 'G'])
+    const m = midis(bars.get(0))
+    expect(m.slice(1).map((x, i) => Math.sign(x - m[i]!))).toEqual([-1, -1, -1])
+  })
+  it('with no Order, or as written, the line is the same', () => {
+    const a = cellsVoices(seq(['G7', 4], ['C7', 4]), CONCERT, 4, null, line('3rd-3rd'))
+    const b = cellsVoices(seq(['G7', 4], ['C7', 4]), CONCERT, 4, null, { kind: 'cells', id: '3rd-3rd', order: 'as-written' })
+    expect(b).toEqual(a)
+  })
   it('a single cell plays the same cell in every slot', () => {
     const { bars } = cellsVoices(seq(['G7', 4]), CONCERT, 4, null, line('1-3-5-7'))
     expect(noteNames(bars.get(0))).toEqual(['G', 'B', 'D', 'F', 'G', 'B', 'D', 'F'])

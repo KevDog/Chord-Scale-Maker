@@ -1,5 +1,6 @@
 import type { Approach } from './approaches'
 import { arpeggioCells, arpeggioTones, type Cells, cellVoices, type NoteValue, placeWhole } from './arpeggios'
+import { type CellOrder, orderCell, type PartialContour } from './cellOrder'
 import type { GuideInput, GuideNote } from './guideTones'
 import type { Range } from './instruments'
 import type { Metre } from './metre'
@@ -88,8 +89,17 @@ export function cellPitches(tones: readonly Spelled[], contour: Contour, first: 
   }, [])
 }
 
-/** the Changes sheet's Cells line (#298): which system or single cell the line plays */
-export type CellsLine = Readonly<{ kind: 'cells'; id: CellId }>
+/** a partial contour's open moves, each the nearer way between the two notes (the smaller semitone distance; a tritone goes up) */
+export function fillContour(tones: readonly Spelled[], contour: PartialContour): Contour {
+  return contour.map((m, i) => {
+    if (m) return m
+    const up = mod(pcOf(tones[i + 1] as Spelled) - pcOf(tones[i] as Spelled), 12)
+    return up <= 6 ? 'u' : 'd'
+  })
+}
+
+/** the Changes sheet's Cells line (#298): which system or single cell the line plays; order (#376) re-reads every cell; phrase (#378) aims them at the next chord */
+export type CellsLine = Readonly<{ kind: 'cells'; id: CellId; order?: CellOrder; phrase?: boolean }>
 
 /** a cell's note value: sixteenths in a chord shorter than two beats, else eighths (four notes make two beats) */
 export const CELL_VALUE = (chordBeats: number): NoteValue => (chordBeats < 2 ? 0.25 : 0.5)
@@ -101,6 +111,8 @@ function pairOf(id: CellId): readonly [Cell, Cell] {
   return [single, single]
 }
 
+type Ordered = ReturnType<typeof orderCell>
+
 /** a cell placed whole in the part's range (placeWhole) */
 const placeCell = (tones: readonly Spelled[], contour: Contour, range: Range, prev: number | null): readonly number[] =>
   placeWhole(pcOf(tones[0] as Spelled), (m) => cellPitches(tones, contour, m), range, prev)
@@ -109,15 +121,19 @@ const placeCell = (tones: readonly Spelled[], contour: Contour, range: Range, pr
  * a chord's cells: A then B by the run's count, each read through the chord's scale; a slot whose cell has no tones
  * plays the 7th chord arpeggio up from the root (with none, the other cell); null if neither cell has tones
  */
-function cellsOf(part: Part, chord: GuideInput, id: CellId, range: Range): Cells | null {
-  const [a, b] = pairOf(id)
+function cellsOf(part: Part, chord: GuideInput, id: CellId, order: CellOrder, range: Range): Cells | null {
+  const [a, b] = pairOf(id).map((c) => orderCell(c, order)) as [Ordered, Ordered]
   const ta = cellTones(part, chord.chord, chord.scale, a.degrees)
   const tb = cellTones(part, chord.chord, chord.scale, b.degrees)
   if (!ta && !tb) return null
   const arpeggio = arpeggioCells(part, chord, 'up-root')
   const fromB = ta?.length ?? 0
   const fromArpeggio = fromB + (tb?.length ?? 0)
-  const own = (tones: readonly Spelled[], c: Cell, from: number, prev: number | null) => ({ order: tones.map((_, i) => i + from), up: true, midi: placeCell(tones, c.contour, range, prev) })
+  const own = (tones: readonly Spelled[], c: Ordered, from: number, prev: number | null) => ({
+    order: tones.map((_, i) => i + from),
+    up: true,
+    midi: placeCell(tones, fillContour(tones, c.contour), range, prev),
+  })
   return {
     tones: [...(ta ?? []), ...(tb ?? []), ...(arpeggio?.tones ?? [])],
     carry: true,
@@ -148,5 +164,5 @@ export function cellsVoices(
   approach: Approach = 'none',
 ): { bars: ReadonlyMap<number, readonly GuideNote[]>; missing: readonly string[] } {
   const range = rangeOf(part)
-  return cellVoices(chords, part, beats, keySig, (c) => cellsOf(part, c, line.id, range) ?? arpeggioCells(part, c, 'up-root'), CELL_VALUE, approach)
+  return cellVoices(chords, part, beats, keySig, (c) => cellsOf(part, c, line.id, line.order ?? 'as-written', range) ?? arpeggioCells(part, c, 'up-root'), CELL_VALUE, approach)
 }
