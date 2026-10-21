@@ -287,7 +287,8 @@ test('Cells (#298): a cell on each beat 1 and 3 of a chord, eighths beamed by th
   await page.goto('/song/autumn-leaves')
   const line = lines(page).first()
   await showCell(page, 'Root to root')
-  await expect(line).toHaveAttribute('aria-label', /; cells: C5 D5 E♭5 G5 C6 B♭5 A5 G5 \| F5 /)
+  // Phrase (#379) on: Cm7's first slot is 1 3 5 7, ending a step below its own second slot's C; F7's, 1 3 5 7 into C's B
+  await expect(line).toHaveAttribute('aria-label', /; cells: C4 E♭4 G4 B♭4 C5 B♭4 A4 G4 \| F4 A4 C5 E♭5 F5 /)
   const bars = 4
   const beats = 4 // Autumn Leaves is in 4/4
   await expect.poll(async () => (await drawn(line)).heads.length).toBe(bars * beats * 2) // eighths throughout: every chord has a cell a two beats
@@ -333,6 +334,22 @@ test('Order (#376): 1 2 3 5 reversed plays each cell 5 3 2 1, and the choice sta
   await showCell(page, '3rd to 3rd')
   await openPanel(page, 'Line options')
   await expect(page.getByRole('button', { name: 'Phrase', exact: true })).toHaveAttribute('aria-pressed', 'true') // a system: on until turned off
+})
+
+test('Phrase (#379): root to root over I–♭III–♭VI–♭II aims C’s cell into E♭ (C A G E); Off plays the system as written (C D E G)', async ({ page }) => {
+  await writeChart(page, 'title: T\nkey: C\n\nsection: A\nbars: 2\n1 | CMaj7\n1 | Eb7\n2 | AbMaj7\n2 | Db7\n')
+  const line = lines(page).first()
+  await showCell(page, 'Root to root')
+  await expect(line).toHaveAttribute('aria-label', /; cells: C\d A\d G\d E\d, E♭\d D♭\d C\d B♭\d /)
+  await openPanel(page, 'Line options')
+  const phrase = page.getByRole('button', { name: 'Phrase', exact: true })
+  await expect(phrase).toHaveAttribute('aria-pressed', 'true')
+  await phrase.click()
+  await expect(phrase).toHaveAttribute('aria-pressed', 'false')
+  await closePanel(page, 'Line options')
+  await expect(line).toHaveAttribute('aria-label', /; cells: C\d D\d E\d G\d, E♭\d D♭\d C\d B♭\d /)
+  await page.reload()
+  await expect(line).toHaveAttribute('aria-label', /; cells: C\d D\d E\d G\d, E♭\d D♭\d C\d B♭\d /) // remembered
 })
 
 test('a share link carries the arpeggio pattern', async ({ page, browser }) => {

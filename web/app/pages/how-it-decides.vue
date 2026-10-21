@@ -293,6 +293,13 @@
             A cell system has two cells, A and B, that take turns, chosen so that each ends a step from where the next begins:
             root to root, 3rd to 3rd, 3rd to 5th or 3rd to root. Played through a tune, the line keeps moving by step across
             every chord change.
+            <template v-if="phraseCellsOn">
+              With <strong :class="EM">Phrase</strong> on, the default for a system, each cell is chosen to end a
+              step from the first note of what follows it, the next chord's target (the system's own cell when it already
+              does). If no cell fits, the cell is followed by its own turn-back, or the slot isn't a whole cell of eighths,
+              it plays as the system has it. Off plays the system as written.
+              <strong :class="EM">Order</strong> then plays each cell as written, reversed, rotated or with its pairs swapped.
+            </template>
           </UiText>
           <UiText v-else>Cells aren't switched on yet.</UiText>
         </DecisionSection>
@@ -622,6 +629,7 @@ import { PENT_INSIDE_HELP } from '~/utils/pentatonics'
 import { PAGE_HEAD, seoMeta } from '~/utils/site'
 
 const cellsOn = useFeature('cells')
+const phraseCellsOn = useFeature('phraseCells')
 const approachesOn = useFeature('approaches')
 const patternsOn = useFeature('patterns')
 

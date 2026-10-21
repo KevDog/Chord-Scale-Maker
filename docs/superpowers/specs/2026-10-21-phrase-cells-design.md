@@ -80,7 +80,9 @@ A and B still alternate by the run's count, as today (`cellsOf`, `count % 2`).
 
 **Which slots are targeted** (*ours*): only a full four-note cell. A slot cut short, turned back (a 3/4 bar, a
 three-beat chord's second slot), carried across a bar line, or in sixteenths under a short chord plays the system's
-cell, as today; the next full slot is targeted from wherever the line is. A/B parity and a dominant's slot count
+cell, as today; the next full slot is targeted from wherever the line is. A cell followed by its own turn-back, or by
+a cut cell, is not aimed either (the join into the next chord is then the turn-back's note); `cellVoices` tells each
+slot what follows it. A/B parity and a dominant's slot count
 (section 2) count every slot, full or not (`count` and `nth`, as `Cells.next` receives them).
 
 **With Approach** (*ours*): both run. Phrase picks the cells; an approach figure (#381, `withApproach`) then replaces
