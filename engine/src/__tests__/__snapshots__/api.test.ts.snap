@@ -18,6 +18,7 @@ exports[`exports the same names 1`] = `
   "CELL_SYSTEMS",
   "CELL_VALUE",
   "CHORD_TONES",
+  "CHROMATIC_CELLS",
   "CLEF_ROOT_LOW",
   "CLEF_START",
   "CONCERT",

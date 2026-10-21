@@ -110,6 +110,19 @@ describe('usePreferences', () => {
     expect([prefs().cellsOrder.value, prefs().cellsPhrase.value]).toEqual(['reversed', false])
   })
 
+  it('reads a stored or linked chromatic cell as the default with the phraseCells flag off, and keeps it stored (#377)', async () => {
+    localStorage.setItem('csm-cells', 'b9-1-3-5')
+    expect(prefs().cells.value).toBe('b9-1-3-5')
+    expect(linked({ line: 'cells:ii-v-chromatic' }).cells.value).toBe('ii-v-chromatic')
+    flags.phraseCells = false
+    expect(prefs().cells.value).toBe('3rd-3rd')
+    expect(linked({ line: 'cells:ii-v-chromatic' }).cells.value).toBe('3rd-3rd')
+    expect(linked({ line: 'cells:1-3-5-7' }).cells.value).toBe('1-3-5-7')
+    await nextTick()
+    expect(localStorage.getItem('csm-cells')).toBe('b9-1-3-5')
+    flags.phraseCells = true
+  })
+
   it("takes a link's Order and Phrase, as written and on when it has none, for this visit only", async () => {
     localStorage.setItem('csm-cells-order', 'swapped')
     const p = linked({ line: 'cells:3rd-3rd~reversed~free' })

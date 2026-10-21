@@ -169,6 +169,9 @@
                     <strong class="font-semibold">Order</strong> plays each cell as written, reversed, rotated or with its pairs
                     swapped. For a cell system, <strong class="font-semibold">Phrase</strong> is on: each cell is chosen to step into
                     the next cell's first note, across the chord change too. Turn it off to play the system as written.
+                    The <strong class="font-semibold">Chromatic</strong> cells add a ♭9, a ♯5 or a passing tone over a dominant
+                    (any other chord plays its arpeggio); <strong class="font-semibold">II–V chromatic</strong> plays 3 5 7 ♭9 on a
+                    dominant and 1 3 5 7 on every other chord, as on the II of a II–V.
                   </template>
                 </template>
               </dd>

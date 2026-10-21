@@ -1,4 +1,4 @@
-import type { Cell } from './cells'
+import type { Cell, Degree } from './cells'
 
 /**
  * A cell's Order (#376): how the Changes sheet's Cells line re-reads every cell before playing it. Pure; no DOM.
@@ -25,8 +25,8 @@ const flip = (m: 'u' | 'd'): 'u' | 'd' => (m === 'u' ? 'd' : 'u')
  * a cell in an Order: reversed is d c b a with the moves reversed and flipped; rotated is b c d a, keeping the original
  * moves 2 and 3 and leaving the last open; pairs swapped is b a d c with every move open
  */
-export function orderCell(cell: Cell, order: CellOrder): Readonly<{ degrees: readonly number[]; contour: PartialContour }> {
-  const [a, b, c, d] = cell.degrees as readonly [number, number, number, number]
+export function orderCell(cell: Cell, order: CellOrder): Readonly<{ degrees: readonly Degree[]; contour: PartialContour }> {
+  const [a, b, c, d] = cell.degrees as readonly [Degree, Degree, Degree, Degree]
   switch (order) {
     case 'reversed':
       return { degrees: [d, c, b, a], contour: [...cell.contour].reverse().map(flip) }

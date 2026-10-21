@@ -117,7 +117,7 @@ describe('share links', () => {
   })
 
   it("carries a Cells line's Order and Phrase off as ~<order> and ~free (#376), dropping an unknown suffix", async () => {
-    for (const line of ['cells:3rd-3rd~reversed~free', 'cells:1-2-3-5~swapped', 'cells:3rd-3rd~free', 'cells:3rd-3rd'] as const) {
+    for (const line of ['cells:3rd-3rd~reversed~free', 'cells:1-2-3-5~swapped', 'cells:3rd-3rd~free', 'cells:3rd-3rd', 'cells:b9-1-3-5~reversed', 'cells:ii-v-chromatic'] as const) {
       const view = { sheet: 'changes', line } as const
       expect(await decodeShare(await encodeShare({ chart: CHART, view }))).toEqual({ chart: CHART, view })
     }
