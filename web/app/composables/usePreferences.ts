@@ -62,7 +62,7 @@ export function usePreferences() {
   // its Order and Phrase (#376): as written and on until chosen; with the flag off stored ones read as those but stay stored
   const phraseOn = useFeature('phraseCells')
   const cellsOrder = storedRef<CellOrder>('csm-cells-order', (s) => (isCellOrder(s) && phraseOn ? s : undefined), 'as-written')
-  const cellsPhrase = storedRef<boolean>('csm-cells-phrase', (s) => (phraseOn ? s === 'on' : undefined), true, (v) => (v ? 'on' : 'off'))
+  const cellsPhrase = storedRef<boolean>('csm-cells-phrase', (s) => (phraseOn && (s === 'on' || s === 'off') ? s === 'on' : undefined), true, (v) => (v ? 'on' : 'off'))
   // the Arpeggios sheet: 7th chords, extended or triad pairs, the direction, and Triad pairs' shape (#436)
   const arpNotes = storedRef<ArpNotes>('csm-arp-notes', (s) => (isArpNotes(s) ? s : undefined), 'seventh')
   const arpDir = storedRef<ArpDirection>('csm-arp-dir', (s) => (isArpDirection(s) ? s : undefined), 'up')

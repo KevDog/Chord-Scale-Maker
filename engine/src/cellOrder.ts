@@ -34,7 +34,11 @@ export function orderCell(cell: Cell, order: CellOrder): Readonly<{ degrees: rea
       return { degrees: [b, c, d, a], contour: [cell.contour[1]!, cell.contour[2]!, null] }
     case 'swapped':
       return { degrees: [b, a, d, c], contour: [null, null, null] }
-    default:
+    case 'as-written':
       return { degrees: cell.degrees, contour: cell.contour }
+    default: {
+      const unreachable: never = order
+      throw new Error(`unknown order: ${String(unreachable)}`)
+    }
   }
 }

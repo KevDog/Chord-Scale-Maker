@@ -92,6 +92,8 @@ describe('usePreferences', () => {
     expect([prefs().cellsOrder.value, prefs().cellsPhrase.value]).toEqual(['rotated', false])
     localStorage.setItem('csm-cells-order', 'sideways')
     expect(prefs().cellsOrder.value).toBe('as-written')
+    localStorage.setItem('csm-cells-phrase', 'bogus')
+    expect(prefs().cellsPhrase.value).toBe(true)
   })
 
   it('reads a stored Order and Phrase as the defaults with the phraseCells flag off, and keeps them stored', async () => {
