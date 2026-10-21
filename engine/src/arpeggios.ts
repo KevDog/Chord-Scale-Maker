@@ -191,7 +191,8 @@ const noTonesFor = (chord: string): string => `no chord tones for ${chord || 'an
 
 /**
  * a chord's cells: its tones, and the next cell's order (indexes into them) and direction, given the last note, the
- * run's count, the last cell's pitches and how many cells the chord has played; midi: its pitches where the cell placed
+ * run's count, the last cell's pitches, how many cells the chord has played and whether the bar has room for a whole
+ * four-note cell (whole: false for a cell the bar line cuts, #379); midi: its pitches where the cell placed
  * itself; carry: a cell the bar line cuts goes on into the chord's next bar (else it is dropped); turn: slots too few
  * for another whole cell turn back on the last one instead, from its second-to-last note (a 3/4 bar: 1 3 5 7 5 3, #348),
  * by bar ('bar': in each bar the chord lasts into) or by chord ('chord': only the chord's last slot, its slots counted
@@ -200,7 +201,7 @@ const noTonesFor = (chord: string): string => `no chord tones for ${chord || 'an
  */
 export type Cells = Readonly<{
   tones: readonly Spelled[]
-  next: (prev: number | null, count: number, last: readonly number[] | null, nth: number) => Readonly<{ order: readonly number[]; up: boolean; midi?: readonly number[] }>
+  next: (prev: number | null, count: number, last: readonly number[] | null, nth: number, whole?: boolean) => Readonly<{ order: readonly number[]; up: boolean; midi?: readonly number[] }>
   carry?: boolean
   turn?: 'bar' | 'chord'
 }>
@@ -311,7 +312,7 @@ export function cellVoices(
         break
       }
       const n = nth.get(s.chord) ?? 0
-      const { order, up, midi: placed } = c.next(prev, count, last, n)
+      const { order, up, midi: placed } = c.next(prev, count, last, n, slots - k >= 4)
       const midi: readonly number[] = placed ?? place(order.map((i) => pcOf(t[i] ?? (t[0] as Spelled))), up, range, prev)
       const cell = order.map((i, j) => ({ ...(t[i] ?? (t[0] as Spelled)), midi: midi[j] ?? 0 }))
       const take = Math.min(cell.length, slots - k)
