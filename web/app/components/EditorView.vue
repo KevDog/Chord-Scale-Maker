@@ -129,6 +129,8 @@
             v-model:approach="prefs.approach.value"
             v-model:arpeggio="prefs.arpeggio.value"
             v-model:cells="prefs.cells.value"
+            v-model:cells-order="prefs.cellsOrder.value"
+            v-model:cells-phrase="prefs.cellsPhrase.value"
             v-model:arp-notes="prefs.arpNotes.value"
             v-model:arp-dir="prefs.arpDir.value"
             v-model:arp-shape="prefs.arpShape.value"
@@ -463,9 +465,11 @@ const patternMoves = computed(() => {
   const fallback = parsePattern(DEFAULT_PATTERN)
   return 'moves' in fallback ? fallback.moves : []
 })
-const sheetLine = computed(() => shareLineOf(prefs.lineMode.value, prefs.guideLine.value, prefs.arpeggio.value, prefs.cells.value))
+/** the Cells line's Order and Phrase (#376): with the flag off they read as written and on (so links carry neither), and the line plays phrase off, as before */
+const phraseOn = useFeature('phraseCells')
+const sheetLine = computed(() => shareLineOf(prefs.lineMode.value, prefs.guideLine.value, prefs.arpeggio.value, prefs.cells.value, prefs.cellsOrder.value, prefs.cellsPhrase.value))
 /** the line the Changes sheet draws: the stored one, the arpeggio slot read as the Pentatonic line under the Pentatonic overlay (#284) */
-const changesLine = computed(() => changesLineOf({ mode: prefs.lineMode.value, guide: prefs.guideLine.value, arpeggio: prefs.arpeggio.value, overlay: prefs.overlay.value, leave: prefs.pentLeave.value, dir: prefs.arpDir.value, cells: prefs.cells.value, shape: prefs.pairLine.value }))
+const changesLine = computed(() => changesLineOf({ mode: prefs.lineMode.value, guide: prefs.guideLine.value, arpeggio: prefs.arpeggio.value, overlay: prefs.overlay.value, leave: prefs.pentLeave.value, dir: prefs.arpDir.value, cells: prefs.cells.value, shape: prefs.pairLine.value, order: phraseOn ? prefs.cellsOrder.value : 'as-written', phrase: phraseOn && prefs.cellsPhrase.value }))
 /** chords on the Changes sheet open the chord editor while the editor is shown (on a phone, the whole editor) */
 const sheetEditing = computed(() => editorShown.value && !editor.fatal.value)
 const sheetChord = ref<SheetChordEdit | null>(null)

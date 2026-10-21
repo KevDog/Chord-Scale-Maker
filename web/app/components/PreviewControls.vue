@@ -169,6 +169,14 @@
                               <UiListboxOption v-for="a in APPROACHES" :key="a" :value="a"><UiListboxLabel>{{ APPROACH_LABELS[a] }}</UiListboxLabel></UiListboxOption>
                             </UiListbox>
                           </EaseReveal>
+                          <!-- the Cells line's Order, and for a system its Phrase (#376) -->
+                          <EaseReveal :show="phraseOn && shows('cells') && lineMode === 'cells' && overlay === 'off'" inner-class="flex flex-col items-start gap-2">
+                            <UiListbox v-model="cellsOrder" class="w-full" aria-label="Order" title="Play every cell as written, reversed, rotated or with its pairs swapped">
+                              <template #selected="{ value }"><UiListboxLabel>{{ orderLabel(value) }}</UiListboxLabel></template>
+                              <UiListboxOption v-for="o in CELL_ORDERS" :key="o" :value="o"><UiListboxLabel>{{ CELL_ORDER_LABELS[o] }}</UiListboxLabel></UiListboxOption>
+                            </UiListbox>
+                            <ToggleButton v-if="cells in CELL_SYSTEMS" v-model="cellsPhrase" title="Aim each cell at the next chord, and colour long dominants">Phrase</ToggleButton>
+                          </EaseReveal>
                           </div>
                         </RailPopover>
                       </div>
@@ -240,7 +248,7 @@
     </template>
 
     <script setup lang="ts">
-    import { type Approach, APPROACH_LABELS, APPROACHES, ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, CELL_SYSTEMS, type CellId, cellLabel, isCellId, SINGLE_CELLS, type ArpeggioPattern, type ArpNotes, fitRange, type InstrumentName, formatPattern, noteName, parsePattern, partFor, PATTERN_LIBRARY, type PatternNotes, type HexatonicBasis, type QuartalNotesChoice, type PentatonicBasis, type PentatonicDegree, PENTATONIC_LEAVE_LABELS, PENTATONIC_LEAVES, type PairShape, PAIR_SHAPE_LABELS, type PairLineShape, PAIR_LINE_SHAPE_LABELS, PAIR_LINE_SHAPES, type PentatonicLeave, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit, type Range, rangeChoices } from '@chord-scale-maker/engine'
+    import { type Approach, APPROACH_LABELS, APPROACHES, ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, CELL_ORDER_LABELS, CELL_ORDERS, CELL_SYSTEMS, type CellId, type CellOrder, cellLabel, isCellId, SINGLE_CELLS, type ArpeggioPattern, type ArpNotes, fitRange, type InstrumentName, formatPattern, noteName, parsePattern, partFor, PATTERN_LIBRARY, type PatternNotes, type HexatonicBasis, type QuartalNotesChoice, type PentatonicBasis, type PentatonicDegree, PENTATONIC_LEAVE_LABELS, PENTATONIC_LEAVES, type PairShape, PAIR_SHAPE_LABELS, type PairLineShape, PAIR_LINE_SHAPE_LABELS, PAIR_LINE_SHAPES, type PentatonicLeave, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit, type Range, rangeChoices } from '@chord-scale-maker/engine'
     import { degreeLabel, PENT_BASES, PENT_DEGREE_CHOICES, PENT_PATHS, PENT_RUNGS, PENT_SIDES, PENT_STEP_BARS, PENT_STEP_UNITS, pathLabel, rungLabel, sideShown } from '~/utils/pentatonics'
     import { approachApplies, type GuideFrom, type LineMode, lineModes } from '~/utils/sheetLine'
     import { HEX_BASES } from '~/utils/hexatonics'
@@ -297,6 +305,8 @@
     const approach = defineModel<Approach>('approach', { default: 'none' })
     const arpeggio = defineModel<ArpeggioPattern>('arpeggio', { default: 'up-root' })
     const cells = defineModel<CellId>('cells', { default: '3rd-3rd' })
+    const cellsOrder = defineModel<CellOrder>('cellsOrder', { default: 'as-written' })
+    const cellsPhrase = defineModel<boolean>('cellsPhrase', { default: true })
     const arpNotes = defineModel<ArpNotes>('arpNotes', { default: 'seventh' })
     const arpDir = defineModel<ArpDirection>('arpDir', { default: 'up' })
     const arpShape = defineModel<PairShape>('arpShape', { default: 'arpeggiated' })
@@ -383,6 +393,9 @@
     const approachesOn = useFeature('approaches')
     /** the closed listbox reads Approach: None, not a bare None */
     const approachLabel = (a: Approach): string => (a === 'none' ? 'Approach: None' : APPROACH_LABELS[a])
+    const phraseOn = useFeature('phraseCells')
+    /** likewise Order: As written (#376) */
+    const orderLabel = (o: CellOrder): string => (o === 'as-written' ? `Order: ${CELL_ORDER_LABELS[o]}` : CELL_ORDER_LABELS[o])
     const SYSTEM_IDS = Object.keys(CELL_SYSTEMS) as (keyof typeof CELL_SYSTEMS)[]
     // the Cells line shares the 7th Chords slot (#298): the radio reads 7th Chords while a cell is chosen, and picking
     // a cell sets the mode and the cell, a pattern the mode and the pattern; leaving the slot for another mode and coming back restores 7th Chords

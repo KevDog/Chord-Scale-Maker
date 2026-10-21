@@ -4,8 +4,8 @@ import { effectScope, nextTick } from 'vue'
 import { linkPreferences, usePreferences } from '~/composables/usePreferences'
 import { INSTRUMENTS, type ShareView } from '@chord-scale-maker/engine'
 
-const flags = vi.hoisted(() => ({ cells: true, approaches: true }))
-mockNuxtImport('useFeature', () => (name: string) => (name === 'cells' && flags.cells) || (name === 'approaches' && flags.approaches))
+const flags = vi.hoisted(() => ({ cells: true, approaches: true, phraseCells: true }))
+mockNuxtImport('useFeature', () => (name: string) => (name === 'cells' && flags.cells) || (name === 'approaches' && flags.approaches) || (name === 'phraseCells' && flags.phraseCells))
 
 function prefs() {
   const scope = effectScope()
@@ -26,6 +26,7 @@ describe('usePreferences', () => {
     localStorage.clear()
     flags.cells = true
     flags.approaches = true
+    flags.phraseCells = true
   })
 
   it("defaults to piano spelled from the chart's key, with interval labels on", () => {
@@ -79,6 +80,43 @@ describe('usePreferences', () => {
     expect([again.lineMode.value, again.cells.value]).toEqual(['cells', '1-2-3-5'])
     localStorage.setItem('csm-cells', '9-9-9-9')
     expect(prefs().cells.value).toBe('3rd-3rd')
+  })
+
+  it("remembers the Cells line's Order and Phrase (#376): as written and on until chosen, rejects an unknown Order", async () => {
+    const p = prefs()
+    expect([p.cellsOrder.value, p.cellsPhrase.value]).toEqual(['as-written', true])
+    p.cellsOrder.value = 'rotated'
+    p.cellsPhrase.value = false
+    await nextTick()
+    expect([localStorage.getItem('csm-cells-order'), localStorage.getItem('csm-cells-phrase')]).toEqual(['rotated', 'off'])
+    expect([prefs().cellsOrder.value, prefs().cellsPhrase.value]).toEqual(['rotated', false])
+    localStorage.setItem('csm-cells-order', 'sideways')
+    expect(prefs().cellsOrder.value).toBe('as-written')
+  })
+
+  it('reads a stored Order and Phrase as the defaults with the phraseCells flag off, and keeps them stored', async () => {
+    localStorage.setItem('csm-cells-order', 'reversed')
+    localStorage.setItem('csm-cells-phrase', 'off')
+    flags.phraseCells = false
+    const p = prefs()
+    expect([p.cellsOrder.value, p.cellsPhrase.value]).toEqual(['as-written', true])
+    const l = linked({ line: 'cells:3rd-3rd~reversed~free' })
+    expect([l.cellsOrder.value, l.cellsPhrase.value]).toEqual(['as-written', true])
+    await nextTick()
+    expect([localStorage.getItem('csm-cells-order'), localStorage.getItem('csm-cells-phrase')]).toEqual(['reversed', 'off'])
+    flags.phraseCells = true
+    expect([prefs().cellsOrder.value, prefs().cellsPhrase.value]).toEqual(['reversed', false])
+  })
+
+  it("takes a link's Order and Phrase, as written and on when it has none, for this visit only", async () => {
+    localStorage.setItem('csm-cells-order', 'swapped')
+    const p = linked({ line: 'cells:3rd-3rd~reversed~free' })
+    expect([p.cellsOrder.value, p.cellsPhrase.value]).toEqual(['reversed', false])
+    const bare = linked({ line: 'cells:3rd-3rd' })
+    expect([bare.cellsOrder.value, bare.cellsPhrase.value]).toEqual(['as-written', true])
+    p.cellsOrder.value = 'rotated'
+    await nextTick()
+    expect(localStorage.getItem('csm-cells-order')).toBe('swapped')
   })
 
   it('remembers the Approach: None until chosen, rejects an unknown one', async () => {

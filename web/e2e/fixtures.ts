@@ -242,6 +242,11 @@ export async function showCell(page: Page, cell: string): Promise<void> {
   })
 }
 
+/** with a cell or system chosen, pick the Cells line's Order (#376, flag `phraseCells`): "As written", "Reversed", "Rotated", "Pairs swapped" */
+export async function showOrder(page: Page, order: string): Promise<void> {
+  await inControls(page, () => pickOption(page, /^Order$/, order))
+}
+
 /** choose 7th Chords with a pattern ("Up · root", "Voice-led", …) */
 export async function showArpeggios(page: Page, pattern: string): Promise<void> {
   await inControls(page, async () => {
