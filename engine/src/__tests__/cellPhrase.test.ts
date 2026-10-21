@@ -99,6 +99,20 @@ describe('cell phrase: the Cells line aims each cell at the next chord (#379, #3
     expect(slots(notes(seq(['Cmaj7', 2], ['N.C.', 2], ['Eb7', 2]), phrase('root-root')))[0]).toBe('C D E G')
     expect(slots(notes(seq(['Cmaj7', 2], ['Eb7', 2]), phrase('root-root')))[0]).toBe('C A G E')
   })
+  it('3/4, a chord of two bars: every bar turns back, so none of its cells is aimed (the phrase-off line)', () => {
+    const cs = seq(['Cmaj7', 6], ['Eb7', 3])
+    const on = notes(cs, phrase('root-root'), 3)
+    expect(on.slice(0, 12)).toEqual(notes(cs, { kind: 'cells', id: 'root-root', phrase: false }, 3).slice(0, 12))
+    expect(on.slice(6, 10)).toEqual(['C', 'B', 'A', 'G']) // bar 2's B cell, 1 7 6 5 over C: not aimed at E♭7 (into E♭ it would be 1 6 5 3, C A G E)
+  })
+  it('4/4, a chord of two bars: a cell at the bar line aims at the chord’s cell in the next bar', () => {
+    // A into B's F: 3 5 7 9; B into A's F (bar 2): 3 5 7 9; A into B's F: 3 5 7 9; B into G7's B: F A D C already steps
+    expect(slots(notes(seq(['Dm7', 8], ['G7', 2]), phrase('3rd-3rd')))).toEqual(['F A C E', 'F A C E', 'F A C E', 'F A D C', 'B A G F'])
+  })
+  it('4/4, a chord of three beats: its cell is followed by its own turn-back, so it isn’t aimed', () => {
+    const cs = seq(['Cmaj7', 3], ['Eb7', 3])
+    expect(notes(cs, phrase('root-root')).slice(0, 6)).toEqual(['C', 'D', 'E', 'G', 'E', 'D'])
+  })
   it('a cell in sixteenths under a short chord plays the system’s cell', () => {
     expect(slots(notes(seq(['Cmaj7', 1], ['Eb7', 2]), phrase('root-root')))[0]).toBe('C D E G')
   })
