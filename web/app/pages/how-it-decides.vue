@@ -301,7 +301,14 @@
               <strong :class="EM">Order</strong> then plays each cell as written, reversed, rotated or with its pairs swapped.
             </template>
           </UiText>
-          <UiText v-else>Cells aren't switched on yet.</UiText>
+          <UiText v-if="cellsOn && phraseCellsOn">
+            With Phrase on, a dominant 7th that lasts two cells or more and resolves (the next chord's root a 5th or a half
+            step below, a blues I7 to IV7 too) borrows substitutes, as jazz players do: its first cell is its own, the second
+            is read through the tritone substitute's Lydian Dominant (over G7, D♭7), the third through the dominant a minor 3rd
+            up on Half-Whole Dim. (B♭7), the fourth the tritone substitute again, and so on. The chord symbol stays as written.
+            A sus chord, a dominant whose scale the chart writes, and the last chord before a rest or the end play their own.
+          </UiText>
+          <UiText v-else-if="!cellsOn">Cells aren't switched on yet.</UiText>
         </DecisionSection>
 
         <DecisionSection id="approach.figures">

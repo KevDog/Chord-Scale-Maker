@@ -106,6 +106,8 @@ export type GuideInput = Readonly<{
   scale?: string
   /** the scale the sheet shows over the chord, which an approach figure's diatonic steps follow (default: scale) */
   shown?: string
+  /** its scale is written in the chart (a pin): the Cells line's substitutes never replace it (#378) */
+  pinned?: true
   start: number
   beats: number
   block?: number

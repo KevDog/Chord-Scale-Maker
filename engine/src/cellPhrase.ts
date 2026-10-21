@@ -1,6 +1,11 @@
+import { familyOf } from './analysis/stream'
 import { type CellOrder, orderCell } from './cellOrder'
 import type { Cell, Contour } from './cells'
-import { mod, pcOf, type Spelled } from './pitch'
+import { isRest } from './chord'
+import type { GuideInput } from './guideTones'
+import { mod, pcOf, rootName, shiftBy, type Spelled } from './pitch'
+import { readChord } from './qualities'
+import { type ScaleKey, simplifyRoot } from './scales'
 
 /**
  * Phrase (#379, #380, docs/superpowers/specs/2026-10-21-phrase-cells-design.md): a system's cell aimed at the next
@@ -51,4 +56,29 @@ export function aimedCell(
   if (stepsTo(ownTones, target)) return own
   const first = orderCell(own, order).degrees[0]
   return PALETTE.find((c) => orderCell(c, order).degrees[0] === first && stepsTo(toneOf(c), target)) ?? own
+}
+
+/** a substitute dominant (#378): its root this many letters and semitones above the chord's, and its scale */
+type Sub = Readonly<{ steps: number; semis: number; key: ScaleKey }>
+const TRITONE: Sub = { steps: 4, semis: 6, key: 'lydian dominant' } // a diminished 5th: the flat side (G7: D♭7)
+const MINOR_THIRD: Sub = { steps: 2, semis: 3, key: 'half whole diminished' }
+/** by the chord's slot, from its first: own, the tritone sub, the minor-3rd dominant, the tritone sub, and again */
+const SUBS: readonly (Sub | null)[] = [null, TRITONE, MINOR_THIRD, TRITONE]
+
+/** two four-note cells in eighths (CELL_VALUE): a shorter chord has one slot, or plays sixteenths */
+const LONG = 4
+
+/**
+ * the chord a dominant's slot is read through in phrase mode (#378, the spec's section 2): over a dominant (not sus)
+ * of two slots or more whose scale the app chose (not pinned), resolving to the next chord by root motion (its root a
+ * perfect 5th or a half step below), slot nth from its first by SUBS; the root spelled as simplifyRoot spells its
+ * scale. null: the chord's own (and for the last chord of a run, or one before a rest: next is none, or a rest)
+ */
+export function substituteFor(chord: GuideInput, next: GuideInput | undefined, nth: number): Readonly<{ chord: string; scale: string }> | null {
+  const sub = SUBS[nth % SUBS.length]
+  if (!sub || chord.pinned || chord.beats < LONG || !next || isRest(next.chord)) return null
+  const [own, then] = [readChord(chord.chord), readChord(next.chord)]
+  if (!own || !then || familyOf(own.quality) !== 'dominant' || ![7, 1].includes(mod(pcOf(own.root) - pcOf(then.root), 12))) return null
+  const root = rootName(simplifyRoot(shiftBy(own.root, sub.steps, sub.semis), sub.key))
+  return { chord: `${root}7`, scale: `${root} ${sub.key}` }
 }

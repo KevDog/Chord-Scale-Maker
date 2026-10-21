@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { aimedCell, isStep, PALETTE } from '../cellPhrase'
+import { aimedCell, isStep, PALETTE, substituteFor } from '../cellPhrase'
 import { CELL_SYSTEMS, type CellId, type CellsLine, cellsVoices, cellTones, SINGLE_CELLS } from '../cells'
 import type { GuideInput } from '../guideTones'
 import { CONCERT } from '../part'
@@ -15,6 +15,10 @@ const SCALE: Readonly<Record<string, string>> = {
   Eb7: 'Eb Mixolydian',
   Abmaj7: 'Ab Lydian',
   Db7: 'Db Lydian dominant',
+  C7: 'C Mixolydian',
+  F7: 'F Mixolydian',
+  Ebmaj7: 'Eb Ionian',
+  G7sus4: 'G Mixolydian',
 }
 
 /** chords in time order, each [symbol, beats] (N.C. a rest) */
@@ -86,12 +90,16 @@ describe('cell phrase: the Cells line aims each cell at the next chord (#379, #3
     ['I–♭III–♭VI–♭II', 'root-root', TADD, ['C A G E', 'Eb Db C Bb', 'Ab Bb C Eb', 'Db Cb Bb Ab']], // Cmaj7 CHANGED: 1 6 5 3 into E♭
     ['I–♭III–♭VI–♭II', '3rd-5th', TADD, ['E D C B', 'Bb G Eb Db', 'C Eb G Bb', 'Ab F Db Cb']], // Cmaj7 CHANGED: 3 2 1 7 into B♭
     ['I–♭III–♭VI–♭II', '3rd-root', TADD, ['E G B D', 'Eb G Bb Db', 'C Ab G Eb', 'Db F Ab Cb']], // Cmaj7 CHANGED: 3 5 7 9 into E♭
-    // each chord's first slot aims at its own second slot's target: Dm7 3 5 7 9 into F, G7 3 5 7 9 into B (both CHANGED)
-    ['four-beat II–V', '3rd-3rd', LONG, ['F A C E', 'F A D C', 'B D F A', 'B D G F', 'E D C B']],
-    ['four-beat II–V', 'root-root', LONG, ['D F A C', 'D C B A', 'G B D F', 'G F E D', 'C D E G']], // 1 3 5 7 into D, into G (CHANGED)
-    // both first slots BREAK: over Dm7 the 3rd's cells end C, E, C, A, none a step from A; over G7 F, A, F, D, none from D
-    ['four-beat II–V', '3rd-5th', LONG, ['F A C E', 'A F D C', 'B D F A', 'D B G F', 'E G B D']],
-    ['four-beat II–V', '3rd-root', LONG, ['F E D C', 'D F A C', 'B A G F', 'G B D F', 'E C B G']], // 3 2 1 7 into D, into G (CHANGED)
+    // each chord's first slot aims at its own second slot's target; G7's second slot is read through D♭7 (#378), so its
+    // first aims at D♭7's target: Dm7 3 5 7 9 into F (CHANGED); G7 into D♭7's F: no cell from the 3rd steps (BREAK);
+    // D♭7 3 5 7 9 into E (CHANGED)
+    ['four-beat II–V', '3rd-3rd', LONG, ['F A C E', 'F A D C', 'B A G F', 'F Ab Cb Eb', 'E D C B']],
+    // Dm7 1 3 5 7 into D (CHANGED); G7 1 2 3 5 into D♭7's D♭; D♭7 1 3 5 7 into C (CHANGED)
+    ['four-beat II–V', 'root-root', LONG, ['D F A C', 'D C B A', 'G A B D', 'Db F Ab Cb', 'C D E G']],
+    // Dm7's first slot BREAKs: the 3rd's cells end C, E, C, A, none a step from A; G7 3 5 7 9 into D♭7's A♭; D♭7 5 6 7 9 into E (CHANGED)
+    ['four-beat II–V', '3rd-5th', LONG, ['F A C E', 'A F D C', 'B D F A', 'Ab Bb Cb Eb', 'E G B D']],
+    // Dm7 3 2 1 7 into D (CHANGED); G7 3 1 7 5 into D♭7's D♭; D♭7 1 6 5 3 into E (CHANGED)
+    ['four-beat II–V', '3rd-root', LONG, ['F E D C', 'D F A C', 'B G F D', 'Db Bb Ab F', 'E C B G']],
   ] as const)('%s, %s', (_, id, chords, expected) => {
     expect(slots(notes(chords, phrase(id)))).toEqual(expected)
   })
@@ -148,5 +156,70 @@ describe('cell phrase: the Cells line aims each cell at the next chord (#379, #3
       { row: 2, chord: 'Cmaj7', scale: 'C major pentatonic', start: 4, beats: 2 },
     ]
     for (const id of Object.keys(CELL_SYSTEMS) as CellId[]) expect(notes(cs, phrase(id)).filter((n) => n !== 'r')).toHaveLength(12)
+  })
+})
+
+describe('cell phrase: substitutes over a long dominant (#378)', () => {
+  const input = (chord: string, beats: number, extra: Partial<GuideInput> = {}): GuideInput => ({ row: 0, chord, scale: SCALE[chord], start: 0, beats, ...extra })
+  const after = (chord: string): GuideInput => ({ row: 1, chord, scale: SCALE[chord], start: 4, beats: 4 })
+  const subs = (chord: GuideInput, next: GuideInput | undefined, n = 4) => Array.from({ length: n }, (_, nth) => substituteFor(chord, next, nth)?.chord ?? 'own')
+  /** the chords with row `row` pinned (its scale written) */
+  const pin = (cs: readonly GuideInput[], row: number) => cs.map((c) => (c.row === row ? { ...c, pinned: true as const } : c))
+  const off = (id: CellId): CellsLine => ({ kind: 'cells', id, phrase: false })
+
+  it('slot by slot from the first: own, the tritone sub, the minor-3rd dominant, the tritone sub (G7 → C: D♭7, B♭7)', () => {
+    expect(subs(input('G7', 8), after('C'), 6)).toEqual(['own', 'Db7', 'Bb7', 'Db7', 'own', 'Db7'])
+    expect(substituteFor(input('G7', 4), after('C'), 1)).toEqual({ chord: 'Db7', scale: 'Db lydian dominant' })
+    expect(substituteFor(input('G7', 4), after('C'), 2)).toEqual({ chord: 'Bb7', scale: 'Bb half whole diminished' })
+  })
+  it('resolving by root motion: a 5th down or a half step down; a blues C7 → F7 resolves', () => {
+    expect(subs(input('G7', 4), after('Ebmaj7'), 2)).toEqual(['own', 'own'])
+    expect(subs(input('G7', 4), after('Gb'), 2)).toEqual(['own', 'Db7'])
+    expect(subs(input('C7', 4), after('F7'), 2)).toEqual(['own', 'Gb7'])
+  })
+  it('the tritone root on the flat side, the engine’s spelling of each scale (F7: C♭ Lydian Dominant reads as B)', () => {
+    expect(subs(input('A7', 8), after('D'))).toEqual(['own', 'Eb7', 'C7', 'Eb7'])
+    expect(subs(input('F7', 4), after('Bb'), 2)).toEqual(['own', 'B7'])
+  })
+  it('none: a pinned scale, a chord of under two slots, a sus chord, the last chord of a run or one before a rest', () => {
+    expect(subs(input('G7', 4, { pinned: true }), after('C'), 2)).toEqual(['own', 'own'])
+    expect(subs(input('G7', 2), after('C'), 2)).toEqual(['own', 'own'])
+    expect(subs(input('G7sus4', 4), after('C'), 2)).toEqual(['own', 'own'])
+    expect(subs(input('G7', 4), undefined, 2)).toEqual(['own', 'own'])
+    expect(subs(input('G7', 4), after('N.C.'), 2)).toEqual(['own', 'own'])
+    expect(subs(input('Cmaj7', 4), after('F'), 2)).toEqual(['own', 'own'])
+  })
+
+  it('G7 for four beats → C, 3rd to 3rd: its second slot read through D♭7 (3 5 7 9: F A♭ C♭ E♭, a step into C’s E)', () => {
+    // G7's A, 3 2 1 7: B A G F; into D♭7's F no cell from the 3rd steps (F, A, F, D): its own (BREAK)
+    expect(slots(notes(seq(['G7', 4], ['C', 2]), phrase('3rd-3rd')))).toEqual(['B A G F', 'F Ab Cb Eb', 'E D C B'])
+  })
+  it('pinned, G7 plays its own scale in both slots', () => {
+    expect(slots(notes(pin(seq(['G7', 4], ['C', 2]), 0), phrase('3rd-3rd')))).toEqual(['B D F A', 'B D G F', 'E D C B'])
+  })
+  it('phrase off: no substitutes, the system as written', () => {
+    expect(slots(notes(seq(['G7', 4], ['C', 2]), off('3rd-3rd')))).toEqual(['B A G F', 'B D G F', 'E D C B'])
+  })
+  it('G7 for eight beats → C, 3rd to 5th: own, D♭7, B♭7, D♭7; the A cell over D♭7 reads F A♭ C♭ E♭ (the spec’s)', () => {
+    const line = slots(notes(seq(['Dm7', 2], ['G7', 8], ['C', 2]), phrase('3rd-5th')))
+    expect(line[2]).toBe('F Ab Cb Eb')
+    // G7 5 3 2 1 into D♭7's F (CHANGED); D♭7 kept into B♭7's F; B♭7 BREAKs into D♭7's F (its 5ths' cells end A♭, B♭, C♭);
+    // D♭7 3 1 7 5 into C's G (CHANGED)
+    expect(line).toEqual(['F A C E', 'D B A G', 'F Ab Cb Eb', 'F D Bb Ab', 'F Db Cb Ab', 'G E C B'])
+  })
+  it.each([
+    ['G7 → E♭maj7 (no resolution)', seq(['G7', 4], ['Ebmaj7', 2])],
+    ['G7 last in the run', seq(['G7', 4])],
+    ['G7 before a rest', seq(['G7', 4], ['N.C.', 2], ['C', 2])],
+    ['G7sus4 → C', seq(['G7sus4', 4], ['C', 2])],
+    ['G7 of two beats → C', seq(['G7', 2], ['C', 2])],
+  ] as const)('%s: no substitutes, the line its pinned line', (_, cs) => {
+    for (const id of Object.keys(CELL_SYSTEMS) as CellId[]) expect(notes(cs, phrase(id))).toEqual(notes(pin(cs, 0), phrase(id)))
+  })
+  it('a blues C7 → F7 takes them: its second slot G♭7’s (the notes of G♭ Lydian Dominant)', () => {
+    const cs = seq(['C7', 4], ['F7', 4])
+    const second = slots(notes(cs, phrase('3rd-3rd')))[1]!.split(' ')
+    expect(second.every((n) => ['Gb', 'Ab', 'Bb', 'C', 'Db', 'Eb', 'Fb'].includes(n))).toBe(true)
+    expect(notes(cs, phrase('3rd-3rd'))).not.toEqual(notes(pin(cs, 0), phrase('3rd-3rd')))
   })
 })
