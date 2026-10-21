@@ -775,6 +775,15 @@ describe('buildChanges with a Cells line (#298)', () => {
     const d7 = sheet.lines.flatMap((l) => l.bars)[1]?.voice.map((n) => (n.pitch ? rootName(n.pitch) : 'r'))
     expect(d7?.slice(0, 4)).toEqual(['F#', 'A', 'C', 'Eb'])
   })
+  it('a written scale reaches the cells as a pin (#378): G7 → C plays D♭7 in its second slot, a written G Mixolydian its own', () => {
+    const g7 = (row: string) => {
+      const doc = parseChart(`title: T\nkey: C\n\nsection: A\n1 | ${row}\n2 | C\n`).value
+      const sheet = buildChanges(doc, CONCERT, 4, false, { kind: 'cells', id: '3rd-3rd', phrase: true })
+      return sheet.lines.flatMap((l) => l.bars)[0]?.voice.map((n) => (n.pitch ? rootName(n.pitch) : 'r')).slice(4)
+    }
+    expect(g7('G7')).toEqual(['F', 'Ab', 'Cb', 'Eb'])
+    expect(g7('G7 | G Mixolydian')).toEqual(['B', 'D', 'G', 'F'])
+  })
 })
 
 describe('buildChanges with a Pentatonic line (#284)', () => {

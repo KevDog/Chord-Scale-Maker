@@ -492,7 +492,8 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
         ending = volta
         const scale = scaleOf(i, e.row)
         const shown = resolved.get(i)?.scale // what an approach's diatonic steps follow
-        return [{ row: i, chord: e.chord, ...(scale ? { scale } : {}), ...(shown ? { shown } : {}), start: e.start, beats: e.beats, block }]
+        const pinned = resolved.get(i)?.source === 'written' // a written scale: the Cells line's substitutes keep it (#378)
+        return [{ row: i, chord: e.chord, ...(scale ? { scale } : {}), ...(shown ? { shown } : {}), ...(pinned ? { pinned } : {}), start: e.start, beats: e.beats, block }]
       }),
     )
   }

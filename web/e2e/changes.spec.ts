@@ -352,6 +352,17 @@ test('Phrase (#379): root to root over I–♭III–♭VI–♭II aims C’s cel
   await expect(line).toHaveAttribute('aria-label', /; cells: C\d D\d E\d G\d, E♭\d D♭\d C\d B♭\d /) // remembered
 })
 
+test('Phrase (#378): G7 for a whole bar → C reads its second cell through D♭7 (F A♭ C♭ E♭, into C’s E); Off plays G7’s own (B D G F)', async ({ page }) => {
+  await writeChart(page, 'title: T\nkey: C\n\nsection: A\n1 | G7\n2 | C\n')
+  const line = lines(page).first()
+  await showCell(page, '3rd to 3rd')
+  await expect(line).toHaveAttribute('aria-label', /; cells: B\d A\d G\d F\d F\d A♭\d C♭\d E♭\d \| E\d /)
+  await openPanel(page, 'Line options')
+  await page.getByRole('button', { name: 'Phrase', exact: true }).click()
+  await closePanel(page, 'Line options')
+  await expect(line).toHaveAttribute('aria-label', /; cells: B\d A\d G\d F\d B\d D\d G\d F\d \| E\d /)
+})
+
 test('a share link carries the arpeggio pattern', async ({ page, browser }) => {
   await writeChart(page, 'title: T\nkey: C\n\nsection: A\nbars: 4\n1 | CMaj7\n')
   await showArpeggios(page, 'Voice-led')

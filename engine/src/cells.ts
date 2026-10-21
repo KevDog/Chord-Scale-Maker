@@ -1,13 +1,15 @@
 import type { Approach } from './approaches'
 import { arpeggioCells, arpeggioTones, type Cells, cellVoices, type Follows, type NoteValue, placeWhole } from './arpeggios'
 import { type CellOrder, orderCell, type PartialContour } from './cellOrder'
-import { aimedCell, PALETTE } from './cellPhrase'
+import { aimedCell, PALETTE, substituteFor } from './cellPhrase'
 import { isRest } from './chord'
 import type { GuideInput, GuideNote } from './guideTones'
 import type { Range } from './instruments'
 import type { Metre } from './metre'
 import { type Part, rangeOf, writtenScale } from './part'
 import { mod, pcOf, type Spelled } from './pitch'
+import { SCALES } from './scales'
+import { orNull } from './util'
 
 /**
  * Melodic cells (#298, after Randy Vincent's Building Solo Lines From Cells): four notes written as degrees from the
@@ -80,6 +82,26 @@ export function cellTones(part: Part, chord: string, scale: string | undefined, 
   return out
 }
 
+/**
+ * a cell's notes over a substitute (#378): each degree as cellTones reads it, else the scale formula's degree of that
+ * number when it has just one (Half-Whole's 2, its ♭2, though its lettering gives no note a 2nd's letter); null if a
+ * degree has neither
+ */
+function substituteTones(part: Part, chord: string, scale: string | undefined, degrees: readonly number[]): readonly Spelled[] | null {
+  const formula = scale === undefined ? null : orNull(() => {
+    const w = writtenScale(part, scale)
+    return (SCALES[w.key][0] as string).split(' ').map((f, i) => ({ n: Number(f.replace(/[b#]/g, '')), note: w.degrees[i] }))
+  })
+  const out: Spelled[] = []
+  for (const d of degrees) {
+    const numbered = formula?.filter((f) => f.n === mod(d - 1, 7) + 1) ?? []
+    const tone = cellTones(part, chord, scale, [d])?.[0] ?? (numbered.length === 1 ? numbered[0]?.note : undefined)
+    if (!tone) return null
+    out.push({ letter: tone.letter, acc: tone.acc })
+  }
+  return out
+}
+
 /** a cell's MIDI pitches from `first`: each note the next of its pitch class from the last, up or down by the contour's move */
 export function cellPitches(tones: readonly Spelled[], contour: Contour, first: number): readonly number[] {
   const pcs = tones.map(pcOf)
@@ -122,56 +144,114 @@ const placeCell = (tones: readonly Spelled[], contour: Contour, range: Range, pr
 /** a chord's cells, and with phrase on (#379, #380) the palette's (aimedCell), each in the line's Order and read through its scale */
 type Read = Readonly<{ cell: Cell; ordered: Ordered; tones: readonly Spelled[]; from: number }>
 
+/** a chord to read cells through: the slot's own, or a substitute's (substituteFor; sub: read by substituteTones) */
+type Over = Readonly<{ chord: string; scale?: string; sub?: true }>
+
+/**
+ * the run of rows a dominant's substitutes count over (#378): the index-th chord and the rows next to it that restate it
+ * (the same symbol and scale, unpinned, back to back in one block), as one chord: its beats summed, `from` its first
+ * row, `next` the chord after the run
+ */
+function restated(chords: readonly GuideInput[], index: number): Readonly<{ chord: GuideInput; from: number; next: GuideInput | undefined }> {
+  const same = (x: GuideInput | undefined, y: GuideInput | undefined): boolean =>
+    !!x && !!y && !x.pinned && !y.pinned && x.chord === y.chord && x.scale === y.scale && x.block === y.block && x.start + x.beats === y.start
+  let from = index
+  while (same(chords[from - 1], chords[from])) from--
+  let to = index
+  while (same(chords[to], chords[to + 1])) to++
+  const run = chords.slice(from, to + 1)
+  return { chord: { ...(chords[index] as GuideInput), start: run[0]?.start ?? 0, beats: run.reduce((s, c) => s + c.beats, 0) }, from, next: chords[to + 1] }
+}
+
 /**
  * a chord's cells (the index-th of chords): A then B by the run's count, each read through the chord's scale; a slot
  * whose cell has no tones plays the 7th chord arpeggio up from the root (with none, the other cell); null if neither cell
  * has tones. With phrase on and a system, a whole eighth-note cell is aimed at the next slot's target (aimedCell): the
- * first note of the next slot's system cell, over this chord or the next by what follows it (Follows)
+ * first note of the next slot's system cell, over this chord or the next by what follows it (Follows); over a long
+ * dominant that resolves, a slot is read through its substitute (substituteFor, #378), else (no tones there) its own;
+ * a dominant restated row by row counts its slots on across the rows (restated). cellCounts: the cells each row has
+ * played so far in this line, which next adds to
  */
-function cellsOf(part: Part, chords: readonly GuideInput[], index: number, line: CellsLine, range: Range): Cells | null {
+function cellsOf(part: Part, chords: readonly GuideInput[], index: number, line: CellsLine, range: Range, cellCounts: Map<number, number>): Cells | null {
   const chord = chords[index] as GuideInput
   const order = line.order ?? 'as-written'
   const pair = pairOf(line.id)
   const aims = line.phrase === true && isSystemId(line.id) && CELL_VALUE(chord.beats) === 0.5
-  const reads: Read[] = []
-  let at = 0
-  for (const c of aims ? [...pair, ...PALETTE] : pair) {
-    const tones = cellTones(part, chord.chord, chord.scale, orderCell(c, order).degrees)
-    if (!tones || reads.some((r) => r.cell === c)) continue
-    reads.push({ cell: c, ordered: orderCell(c, order), tones, from: at })
-    at += tones.length
+  const run = restated(chords, index)
+  /** the run's slot of this row's nth cell: the cells its rows before this one played, and nth */
+  const inRun = (nth: number): number => chords.slice(run.from, index).reduce((s, _, k) => s + (cellCounts.get(run.from + k) ?? 0), nth)
+  const subAt = (slot: number): Over | null => {
+    const s = aims ? substituteFor(run.chord, run.next, slot) : null
+    return s && { ...s, sub: true }
   }
-  const readOf = (c: Cell) => reads.find((r) => r.cell === c)
-  const [a, b] = [readOf(pair[0]), readOf(pair[1])]
+  const subOf = (nth: number): Over | null => subAt(inRun(nth))
+  const tones: Spelled[] = []
+  /** the line's cells read through a chord, their tones added to the chord's */
+  const readThrough = (over: Over): readonly Read[] => {
+    const reads: Read[] = []
+    for (const c of aims ? [...pair, ...PALETTE] : pair) {
+      const ts = (over.sub ? substituteTones : cellTones)(part, over.chord, over.scale, orderCell(c, order).degrees)
+      if (!ts || reads.some((r) => r.cell === c)) continue
+      reads.push({ cell: c, ordered: orderCell(c, order), tones: ts, from: tones.length })
+      tones.push(...ts)
+    }
+    return reads
+  }
+  const own = readThrough(chord)
+  const subs = new Map<string, readonly Read[]>()
+  for (const s of [subAt(1), subAt(2)]) if (s) subs.set(s.chord, readThrough(s))
+  /** the reads a slot plays: its substitute's when that reads the slot's system cell, else the chord's own */
+  const readsAt = (nth: number, count: number): readonly Read[] => {
+    const s = subOf(nth)
+    const reads = s ? subs.get(s.chord) : undefined
+    return reads?.some((r) => r.cell === pair[count % 2]) ? reads : own
+  }
+  const readOf = (reads: readonly Read[], c: Cell) => reads.find((r) => r.cell === c)
+  const [a, b] = [readOf(own, pair[0]), readOf(own, pair[1])]
   if (!a && !b) return null
+  const at = tones.length
   const arpeggio = arpeggioCells(part, chord, 'up-root')
-  const own = (r: Read, prev: number | null) => ({
+  const played = (r: Read, prev: number | null) => ({
     order: r.tones.map((_, i) => i + r.from),
     up: true,
     midi: placeCell(r.tones, fillContour(r.tones, r.ordered.contour), range, prev),
   })
-  /** the next slot's target pitch class: its system cell's first note over this chord, or the next (none, or a rest: none) */
-  const targetOf = (count: number, follows: Follows): number | null => {
-    const over = follows === 'cell' ? chord : follows === 'chord' ? chords[index + 1] : undefined
-    if (!over || isRest(over.chord)) return null
-    const first = cellTones(part, over.chord, over.scale, orderCell(pair[(count + 1) % 2] as Cell, order).degrees.slice(0, 1))?.[0]
+  /** a cell's first note over a chord, as a pitch class (none: null) */
+  const firstOf = (over: Over, c: Cell): number | null => {
+    const first = (over.sub ? substituteTones : cellTones)(part, over.chord, over.scale, orderCell(c, order).degrees.slice(0, 1))?.[0]
     return first ? pcOf(first) : null
   }
+  /**
+   * the next slot's target pitch class: its system cell's first note over this chord (its substitute's for a
+   * substitute slot, else its own), or the next (none, or a rest: none)
+   */
+  const targetOf = (count: number, nth: number, follows: Follows): number | null => {
+    const c = pair[(count + 1) % 2] as Cell
+    if (follows === 'cell' || (follows === 'chord' && chords[index + 1] !== run.next)) {
+      // this chord's next slot, or its restatement's (the same chord, its run's next slot)
+      const s = subOf(nth + 1)
+      return firstOf(s && readsAt(nth + 1, count + 1) !== own ? s : chord, c)
+    }
+    const next = follows === 'chord' ? chords[index + 1] : undefined
+    return next && !isRest(next.chord) ? firstOf(next, c) : null
+  }
   return {
-    tones: [...reads.flatMap((r) => r.tones), ...(arpeggio?.tones ?? [])],
+    tones: [...tones, ...(arpeggio?.tones ?? [])],
     carry: true,
     turn: 'chord',
     next: (prev, count, last, nth, follows = null) => {
-      const r = count % 2 === 0 ? a : b
+      cellCounts.set(index, nth + 1)
+      const reads = readsAt(nth, count)
+      const r = readOf(reads, pair[count % 2] as Cell)
       if (r) {
-        const target = aims ? targetOf(count, follows) : null
-        return own(target === null ? r : (readOf(aimedCell(r.cell, r.tones, target, (c) => readOf(c)?.tones ?? null, order)) ?? r), prev)
+        const target = aims ? targetOf(count, nth, follows) : null
+        return played(target === null ? r : (readOf(reads, aimedCell(r.cell, r.tones, target, (c) => readOf(reads, c)?.tones ?? null, order)) ?? r), prev)
       }
       if (arpeggio) {
         const { order: o, up } = arpeggio.next(prev, count, last, nth)
         return { order: o.map((i) => i + at), up }
       }
-      return own((a ?? b) as Read, prev)
+      return played((a ?? b) as Read, prev)
     },
   }
 }
@@ -190,5 +270,6 @@ export function cellsVoices(
   approach: Approach = 'none',
 ): { bars: ReadonlyMap<number, readonly GuideNote[]>; missing: readonly string[] } {
   const range = rangeOf(part)
-  return cellVoices(chords, part, beats, keySig, (c, i) => cellsOf(part, chords, i, line, range) ?? arpeggioCells(part, c, 'up-root'), CELL_VALUE, approach)
+  const cellCounts = new Map<number, number>() // cells each row has played, as the line is drawn (cellsOf)
+  return cellVoices(chords, part, beats, keySig, (c, i) => cellsOf(part, chords, i, line, range, cellCounts) ?? arpeggioCells(part, c, 'up-root'), CELL_VALUE, approach)
 }
