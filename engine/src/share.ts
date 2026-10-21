@@ -1,6 +1,7 @@
 import { isSheetLine, type SheetLine } from './arpeggios'
 import { type Approach, isApproach } from './approaches'
 import { type CellId, isCellId } from './cells'
+import { isCellOrder } from './cellOrder'
 import { type ArpDirection, type ArpNotes, isArpDirection, isArpNotes } from './arpeggioSheet'
 import { isPairShape, type PairShape } from './triadPairSheet'
 import { type ChordPicks, chordPicksFrom, hasPicks } from './chordPicks'
@@ -21,10 +22,16 @@ import { type PracticeSelection, practiceSelectionFrom } from './practice'
  * doesn't know, and returns null instead of throwing.
  */
 export type ShareSheet = 'scales' | 'changes' | 'arpeggios' | 'patterns' // a link from the retired Guide tones sheet drops its sheet and opens the default
-/** the Changes sheet's line in a link: a guide tone line, an arpeggio pattern, or cells:<id> (#298) */
-export type ShareLine = SheetLine | `cells:${CellId}`
-const lineFrom = (x: unknown): ShareLine | undefined =>
-  isSheetLine(x) ? x : typeof x === 'string' && x.startsWith('cells:') && isCellId(x.slice(6)) ? (x as `cells:${CellId}`) : undefined
+/** the Changes sheet's line in a link: a guide tone line, an arpeggio pattern, or cells:<id> (#298), then ~<order> unless as written and ~free with Phrase off (#376) */
+export type ShareLine = SheetLine | `cells:${CellId}` | `cells:${CellId}~${string}`
+/** a cells line in its one spelling: the Order, then free; an unknown suffix (or as written) dropped */
+function cellsLineFrom(x: string): ShareLine | undefined {
+  const [id, ...suffixes] = x.slice(6).split('~')
+  if (!isCellId(id)) return undefined
+  const suffix = [suffixes.find((s) => isCellOrder(s) && s !== 'as-written'), suffixes.includes('free') ? 'free' : undefined].filter(Boolean).join('~')
+  return suffix ? `cells:${id}~${suffix}` : `cells:${id}`
+}
+const lineFrom = (x: unknown): ShareLine | undefined => (isSheetLine(x) ? x : typeof x === 'string' && x.startsWith('cells:') ? cellsLineFrom(x) : undefined)
 export type ShareView = Readonly<{
   instrument?: InstrumentName
   mode?: Mode
