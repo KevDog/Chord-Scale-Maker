@@ -45,6 +45,10 @@ origins; we read only what the user supplies), bulk import of a playlist.
   - Repeats: `{ … }` with `N1`/`N2` → `@ending` in that section (endings as sequential bars); `{ … }` without endings
     → the section, then a second section of it with `copy:`. A `}` with no `{` before it in its section repeats
     from the section's start (iReal's convention). A count other than 2 (`<3x>`) is reported.
+    A `{` opening a section and closed by `}` in a later one (#394; ~8% of a forum set, A Foggy Day) is played out:
+    the sections up to the `}` (the 1st ending's bars too), then again up to the 1st ending, the bars after the `}`
+    ending the last unless they open a section (`*C N2`). A second-pass section that plays as written is a `copy:`;
+    one cut short is written out; one left empty (all 1st ending) is dropped: A Foggy Day → A1 B A2 C.
   - Bars: `x` repeats the bar before, `r` the two before; `p` or an empty cell holds the chord; `n` → `N.C.`; a bar
     with no chord holds the one before; a section whose last chord is held past its last written bar gets `bars: N`.
     Two chords in a bar → two rows with that bar number.

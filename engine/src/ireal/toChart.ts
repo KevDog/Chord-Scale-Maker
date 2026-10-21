@@ -8,7 +8,8 @@ import { type IRealBar, readMusic } from './music'
  * An iReal song as our chart text (spec "Engine", toChart.ts). Bars are played first (x/r filled in, chords mapped,
  * metres and comments read), then cut into sections at each *X mark, and at a coda: a stretch after the form that
  * opens on a Q with no letter. A { } section with endings gets @ending, one without them a copy: section after it; a }
- * with no { before it repeats from the section's start. Each step returns its own diagnostics; the song's bar number
+ * with no { before it repeats from the section's start; a { … } over several sections is played out, its second pass
+ * copies where it repeats a section as written. Each step returns its own diagnostics; the song's bar number
  * is their line.
  */
 
@@ -165,6 +166,66 @@ function blocksOf(sec: Section, at: readonly string[], repeatsFromStart: boolean
   return { value: [{ sec }], diagnostics }
 }
 
+/** the section whose } closes a { that opens section i, when that's a later one: a repeat over several sections */
+function spanEnd(secs: readonly Section[], i: number): number | undefined {
+  const sec = secs[i] as Section
+  if (sec.bars[0]?.bar.open !== true || sec.bars.some((p) => p.bar.close)) return undefined
+  const j = secs.findIndex((s, k) => k > i && s.bars.some((p) => p.bar.close))
+  return j < 0 ? undefined : j
+}
+
+/** a bar with its ending mark gone: a 2nd ending a repeat over several sections has already placed */
+const unmarked = (p: Played): Played => {
+  const { ending, ...bar } = p.bar
+  return ending === undefined ? p : { ...p, bar }
+}
+
+/**
+ * a repeat over several sections (#394) as the two passes it plays: the sections up to the } (the 1st ending's bars
+ * too), then again up to the 1st ending, the bars after the } (the 2nd ending's, when they open no section) ending the
+ * last; a section the second pass plays as written is a copy, one it leaves empty is dropped
+ */
+function spanBlocks(span: readonly Section[], at: readonly string[]): Parsed<readonly Block[]> {
+  const diagnostics: Diagnostic[] = []
+  const report = (p: Played, message: string) => diagnostics.push(diag(p.n, `${at[p.n - 1]}: ${message}`))
+  const last = span.at(-1) as Section
+  const close = last.bars.findIndex((p) => p.bar.close)
+  const tail = last.bars.slice(close + 1)
+  const first = [...span.slice(0, -1), tail.length ? { ...last, bars: last.bars.slice(0, close + 1) } : last]
+  const counted = first.flatMap((s) => s.bars).find((p) => p.bar.count !== undefined && p.bar.count !== 2)
+  if (counted) report(counted, `played ${counted.bar.count} times; written as twice`)
+  for (const p of tail.filter((p) => p.bar.ending !== undefined && p.bar.ending > 2)) report(p, `a ${ordinal(p.bar.ending as number)} ending is written as plain bars after the 2nd`)
+  const ending = first.flatMap((s) => s.bars).find((p) => p.bar.ending !== undefined)?.n ?? Infinity
+  const second = first.map((s) => ({ s, bars: s.bars.filter((p) => p.n < ending) })).filter((x) => x.bars.length)
+  const lastPlayed = second.length - 1
+  const again = second.map(({ s, bars }, k): Block => {
+    const played = k === lastPlayed ? [...bars, ...tail.map(unmarked)] : bars
+    return played.length === s.bars.length && played.every((p, m) => p === s.bars[m]) ? { sec: s, copy: true } : { sec: { base: s.base, bars: played } }
+  })
+  const rest = second.length ? [] : tail.length ? [{ sec: { base: last.base, bars: tail.map(unmarked) } }] : []
+  return { value: [...first.map((sec) => ({ sec })), ...again, ...rest], diagnostics }
+}
+
+/** the song's sections as blocks: a repeat over several sections played out, each other section as blocksOf writes it */
+function blocksAll(secs: readonly Section[], at: readonly string[]): Parsed<readonly Block[]> {
+  const repeats = fromStart(secs)
+  const list = [...secs]
+  const out: Parsed<readonly Block[]>[] = []
+  for (let i = 0; i < list.length; i++) {
+    const j = spanEnd(list, i)
+    if (j === undefined) {
+      out.push(blocksOf(list[i] as Section, at, repeats[i] === true))
+      continue
+    }
+    out.push(spanBlocks(list.slice(i, j + 1), at))
+    // a 2nd ending that opens the section after the repeat is that section's start
+    const next = list[j + 1]
+    if (next?.bars[0]) list[j + 1] = { ...next, bars: [unmarked(next.bars[0]), ...next.bars.slice(1)] }
+    i = j
+  }
+  return { value: out.flatMap((b) => b.value), diagnostics: out.flatMap((b) => b.diagnostics) }
+}
+
 /** a letter that comes more than once is numbered A1, A2… (a copy counts) */
 function names(blocks: readonly Block[]): readonly string[] {
   const total = new Map<string, number>()
@@ -188,9 +249,6 @@ function metresOf(bars: readonly Played[], running: string): Readonly<{ start: s
   })
   return { start, changes, end: now }
 }
-
-/** the chord sounding as a bar starts: the last one played before it */
-const heldInto = (played: readonly Played[], n: number): string | undefined => played.slice(0, n - 1).flatMap((p) => p.chords).at(-1)
 
 type Context = Readonly<{ name: string; source: string; songTime: string; running: string; held?: string }>
 
@@ -242,18 +300,19 @@ export function irealToChart(song: IRealSong): Parsed<string> {
   const at = labels(read.value)
   const played = play(read.value, at)
   const secs = sections(played.value)
-  const repeats = fromStart(secs)
-  const blocked = secs.map((sec, j) => blocksOf(sec, at, repeats[j] === true))
-  const blocks = blocked.flatMap((b) => b.value)
+  const blocked = blocksAll(secs, at)
+  const blocks = blocked.value
   const named = names(blocks)
   const songTime = played.value[0]?.time ?? '4/4'
-  const written = blocks.reduce<{ texts: readonly string[]; running: string }>(
+  const written = blocks.reduce<{ texts: readonly string[]; running: string; held?: string }>(
     (acc, b, j) => {
-      const first = b.sec.bars[0]?.n ?? 1
-      const held = heldInto(played.value, first)
-      const context = { name: named[j] as string, source: named[j - 1] ?? '', songTime, running: acc.running, ...(held !== undefined ? { held } : {}) }
+      const { held } = acc
+      // a copy names the block it repeats: the first written from its section
+      const source = named[blocks.findIndex((x) => x.sec === b.sec)] ?? ''
+      const context = { name: named[j] as string, source, songTime, running: acc.running, ...(held !== undefined ? { held } : {}) }
       const { text, end } = writeBlock(b, context)
-      return { texts: [...acc.texts, text], running: end }
+      const last = b.sec.bars.flatMap((p) => p.chords).at(-1) ?? held
+      return { texts: [...acc.texts, text], running: end, ...(last !== undefined ? { held: last } : {}) }
     },
     { texts: [], running: songTime },
   )
@@ -268,7 +327,7 @@ export function irealToChart(song: IRealSong): Parsed<string> {
     ...(form ? [`form: ${form}`] : []),
     'source: iReal Pro',
   ]
-  const diagnostics = [...read.diagnostics.map((d) => relabel(d, at)), ...played.diagnostics, ...blocked.flatMap((b) => b.diagnostics)]
+  const diagnostics = [...read.diagnostics.map((d) => relabel(d, at)), ...played.diagnostics, ...blocked.diagnostics]
   // in bar order; a stable sort keeps one bar's in the order found
   return { value: [...header, '', written.texts.join('\n')].join('\n'), diagnostics: [...diagnostics].sort((a, b) => a.line - b.line) }
 }

@@ -64,12 +64,36 @@ describe('irealToChart', () => {
     expect(value).toContain('form: AAB, 6 bars')
   })
 
-  it('a { that spans sections is still written out once, and said so', () => {
-    const { diagnostics } = irealToChart(song('{*AC7 |F7 ][*BG7 |C7 }Z'))
-    expect(diagnostics.map((d) => d.message)).toEqual([
-      'A bar 1: a repeat that isn’t a whole section is written out once',
-      'B bar 2: a repeat that isn’t a whole section is written out once',
-    ])
+  it('a {…} over several sections plays them twice: the second pass copies each one (#394)', () => {
+    const { value, diagnostics } = irealToChart(song('{*AC7 |F7 |*BG7 |C7 }*CF7 Z'))
+    expect(diagnostics).toEqual([])
+    expect(value).toContain('section: A1\n1 | C7\n2 | F7\n\nsection: B1\n1 | G7\n2 | C7\n\nsection: A2\ncopy: A1\n\nsection: B2\ncopy: B1\n\nsection: C\n1 | F7\n')
+    expect(value).toContain('form: ABABC, 9 bars')
+    valid(value)
+  })
+
+  it('a section that is all 1st ending plays once, and the 2nd ending\'s section after the repeat (A Foggy Day: ABAC, #394)', () => {
+    const music = '{*AC^7 |A-7 |D-7 |G7 |*BN1E-7 |A7 |D-7 |G7 }*CN2F^7 |F-7 |C^7 |x Z'
+    const { value, diagnostics } = irealToChart(song(music))
+    expect(diagnostics).toEqual([])
+    expect(value).toContain('section: A1\n1 | CMaj7\n2 | Am7\n3 | Dm7\n4 | G7\n\nsection: B\n1 | Em7\n2 | A7\n3 | Dm7\n4 | G7\n\nsection: A2\ncopy: A1\n\nsection: C\n1 | FMaj7\n')
+    expect(value).toContain('form: ABAC, 16 bars')
+    expect(value).not.toContain('@ending')
+    valid(value)
+  })
+
+  it('a section cut short by the 1st ending is written out again with the 2nd ending\'s bars (#394)', () => {
+    const music = '{*AC^7 |A-7 |*BE-7 |A7 |N1D-7 |G7 }|N2C^7 |x Z'
+    const { value, diagnostics } = irealToChart(song(music))
+    expect(diagnostics).toEqual([])
+    expect(value).toContain('section: B1\n1 | Em7\n2 | A7\n3 | Dm7\n4 | G7\n\nsection: A2\ncopy: A1\n\nsection: B2\n1 | Em7\n2 | A7\n3 | CMaj7\n4 | CMaj7\n')
+    expect(value).toContain('form: ABAB, 12 bars')
+    valid(value)
+  })
+
+  it('a count other than 2 on a repeat over several sections is reported, and played twice (#394)', () => {
+    const { diagnostics } = irealToChart(song('{*AC7 |F7 |*BG7 |C7 <3x>}Z'))
+    expect(diagnostics.map((d) => d.message)).toEqual(['B bar 2: played 3 times; written as twice'])
   })
 
   it('a coda after the form (a Q stretch with no section letter) is its own Coda section, outside the form', () => {
