@@ -1228,14 +1228,14 @@ describe('the rhythm line and target beats (rhythm spec §8)', () => {
   const bars = (sheet: ChangesSheet) => sheet.lines.flatMap((l) => l.bars)
 
   it('lays a rhythm over the bars with the Line off, and captions its cycle', () => {
-    const sheet = buildChanges(eight, CONCERT, 4, false, 'off', undefined, null, 'none', 'unit:8:5:accents')
+    const sheet = buildChanges(eight, CONCERT, 4, false, 'off', undefined, null, 'none', { rhythm: 'unit:8:5:accents' })
     expect(bars(sheet)).toHaveLength(8)
     expect(bars(sheet).every((b) => b.rhythm.length > 0)).toBe(true)
     expect(sheet.rhythmCaption).toBe('Rhythm: 8ths in 5, with accents · back on one every 5 bars')
   })
 
   it('draws no rhythm with a Line on', () => {
-    const sheet = buildChanges(eight, CONCERT, 4, false, 'third', undefined, null, 'none', 'unit:8:5:accents')
+    const sheet = buildChanges(eight, CONCERT, 4, false, 'third', undefined, null, 'none', { rhythm: 'unit:8:5:accents' })
     expect(bars(sheet).every((b) => b.rhythm.length === 0)).toBe(true)
     expect(sheet.rhythmCaption).toBeNull()
   })
@@ -1248,13 +1248,13 @@ describe('the rhythm line and target beats (rhythm spec §8)', () => {
 
   it("marks each bar's target beats", () => {
     const five = parseChart('key: C\ntime: 5/4\n\nsection: A\n1 | Dm7\n2 | G7\n3 | CMaj7\n').value
-    const sheet = buildChanges(five, CONCERT, 4, false, 'off', undefined, null, 'none', 'off', true)
+    const sheet = buildChanges(five, CONCERT, 4, false, 'off', undefined, null, 'none', { targets: true })
     expect(bars(sheet).map((b) => b.targets)).toEqual([[0, 3], [0, 3], [0, 3]])
   })
 
   it('counts a repeat drawn with repeat signs once', () => {
     const doc = parseChart('key: C\n\nsection: A1\n1 | Dm7\n2 | G7\n3 | CMaj7\n4 | A7\n\nsection: A2\ncopy: A1\n').value
-    const sheet = buildChanges(doc, CONCERT, 4, false, 'off', undefined, null, 'none', 'unit:8:3:accents')
+    const sheet = buildChanges(doc, CONCERT, 4, false, 'off', undefined, null, 'none', { rhythm: 'unit:8:3:accents' })
     expect(bars(sheet)).toHaveLength(4)
     expect(bars(sheet)[0]?.repeatStart).toBe(true)
     expect(bars(sheet).map((b) => b.rhythm)).toEqual(rhythmNotes(layRhythm('unit:8:3:accents', [4, 4, 4, 4])!))
