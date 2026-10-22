@@ -5,7 +5,10 @@ context: blues
 key: Eb
 form: ABB, 44 bars
 source: iReal Pro
+recording: Muddy Waters; The Best of Muddy Waters; Chess; 1958
+youtube: wQlCLF6bzUQ
 # analysis: 2026-10-19, rules v2; Eb, blues
+# recording: recorded 1954-09-01, Chicago, with Little Walter, Jimmy Rogers, Otis Spann, Willie Dixon, Fred Below; first issued on 78 (Chess 1579, 1954), first LP Chess LP 1427 (1958); sources: Wikipedia, MusicBrainz; video: "Provided to YouTube by Universal Music Group", The Best of Muddy Waters, the same take
 
 section: A
 1  | Eb7  # I7 of the blues: a tonic with dominant colour, Mixolydian

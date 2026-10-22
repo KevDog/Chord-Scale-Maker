@@ -5,7 +5,10 @@ context: blues
 key: D
 form: AA, 16 bars
 source: iReal Pro
+recording: Muddy Waters; The Best of Muddy Waters; Chess; 1958
+youtube: OuWNbEtVYIc
 # analysis: 2026-10-19, rules v2; D, blues
+# recording: recorded 1954-04-13, Chicago, with Little Walter, Jimmy Rogers, Otis Spann, Willie Dixon, Fred Below; first issued on 78 as "Just Make Love to Me" (Chess 1571, 1954), first LP Chess LP 1427 (1958); sources: Wikipedia, MusicBrainz; video: "Provided to YouTube by Universal Music Group", The Best of Muddy Waters, the same take (not the Electric Mud remake)
 
 section: A1
 1 | D7  # I7 of the blues: a tonic with dominant colour, Mixolydian

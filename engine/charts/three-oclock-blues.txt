@@ -5,7 +5,10 @@ context: blues
 key: Bb
 form: A, 13 bars
 source: iReal Pro
+recording: B.B. King; Singin' the Blues; Crown; 1957
+youtube: pWDSsdrzDP8
 # analysis: 2026-10-19, rules v2; Bb, blues
+# recording: recorded c. September 1951, Memphis YMCA (Ike Turner, piano; Evelyn Young, sax), the writer's own and the first recording (after Lowell Fulson's 1948 "Three O'Clock Blues"); first issued on 78 (RPM 339), December 1951, his first R&B No. 1; first LP Crown CLP 5020 (1957), his first album; sources: Wikipedia, Discogs; video: "Provided to YouTube by Universal Music Group", Martin Scorsese Presents The Blues: B.B. King, the same take
 
 section: A
 1  | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian

@@ -5,7 +5,10 @@ context: blues
 key: G
 form: AB, 26 bars
 source: iReal Pro
+recording: Lowell Fulson; The Blues, Volume 1; Argo; 1963
+youtube: lDh5Be6U1io
 # analysis: 2026-10-19, rules v2; G, blues
+# recording: recorded 1954-09-27, Dallas; first issued on 45/78 (Checker 804, 1954); first LP Argo LP 4026, a Chess various-artists set (1963), before Fulson's own Hung Down Head (Chess, 1970) (Discogs, MusicBrainz, Wikipedia); video: "Provided to YouTube by Universal Music Group", Chess Pieces, the Checker master, the same take
 
 section: A
 1  | G7      # I7 of the blues: a tonic with dominant colour, Mixolydian

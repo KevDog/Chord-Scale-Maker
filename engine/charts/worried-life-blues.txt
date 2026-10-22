@@ -5,7 +5,10 @@ context: blues
 key: C
 form: AB, 17 bars
 source: iReal Pro
+recording: Big Maceo; Chicago Breakdown; RCA Bluebird; 1975
+youtube: arx1nihK3qA
 # analysis: 2026-10-19, rules v2; C, blues
+# recording: recorded 1941-06-24, Chicago, Big Maceo Merriweather (voc, p) with Tampa Red (g); first issued on 78 (Bluebird B-8827, 1941); first US LP RCA AXM2-5506 (1975); his later "Worried Life Blues No. 2" is a different recording (Discogs, MusicBrainz, Wikipedia); video: "Provided to YouTube by RCA Bluebird", the 1941 side, the same take
 
 section: A
 1 | C    # I of the blues: a triad here implies its ♭7, Mixolydian

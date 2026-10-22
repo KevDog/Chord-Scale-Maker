@@ -5,7 +5,10 @@ context: blues
 key: A
 form: A, 13 bars
 source: iReal Pro
+recording: Otis Rush; Chicago/The Blues/Today! Vol. 2; Vanguard; 1966
+youtube: Ds7qQyhwbB4
 # analysis: 2026-10-19, rules v2; A, blues
+# recording: recorded late 1965, Chicago, Otis Rush Blues Band, produced by Samuel Charters, Vanguard VSD-79217; Rush's own remake of his first record (Cobra 5000, recorded 1956-07-11), chosen because the Cobra master's first LP is the UK Flyright FLY 562 (1980), with no US LP found; sources: Wikipedia, MusicBrainz; video: "Provided to YouTube by Universal Music Group", Chicago / The Blues / Today!, the same take
 
 section: A
 1  | A7  # I7 of the blues: a tonic with dominant colour, Mixolydian

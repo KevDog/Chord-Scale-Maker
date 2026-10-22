@@ -5,7 +5,10 @@ context: blues
 key: Em
 form: A, 12 bars
 source: iReal Pro
+recording: Howlin' Wolf; Moanin' in the Moonlight; Chess; 1959
+youtube: spBL7k-pX7o
 # analysis: 2026-10-19, rules v2; E minor, blues
+# recording: recorded January 1956, Chicago (Hosea Lee Kennard, piano; Willie Johnson, Hubert Sumlin, guitars; Willie Dixon, bass; Earl Phillips, drums), the writer's own and the first recording; first issued on 78/45 (Chess 1618), March 1956; first LP LP 1434 (1959), his first album; sources: Wikipedia, Discogs; video: "Provided to YouTube by Universal Music Group", Chess Pieces, the same take (not the 1969 remake)
 
 section: A
 1  | Em  # i of the minor blues: Dorian

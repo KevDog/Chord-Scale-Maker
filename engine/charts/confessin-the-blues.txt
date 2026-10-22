@@ -5,7 +5,10 @@ key: G
 form: AA, 24 bars
 context: blues
 source: iReal Pro
+recording: Jay McShann; Kansas City Memories; Decca; 1955
+youtube: bjo2ZAz6YqE
 # analysis: 2026-10-19, rules v2; G, blues
+# recording: recorded 1941-04-30, Dallas, Walter Brown (vocal) with McShann (piano), Gene Ramey (bass), Gus Johnson (drums), matrix 93734-A, the first recording; first issued on 78 (Decca 8559, with Hootie Blues), the band's hit; first LP the 10" DL 5503 (1955); sources: DAHR, Discogs, MusicBrainz; video: "Provided to YouTube by Universal Music Group", Blues From Kansas City, the same take
 
 section: A1
 1  | G7  # I7 of the blues: a tonic with dominant colour, Mixolydian

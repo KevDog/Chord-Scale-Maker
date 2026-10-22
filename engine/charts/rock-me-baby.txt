@@ -5,7 +5,10 @@ context: blues
 key: C
 form: A, 12 bars
 source: iReal Pro
+recording: B.B. King; Rock Me Baby; Kent; 1964
+youtube: AyJkKiqGUy8
 # analysis: 2026-10-19, rules v2; C, blues
+# recording: recording date undocumented (Los Angeles, c. 1958–62; Kent kept scanty session files), the writer's own and the first recording; first issued as a 45 (Kent 393), May 1964, his first pop Top 40; first LP Kent KLP 5012 (1964 per MusicBrainz; bsnpubs says 1965); "Joe Josea" is a Bihari pseudonym; sources: Wikipedia, MusicBrainz, bsnpubs; video: "Provided to YouTube by Universal Music Group", Blues Kingpins, the Kent single, the same take
 
 section: A
 1  | C7    # I7 of the blues: a tonic with dominant colour, Mixolydian

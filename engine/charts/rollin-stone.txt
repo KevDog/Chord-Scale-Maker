@@ -6,7 +6,10 @@ key: E
 form: AA, 28 bars
 source: iReal Pro
 aka: Catfish Blues
+recording: Muddy Waters; The Best of Muddy Waters; Chess; 1958
+youtube: gwJZcNNxdck
 # analysis: 2026-10-19, rules v2; E, blues
+# recording: recorded February 1950, Chicago, Muddy Waters solo; first issued on 78 (Chess 1426, 1950); first LP LP-1427 (1958) (Wikipedia, Discogs); video: "Provided to YouTube by Universal Music Group", The Best of Muddy Waters, the master, the same take (not the alternate)
 
 section: A1
 1  | E7  # I7 of the blues: a tonic with dominant colour, Mixolydian

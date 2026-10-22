@@ -6,7 +6,10 @@ form: AA, 24 bars
 context: blues
 source: iReal Pro
 aka: Every Day I Have the Blues
+recording: Count Basie and His Orchestra with Joe Williams; Count Basie Swings, Joe Williams Sings; Clef; 1955
+youtube: Fb2GWhfovUU
 # analysis: 2026-10-19, rules v2; Bb, blues
+# recording: recorded 1955-05-17, Fine Sound, New York, Ernie Wilkins arrangement, Clef MG C-678; the writer's own 78 (Memphis Slim, as "Nobody Loves Me", 1949; first recorded by the Sparks Brothers, 1935) has no confirmable first LP, so the documented LP-era reference, Joe Williams's R&B hit with Basie; sources: Wikipedia, MusicBrainz; video: "Provided to YouTube by Universal Music Group", The Essential Big Bands, the same 1955 studio take
 
 section: A1
 1  | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian

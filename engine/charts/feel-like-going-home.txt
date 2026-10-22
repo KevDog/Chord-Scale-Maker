@@ -5,7 +5,10 @@ context: blues
 key: G
 form: AA, 24 bars
 source: iReal Pro
+recording: Muddy Waters; Folk Singer; Chess; 1964
+youtube: 8o7Pxw85cQ4
 # analysis: 2026-10-19, rules v2; G, blues
+# recording: recorded September 1963, Ter Mar Studios, Chicago, Muddy Waters solo, Chess LP 1483 (1964); the 1948 original ("I Feel Like Going Home", Aristocrat 1305) reached LP only on UK issues before The Chess Box (1989), so this LP-era remake, whose title the chart uses (Wikipedia, Discogs, MusicBrainz); video: "Provided to YouTube by Universal Music Group", Folk Singer, the same take
 
 section: A1
 1  | G7  # I7 of the blues: a tonic with dominant colour, Mixolydian

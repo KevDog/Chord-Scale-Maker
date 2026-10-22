@@ -5,7 +5,10 @@ context: blues
 key: Db
 form: AABA, 46 bars
 source: iReal Pro
+recording: Albert King; Born Under a Bad Sign; Stax; 1967
+youtube: 790ggx1NM5Q
 # analysis: 2026-10-19, rules v2; Db, blues
+# recording: recorded 1967 at Stax, Memphis, with Booker T. & the MG's and the Memphis Horns, the first recording (written for him by Booker T. Jones and William Bell); first issued as a 45 (Stax 217), 1967; LP S 723 (1967); Cream's 1968 cover came later; sources: Wikipedia, Discogs; video: Albert King's official channel, "Official Audio", the album's mono version, the same take
 
 section: Intro
 1  | Db7   # I7 of the blues: a tonic with dominant colour, Mixolydian

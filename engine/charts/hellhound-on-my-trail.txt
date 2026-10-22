@@ -6,7 +6,10 @@ key: E
 time: 2/4
 form: AA, 34 bars
 source: iReal Pro
+recording: Robert Johnson; King of the Delta Blues Singers; Columbia; 1961
+youtube: G2URlDdDTMo
 # analysis: 2026-10-19, rules v2; E, blues
+# recording: recorded 1937-06-20, 508 Park Avenue, Dallas; take DAL-394-2, the only surviving take, first issued on 78 (Vocalion 03623, 1937), first LP CL 1654 (1961); sources: Wikipedia; video: "Provided to YouTube by Columbia/Legacy", King of the Delta Blues Singers, the same take
 
 section: Intro
 1  | E7    # I7 of the blues: a tonic with dominant colour, Mixolydian

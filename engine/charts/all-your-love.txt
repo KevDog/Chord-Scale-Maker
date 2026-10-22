@@ -6,7 +6,10 @@ key: Em
 form: AAB, 36 bars
 source: iReal Pro
 aka: All Your Love (I Miss Loving)
+recording: Otis Rush; Blues Masters; Blue Horizon; 1972
+youtube: 3-drRnX4sig
 # analysis: 2026-10-19, rules v2; E minor, blues
+# recording: recorded 1958, Chicago, produced by Willie Dixon, with Ike Turner (g), Little Brother Montgomery (p), Harold Ashby and Jackie Brenston (saxes), Dixon (b), Billy Gayles (dr); first issued on 45/78 (Cobra 5032, 1959); first US LP Blue Horizon BM 4602 (1972); Chess's 1960 remake is another recording (Wikipedia, Discogs); video: "Provided to YouTube by The Orchard", Cobra Records, the single, the same take
 
 section: A1
 1  | Em  # i of the minor blues: Dorian

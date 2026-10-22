@@ -5,7 +5,10 @@ context: blues
 key: E
 form: A, 12 bars
 source: iReal Pro
+recording: John Lee Hooker; House of the Blues; Chess; 1959
+youtube: b0cBgOoYC74
 # analysis: 2026-10-19, rules v2; E, blues
+# recording: recorded c. 1952–54, Detroit, Hooker with Bob Thurman (piano) and Eddie Burns (bass), matrix U7597, the first recording; first issued on 78/45 (Chess 1562), 1954; first LP LP-1438 (1959); sources: Wikipedia, Discogs, DAHR; video: "Provided to YouTube by Universal Music Group", House Of The Blues, the album track, the same take
 
 section: A
 1  | E7  # I7 of the blues: a tonic with dominant colour, Mixolydian

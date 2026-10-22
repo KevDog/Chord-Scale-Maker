@@ -5,7 +5,10 @@ context: blues
 key: F
 form: A, 22 bars
 source: iReal Pro
+recording: Johnny Cash; Johnny Cash with His Hot and Blue Guitar; Sun; 1957
+youtube: nrigbqKUWtk
 # analysis: 2026-10-19, rules v2; F, blues
+# recording: recorded 1955-07-30, Sun Studio, Memphis, Johnny Cash and the Tennessee Two (Luther Perkins, Marshall Grant); the writer's own record, first issued on 45/78 (Sun 232, 1955), first LP SLP-1220 (1957); the 1968 At Folsom Prison live version is later (Wikipedia); video: "Provided to YouTube by Virgin Music Group", from With His Hot and Blue Guitar, the same take
 
 section: A
 1  | F   # I of the blues: a triad here implies its ♭7, Mixolydian

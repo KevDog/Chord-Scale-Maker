@@ -5,7 +5,10 @@ context: blues
 key: C
 form: ABCDD, 60 bars
 source: iReal Pro
+recording: Freddy King; Freddy King Sings; King; 1961
+youtube: CSMLDsyFk4o
 # analysis: 2026-10-19, rules v2; C, blues
+# recording: recorded 1961-01-18, Cincinnati, with Sonny Thompson (the writer) on piano; first issued on 45 (Federal 12432, 1961, #5 R&B), first LP King 762 (1961); sources: MusicBrainz, Wikipedia; video: "Provided to YouTube by King Records", Freddy King Sings, the same take (not the 1971 Shelter remake)
 
 section: Intro
 1  | G7    # V7 of the blues: a dominant that needn’t resolve, Mixolydian

@@ -5,7 +5,10 @@ context: blues
 key: G
 form: AA, 24 bars
 source: iReal Pro
+recording: Muddy Waters; Fathers and Sons; Chess; 1969
+youtube: qxXabAeCL4c
 # analysis: 2026-10-19, rules v2; G, blues
+# recording: recorded 1969-04-21/23, Ter Mar Studios, Chicago, with Otis Spann, Michael Bloomfield, Paul Butterfield, Donald "Duck" Dunn, Sam Lay, Chess LPS 127; the 1953 original (Chess 1550) has no confirmed US LP before The Chess Box (1989), so this LP-era remake (Wikipedia, Discogs); video: "Provided to YouTube by Universal Music Group", Fathers and Sons, the studio take, the same take
 
 section: A1
 1  | G   # I of the blues: a triad here implies its ♭7, Mixolydian
