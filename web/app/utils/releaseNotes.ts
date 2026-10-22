@@ -10,6 +10,7 @@ export const RELEASE_NOTES: readonly ReleaseNote[] = [
   {
     date: '2026-10-21',
     items: [
+      { text: 'Some charts now carry alternate changes: Changes switches the whole sheet to them, and Other changes shows the other set small above the staff. Rhythm Changes and the F and B♭ blues have them.' },
       { text: 'The Scales sheet’s Practice panel folds its explanation under How it works, so the music starts higher on the page.', pr: 464 },
       { text: 'The Cells line now plays phrases. Phrase (on by default) picks each cell to lead into the next chord, and over a long dominant it borrows the tritone sub and the minor-3rd dominant (D♭7 and B♭7 over G7). Order plays the cells As written, Reversed, Rotated or Pairs swapped, and a new Chromatic group adds 1 ♮7 7 6, ♭9 1 3 5, II–V chromatic and more.', pr: 461 },
       { text: 'iReal Pro import plays out a repeat over several sections: A Foggy Day comes in as A B A C, its second A a copy of the first, where it used to be written out once with a report.', pr: 456 },

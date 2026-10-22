@@ -510,7 +510,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   Pentatonic overlay the 7th Chords slot reads **Pentatonic** (see Pentatonic line), under the Hexatonic **Triad pair**
   (see Triad pair line).
 
-### Alternate changes (#215, flag `alternates`, off; [spec](superpowers/specs/2026-10-21-alternate-changes-design.md))
+### Alternate changes (#215, flag `alternates`, on; [spec](superpowers/specs/2026-10-21-alternate-changes-design.md))
 
 - **Format:** a chart carries one alternate set as `alt BAR | chord …` rows in a section, same bar numbering and
   cells as rows (README "Charts"). A bar with any `alt` rows plays exactly those in the alternate set; bars with none
