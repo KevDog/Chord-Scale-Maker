@@ -4,7 +4,10 @@ style: Medium ballad
 key: Eb
 form: AB, 32 bars
 source: The New Real Book, Vol. 1
+recording: Ella Fitzgerald and Louis Armstrong; Ella and Louis; Verve; 1956
+youtube: bAQCRpWTEI0
 # analysis: 2026-10-19, rules v2; Eb
+# recording: recorded 1956-08-16, Capitol Studios, Hollywood, with Oscar Peterson, Herb Ellis, Ray Brown, Buddy Rich, Verve MGV 4003, released October 1956; songbook standard → a well-documented LP-era reading, over Sarah Vaughan's 1947 Musicraft 78 (the hit that made it a standard), whose first LP could not be confirmed (MGM's 1951 10-inch Tenderly, E-165, may hold a 1950 remake) (Wikipedia, Discogs); video: "Provided to YouTube by Universal Music Group", Cheek To Cheek: The Complete Duet Recordings, the same take
 # the book: may be played in 3/4 (subtract one beat from the first note in each bar)
 
 # bar | chord

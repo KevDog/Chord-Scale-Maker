@@ -4,7 +4,10 @@ style: Ballad
 key: F
 form: AABC, 32 bars
 source: The New Real Book, Vol. 1
+recording: Quincy Jones; The Quintessence; Impulse!; 1962
+youtube: u2hqgJGVMEk
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded 1961-12-22, New York, Quincy Jones and his orchestra with Phil Woods (alto sax), Impulse! A-11, the title track; Jones's own first recording; sources: Wikipedia, jazzdisco; video: "Provided to YouTube by Universal Music Group", The Quintessence, the same take
 # book: Med. Ballad (quarter = 57); melody is freely interpreted. Solo on form (AABC); after solos, D.S. al Coda
 
 # bar | chord

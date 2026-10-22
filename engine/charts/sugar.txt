@@ -5,7 +5,10 @@ style: Medium
 key: Cm
 form: A, 16 bars
 source: Colorado Cookbook, p. 227
+recording: Stanley Turrentine; Sugar; CTI; 1971
+youtube: 46dNZ2C0C04
 # analysis: 2026-10-19, rules v2; C minor
+# recording: recorded November 1970, Van Gelder Studio, Englewood Cliffs, with Freddie Hubbard, George Benson, Lonnie Liston Smith (electric piano), Butch Cornell (organ), Ron Carter, Billy Kaye, Richard "Pablo" Landrum, CTI 6005, the album's opener (jazzdisco and Discogs give 1971, Wikipedia 1970-11-22); the first recording of it, the composer leading (jazzdisco, Wikipedia, Discogs); video: "Provided to YouTube by Sony Music Media", Guitar & Bass (a compilation), the 10:00 studio take, the same take (not the 1971 California Concert version)
 
 # bar | chord | scale
 

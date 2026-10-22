@@ -5,7 +5,9 @@ style: Medium
 key: Bb
 form: AABC
 source: Colorado Cookbook, p. 89
+recording: Randy Weston Trio; New Faces at Newport; Metrojazz; 1958
 # analysis: 2026-10-19, rules v2; Bb
+# recording: recorded live 1958-07-05, Newport Jazz Festival, Randy Weston with George Joyner and G.T. Hogan, as "Hi-Fly", Metrojazz E1005 (shared with the Lem Winchester Quartet); Weston's own first recording, over Live at the Five Spot (United Artists, 1960, recorded 1959-10-26); sources: jazzdisco; no video: no official upload of the Newport take
 
 # bar | chord | scale
 

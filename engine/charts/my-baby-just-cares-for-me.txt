@@ -4,7 +4,10 @@ style: Medium
 key: Eb
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 145
+recording: Nina Simone; Little Girl Blue; Bethlehem; 1959
+youtube: cIx8B9qirAw
 # analysis: 2026-10-19, rules v2; Eb
+# recording: recorded late 1957 (probably December), Beltone Studios, NYC, with Jimmy Bond, Albert "Tootie" Heath, Bethlehem BCP 6028, released February 1959; the reference reading of the Donaldson–Kahn song, which became a hit when it was reissued in 1987 (Wikipedia); video: Bethlehem Records' official channel, the album track, the same take (not the Montreux live versions)
 
 # bar | chord | scale
 

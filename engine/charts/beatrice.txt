@@ -4,7 +4,10 @@ style: Medium
 key: Fm
 form: A, 16 bars
 source: Colorado Cookbook, p. 29
+recording: Sam Rivers; Fuchsia Swing Song; Blue Note; 1965
+youtube: cd3aePHSHtI
 # analysis: 2026-10-19, rules v2; F minor
+# recording: recorded 1964-12-11, Van Gelder Studio, Englewood Cliffs, Sam Rivers with Jaki Byard, Ron Carter, Tony Williams, Blue Note BLP 4184 / BST 84184; Rivers's own first recording; sources: Wikipedia, jazzdisco; video: "Provided to YouTube by Universal Music Group", Fuchsia Swing Song, the same take
 
 # bar | chord | scale
 

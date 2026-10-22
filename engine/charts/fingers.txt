@@ -4,7 +4,10 @@ style: Medium up
 key: Bb
 form: AABA
 source: Colorado Cookbook, p. 71
+recording: Thad Jones/Mel Lewis Orchestra; Consummation; Blue Note; 1970
+youtube: kS4Sjk3oFEI
 # analysis: 2026-10-19, rules v2; Bb
+# recording: recorded January–May 1970 (sessions 1970-01-20/21, 01-28, 05-25), A&R Studios, NYC, produced by Sonny Lester, Blue Note BST 84346 (Solid State); the first recording of it found, the composer leading and arranging (the 1966 Vanguard tapes and the 1969 Basle concert do not include it); the band's 1978 live version is on In Europe (Wikipedia, Discogs); video: "Provided to YouTube by Universal Music Group", Consummation (1994 remix), the same take (not the 15:39 live version)
 
 # bar | chord | scale
 

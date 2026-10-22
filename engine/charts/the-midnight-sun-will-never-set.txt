@@ -4,7 +4,10 @@ style: Ballad
 key: F
 form: AABA, 32 bars
 source: The New Real Book, Vol. 1
+recording: Quincy Jones and Harry Arnold; Quincy's Home Again; Metronome; 1958
+youtube: L0cEi_nDfOw
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded in Stockholm (sessions 1958-02-14, 03-19 and 04-29), Harry Arnold's Swedish Radio Studio Orchestra, Quincy Jones arranger and conductor, as "The Midnight Sun Never Sets"; issued in the US as Harry Arnold + Big Band + Quincy Jones = Jazz! (EmArcy MG-36139); Jones's own first recording, over the better-known I Dig Dancers (Mercury, 1961), recorded 1960; sources: Wikipedia, Fresh Sound; video: "Provided to YouTube by WM Sweden", Quincy's Home Again, the same take
 # book: Medium Ballad; melody in straight eighths. Letters A (16 bars: two 8-bar A's), B, C (the last A).
 # the book's pickup bar carries C9sus; written as a one-bar Intro
 

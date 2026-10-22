@@ -5,7 +5,10 @@ key: Fm
 time: 3/4
 form: ABC, 34 bars
 source: The New Real Book, Vol. 1
+recording: Ron Carter; Uptown Conversation; Embryo; 1970
+youtube: YdY-nj0xm7k
 # analysis: 2026-10-19, rules v2; F minor
+# recording: recorded 1969-10-06/07, A&R Recording, New York, Ron Carter with Hubert Laws, Herbie Hancock, Grady Tate, Embryo SD 521, produced by Herbie Mann; Carter's own first recording; sources: Wikipedia, MusicBrainz; video: "Provided to YouTube by Rhino Atlantic", Uptown Conversation, the same take
 # book: Med.-Slow Jazz Waltz. Letters A (18 bars), B (8), C (8).
 
 # bar | chord

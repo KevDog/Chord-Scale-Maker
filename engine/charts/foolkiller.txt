@@ -4,7 +4,10 @@ style: Medium up Latin
 key: Eb
 form: AB, 30 bars
 source: The New Real Book, Vol. 1
+recording: Mose Allison; The Word from Mose; Atlantic; 1964
+youtube: uc3fHpoITsU
 # analysis: 2026-10-19, rules v2; Eb
+# recording: recorded 1964-03-12, NYC, Mose Allison with Ben Tucker, Ron Lundberg, matrix 7681, Atlantic LP 1424 (also a single, 45-5062); the composer's own first recording (jazzdisco, Wikipedia); video: "Provided to YouTube by Rhino Atlantic", Allison Wonderland: The Mose Allison Anthology, the same take (Tucker and Lundberg credited)
 # the book: "Medium-Up Funky Latin", quarter = 174
 # intro: piano solo, repeated with 1st and 2nd endings
 # A repeats (verse 2) with the 1st ending; the 2nd ending is letter B (piano solo)

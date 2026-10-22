@@ -5,7 +5,10 @@ style: Even 8ths
 key: Bb
 form: AABC
 source: Colorado Cookbook, p. 30
+recording: Stefan Karlsson; Below Zero; Justice; 1993
+youtube: rTiHO6Zs2qE
 # analysis: 2026-10-19, rules v2; Bb
+# recording: Stefan Karlsson with Rufus Reid, Marvin "Smitty" Smith, Rich Perry (tenor sax on some tracks), Justice JR 0703-2, the title track (Discogs ℗ 1993; Karlsson's own site gives 1994); the first recording of it, the composer leading: it is not on his two earlier Justice albums (Discogs, stefankarlssonjazz.com); video: "Provided to YouTube by Virgin Music Group", Below Zero, the same take
 
 # bar | chord | scale
 

@@ -4,7 +4,10 @@ style: Medium ballad
 key: C
 form: AABC, 50 bars
 source: The New Real Book, Vol. 1
+recording: Ella Fitzgerald; Like Someone in Love; Verve; 1957
+youtube: ieeNeVFOwwM
 # analysis: 2026-10-19, rules v2; C
+# recording: recorded 1957-10-15, Capitol Studios, Hollywood, Ella Fitzgerald with an orchestra arranged and conducted by Frank DeVol, Stan Getz (tenor sax), Verve MGV-4004; Hampton's own first recording (1947-11-10, Los Angeles, Decca matrix L 4546) is a 78 (Decca 24429 / 28059) whose first LP could not be confirmed → Ella's reading of the Mercer lyric as the LP-era reference (her 1964 Johnny Mercer Song Book version came later) (Wikipedia, DAHR); video: "Provided to YouTube by Universal Music Group", Like Someone In Love, the same take
 
 # bar | chord
 

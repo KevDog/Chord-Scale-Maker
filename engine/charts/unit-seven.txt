@@ -5,7 +5,10 @@ style: Mixed
 key: C
 form: AABC, 44 bars
 source: Colorado Cookbook, p. 252
+recording: Sam Jones; Down Home; Riverside; 1962
+youtube: t5TIb08myeo
 # analysis: 2026-10-19, rules v2; C, blues
+# recording: recorded 1962-06-25 or 08-15, Plaza Sound, New York, Sam Jones & Co. (Blue Mitchell, Snooky Young, Jimmy Cleveland, Frank Strozier, Jimmy Heath, Pat Patrick, Joe Zawinul, Ben Riley), arranged by Ernie Wilkins, as "Unit 7", Riverside RLP 432; Jones's own first recording, over Wes Montgomery's Smokin' at the Half Note (1965); sources: jazzdisco; video: "Provided to YouTube by Universal Music Group", Right Down Front (OJC compilation), the same take
 
 # bar | chord | scale
 

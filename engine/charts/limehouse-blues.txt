@@ -4,7 +4,10 @@ style: Medium up
 key: Ab
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 125
+recording: Cannonball Adderley Quintet; Cannonball Adderley Quintet in Chicago; Mercury; 1959
+youtube: dTMJ5BIjYas
 # analysis: 2026-10-19, rules v2; Ab
+# recording: recorded 1959-02-03, Universal Recording, Chicago, Cannonball Adderley with John Coltrane, Wynton Kelly, Paul Chambers, Jimmy Cobb, Mercury MG-20449 / SR-60134 (reissued as Cannonball & Coltrane, Limelight, 1965); songbook standard (1922) → the Cannonball–Coltrane reading as the modern-jazz reference, over Django Reinhardt's 78s; sources: jazzdisco, Wikipedia; video: "Provided to YouTube by Universal Music Group", Cannonball Adderley Quintet In Chicago, the same take (the LP version, not the 45 edit, Mercury 71712)
 
 # bar | chord | scale
 # the parenthesised passing D7s are left out

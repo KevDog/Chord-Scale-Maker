@@ -5,7 +5,10 @@ style: Medium
 key: Dm
 form: A, 8 bars
 source: Colorado Cookbook, p. 199
+recording: Louis Armstrong; The Louis Armstrong Story, Volume III: Louis Armstrong and Earl Hines; Columbia; 1951
+youtube: y74CsOQ38ok
 # analysis: 2026-10-19, rules v2; D minor
+# recording: recorded 1928-12-12, Chicago, by Louis Armstrong and His Savoy Ballroom Five (Fred Robinson, Don Redman, Jimmy Strong, Earl Hines, Mancy Carr, Zutty Singleton), matrix W402225; first issued on 78 (OKeh 8657, credited to Don Redman); first LP Columbia ML 4385 (1951, later CL 853); traditional → the recording that made it a jazz standard (DAHR, Discogs, Wikipedia); video: Louis Armstrong's official channel (LouisArmstrongVEVO), the 1928 OKeh side, the same take
 
 # bar | chord | scale
 

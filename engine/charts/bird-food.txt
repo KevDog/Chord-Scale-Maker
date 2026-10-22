@@ -4,7 +4,10 @@ style: Up
 key: Bb
 form: AABC, 40 bars
 source: The New Real Book, Vol. 1
+recording: Ornette Coleman; Change of the Century; Atlantic; 1960
+youtube: N27JI1_Miwg
 # analysis: 2026-10-19, rules v2; Bb
+# recording: recorded 1959-10-08, NYC (jazzdisco), Don Cherry, Ornette Coleman, Charlie Haden, Billy Higgins, matrix 3866, Atlantic LP 1327; the composer's own first recording (jazzdisco, Wikipedia); video: "Provided to YouTube by Rhino Atlantic", The Atlantic Years, the same take
 
 # the intro is a melodic figure with no chords (4 bars N.C.)
 # the C is the A with its 2nd ending

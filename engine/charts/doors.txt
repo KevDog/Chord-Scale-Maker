@@ -4,7 +4,10 @@ style: Even 8ths
 key: C
 form: ABC, 28 bars
 source: The New Real Book, Vol. 1
+recording: Mike Nock; Ondas; ECM; 1982
+youtube: 7Y_HxV84-HU
 # analysis: 2026-10-19, rules v2; C
+# recording: recorded November 1981, Mike Nock with Eddie Gómez and Jon Christensen, ECM 1220; the composer's own first recording (Wikipedia); video: "Provided to YouTube by Universal Music Group", Ondas, the same take
 
 # bar | chord
 # book: "Med. Straight 8ths (quasi 16th-note March)"

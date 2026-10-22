@@ -4,7 +4,10 @@ style: Medium swing
 key: C
 form: AB, 32 bars
 source: The New Real Book, Vol. 1
+recording: Billie Holiday; Billie Holiday Sings; Columbia; 1950
+youtube: MRCAA7A-Aek
 # analysis: 2026-10-19, rules v2; C
+# recording: recorded 1941-03-21, New York, Billie Holiday with Eddie Heywood and his orchestra (Lester Young, Shad Collins, Kenny Clarke), take 29990-1, first issued on 78 (OKeh 6214, with Romance in the Dark), first LP 1950 (10", Columbia CL 6129); songbook standard (1931) → Holiday's reading as the jazz reference; sources: jazzdisco; video: "Provided to YouTube by Legacy/Columbia", Billie Holiday Love Songs, the master take (not take 2, Columbia C 30784)
 
 # bar | chord
 

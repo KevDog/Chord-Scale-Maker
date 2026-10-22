@@ -5,7 +5,10 @@ style: Christmas
 key: Eb
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 279
+recording: Nat King Cole; The Nat King Cole Story; Capitol; 1961
+youtube: g8UmqvOqB1A
 # analysis: 2026-10-19, rules v2; Eb
+# recording: recorded 1961-03-30, Capitol Studios, New York, Nat King Cole with Hank Jones, John Collins, Charlie Harris, Lee Young, orchestra conducted by Ralph Carmichael, his fourth and last recording of it and the first in stereo, later on The Christmas Song (Capitol SW-1967, 1962/63); song standard → Cole's version, "generally regarded as definitive" (National Recording Registry 2022), over the 1946 trio originals (Capitol 311, 78) and the 1953 Nelson Riddle remake (Wikipedia); video: "Provided to YouTube by Universal Music Group", The Nat King Cole Story, the same take (Carmichael credited)
 
 # bar | chord | scale
 

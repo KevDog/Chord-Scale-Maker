@@ -5,7 +5,10 @@ style: Medium Latin rock
 key: F
 form: ABC, 36 bars
 source: The New Real Book, Vol. 1
+recording: Miles Davis; E.S.P.; Columbia; 1965
+youtube: WN-hXbeI6vQ
 # analysis: 2026-10-19, rules v2; F, modal
+# recording: recorded 1965-01-21, Columbia Studios, Hollywood, Miles Davis with Wayne Shorter, Herbie Hancock, Ron Carter, Tony Williams, Columbia CL 2350 / CS 9150; the chart follows Miles's version; sources: Wikipedia, jazzdisco; video: "Provided to YouTube by Columbia/Legacy", E.S.P. (2022 remaster), the same take
 
 # bar | chord
 # book: "As played by Miles Davis". Each solo moves from Latin to swing feel; sus chords are sometimes played

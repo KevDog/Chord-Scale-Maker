@@ -4,7 +4,10 @@ style: Ballad
 key: C
 form: AABC
 source: Colorado Cookbook, p. 92
+recording: Bunny Berigan and His Orchestra; Bunny Berigan Plays Again; RCA Victor; 1952
+youtube: IV73G_k5sC0
 # analysis: 2026-10-19, rules v2; C
+# recording: recorded 1937-08-07, NYC, with Berigan singing, the 12-inch master CS-011675; first issued on 78 (Victor 36208, in the album A Symposium of Swing; a shortened 10-inch edit came out as Victor 25728); first LP the 10-inch RCA Victor LPT 1003 (1952), its opening track; songbook standard → the reference reading, Berigan's theme, over Dizzy Gillespie's 1945 78 and Sonny Rollins's 1957 Vanguard take (DAHR, Wikipedia, Discogs); video: "Provided to YouTube by RCA Bluebird", The Pied Piper (1935-1940), the 4:47 12-inch take, the same take (not the 1936 Vocalion small-group version)
 
 # bar | chord | scale
 

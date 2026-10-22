@@ -4,7 +4,10 @@ style: Up samba
 key: F
 form: AB, 38 bars
 source: The New Real Book, Vol. 1
+recording: Airto; Free; CTI; 1972
+youtube: JIZ_CU6VFEo
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded April–May 1972, Van Gelder Studio, Englewood Cliffs, with Joe Farrell, Chick Corea, Nelson Ayres, Ron Carter, CTI 6020, credited "V. Brazil" as in the chart; the first recording of "Creek (Arroio)", by Victor Assis Brasil, who recorded no studio version of his own before it (Discogs); video: "Provided to YouTube by Legacy Recordings", Free, the 6:00 album take, the same take (not the 9:24 alternate)
 # A is played twice before the solos (2nd time the solo starts at bar 19), once after; B is the solo section
 # the B solo chorus repeats; after solos, D.S. al Coda
 

@@ -4,7 +4,10 @@ style: Up
 key: Cm
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 206
+recording: Sonny Rollins; A Night at the "Village Vanguard"; Blue Note; 1958
+youtube: IdEEEeYrXsI
 # analysis: 2026-10-19, rules v2; C minor
+# recording: recorded live 1957-11-03, evening set, Village Vanguard, NYC, a trio with Wilbur Ware, Elvin Jones, Blue Note BLP 1581 (Wikipedia: released 1958, citing Billboard; jazzdisco: 1957); operetta standard (Romberg, 1928) → the best-known jazz reading, over the MJQ's Concorde (Prestige, 1955) and Coltrane's Live at the Village Vanguard (Impulse!, 1962) (jazzdisco, Wikipedia); video: "Provided to YouTube by Universal Music Group", A Night At The Village Vanguard (RVG Edition), the 8:03 LP take, the same take (not the 6:43 alternate from the same evening)
 
 # bar | chord | scale
 # the horn intro is a melody line (no chords), so it is left out
