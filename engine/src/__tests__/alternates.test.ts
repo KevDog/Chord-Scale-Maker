@@ -102,6 +102,11 @@ describe('setAltBarChords', () => {
     expect(altBarChords(setAltBarChords(d, 'A', 2, ['Cmaj7']), 'A', 2)).toEqual(['Cmaj7'])
   })
 
+  it('the held alternate typed again: no alt rows (#491)', () => {
+    const d = doc('section: A\nbars: 2\n1 | Cmaj7\nalt 1 | Dm7\n')
+    expect(setAltBarChords(d, 'A', 2, ['Dm7'])).toEqual(d)
+  })
+
   it('copy sections refused', () => {
     const d = doc('section: A1\n1 | C\nsection: A2\ncopy: A1\n')
     expect(setAltBarChords(d, 'A2', 1, ['D'])).toBe(d)

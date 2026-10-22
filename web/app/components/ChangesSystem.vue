@@ -9,7 +9,8 @@
           v-if="!altBars.has(o.barIndex)"
           :data-chord="o.written"
           :data-other-name="o.key"
-          :class="OTHER"
+          :class="[OTHER, o.held && HELD]"
+          :data-held="o.held || undefined"
           :style="{ left: `${o.x * 100}%`, transform: otherScale(o) === 1 ? undefined : `scale(${otherScale(o)})` }"
         ><ChordSymbol v-if="o.tokens" :tokens="o.tokens" /><template v-else>{{ o.written }}</template></span>
       </template>
@@ -35,7 +36,8 @@
             :key="o.key"
             :data-chord="o.written"
             :data-other-name="o.key"
-            :class="OTHER"
+            :class="[OTHER, o.held && HELD]"
+            :data-held="o.held || undefined"
             :style="{ left: `${((o.x - t.left) / t.width) * 100}%`, transform: otherScale(o) === 1 ? undefined : `scale(${otherScale(o)})` }"
           ><ChordSymbol v-if="o.tokens" :tokens="o.tokens" /><template v-else>{{ o.written }}</template></span>
         </SheetAltChord>
@@ -401,7 +403,7 @@ const marks = computed(() => {
 /** the other set's chords in this line's bars (#215), over their beats; already written for the part, so drawn as they are */
 const otherMarks = computed(() =>
   props.line.bars.flatMap((bar, b) =>
-    (props.others?.get(barKey(bar.at)) ?? []).map((c, k) => ({ key: `${b}-${k}`, barIndex: b, beat: c.beat, written: c.written, tokens: chordTokensOrNull(CONCERT, c.written), x: Math.max(0, (xs.value[b]?.[c.beat] ?? 0) - 0.012) })),
+    (props.others?.get(barKey(bar.at)) ?? []).map((c, k) => ({ key: `${b}-${k}`, barIndex: b, beat: c.beat, written: c.written, held: c.held, tokens: chordTokensOrNull(CONCERT, c.written), x: Math.max(0, (xs.value[b]?.[c.beat] ?? 0) - 0.012) })),
   ),
 )
 /** the alternate line's targets while editing in Standard (#469): every bar but a copy: section's, over its width */
@@ -411,7 +413,7 @@ const altTargets = computed(() =>
         if (bar.repeatOf) return []
         const marks = otherMarks.value.filter((o) => o.barIndex === b)
         const left = barLeft(b)
-        return [{ key: barKey(bar.at), index: b, section: bar.at.section, bar: Number(bar.at.bar), text: marks.map((o) => o.written).join(' '), marks, left, width: Math.max(0.01, barLeft(b + 1) - left) }]
+        return [{ key: barKey(bar.at), index: b, section: bar.at.section, bar: Number(bar.at.bar), text: marks.map((o) => (o.held ? `${o.written} held` : o.written)).join(' '), marks, left, width: Math.max(0.01, barLeft(b + 1) - left) }]
       })
     : [],
 )
@@ -533,6 +535,7 @@ const toolbarBar = computed(() => {
 })
 const MARKER = 'rounded-sm border border-zinc-400 px-1 font-semibold text-zinc-700 dark:border-zinc-500 dark:text-zinc-300 print:border-neutral-600 print:text-black'
 /** an other-set chord on the small line (#215) */
+const HELD = 'italic' // a chord held into the bar from before, not written there (#491)
 const OTHER = 'absolute bottom-0 origin-bottom-left text-xs/4 font-medium whitespace-nowrap text-zinc-600 dark:text-zinc-400 print:text-[0.6rem]/3 print:text-neutral-700'
 const GHOST = 'rounded-md border border-dashed border-zinc-400 text-xs font-semibold text-zinc-500 hover:border-note-500 hover:text-note-700 focus-visible:border-note-500 focus-visible:outline-none dark:border-zinc-500 dark:text-zinc-400 dark:hover:border-note-400 dark:hover:text-note-300 print:hidden'
 /**
