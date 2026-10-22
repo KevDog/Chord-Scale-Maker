@@ -4,7 +4,10 @@ style: Medium Blues
 key: C
 form: ABB, 52 bars
 source: iReal Pro
+recording: Bessie Smith; The Bessie Smith Story, Volume 2; Columbia; 1951
+youtube: gfihDIRIpG4
 # analysis: 2026-10-19, rules v2; C
+# recording: recorded 1929-05-15, New York, with Clarence Williams (piano), Ed Allen (cornet), Garvin Bushell, Greely Walton, Cyrus St. Clair, matrix W148534-3, the first recording of the Jimmy Cox song; first issued on 78 (Columbia 14451-D), 1929; first LP GL 504 (1951); sources: DAHR, Discogs, Wikipedia; video: "Provided to YouTube by Legacy/Columbia", The Complete Recordings, Vol. 4, the same take
 
 section: A
 1  | C   # tonic: the 4th is in the key

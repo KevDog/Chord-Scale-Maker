@@ -5,7 +5,10 @@ context: blues
 key: F
 form: AA, 24 bars
 source: iReal Pro
+recording: Muddy Waters; The Best of Muddy Waters; Chess; 1958
+youtube: gRb24x0YxCs
 # analysis: 2026-10-22, rules v2; F, blues
+# recording: recorded 1951-01-23, Chicago, with Little Walter (hca), Big Crawford (b); first issued on 78 (Chess 1452, 1951); first LP LP-1427 (1958); not the Folk Singer remake (Wikipedia, Discogs); video: "Provided to YouTube by Universal Music Group", The Best of Muddy Waters, the same take
 
 section: A1
 1  | F7   # I7 of the blues: a tonic with dominant color, Mixolydian

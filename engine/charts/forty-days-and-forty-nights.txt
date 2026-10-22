@@ -5,7 +5,10 @@ context: blues
 key: A
 form: ABCDD, 63 bars
 source: iReal Pro
+recording: Muddy Waters; The Real Folk Blues; Chess; 1966
+youtube: 46xlLq7l9Ug
 # analysis: 2026-10-22, rules v2; A, blues
+# recording: recorded January 1956, Chicago (Pat Hare, Little Walter, Willie Dixon; Fred Below or Francis Clay), the first recording; first issued on 78/45 (Chess 1620), April 1956; first LP LP-1501 (1966); not the 1969 Fathers and Sons remake; sources: Wikipedia, Discogs, DAHR; video: "Provided to YouTube by Universal Music Group", 20th Century Masters, "(Single Version)", the 1956 Chess master, the same take
 
 section: A
 1  | A7  # I7 of the blues: a tonic with dominant color, Mixolydian

@@ -5,7 +5,10 @@ context: blues
 key: Eb
 form: AA, 16 bars
 source: iReal Pro
+recording: Mance Lipscomb; Texas Songster Volume 2; Arhoolie; 1964
+youtube: saWQjJcXRpY
 # analysis: 2026-10-22, rules v2; Eb, blues
+# recording: recorded 1964-05-02, Berkeley, California, by Chris Strachwitz, Mance Lipscomb solo, Arhoolie F 1023; the chart credits Lipscomb, so his version over Walter Davis's 1940 original and Ray Charles's 1954 Atlantic side (Discogs, MusicBrainz); video: "Provided to YouTube by The Orchard", Smithsonian Folkways (originally Arhoolie), the CD reissue of the same session, the same recording
 
 section: A
 1 | Eb7    # I7 of the blues: a tonic with dominant color, Mixolydian

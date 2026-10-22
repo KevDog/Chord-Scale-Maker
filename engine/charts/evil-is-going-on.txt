@@ -5,7 +5,10 @@ context: blues
 key: G
 form: AA, 24 bars
 source: iReal Pro
+recording: Howlin' Wolf; Moanin' in the Moonlight; Chess; 1959
+youtube: fE-yuA4QuVI
 # analysis: 2026-10-22, rules v2; G, blues
+# recording: recorded 1954-05-25, Chicago, with Hubert Sumlin, Jody Williams, Otis Spann, Willie Dixon, Earl Phillips; first issued on 78 (Chess 1575, 1954), first LP Chess LP-1434 (1959); sources: Wikipedia, MusicBrainz; video: "Provided to YouTube by Universal Music Group", Moanin' In The Moonlight, the same take (not the 1969 remake)
 
 section: A1
 1  | G7  # I7 of the blues: a tonic with dominant color, Mixolydian

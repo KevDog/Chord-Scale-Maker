@@ -5,7 +5,10 @@ context: blues
 key: E
 form: AB, 24 bars
 source: iReal Pro
+recording: Little Walter; The Best of Little Walter; Checker; 1957
+youtube: HxkqDe7DN8g
 # analysis: 2026-10-22, rules v2; E, blues
+# recording: recorded 1952-05-12, Universal Recording, Chicago, with Muddy Waters and Jimmy Rogers (guitars) and Elgin Evans (drums); first issued on 78 (Checker 758, 1952), first LP Checker LP 1428 (1957 per MusicBrainz; some sources 1958); sources: Wikipedia, MusicBrainz; video: "Provided to YouTube by Universal Music Group", The Best of Little Walter, the same take
 
 section: A
 1  | E   # I of the blues: a triad here implies its ♭7, Mixolydian

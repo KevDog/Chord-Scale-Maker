@@ -5,7 +5,10 @@ context: blues
 key: A
 form: ABC, 33 bars
 source: iReal Pro
+recording: Muddy Waters; The Real Folk Blues; Chess; 1966
+youtube: kbxloBaiquU
 # analysis: 2026-10-22, rules v2; A, blues
+# recording: recorded February 1950, Chicago, with Big Crawford (b); first issued on 78 (Aristocrat 412, Parts 1 and 2, 1950); first LP LP-1501 (1966), Part 1; the song is Hambone Willie Newbern's 1929 Roll and Tumble Blues (Wikipedia, Discogs); video: "Provided to YouTube by Universal Music Group", His Best 1947 to 1956, "(Pt. 1)", the same take (by length)
 
 section: Intro
 1  | A     # I of the blues: a triad here implies its ♭7, Mixolydian

@@ -5,7 +5,10 @@ context: blues
 key: Ab
 form: ABCDD, 60 bars
 source: iReal Pro
+recording: Stevie Ray Vaughan and Double Trouble; Texas Flood; Epic; 1983
+youtube: HYUy9CBDCE4
 # analysis: 2026-10-22, rules v2; Ab, blues
+# recording: recorded November 1982, Down Town Studio, Los Angeles, with Tommy Shannon and Chris Layton, Epic BFE 38734; the writer's own first recording; sources: MusicBrainz, Wikipedia; video: "Provided to YouTube by Epic/Legacy", Texas Flood (Legacy Edition), the same take
 
 section: A
 1  | Ab7    # I7 of the blues: a tonic with dominant color, Mixolydian

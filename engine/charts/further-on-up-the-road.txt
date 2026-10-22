@@ -5,7 +5,10 @@ context: blues
 key: G
 form: A, 12 bars
 source: iReal Pro
+recording: Bobby Bland; Blues Consolidated; Duke; 1958
+youtube: l0HUxFqcMWU
 # analysis: 2026-10-22, rules v2; G, blues
+# recording: recorded 1957, Houston, with the Bill Harvey Orchestra, arranged by Joe Scott, Pat Hare (guitar), the first recording; first issued as "Farther Up the Road" on 78/45 (Duke 170), 1957, an R&B No. 1; first LP DLP 72 (1958, shared with Junior Parker); Clapton's covers came later; sources: Wikipedia, Discogs; video: "Provided to YouTube by Universal Music Group", The Best Of Bobby Bland, "(Single Version)", the Duke master, the same take
 
 section: A
 1  | G   # I of the blues: a triad here implies its ♭7, Mixolydian

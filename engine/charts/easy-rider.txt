@@ -5,7 +5,10 @@ context: blues
 key: C
 form: A, 16 bars
 source: iReal Pro
+recording: Lead Belly; The RCA Victor Encyclopedia of Recorded Jazz, Album 7; RCA Victor; 1956
+youtube: 94gtzOAyCGU
 # analysis: 2026-10-22, rules v2; C, blues
+# recording: recorded 1940-06-17, Victor Studio 1, New York, matrix BS-051322, the writer's first commercial recording of it; first issued on 78 (Bluebird B-8570); first LP the 10" LEJ-7 (1956), then his own LPV-505 The Midnight Special (1964); sources: DAHR, Discogs; video: "Provided to YouTube by RCA Bluebird", Take This Hammer – The Complete RCA Victor Recordings, the same take
 
 section: A
 1  | C   # I of the blues: a triad here implies its ♭7, Mixolydian

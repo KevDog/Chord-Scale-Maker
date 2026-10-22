@@ -5,7 +5,10 @@ context: blues
 key: F
 form: A, 13 bars
 source: iReal Pro
+recording: Muddy Waters; The Best of Muddy Waters; Chess; 1958
+youtube: cL_k1-rV_p4
 # analysis: 2026-10-22, rules v2; F, blues
+# recording: recorded 1952, Chicago, with Junior Wells (hca), Jimmy Rogers (g), Elga Edmonds (dr); first issued on 78 (Chess 1526, 1952); first LP LP-1427 (1958) (Wikipedia, Discogs); video: "Provided to YouTube by Universal Music Group", The Best of Muddy Waters, the same take
 
 section: A
 1  | F    # I of the blues: a triad here implies its ♭7, Mixolydian

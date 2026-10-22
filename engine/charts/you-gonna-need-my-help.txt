@@ -5,7 +5,10 @@ context: blues
 key: Eb
 form: A, 13 bars
 source: iReal Pro
+recording: Muddy Waters; More Real Folk Blues; Chess; 1967
+youtube: vh9uBhjMx8Q
 # analysis: 2026-10-22, rules v2; Eb, blues
+# recording: recorded 1950-08-15, Chicago, with Little Walter (hca), Big Crawford (b); first issued on 78 as "You're Gonna Need My Help I Said" (Chess 1434, 1950); first LP LP-1511 (1967); not the 1963 Folk Singer remake (Wikipedia, Discogs); video: "Provided to YouTube by Universal Music Group", More Real Folk Blues, the same take
 
 section: A
 1  | Eb7  # I7 of the blues: a tonic with dominant color, Mixolydian

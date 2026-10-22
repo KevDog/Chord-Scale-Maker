@@ -5,7 +5,10 @@ context: blues
 key: F
 form: ABAB, 26 bars
 source: iReal Pro
+recording: Muddy Waters; The Best of Muddy Waters; Chess; 1958
+youtube: tbK-UG4tJNE
 # analysis: 2026-10-22, rules v2; F, blues
+# recording: recorded 1951-07-11, Chicago, with Little Walter, Jimmy Rogers, Big Crawford, Elga Edmonds; first issued on 78 (Chess 1480, "Still a Fool (Two Trains Running)", 1951); first LP LP-1427 (1958) (Wikipedia, Discogs); video: "Provided to YouTube by Universal Music Group", The Best of Muddy Waters, the same take
 
 section: A1
 1 | F7  # I7 of the blues: a tonic with dominant color, Mixolydian

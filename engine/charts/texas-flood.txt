@@ -5,7 +5,10 @@ context: blues
 key: C
 form: A, 12 bars
 source: iReal Pro
+recording: Larry Davis; Angels in Houston: The Legendary Duke Blues Recordings; Rounder; 1982
+youtube: uDikW4d2vqg
 # analysis: 2026-10-22, rules v2; C, blues
+# recording: recorded 1958, Houston, Larry Davis (voc, b) with Fenton Robinson (g), James Booker (p); first issued on 45/78 (Duke 192, 1958); first US LP Rounder 2031 (1982; earlier on the UK Python PLP 24, 1970); the chart follows neither the original (in A♭) nor Stevie Ray Vaughan's 1983 cover (in G), so the writer's record (Discogs, MusicBrainz, Wikipedia); video: "Provided to YouTube by Universal Music Group", The Best of Duke-Peacock Blues, the Duke master, the same take
 
 section: A
 1  | C7    # I7 of the blues: a tonic with dominant color, Mixolydian

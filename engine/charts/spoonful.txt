@@ -5,7 +5,10 @@ context: blues
 key: E
 form: A, 20 bars
 source: iReal Pro
+recording: Howlin' Wolf; Howlin' Wolf; Chess; 1962
+youtube: 4fjviTLYqoc
 # analysis: 2026-10-22, rules v2; E, blues
+# recording: recorded June 1960, Chess Studios, Chicago, with Hubert Sumlin, Freddie Robinson, Otis Spann, Willie Dixon, Fred Below; first issued on 45 (Chess 1762, 1960), first LP Chess LP 1469 (1962); the chart's one-chord form follows Wolf's record, not Cream's; sources: Wikipedia, MusicBrainz; video: "Provided to YouTube by Universal Music Group", Howlin' Wolf, the same take
 
 section: A
 1  | E7b5   # I7 of the blues: a tonic with dominant color; #11 from the symbol

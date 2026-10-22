@@ -5,7 +5,10 @@ key: D
 form: A, 12 bars
 context: blues
 source: iReal Pro
+recording: Blind Willie McTell; The Country Blues; RBF; 1959
+youtube: dpRtk-xNtTg
 # analysis: 2026-10-22, rules v2; D, blues
+# recording: recorded 1928-10-17, Atlanta, McTell (vocal, 12-string guitar), matrix BVE-47187, the writer's own and the first recording; first issued on 78 (Victor V38001), 1929; first LP RBF RF-1, Samuel Charters' anthology (1959); the Allman Brothers' At Fillmore East (1971) is the famous cover, but the chart names no version; sources: Wikipedia, Discogs, Smithsonian Folkways; video: "Provided to YouTube by RCA Bluebird/BMG Heritage", When The Sun Goes Down Series, the Victor side, the same take
 
 section: A
 1  | D7  # I7 of the blues: a tonic with dominant color, Mixolydian

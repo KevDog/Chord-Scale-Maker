@@ -5,7 +5,10 @@ context: blues
 key: A
 form: A, 12 bars
 source: iReal Pro
+recording: John Lee Hooker; Alone; Specialty; 1970
+youtube: MsvuoQ1qNbE
 # analysis: 2026-10-22, rules v2; A, blues
+# recording: recorded 1950-04-28, United Sound Systems, Detroit, by Bernard Besman, Hooker solo; first issued on 78 (Sensation 34), 1950; first LP SPS 2125 (1970, as "Boogie Chillen"); sources: Discogs; video: "Provided to YouTube by Universal Music Group", Specialty Profiles: John Lee Hooker, the Specialty master (2:44, as on Alone)
 
 section: A
 1  | A7  # I7 of the blues: a tonic with dominant color, Mixolydian

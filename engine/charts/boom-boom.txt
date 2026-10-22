@@ -5,7 +5,10 @@ context: blues
 key: E
 form: ABB, 26 bars
 source: iReal Pro
+recording: John Lee Hooker; Burnin'; Vee-Jay; 1962
+youtube: t8V9qonVABw
 # analysis: 2026-10-22, rules v2; E, blues
+# recording: recorded 1961-10-26, Universal, Chicago, with Joe Hunter's Detroit band (James Jamerson, Benny Benjamin and others), produced by Calvin Carter, the first recording; first issued as a 45 (Vee-Jay 438), 1962; LP VJLP 1043 (1962); sources: Wikipedia, Discogs; video: "Provided to YouTube by Universal Music Group", The Vee-Jay Story, the same take (not the 1992 remake)
 
 section: Intro
 1  | E     # I of the blues: a triad here implies its ♭7, Mixolydian

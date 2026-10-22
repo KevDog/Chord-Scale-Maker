@@ -5,7 +5,10 @@ key: B
 form: AA, 24 bars
 context: blues
 source: iReal Pro
+recording: The Jimi Hendrix Experience; Are You Experienced; Track; 1967
+youtube: tGNro_H388E
 # analysis: 2026-10-22, rules v2; B, blues
+# recording: recorded 1966-12-13, CBS Studios, London (Hendrix, Noel Redding, Mitch Mitchell; produced by Chas Chandler), the writer's own record; Track 612 001 (UK, 1967; not on the US album); US Smash Hits (1969) has another take (De Lane Lea, 1966-12-21); sources: Wikipedia, Discogs; video: "Provided to YouTube by Legacy Recordings", Blues (1994), the UK CBS take, the same take (not the Are You Experienced upload, which is the Smash Hits take)
 
 section: A
 1  | B7   # I7 of the blues: a tonic with dominant color, Mixolydian
