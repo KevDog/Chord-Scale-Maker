@@ -1,5 +1,6 @@
 import { beatsPerBar, type ChartDoc, chartBeats, type ChartLine, formPart, type FormPart, isSectionName, lineSections, type MetaKey, parseChart, SECTION_FIELDS, type SectionField, serializeChart } from './chart'
 import { type BarSection, type BarView, barView, type ChartBar } from './bars'
+import { type ChangesSet, changesFor } from './alternates'
 import { chordsAfterTyping, posOfLine } from './barGrid'
 import { sectionLayout, statedKeyAt } from './layout'
 import { LIMITS } from './limits'
@@ -67,7 +68,7 @@ export function insertKeyBefore(doc: ChartDoc, i: number, key: string): ChartDoc
 export function setRowChord(doc: ChartDoc, i: number, chord: string): ChartDoc {
   const line = doc.lines[i]
   if (line?.kind !== 'row' && line?.kind !== 'altRow') return doc
-  const next =defaultScaleOrNull(chord)
+  const next = defaultScaleOrNull(chord)
   const follows = line.scale !== '' && next !== null && samePitchScale(line.scale, defaultScaleOrNull(line.chord)) // by pitch (R18)
   return { lines: replaceAt(doc.lines, i, { ...line, chord, scale: follows ? next : line.scale }) }
 }
@@ -237,9 +238,9 @@ function rowSlot(doc: ChartDoc, section: string, bar: number): number {
   const r = blockRange(doc, section)
   if (!r) return doc.lines.length
   const inBlock = (i: number): boolean => i > r.start && i < r.end
-  const later = doc.lines.findIndex((l, i) => inBlock(i) && l.kind === 'row' && WHOLE.test(l.bar) && Number(l.bar) > bar)
+  const later = doc.lines.findIndex((l, i) => inBlock(i) && (l.kind === 'row' || l.kind === 'altRow') && WHOLE.test(l.bar) && Number(l.bar) > bar)
   if (later >= 0) return later
-  const lastRow = doc.lines.findLastIndex((l, i) => inBlock(i) && l.kind === 'row')
+  const lastRow = doc.lines.findLastIndex((l, i) => inBlock(i) && (l.kind === 'row' || l.kind === 'altRow'))
   if (lastRow >= 0) return lastRow + 1
   const lastField = doc.lines.findLastIndex((l, i) => inBlock(i) && l.kind === 'sectionMeta')
   return (lastField >= 0 ? lastField : r.start) + 1
@@ -317,6 +318,81 @@ export function setLineChord(doc: ChartDoc, i: number, text: string): ChartDoc {
   const view = barView(doc)
   const pos = posOfLine(view, i)
   return pos ? setBarChords(doc, pos.section, pos.bar, chordsAfterTyping(view, pos, text, false)) : doc
+}
+
+/** the chords of a bar's alt rows, in order; none when it has none (or isn't in a written section) */
+export function altBarChords(doc: ChartDoc, section: string, bar: number): readonly string[] {
+  return altLines(doc, section, bar).map((i) => (doc.lines[i] as AltRowLine).chord)
+}
+
+/** line indices of a section's alt rows on a bar */
+function altLines(doc: ChartDoc, section: string, bar: number): number[] {
+  const r = blockRange(doc, section)
+  if (!r) return []
+  return doc.lines.flatMap((l, i) => (i > r.start && i < r.end && l.kind === 'altRow' && WHOLE.test(l.bar) && Number(l.bar) === bar ? [i] : []))
+}
+
+/** a bar's chords in the Alternate set: chord, scale and function of each */
+function altSetBar(doc: ChartDoc, section: string, bar: number): readonly string[] {
+  const alt = changesFor(doc, 'alternate')
+  const found = writtenBar(barView(alt), section, bar)
+  return (found?.bar.chords ?? []).map((c) => {
+    const l = alt.lines[c.line] as RowLine
+    return `${l.chord}\u0000${l.scale}\u0000${l.function ?? ''}`
+  })
+}
+
+/**
+ * set a bar's alternate changes: its alt rows become `chords` (none removes them). Each takes the place of the
+ * Alternate set's chord there, scale and function following as setRowChord's do. Alt rows that play the same as the
+ * standard bar are dropped. The same doc for a bar that isn't in a written section, or a chord that fails cellError.
+ */
+export function setAltBarChords(doc: ChartDoc, section: string, bar: number, chords: readonly string[]): ChartDoc {
+  const found = writtenBar(barView(doc), section, bar)
+  if (!found || chordsError(chords)) return doc
+  const old = altLines(doc, section, bar)
+  const length = found.section.bars.length
+  const without: ChartDoc = old.length ? { lines: doc.lines.filter((_, i) => !old.includes(i)) } : doc
+  if (!chords.length) return old.length ? tidyBars(without, section, length) : doc
+  // the Alternate set's chords at this bar, by position: what each new chord replaces
+  const source = writtenBar(barView(changesFor(doc, 'alternate')), section, bar)?.bar.chords ?? []
+  const rows: AltRowLine[] = chords.map((_, k) => {
+    const src = source[k] ? (doc.lines[source[k].line] as RowLine | AltRowLine) : null
+    return { kind: 'altRow', bar: String(bar), chord: src?.chord ?? '', scale: src?.scale ?? '', ...(src?.function ? { function: src.function } : {}) }
+  })
+  // in place of the old alt rows, else after the bar's last row, else where its rows would go
+  const r = blockRange(doc, section)!
+  const last = doc.lines.findLastIndex((l, i) => i > r.start && i < r.end && (l.kind === 'row' || l.kind === 'altRow') && WHOLE.test(l.bar) && Number(l.bar) === bar)
+  const at = old.length ? old[0]! : last >= 0 ? last + 1 : rowSlot(doc, section, bar)
+  let next: ChartDoc = { lines: [...without.lines.slice(0, at), ...rows, ...without.lines.slice(at)] }
+  chords.forEach((chord, k) => {
+    const i = at + k
+    const row = next.lines[i] as AltRowLine
+    if (row.chord === chord) return
+    next = row.chord ? setRowChord(next, i, chord) : { lines: replaceAt(next.lines, i, { ...row, chord }) }
+  })
+  // redundant: the alternate plays as the standard changes do
+  const played = (d: ChartDoc): string => altSetBar(d, section, bar).join('\u0001')
+  return tidyBars(played(next) === played(without) ? without : next, section, length)
+}
+
+/** set a bar's chords in one set of changes: standard → setBarChords, alternate → setAltBarChords */
+export function setBarChordsIn(doc: ChartDoc, set: ChangesSet, section: string, bar: number, chords: readonly string[]): ChartDoc {
+  return set === 'standard' ? setBarChords(doc, section, bar, chords) : setAltBarChords(doc, section, bar, chords)
+}
+
+/**
+ * setLineChord in one set of changes: the line is read in that set's bars (so % is that set's bar before). An empty
+ * result on an alternate bar removes its alt rows; on a bar the sets share it does nothing.
+ */
+export function setLineChordIn(doc: ChartDoc, set: ChangesSet, i: number, text: string): ChartDoc {
+  if (set === 'standard') return setLineChord(doc, i, text)
+  const view = barView(changesFor(doc, set))
+  const pos = posOfLine(view, i)
+  if (!pos) return doc
+  const chords = chordsAfterTyping(view, pos, text, false)
+  if (!chords.length && !altLines(doc, pos.section, pos.bar).length) return doc
+  return setAltBarChords(doc, pos.section, pos.bar, chords)
 }
 
 /** a held bar at `bar` (see insertBar): at the section's end too, where bars: then counts it */
