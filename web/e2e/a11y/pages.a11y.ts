@@ -152,6 +152,23 @@ for (const theme of ['light', 'dark'] as const) {
       await expectAccessible(page, '[role="dialog"]')
     })
 
+    test('the click, docked with its settings open, and in focus mode (#254)', async ({ page }) => {
+      await page.goto(SONG)
+      if (theme === 'dark') await darkMode(page)
+      const bar = page.getByRole('toolbar', { name: 'Click' })
+      await opens(page, page.getByRole('button', { name: 'Click', exact: true }), bar)
+      await expectAccessible(page)
+      const settings = page.getByRole('dialog', { name: 'Click settings' })
+      await opens(page, bar.getByRole('button', { name: 'Click settings' }), settings)
+      await expect(settings).toHaveCSS('opacity', '1') // past its fade: mid-fade it reads as low contrast
+      await expectAccessible(page, '[role=dialog][aria-label="Click settings"]')
+      await page.keyboard.press('Escape')
+      await page.getByRole('button', { name: 'Focus', exact: true }).click()
+      await expect(page.getByRole('dialog', { name: 'Focus mode' }).getByRole('toolbar', { name: 'Click' })).toBeVisible()
+      // the click alone: focus mode's own known violations (its Esc hint, the zoomed sheet’s chord buttons) are #488
+      await expectAccessible(page, '[aria-label="Focus mode"] [role=toolbar][aria-label=Click]')
+    })
+
     test('the library’s Import iReal link… dialog', async ({ page }) => {
       await page.goto('/library')
       if (theme === 'dark') await darkMode(page)

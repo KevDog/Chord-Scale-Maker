@@ -119,11 +119,13 @@ const countIn = computed({
   set: (v: '0' | '1' | '2') => (countInSetting.value = Number(v) as 0 | 1 | 2),
 })
 
-// docked: how far the page's foot must clear it
+// docked: the page's foot clears it, by its height (--click-h)
 const root = useTemplateRef<HTMLElement>('root')
 let sized: ResizeObserver | undefined
 onMounted(() => {
-  if (props.home !== 'docked' || !root.value || typeof ResizeObserver === 'undefined') return
+  if (props.home !== 'docked') return
+  document.body.style.paddingBottom = 'var(--click-h, 0px)'
+  if (!root.value || typeof ResizeObserver === 'undefined') return
   sized = new ResizeObserver(([e]) => {
     if (e) document.documentElement.style.setProperty('--click-h', `${Math.ceil(e.borderBoxSize[0]?.blockSize ?? e.contentRect.height)}px`)
   })
@@ -131,6 +133,8 @@ onMounted(() => {
 })
 onBeforeUnmount(() => {
   sized?.disconnect()
-  if (props.home === 'docked') document.documentElement.style.removeProperty('--click-h')
+  if (props.home !== 'docked') return
+  document.body.style.removeProperty('padding-bottom')
+  document.documentElement.style.removeProperty('--click-h')
 })
 </script>

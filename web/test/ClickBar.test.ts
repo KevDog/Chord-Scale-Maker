@@ -68,6 +68,13 @@ describe('ClickBar', () => {
     expect(four.w.text()).toContain('Hat on 2 & 4')
   })
 
+  it('docked, the page’s foot clears it until it goes', async () => {
+    const { w } = await mountBar()
+    expect(document.body.style.paddingBottom).toBe('var(--click-h, 0px)')
+    w.unmount()
+    expect(document.body.style.paddingBottom).toBe('')
+  })
+
   it('in focus has no ✕ and isn’t fixed to the window', async () => {
     const { w, button } = await mountBar(chart4, 'focus')
     expect(button('Hide the click')).toBeUndefined()

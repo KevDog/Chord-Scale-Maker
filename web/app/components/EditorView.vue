@@ -87,8 +87,11 @@
           focus.on.value && 'fixed inset-0 z-50 overflow-y-auto bg-stand px-4 pb-8 print:static print:overflow-visible print:bg-white print:p-0',
         ]"
       >
-        <div v-if="focus.on.value" ref="focusBar" class="sticky top-0 z-10 -mx-4 flex justify-end bg-stand/90 px-4 py-3 backdrop-blur-sm print:hidden">
-          <UiButton outline @click="focus.exit"><XMarkIcon data-slot="icon" />Exit focus<kbd class="ml-1 font-sans text-xs text-zinc-500 dark:text-zinc-400">Esc</kbd></UiButton>
+        <div v-if="focus.on.value" ref="focusBar" class="sticky top-0 z-10 -mx-4 flex flex-wrap items-center justify-end gap-3 bg-stand/90 px-4 py-3 backdrop-blur-sm print:hidden">
+          <!-- the click (#254): its controls in this bar, or a button to show them -->
+          <ClickBar v-if="metronomeOn && click.shown.value" home="focus" :chart="clickChart" class="mr-auto min-w-0 flex-1" />
+          <UiButton v-else-if="metronomeOn" outline class="mr-auto" :title="CLICK_TITLE" @click="click.show()"><MusicalNoteIcon data-slot="icon" />Click</UiButton>
+          <UiButton outline data-exit-focus @click="focus.exit"><XMarkIcon data-slot="icon" />Exit focus<kbd class="ml-1 font-sans text-xs text-zinc-500 dark:text-zinc-400">Esc</kbd></UiButton>
         </div>
         <!-- display: contents, so the rail inside sticks over the whole section (the paper's top margin stands in for this
              box's own, which a contents box doesn't have) -->
@@ -172,6 +175,7 @@
                 <UiButton v-if="!editor.fatal.value" outline title="Show only the sheet music (Esc to leave)" @click="after(enterFocus)"><ArrowsPointingOutIcon data-slot="icon" />Focus</UiButton>
               </template>
               <template v-if="place === 'rail'">
+                <ToggleButton v-if="metronomeOn && !editor.fatal.value" :model-value="click.shown.value" :title="CLICK_TITLE" @update:model-value="$event ? click.show() : click.hide()"><MusicalNoteIcon data-slot="icon" />Click</ToggleButton>
                 <UiButton v-if="!editor.fatal.value" outline color="note" title="Print, or save a PDF from the print dialog" @click="print"><PrinterIcon data-slot="icon" />Print</UiButton>
                 <MoreMenu :items="moreItems" @action="onMore" />
               </template>
@@ -290,11 +294,12 @@
         </div>
       </section>
     </div>
+    <ClickBar v-if="metronomeOn && click.shown.value && !focus.on.value" home="docked" :chart="clickChart" @hide="click.hide()" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ArrowPathIcon, ArrowsPointingOutIcon, ArrowUturnLeftIcon, ArrowUturnRightIcon, BookmarkIcon, CodeBracketIcon, EllipsisHorizontalIcon, LinkIcon, PencilSquareIcon, PrinterIcon, XMarkIcon } from '@heroicons/vue/16/solid'
+import { ArrowPathIcon, ArrowsPointingOutIcon, ArrowUturnLeftIcon, ArrowUturnRightIcon, BookmarkIcon, CodeBracketIcon, EllipsisHorizontalIcon, LinkIcon, MusicalNoteIcon, PencilSquareIcon, PrinterIcon, XMarkIcon } from '@heroicons/vue/16/solid'
 import { ISSUE_CONTEXT, issuePart } from '~/utils/issueReport'
 import { CHART_REPORT_KEY, type ChartReport, guidesText } from '~/utils/chartReport'
 import { approachApplies, changesLineOf, shareLineOf } from '~/utils/sheetLine'
@@ -302,6 +307,8 @@ import { type HiddenSetting, hiddenSettings } from '~/utils/interface'
 import {
   addSection,
   barView,
+  chartBeats,
+  chartDetails,
   changesSections,
   changesFor,
   CHANGES_SETS,
@@ -367,7 +374,8 @@ import { firstSheet, type SheetKind } from '~/utils/sheets'
 import { DEFAULT_PATTERN } from '~/composables/usePreferences'
 import { type MoreAction, moreMenuItems } from '~/utils/moreMenu'
 import { CHART_SUBMISSION_KEY, type ChartSubmission, submissionAction } from '~/utils/chartSubmission'
-import { SHEET_PAGED } from '~/utils/sheetPaged'
+import { FOCUS_BAR_HEIGHT, SHEET_PAGED } from '~/utils/sheetPaged'
+import { CLICK, type ClickChart, useClick } from '~/composables/useClick'
 import { spellView } from '~/utils/scaleChoices'
 import { writeSession, writeStored } from '~/utils/storage'
 import { type AnalyticsEvent, sendEvent, songOf } from '~/utils/analytics'
@@ -618,6 +626,19 @@ function resetHidden(): void {
 }
 const focus = useFocusMode()
 const focusBar = ref<HTMLElement | null>(null)
+// its height, so focus mode's pages fit under it: one row, or two with the click on a phone
+const focusBarHeight = ref(60)
+provide(FOCUS_BAR_HEIGHT, focusBarHeight)
+let focusBarSized: ResizeObserver | undefined
+watch(focusBar, (el) => {
+  focusBarSized?.disconnect()
+  if (!el || typeof ResizeObserver === 'undefined') return
+  focusBarSized = new ResizeObserver(([e]) => {
+    if (e) focusBarHeight.value = Math.ceil(e.borderBoxSize[0]?.blockSize ?? e.contentRect.height)
+  })
+  focusBarSized.observe(el)
+})
+onBeforeUnmount(() => focusBarSized?.disconnect())
 /**
  * the lead-sheet editor (docs/superpowers/specs/2026-10-11-lead-sheet-editor-design.md): the sheet itself is the editor
  * from md up, while the editor is open on a chart the sheet can draw, outside focus mode. It shows concert pitch (D2)
@@ -639,9 +660,16 @@ const sheetPreview = ref<ChordPreview | null>(null)
 /** a chord the sheet should give focus to (its field closed by a key with nowhere to go) */
 const sheetFocus = ref<SheetFocus | null>(null)
 /** ⌘Z and ⇧⌘Z anywhere on the page (#315); a text field keeps its own undo (the editor's pane takes its own first) */
+const SPACE_OWNERS = 'button, a, label, summary, [role=button], [role=radio], [role=checkbox], [role=switch], [role=menuitem], [role=option], [role=slider]'
 function onPageKeydown(e: KeyboardEvent): void {
   const t = e.target as HTMLElement | null
   if (t && (/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || t.isContentEditable)) return
+  // Space starts and stops the click while it's shown, except on a control, whose own Space it is
+  if (e.key === ' ' && metronomeOn && click.shown.value && !t?.closest(SPACE_OWNERS)) {
+    e.preventDefault()
+    click.toggle(e)
+    return
+  }
   chartHistory.onKeydown(e)
 }
 onMounted(() => window.addEventListener('keydown', onPageKeydown))
@@ -711,6 +739,19 @@ const MOVES: Partial<Record<SheetDone, Readonly<{ dir: 'next' | 'prev'; step: 'b
 
 /** the sheet editor's structure actions (spec §1.4): the toolbar's and the ghost bar's, by the engine's edits */
 const sheetView = computed(() => barView(editor.doc.value))
+/** the click (#254): the chart's main metre and style, one per page, its tempo kept with the chart's practice settings */
+const metronomeOn = useFeature('metronome')
+const CLICK_TITLE = 'A click to practise with (Space starts and stops it)'
+const clickChart = computed(
+  (): ClickChart => ({
+    beats: chartBeats(editor.doc.value),
+    style: chartDetails(editor.doc.value).style,
+    metreChanges: sheetView.value.sections.some((sec) => sec.bars.some((b) => b.time)),
+  }),
+)
+const click = useClick(clickChart, toRef(() => props.practiceKey))
+provide(CLICK, click)
+onBeforeUnmount(() => click.dispose())
 const sheetSections = computed(() => sheetView.value.sections.filter((x) => !x.copy).map((x) => x.name))
 const sheetBeats = computed(() => sheetView.value.beats)
 const sheetDialog = ref<{ kind: BarDialogKind; section: string; bar: number; nav?: string } | null>(null)
@@ -904,7 +945,7 @@ function currentDoc(): ChartDoc {
 function enterFocus(): void {
   editor.flush()
   focus.enter(compactRail.value ? document.getElementById('controls-button') : undefined) // from the Controls dialog: back to Controls
-  nextTick(() => focusBar.value?.querySelector('button')?.focus())
+  nextTick(() => focusBar.value?.querySelector<HTMLElement>('[data-exit-focus]')?.focus())
 }
 
 function print(): void {
