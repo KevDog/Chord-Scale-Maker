@@ -6,7 +6,10 @@ key: Bb
 time: 3/4
 form: AB, 58 bars
 source: Colorado Cookbook, p. 257
+recording: Jeff Jenkins; The Healing; self-released; 2010
+youtube: C-XL49EBb9c
 # analysis: 2026-10-19, rules v2; Bb
+# recording: Colorado (Denver) pianist's solo-piano album, self-released through CD Baby (2010-05-28), the composer's earliest documented recording of it (no earlier one found in his American Gramaphone or Capri albums) (Discogs); video: "Provided to YouTube by CDBaby", The Healing, the same take
 
 # bar | chord | scale
 

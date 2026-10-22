@@ -4,7 +4,10 @@ style: Ballad
 key: Fm
 form: A, 12 bars
 source: Colorado Cookbook, p. 74
+recording: Gary Burton; The New Quartet; ECM; 1973
+youtube: nASCDk-dv-4
 # analysis: 2026-10-19, rules v2; F minor
+# recording: recorded 1973-03-05/06, with Mick Goodrick, Abraham Laboriel, Harry Blazer, ECM 1030 ST; the first recording of it: no recording by Jarrett himself was found; Burton recorded it again on Times Square (ECM 1111, 1978) (Wikipedia, MusicBrainz); video: "Provided to YouTube by Universal Music Group", The New Quartet, the same take
 
 # bar | chord | scale
 

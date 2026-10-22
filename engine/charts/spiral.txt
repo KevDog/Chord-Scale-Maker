@@ -4,7 +4,10 @@ style: Medium straight eighths
 key: Dm
 form: AABC head (30 bars) + 8-bar Interlude, solos on DDEF (AABA, 32 bars) + 4-bar Cue ending, 74 bars
 source: The New Real Book, Vol. 1
+recording: Sphere; On Tour; Red; 1988
+youtube: KcYSEFuj6CM
 # analysis: 2026-10-19, rules v2; D minor
+# recording: recorded live 1985-11-21, Bologna, Charlie Rouse, Kenny Barron, Buster Williams, Ben Riley, Red VPA 191 (CD CD123 191); the version the chart follows ("as played by Sphere"), over Barron's first recording of it, solo, on Spiral (Baybridge, 1982); MusicBrainz gives 1986 for the LP, Fitzgerald 1988 (Wikipedia, Fitzgerald's Kenny Barron discography); video: "Provided to YouTube by Red Records", On Tour (Live), the same take
 # the book: as played by Sphere; the head's B and the solos' E differ (the head's slash chords, the solos' 13sus chords)
 # head: A (repeated) B C, then the Interlude; solos on D (repeated) E F; Till Cue back to D, On Cue ending (Cue) to end each solo
 # after the solos, D.S. al Coda: A A B C, to the Coda after C bar 6

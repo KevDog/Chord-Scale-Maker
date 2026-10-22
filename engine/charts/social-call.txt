@@ -4,7 +4,10 @@ style: Medium
 key: Db
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 204
+recording: Art Farmer Quintet; Art Farmer Quintet Volume 2 Featuring Gigi Gryce; Prestige; 1955
+youtube: Xbdrd6lJC1Y
 # analysis: 2026-10-19, rules v2; Db
+# recording: recorded 1955-05-26, Van Gelder Studio, Hackensack, Art Farmer with Gigi Gryce (alto), Freddie Redd, Addison Farmer, Art Taylor, matrix 744, the first recording of it, with the composer on alto; first issued on the 10-inch PRLP 209 (1955), then on the 12-inch When Farmer Met Gryce (PRLP 7085, 1957); the Ernestine Anderson vocal (Gryce's nonet, 1955-10-22) came later (jazzdisco, Wikipedia); video: "Provided to YouTube by Universal Music Group", When Farmer Met Gryce, the same take
 
 # bar | chord | scale
 # the head ends with two extra bars (Ebm7 Ab7 | Db) and a drum tag; the solo form is written

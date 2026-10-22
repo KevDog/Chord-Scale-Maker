@@ -4,7 +4,10 @@ style: Medium Latin
 key: Am
 form: ABC, 28 bars
 source: The New Real Book, Vol. 1
+recording: Joe Henderson featuring Alice Coltrane; The Elements; Milestone; 1974
+youtube: gn82Y-X09P8
 # analysis: 2026-10-19, rules v2; A minor, modal
+# recording: recorded 1973-10-17, The Village Recorder, Los Angeles, with Alice Coltrane, Michael White, Charlie Haden, Leon "Ndugu" Chancler, Baba Daru Oshun, Kenneth Nash, Milestone M-9053, released May 1974, the album's opener; the first recording of it, the composer leading (jazzdisco, Wikipedia); video: "Provided to YouTube by Universal Music Group", The Elements, the same take
 # the book: "Med. Latin", half note = 110
 # the intro is a bass figure with no chords (N.C., vamp till cue; bass simile till B)
 # A is Am6/9 throughout (24 bars, the chord reprinted in parentheses as a reminder)

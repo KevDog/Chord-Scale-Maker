@@ -4,7 +4,10 @@ style: Medium up
 key: Ab
 form: AABA, 56 bars
 source: Colorado Cookbook, p. 113
+recording: Cannonball Adderley Quintet; Them Dirty Blues; Riverside; 1960
+youtube: FAzHD5nSa1M
 # analysis: 2026-10-19, rules v2; Ab
+# recording: recorded 1960-03-29, Ter-Mar Recording Studios, Chicago, Nat Adderley, Cannonball Adderley, Barry Harris, Sam Jones, Louis Hayes, Riverside RLP 12-322 (also a two-part single, R-45-442); the first recording of it and the one that made it a standard; Pearson's own first recording came that November, on piano with Donald Byrd (At the Half Note Cafe, Vol. 2, Blue Note BLP 4061, 1961), and his trio's August 1961 version was unissued at the time (jazzdisco, Wikipedia); video: "Provided to YouTube by Universal Music Group", Them Dirty Blues (2000 remaster), the same take
 
 # bar | chord | scale
 # the standard 16-bar A; the lead sheet condenses the Ab minor vamp

@@ -4,7 +4,10 @@ style: Ballad
 key: Eb
 form: AB, 32 bars
 source: The New Real Book, Vol. 1
+recording: Bill Evans Trio; Trio '65; Verve; 1965
+youtube: 0B_MjD3qDjM
 # analysis: 2026-10-19, rules v2; Eb
+# recording: recorded 1965-02-03, Van Gelder Studio, Englewood Cliffs, with Chuck Israels, Larry Bunker, Verve V/V6-8613, also a single (VK-10360); the instrumental jazz reference, the one new tune on the album, which stayed in Evans's repertoire; over Tony Bennett's 1964 hit single (Columbia) (jazzdisco, Wikipedia); video: "Provided to YouTube by Universal Music Group", Trio 65, the same take (not the Town Hall or later live versions)
 # style: the book says Med. Ballad, also played as Medium Swing
 # book: the first 4 bars of A and B and the last 2 bars of B may be played over a Bb pedal
 

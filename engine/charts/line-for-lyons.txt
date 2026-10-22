@@ -4,7 +4,10 @@ style: Medium swing
 key: G
 form: AABC, 32 bars
 source: The New Real Book, Vol. 1
+recording: Gerry Mulligan Quartet; Gerry Mulligan Quartet; Fantasy; 1952
+youtube: acIRt7peteg
 # analysis: 2026-10-19, rules v2; G
+# recording: recorded 1952-09-02, probably the Black Hawk, San Francisco, Gerry Mulligan with Chet Baker, Carson Smith, Chico Hamilton, master 9258, the first recording of it; first issued on 78 (Fantasy 522, with Carioca), first LP 10" Fantasy LP 3-6 (1952); the Mulligan–Desmond quartet remade it in 1957 (jazzdisco, MusicBrainz); video: "Provided to YouTube by Universal Music Group", Gerry Mulligan Quartet/Chubby Jackson Big Band (Fantasy), "Line For Lyons (Instrumental)", the same take
 # book: head is in 2, solos are in 4. Solo on form (AABC); after solos, D.C. al Coda.
 # A is played twice (1st and 2nd endings): bars 1–6, 1st ending 7–8, 2nd ending 9–10.
 

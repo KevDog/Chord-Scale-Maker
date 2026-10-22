@@ -4,7 +4,10 @@ style: Medium
 key: F
 form: AB, 16 bars
 source: Colorado Cookbook, p. 167
+recording: Jimmy Heath; On the Trail; Riverside; 1964
+youtube: AdaGzVYrulo
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded spring 1964, Plaza Sound Studios, NYC, Jimmy Heath with Kenny Burrell, Wynton Kelly, Paul Chambers, Albert Heath, Riverside RLP 486; Grofé's Grand Canyon Suite (1931) movement → the recording that made it a jazz standard (Wikipedia); video: "Provided to YouTube by Universal Music Group", On the Trail, the same take
 
 # bar | chord | scale
 

@@ -4,7 +4,9 @@ style: Latin
 key: F
 form: AAB, 34 bars
 source: The New Real Book, Vol. 1
+recording: Harold Land/Blue Mitchell Quintet; Mapenzi; Concord Jazz; 1977
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded 1977-04-14, Sunwest Recording Studios, Los Angeles, Harold Land with Blue Mitchell (trumpet, the melody), Kirk Lightsey, Reggie Johnson, Al "Tootie" Heath, Concord Jazz CJ-44, the composer's first recording of it (jazzdisco, Wikipedia)
 # book: Medium Latin (half note = 122). Trumpet plays the melody throughout; chords in parentheses are used for solos.
 # Solo on form (AAB), taking the "On Cue" ending to end the last solo; then D.S. al Coda
 # the book's F(add 9) is written F, Bb13sus is written Bb9sus4

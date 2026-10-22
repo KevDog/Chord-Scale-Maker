@@ -4,7 +4,10 @@ style: Medium
 key: Eb
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 245
+recording: Sarah Vaughan; After Hours with Sarah Vaughan; Columbia; 1955
+youtube: c2IZiC24vbE
 # analysis: 2026-10-19, rules v2; Eb
+# recording: recorded July 1950, New York, Sarah Vaughan with Norman Leyden's orchestra (Mundell Lowe, guitar); first issued on 78 (Columbia 38925, with (I Love the Girl) I Love the Guy), first LP Columbia CL 660 (1955); songbook standard (1927, The Five O'Clock Girl) → Vaughan's reading, her most requested song per jazzstandards.com; sources give July 1, 20 or 27 for the session (Discogs, Wikipedia, jazzstandards.com); video: "Provided to YouTube by Legacy Recordings", After Hours, the same take
 
 # bar | chord | scale
 

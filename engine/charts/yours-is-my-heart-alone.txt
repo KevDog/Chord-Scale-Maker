@@ -5,7 +5,10 @@ style: Medium
 key: C
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 277
+recording: Cannonball Adderley; Cannonball Adderley and the Poll-Winners; Riverside; 1961
+youtube: lRl0XOxA8aw
 # analysis: 2026-10-19, rules v2; C
+# recording: recorded 1960-06-05, United Recording, Los Angeles, Cannonball Adderley with Victor Feldman, Wes Montgomery, Ray Brown, Louis Hayes, Riverside RLP 355; operetta song (Lehár, Das Land des Lächelns, 1929) → the Poll-Winners' reading as the jazz reference, over Oscar Peterson's live trio versions (jazzdisco, Wikipedia); video: "Provided to YouTube by Universal Music Group", Cannonball Adderley and the Poll Winners, the same take
 
 # bar | chord | scale
 

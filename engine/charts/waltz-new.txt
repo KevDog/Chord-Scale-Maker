@@ -5,7 +5,9 @@ key: Bb
 form: AB, 32 bars
 time: 3/4
 source: The New Real Book, Vol. 1
+recording: Jim Hall & Red Mitchell; Jim Hall/Red Mitchell; Artists House; 1978
 # analysis: 2026-10-19, rules v2; Bb
+# recording: recorded live 1978-01-20/21, Sweet Basil, NYC, a guitar-bass duo, Artists House AH 5; the first recording of it, the composer's own, before Michel Petrucciani's Power of Three (Blue Note, 1987, with Hall) (Wikipedia, Wikipedia "Jim Hall compositions"); no official upload found
 # book: Medium-Up Straight 1/8's, quarter = 184. Based on the chords of "Someday My Prince Will Come".
 # repeat signs around A–B; last time, B bar 16 goes to the Coda (coda sign at B bar 16).
 

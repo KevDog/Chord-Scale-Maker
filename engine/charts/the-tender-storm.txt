@@ -5,7 +5,10 @@ style: Medium up
 key: D
 form: A, 20 bars
 source: Colorado Cookbook, p. 239
+recording: Eddie Harris; The Tender Storm; Atlantic; 1966
+youtube: ZYu1stIRtHw
 # analysis: 2026-10-19, rules v2; D
+# recording: recorded 1966-09-19, NYC, Eddie Harris with Cedar Walton, Ron Carter, Bobby Thomas, Atlantic SD 1478; the composer's own first recording, the title track (Wikipedia, MusicBrainz); video: "Provided to YouTube by Rhino Atlantic", The Tender Storm, the same take
 
 # bar | chord | scale
 
