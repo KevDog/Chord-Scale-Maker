@@ -6,7 +6,10 @@ key: F
 time: 3/4
 form: A, 16 bars
 source: Colorado Cookbook, p. 199
+recording: Clark Terry; Everything's Mellow; Moodsville; 1961
+youtube: bgrBcURtYls
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded 1961-07-21, Van Gelder Studio, Englewood Cliffs, with Junior Mance, Joe Benjamin, Charlie Persip, Moodsville MVLP 20, the earliest documented recording of it ("The Simple Waltz", by Terry and Bob Brookmeyer); over the Terry–Brookmeyer Quintet's The Power of Positive Swinging (Mainstream, 1965) (Wikipedia, MusicBrainz); video: "Provided to YouTube by Universal Music Group", Mellow Moods (the Prestige CD of Everything's Mellow), the same take
 
 # bar | chord | scale
 

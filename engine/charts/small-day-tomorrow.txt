@@ -4,7 +4,9 @@ style: Ballad
 key: Em
 form: ABC, 32 bars
 source: The New Real Book, Vol. 1
+recording: Bob Dorough & Bill Takas; Beginning to See the Light; Laissez-Faire; 1976
 # analysis: 2026-10-19, rules v2; E minor
+# recording: Bob Dorough (voc, p) and Bill Takas (b), Laissez-Faire SD 02; the composer's first recording found (written 1966 with Fran Landesman), ahead of Irene Kral's and his 2006 Candid album Small Day Tomorrow (MusicBrainz, JazzTimes)
 # book: Med. Jazz Ballad, quarter = 60
 # the book repeats A–C (a repeat sign at A and at the end of C); solos on A and B; after solos, D.S. al Coda
 # the book's footnote: bass may play F on the 4th beat of bar 7 of letter B

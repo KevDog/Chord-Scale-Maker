@@ -5,7 +5,10 @@ style: Medium up
 key: F
 form: A
 source: Colorado Cookbook, p. 58
+recording: Bud Powell; The Amazing Bud Powell, Volume 1; Blue Note; 1956
+youtube: SDQX2-4eFDA
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded 1949-08-08 (jazzdisco gives 08-09), WOR Studios, NYC, Bud Powell's Modernists: Fats Navarro, Sonny Rollins, Powell, Tommy Potter, Roy Haynes, the first recording of it; master take BN362-1, first issued on 78 (Blue Note 1568, with 52nd Street Theme), not on the 10" BLP 5003, first LP 12" BLP 1503 (Wikipedia 1956, Discogs 1955); sources: jazzdisco, Wikipedia, Discogs; video: "Provided to YouTube by Universal Music Group", The Amazing Bud Powell: Vol. 1 (Rudy Van Gelder Edition), the same take (not the alternate, BN362-0)
 
 # bar | chord | scale
 

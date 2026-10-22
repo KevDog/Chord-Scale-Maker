@@ -4,7 +4,9 @@ style: Medium up
 key: Bb
 form: A, 20 bars
 source: Colorado Cookbook, p. 37
+recording: Harold Land-Blue Mitchell Quintet; Mapenzi; Concord Jazz; 1977
 # analysis: 2026-10-19, rules v2; Bb
+# recording: recorded 1977-04-14, Sunwest Studios, Los Angeles, Blue Mitchell, Harold Land, Kirk Lightsey, Reggie Johnson, Al "Tootie" Heath, Concord Jazz CJ-44; the composer's first known recording, ahead of Sam Jones's Something in Common (Muse MR 5149, September 1977), also with Mitchell (Wikipedia, BnF, MusicBrainz)
 
 # bar | chord | scale
 

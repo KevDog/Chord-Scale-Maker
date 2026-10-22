@@ -5,7 +5,10 @@ key: Dm
 # key: the book's index says Bb; the lead sheet is in Dm (one flat, D- to D-)
 form: AABA
 source: Colorado Cookbook, p. 31
+recording: Gerry Mulligan Quartet; Gerry Mulligan Quartet; Pacific Jazz; 1952
+youtube: WNvSssjkclU
 # analysis: 2026-10-19, rules v2; D minor
+# recording: recorded 1952-08-16, Phil Turetsky's house, Los Angeles, Gerry Mulligan with Chet Baker, Bob Whitlock, Chico Hamilton, master PJ-206-3; first issued on 78/45 (Pacific Jazz 601, with Lullaby of the Leaves, fall 1952); first LP the 10-inch PJ LP-1 (1952, later called Volume 1); the reading that made the tune a standard (jazzdisco, Wikipedia); video: "Provided to YouTube by Universal Music Group", Gerry Mulligan Quartet Vol. 1, the same take
 
 # bar | chord | scale
 

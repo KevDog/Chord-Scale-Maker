@@ -4,7 +4,10 @@ style: Medium ballad
 key: D
 form: AABC, 32 bars
 source: The New Real Book, Vol. 1
+recording: Nancy Wilson and Cannonball Adderley; Nancy Wilson/Cannonball Adderley; Capitol; 1962
+youtube: SpqQwbayrzM
 # analysis: 2026-10-19, rules v2; D
+# recording: recorded June 1961, NYC, Nancy Wilson with Cannonball Adderley, Nat Adderley, Joe Zawinul, Sam Jones, Louis Hayes, Capitol ST 1657, released February 1962, the album's opener; the chart follows this version; sources: Wikipedia, Discogs; video: "Provided to YouTube by Universal Music Group", Nancy Wilson/Cannonball Adderley, the same take
 
 # as played by Cannonball Adderley and Nancy Wilson
 # the book writes "D Ami7" and "D B7(#9#5)": the chord over a D pedal (written as slash chords)

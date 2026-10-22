@@ -6,7 +6,10 @@ key: Fm
 # key: the book's index says Bbm; the lead sheet is in Fm (four flats, F- to F-)
 form: AABC, 44 bars
 source: Colorado Cookbook, p. 203
+recording: Clark Terry; Yes, the Blues; Pablo Today; 1981
+youtube: 42lcVjkOKHs
 # analysis: 2026-10-19, rules v2; F minor
+# recording: recorded 1981-01-19, Spectrum Studios, Venice, California, with Eddie "Cleanhead" Vinson, Art Hillery, John Heard, Roy McCurdy, Pablo Today D2312-127, as "The Snapper", the first recording of it (MusicBrainz, library catalogues); video: "Provided to YouTube by Universal Music Group", Yes, The Blues, the same take
 
 # bar | chord | scale
 

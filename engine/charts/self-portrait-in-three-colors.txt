@@ -4,7 +4,10 @@ style: Medium ballad
 key: Eb
 form: AB, 15 bars
 source: The New Real Book, Vol. 1
+recording: Charles Mingus; Mingus Ah Um; Columbia; 1959
+youtube: dHV4Ej7-Kpk
 # analysis: 2026-10-19, rules v2; Eb
+# recording: recorded 1959-05-12, NYC, Charles Mingus with Willie Dennis, John Handy, Booker Ervin, Shafi Hadi (Curtis Porter), Horace Parlan, Dannie Richmond, the first issued recording of it (an unissued 1958 take was made for the film Shadows), Columbia CL 1370 / CS 8171, released September 1959; sources: jazzdisco, Wikipedia; video: "Provided to YouTube by Columbia/Legacy", Mingus Ah Um, the same take
 
 # book tempo marking: Medium Swing Ballad
 # played three times (no solos on the recording): 1st/2nd ending (B bars 8–9) twice, then the 3rd ending (B bars 10–11)

@@ -5,7 +5,9 @@ style: Latin
 key: Eb
 form: AABC, 32 bars
 source: Colorado Cookbook, p. 81
+recording: The Bob Montgomery and Willie Hill Sextet; Got Eyes for You; Sea Breeze Jazz; 1999
 # analysis: 2026-10-19, rules v2; Eb
+# recording: the composer's own first recording, the title track, Bob Montgomery (trumpet) with Willie Hill (tenor), Allen Hermann (trombone), Jeff Jenkins (piano), Ken Walker (bass), Todd Reid (drums), Sea Breeze Jazz SB-3034; Montgomery recorded it again on La Familia the Music of Bob Montgomery (self-released, 2018); sources: Discogs, Apple Music
 
 # bar | chord | scale
 

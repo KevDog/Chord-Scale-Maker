@@ -6,7 +6,10 @@ key: F
 form: ABCD, 64 bars
 time: 3/4
 source: The New Real Book, Vol. 1
+recording: Max Roach; Jazz in 3/4 Time; EmArcy; 1957
+youtube: ue_ylGf8rNc
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded 1957-03-18, Capitol Tower, Los Angeles, Max Roach Quintet (Kenny Dorham, Sonny Rollins, Bill Wallace, George Morrow), master 15175-10, EmArcy MG-36108; songbook standard (1937) → the jazz-waltz reading the chart follows (jazzdisco, Wikipedia); video: "Provided to YouTube by Universal Music Group", Jazz In 3/4 Time, the same take
 
 # bar | chord
 

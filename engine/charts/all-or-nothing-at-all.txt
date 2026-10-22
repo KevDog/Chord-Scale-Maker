@@ -4,7 +4,10 @@ style: Medium swing
 key: Am
 form: AABA, 64 bars
 source: The New Real Book, Vol. 1
+recording: John Coltrane; Ballads; Impulse!; 1963
+youtube: EeMMLPZEXTM
 # analysis: 2026-10-19, rules v2; A minor
+# recording: recorded 1962-11-13, Van Gelder Studio, Englewood Cliffs, John Coltrane Quartet (McCoy Tyner, Jimmy Garrison, Elvin Jones), take 3, Impulse! A-32; songbook standard (1939) → Coltrane's quartet reading as the jazz reference, over Sinatra's 1939 Harry James side (jazzdisco, Wikipedia); take 2 is on the 2002 Deluxe Edition only; video: "Provided to YouTube by Universal Music Group", Ballads, the issued take
 
 # bar | chord
 

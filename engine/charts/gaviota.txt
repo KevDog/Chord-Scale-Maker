@@ -4,7 +4,10 @@ style: Medium Latin
 key: Cm
 form: ABC, 34 bars
 source: The New Real Book, Vol. 1
+recording: Clare Fischer; Machaca; MPS; 1980
+youtube: urBdz1lke9o
 # analysis: 2026-10-19, rules v2; C minor
+# recording: recorded 1979-05-16/17, Capitol Studios, Hollywood, Clare Fischer & Salsa Picante (Gary Foster, Rick Zunigar, David Troncoso, Alex Acuña, Poncho Sanchez), the first recording of it, MPS 15 554 ST (Germany), then Discovery DS-835 in the US; Wikipedia gives 1979/1980/1981 in different places: 1980 for the MPS issue is the best-supported (Wikipedia, MusicBrainz); video: "Provided to YouTube by Kontor New Media", Machaca, the same take (not the 2016 ¡Intenso! big-band version)
 # book: Medium Latin (Bolero-Guajira)
 # head is AB; 1st solo on C (indefinitely), 2nd solo on ABC; after solos play the head (AB), then vamp, solo and fade on C
 

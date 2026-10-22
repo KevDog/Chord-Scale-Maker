@@ -4,7 +4,10 @@ style: Medium ballad
 key: G
 form: ABCDEFGH, 81 bars
 source: The New Real Book, Vol. 1
+recording: Denny Zeitlin; Tidal Wave; Palo Alto; 1984
+youtube: 1I2AMLLf-CQ
 # analysis: 2026-10-19, rules v2; G
+# recording: recorded January–March 1983, Mad Hatter Studios, Los Angeles, Zeitlin with Charlie Haden, John Abercrombie, Peter Donald, Palo Alto PA 8044-N, the first recording of it (MusicBrainz, Jazz Music Archives); video: "Provided to YouTube by The Orchard", Tidal Wave (Quicksilver reissue), the same take
 # book: head A–D: March-like (quarter = 90), B Freely, D a tempo, ending at (fine) on C6/9.
 # Solos: Med. Ballad (quarter = 69) on E F G H (F "Swing (in 2)", H "in 4"; F and G may also be swung in 4); after solos, D.C. al fine
 # the book's Ma13 chords are written Maj9 (FMa13 → FMaj9), 13sus → 9sus4, mi11(b5) → m7b5, B(add #11)/F# → B/F#

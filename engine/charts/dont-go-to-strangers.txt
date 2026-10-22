@@ -4,7 +4,10 @@ style: Medium ballad
 key: Bb
 form: AABC, 32 bars
 source: The New Real Book, Vol. 1
+recording: Etta Jones; Don't Go to Strangers; Prestige; 1960
+youtube: SgNXTPEsbac
 # analysis: 2026-10-19, rules v2; Bb
+# recording: recorded 1960-06-21, Van Gelder Studio, Englewood Cliffs, Etta Jones with Frank Wess, Richard Wyands, Skeeter Best, George Duvivier, Roy Haynes, Prestige PRLP 7186; her hit single of it is the reference reading of the song (Wikipedia, Discogs); video: "Provided to YouTube by Universal Music Group", Don't Go To Strangers, the same take
 
 # bar | chord
 

@@ -6,7 +6,10 @@ key: Ab
 time: 3/4
 form: ABCD, 36 bars
 source: Colorado Cookbook, p. 28
+recording: Frank Sinatra and Antonio Carlos Jobim; Francis Albert Sinatra & Antonio Carlos Jobim; Reprise; 1967
+youtube: eWAPCgWl5J8
 # analysis: 2026-10-19, rules v2; Ab
+# recording: recorded 1967-01-30 to 02-01, United Western Recorders, Hollywood, arranged and conducted by Claus Ogerman, Reprise FS-1021; show tune (Kismet, 1953; Peggy Lee's 1953 single was the hit) → the Sinatra/Jobim bossa reading as the best-known jazz-side version; the chart is a jazz waltz and follows no named version, and no 3/4 jazz reading is clearly canonical; Sinatra's swing version on Come Dance with Me! (Capitol, 1959) is the alternative; sources: Discogs, Wikipedia; video: "Provided to YouTube by Universal Music Group", Sinatra/Jobim: The Complete Reprise Recordings, the album take
 
 # bar | chord | scale
 

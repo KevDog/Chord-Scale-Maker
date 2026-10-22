@@ -4,7 +4,10 @@ style: Ballad
 key: F
 form: AB, 32 bars
 source: The New Real Book, Vol. 1
+recording: Irene Kral; Where Is Love?; Choice; 1975
+youtube: Pe8Lycw_7Lc
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded December 1974, Wally Heider Studios, Los Angeles, Irene Kral with Alan Broadbent (p), Choice CRS 1012; the first recording known and the reference reading; Dorough's own is late (Duets, self-released, 2012) (Wikipedia, MusicBrainz); video: "Provided to YouTube by Redeye Worldwide", Where Is Love? (the Candid reissue), the same take
 # book: Slow Ballad. The form repeats (repeat signs around A–B).
 # the Intro is a repeated 2-bar piano figure marked (C7); written out as 4 bars.
 # the 2nd time, C13(#11 b9) falls on the last beat of bar 4 (pickup to A).

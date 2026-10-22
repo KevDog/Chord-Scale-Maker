@@ -4,7 +4,10 @@ style: Blues
 key: Bb
 form: A, 12 bars
 source: Colorado Cookbook, p. 73
+recording: Clark Terry Quartet; New Blue Horns; Riverside; 1959
+youtube: Nu3I-lpzeUA
 # analysis: 2026-10-19, rules v2; Bb, blues
+# recording: recorded 1958-05-07/12, Reeves Sound Studios, NYC, Clark Terry with Thelonious Monk, Sam Jones, Philly Joe Jones, at the In Orbit sessions but left off that LP; first issued on the anthology New Blue Horns (RLP 12-294), later on the In Orbit CD (OJCCD-302-2) (jazzdisco, MusicBrainz); video: "Provided to YouTube by Universal Music Group", In Orbit (CD), the same take
 
 # bar | chord | scale
 

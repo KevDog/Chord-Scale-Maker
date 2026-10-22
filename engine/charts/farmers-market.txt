@@ -4,7 +4,10 @@ style: Medium up
 key: F
 form: AB, 24 bars
 source: The New Real Book, Vol. 1
+recording: Art Farmer; Farmer's Market; New Jazz; 1958
+youtube: lqY3QFY7v-g
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded 1956-11-23, Van Gelder Studio, Hackensack, Art Farmer Quintet with Hank Mobley, Kenny Drew, Addison Farmer, Elvin Jones, Prestige/New Jazz PRLP 8203; the composer's first recording under his own name; first recorded on Wardell Gray's Los Angeles All Stars session, 1952-01-21, Farmer on trumpet (Prestige 78, later the LP Wardell Gray Memorial, Volume Two) (jazzdisco, Wikipedia, MusicBrainz); video: "Provided to YouTube by Universal Music Group", Farmer's Market (New Jazz, 1958), the same take
 # the book: "Med.-Up Swing"
 # the intro (optional, N.C.) is a melodic figure with no chords
 # solos on F blues; after solos, D.S. al Fine (final lyric)

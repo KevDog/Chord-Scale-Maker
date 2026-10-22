@@ -5,7 +5,10 @@ style: Up
 key: F
 form: AABCD EEFG, 70 bars
 source: The New Real Book, Vol. 1
+recording: Bud Powell; Bud Powell's Moods; Mercury; 1954
+youtube: ecn1STEYB6k
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded February 1951, NYC, Bud Powell solo piano, matrix 574-5, the composer's own first recording, first issued on Mercury/Clef MGC-610 (Discogs 1954; Wikipedia gives 1956), later retitled The Genius of Bud Powell (Verve MGV-8115); Miles Davis recorded it first, as "Budo", on 1949-01-21 (Capitol, later Birth of the Cool); sources: jazzdisco, Discogs, Wikipedia; video: "Provided to YouTube by Universal Music Group", The Genius Of Bud Powell, the same take (the only issued take)
 # book: Bright bebop. Head: A A B C D; solos on E E F G; after solos, D.C. al Coda (from C bar 8).
 # the pickup before A has no chord; chords the book pushes an eighth before a barline are written in the next bar
 

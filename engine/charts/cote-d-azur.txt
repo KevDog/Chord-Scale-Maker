@@ -6,7 +6,10 @@ key: Bbm
 context: blues
 form: A, 12 bars
 source: Colorado Cookbook, p. 73
+recording: The Pablo All Stars Jam; Montreux '77; Pablo Live; 1977
+youtube: B1LyehI-s6o
 # analysis: 2026-10-19, rules v2; Bb minor, blues
+# recording: recorded live 1977-07-14, Montreux Jazz Festival, Clark Terry with Ronnie Scott, Milt Jackson, Oscar Peterson, Joe Pass, Niels-Henning Ørsted Pedersen, Bobby Durham, Pablo Live 2308-210, the album's opener; the earliest documented recording of it, the composer leading on flugelhorn (jazzdisco, MusicBrainz); video: "Provided to YouTube by Universal Music Group", Montreux '77, the same take
 
 # bar | chord | scale
 
