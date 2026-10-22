@@ -1,4 +1,4 @@
-import { chartMeta, LIMITS, parseChart } from '@chord-scale-maker/engine'
+import { chartMeta, LIMITS, parseChart, type SavedKind, type SavedMeta, savedMetaFrom } from '@chord-scale-maker/engine'
 import { ref } from 'vue'
 import { LEGACY_STARTER_CHART } from '~/utils/starterChart'
 
@@ -11,41 +11,22 @@ import { LEGACY_STARTER_CHART } from '~/utils/starterChart'
  * - copy: Save as a copy, of a library chart or of one of yours
  * - new: started blank, opened from a file, or saved from a share link
  */
-export type SavedKind = 'edited' | 'copy' | 'new'
-export type SavedMeta = Readonly<{ id: string; title: string; kind: SavedKind; basedOn?: string; createdAt: number; updatedAt: number }>
+export type { SavedKind, SavedMeta }
 export type SavedChart = Readonly<{ meta: SavedMeta; text: string }>
 export type SaveResult = Readonly<{ ok: true; meta: SavedMeta }> | Readonly<{ ok: false; reason: 'full' | 'tooLong' }>
 
 export const MY_CHARTS_MAX = 200
 const INDEX = 'csm-charts'
 const textKey = (id: string): string => `csm-chart:${id}`
-const KINDS: readonly string[] = ['edited', 'copy', 'new']
-const ID = /^[A-Za-z0-9_-]{6,40}$/
 
 export const titleOf = (text: string): string => chartMeta(parseChart(text).value).title.trim() || 'Untitled'
 
 export const newChartId = (): string => crypto.randomUUID().replace(/-/g, '').slice(0, 12)
 
-/** a stored index entry, if it is one */
-function metaFrom(v: unknown): SavedMeta | null {
-  if (!v || typeof v !== 'object') return null
-  const o = v as Record<string, unknown>
-  if (typeof o.id !== 'string' || !ID.test(o.id) || typeof o.kind !== 'string' || !KINDS.includes(o.kind)) return null
-  if (typeof o.createdAt !== 'number' || typeof o.updatedAt !== 'number') return null
-  return {
-    id: o.id,
-    title: typeof o.title === 'string' ? o.title.slice(0, LIMITS.maxMeta) : 'Untitled',
-    kind: o.kind as SavedKind,
-    ...(typeof o.basedOn === 'string' ? { basedOn: o.basedOn } : {}),
-    createdAt: o.createdAt,
-    updatedAt: o.updatedAt,
-  }
-}
-
 function readIndex(): SavedMeta[] {
   try {
     const v: unknown = JSON.parse(readStored(INDEX) ?? '[]')
-    return Array.isArray(v) ? v.map(metaFrom).filter((m): m is SavedMeta => m !== null) : []
+    return Array.isArray(v) ? v.map(savedMetaFrom).filter((m): m is SavedMeta => m !== null) : []
   } catch {
     return []
   }
@@ -108,7 +89,7 @@ export function sweepOrphans(): void {
   try {
     const v: unknown = JSON.parse(readStored(INDEX) ?? '[]')
     if (!Array.isArray(v)) return
-    ids = new Set(v.map(metaFrom).flatMap((m) => (m ? [m.id] : [])))
+    ids = new Set(v.map(savedMetaFrom).flatMap((m) => (m ? [m.id] : [])))
   } catch {
     return
   }
