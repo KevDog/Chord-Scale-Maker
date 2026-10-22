@@ -4,7 +4,10 @@ style: Up
 key: Bb
 form: AABA, 64 bars
 source: Colorado Cookbook, p. 52
+recording: Clifford Brown and Max Roach; Study in Brown; EmArcy; 1955
+youtube: 8BDS4ONdKHk
 # analysis: 2026-10-19, rules v2; Bb
+# recording: recorded 1955-02-25, Capitol Studio, New York, with Harold Land, Richie Powell, George Morrow, master 11366-2, MG 36037; songbook standard (Charlie Barnet's 1939 hit) → the instrumental jazz reference (Parker's Ko-Ko, on its changes, has another title); sources: microgroove.jp, Wikipedia; video: "Provided to YouTube by Universal Music Group", Study In Brown, the same take
 
 # bar | chord | scale
 # the standard changes; the lead sheet's alternates (Eb7, Dm7 G7b9, Db7, Gb7#11, F7alt) are left out

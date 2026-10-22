@@ -4,7 +4,10 @@ style: Ballad
 key: G
 form: AABC, 32 bars
 source: The New Real Book, Vol. 1
+recording: Red Garland Trio; Groovy; Prestige; 1957
+youtube: E-Uwj_QQekA
 # analysis: 2026-10-19, rules v2; G
+# recording: recorded 1956-12-14, Van Gelder Studio, Hackensack, Red Garland with Paul Chambers and Art Taylor, Prestige PRLP 7113; songbook standard (1932) → Garland's trio reading as the jazz reference, over Wes Montgomery's (Verve, 1968, overdubbed); sources: jazzdisco, MusicBrainz; video: Prestige Records' official upload of the Groovy track, the same take
 # style: the book says Med. Ballad
 # book: bars 3–4 of A and C may also be played G6 C7 | G6 Db7#5#9
 

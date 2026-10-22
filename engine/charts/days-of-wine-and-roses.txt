@@ -4,7 +4,10 @@ style: Medium
 key: F
 form: AB, 32 bars
 source: Colorado Cookbook, p. 59
+recording: Wes Montgomery; Boss Guitar; Riverside; 1963
+youtube: lTsao5gjbZo
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded 1963-04-22, Plaza Sound Studios, New York, with Mel Rhyne and Jimmy Cobb, RM 459, released 1963; film song (1962) → the most-studied instrumental jazz reading; sources: jazzdisco, Wikipedia; video: Wes Montgomery's official channel, "Official Audio" from Boss Guitar, the same take
 
 # bar | chord | scale
 

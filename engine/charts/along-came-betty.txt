@@ -4,7 +4,10 @@ style: Medium
 key: Ab
 form: ABCD
 source: Colorado Cookbook, p. 19
+recording: Art Blakey and the Jazz Messengers; Moanin'; Blue Note; 1958
+youtube: 6lJeothOwCU
 # analysis: 2026-10-19, rules v2; Ab
+# recording: recorded 1958-10-30, Van Gelder Studio, Hackensack (Lee Morgan, Benny Golson, Bobby Timmons, Jymie Merritt), the first recording of it, with the composer on tenor, BLP 4003 (jazzdisco, MusicBrainz, Wikipedia); video: "Provided to YouTube by Universal Music Group", Moanin', the same take
 
 # bar | chord | scale
 # as the lead sheet lays it out; the last bar is the turnaround into the top

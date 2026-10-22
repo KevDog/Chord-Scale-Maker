@@ -5,7 +5,10 @@ style: Ballad
 key: Eb
 form: AABC, 26 bars
 source: Colorado Cookbook, p. 138
+recording: Johnny Smith Quintet; Jazz at NBC; Royal Roost; 1953
+youtube: 69fmCGek4Hg
 # analysis: 2026-10-19, rules v2; Eb
+# recording: recorded 1952-03-11, NYC, Johnny Smith with Stan Getz, Sanford Gold, Eddie Safranski, Don Lamond; first issued on 78 (Royal Roost 547, with Tabu), 1952; first LP the 10" Royal Roost RLP 410 (1953), later the 12" Moonlight in Vermont (Roost, 1956); songbook standard → the Smith/Getz record, the 1952 hit, is the jazz reference; sources: jazzdisco, Discogs, MusicBrainz, Wikipedia; video: "Provided to YouTube by Parlophone UK", Moonlight In Vermont, the same take
 
 # bar | chord | scale
 

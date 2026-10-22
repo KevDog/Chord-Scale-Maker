@@ -4,7 +4,10 @@ style: Medium
 key: Dm
 form: AABC, 44 bars
 source: Colorado Cookbook, p. 18
+recording: Chet Baker; Chet; Riverside; 1959
+youtube: 60DqJFji52A
 # analysis: 2026-10-19, rules v2; D minor
+# recording: recorded 1958-12-30 or 1959-01-19 (jazzdisco lists both dates), Reeves Sound Studios, New York, with Herbie Mann, Pepper Adams, Bill Evans, Paul Chambers, Connie Kay, RLP 12-299, the album's opener; songbook standard (1932 revue) → a well-known instrumental reading, over Kenny Dorham's Jazz Contrasts and Miles Davis's Blue Moods; sources: jazzdisco, Wikipedia; video: "Provided to YouTube by Universal Music Group", Chet, the same take (not "Complete Take 2")
 
 # bar | chord | scale
 

@@ -4,7 +4,10 @@ style: Medium up
 key: Ab
 form: AABA, 32 bars
 source: The New Real Book, Vol. 1
+recording: Woody Herman and His Orchestra; The Thundering Herds; Columbia; 1965
+youtube: pnQAQdw1gFg
 # analysis: 2026-10-19, rules v2; Ab
+# recording: recorded 1947-12-27, Los Angeles, the Second Herd with Stan Getz, Zoot Sims, Herbie Steward, Serge Chaloff, arranged by Jimmy Giuffre, HCO3061-1 (the only take), the first recording of it; first issued on 78 (Columbia 38304, with No Time), first LP Columbia C3L 25 per jazzdisco (The Three Herds, Columbia 1955, may have issued it earlier); video: "Provided to YouTube by Columbia/Legacy", The Jazz Masters, the same take
 # book: as played by Woody Herman
 
 # bar | chord

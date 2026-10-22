@@ -4,7 +4,10 @@ style: Medium
 key: C
 form: AABC, 32 bars
 source: Colorado Cookbook, p. 14
+recording: Jay Jay Johnson's Boppers; Modern Jazz Trombones Volume Two; Prestige; 1951
+youtube: H9hq7p4jEh8
 # analysis: 2026-10-19, rules v2; C
+# recording: recorded 1949-10-17, NYC, J.J. Johnson with Sonny Stitt, John Lewis (piano), Nelson Boyd, Max Roach, take 2, the first recording of it, with the composer on piano; first issued on 78 (New Jazz 820, with Tea Pot), first LP 10" PRLP 123 (MusicBrainz 1951, jazzdisco 1952); Lewis's own-name recording came later (with Sacha Distel, Atlantic, 1957) (jazzdisco, MusicBrainz, Wikipedia); video: "Provided to YouTube by Universal Music Group", Sonny Stitt, Bud Powell & J.J. Johnson, "Afternoon In Paris (Take 2)", the same take (not take 1)
 
 # bar | chord | scale
 # the bridge's standard chords; the sheet's alternates (Fm7 Bb7, Em7 A7, Dbm7 Gb7) are left out

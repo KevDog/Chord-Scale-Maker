@@ -4,7 +4,10 @@ style: Medium up
 key: Bb
 form: ABCD, 40 bars
 source: The New Real Book, Vol. 1
+recording: Bud Powell; The Amazing Bud Powell; Blue Note; 1952
+youtube: 43-FN8Vtbnc
 # analysis: 2026-10-19, rules v2; Bb
+# recording: recorded 1949-08-09, WOR Studios, NYC, Bud Powell's Modernists: Fats Navarro, Sonny Rollins, Tommy Potter, Roy Haynes, master BN360-2, the first recording of it, first issued on 78 as "Bouncing With Bud" (Blue Note 1567, with Wail), first LP 10" BLP 5003 (1952); later on The Amazing Bud Powell, Volume 1 (BLP 1503) (jazzdisco, Wikipedia); video: "Provided to YouTube by Universal Music Group", The Amazing Bud Powell Vol. 1 (RVG Edition), the master, the same take
 # intro and head as written; solo on ABC; after solos D.C. al Coda (to the Coda from C bar 8)
 # the intro's chords are kicks pushed ahead of the bar (B7b5 on the and of 4 in bars 2 and 6, Bb6 on the and of 4 in bars 4 and 8): written on the bar they anticipate
 # D: the chords follow the bass rhythms

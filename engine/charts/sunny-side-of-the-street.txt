@@ -5,7 +5,10 @@ style: Medium
 key: C
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 229
+recording: Dizzy Gillespie, Sonny Stitt and Sonny Rollins; Sonny Side Up; Verve; 1959
+youtube: 89-0QSG262A
 # analysis: 2026-10-19, rules v2; C
+# recording: recorded 1957-12-19, Nola Penthouse Sound Studios, New York, with Ray Bryant, Tom Bryant, Charlie Persip, Gillespie singing, MG V-8262 (Wikipedia: January 1959, citing Billboard; jazzdisco: 1958); songbook standard (1930) → the best-known modern jazz reading, over Louis Armstrong's vocals; sources: jazzdisco, Wikipedia; video: "Provided to YouTube by Universal Music Group", Dizzy 100, the same take
 
 # bar | chord | scale
 

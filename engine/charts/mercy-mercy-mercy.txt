@@ -4,7 +4,10 @@ style: Medium slow funky rock
 key: Bb
 form: A, 20 bars
 source: The New Real Book, Vol. 1
+recording: Cannonball Adderley Quintet; Mercy, Mercy, Mercy! Live at "The Club"; Capitol; 1967
+youtube: W9mYN0Tkoik
 # analysis: 2026-10-19, rules v2; Bb
+# recording: recorded 1966-10-20 before an invited audience at Capitol's Hollywood studio (the sleeve says a Chicago club), Nat Adderley, Joe Zawinul (electric piano), Victor Gaskin, Roy McCurdy, Capitol T-2663, released February 1967; an earlier Tokyo take came out only in Japan (jazzdisco, Wikipedia); video: "Provided to YouTube by Universal Music Group", Mercy, Mercy, Mercy! Live at "The Club", the same take
 # book: as played by Cannonball Adderley. One unlettered 20-bar section, repeated; last time, after bar 16, to the Coda.
 # bars 9–12: the last chord of each odd bar is pushed on the "and" of 4 and held into the next bar
 

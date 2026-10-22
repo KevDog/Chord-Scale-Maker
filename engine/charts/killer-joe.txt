@@ -4,7 +4,10 @@ style: Medium
 key: C
 form: AABA
 source: Colorado Cookbook, p. 119
+recording: Art Farmer-Benny Golson Jazztet; Meet the Jazztet; Argo; 1960
+youtube: 7a8Us_e9lvQ
 # analysis: 2026-10-19, rules v2; C
+# recording: recorded 1960-02-06/09/10, Nola Penthouse Studios, NYC (Art Farmer, Curtis Fuller, Golson, McCoy Tyner, Addison Farmer, Lex Humphries), the first recording of it, Argo LP 664 (jazzdisco, Wikipedia); video: "Provided to YouTube by Universal Music Group", Meet The Jazztet, the same take
 
 # bar | chord | scale
 

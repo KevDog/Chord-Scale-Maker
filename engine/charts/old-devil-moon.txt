@@ -4,7 +4,10 @@ style: Medium
 key: F
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 162
+recording: Sonny Rollins; A Night at the Village Vanguard; Blue Note; 1958
+youtube: ELgmb8cyTsQ
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded live 1957-11-03 (evening set), Village Vanguard, NYC, Sonny Rollins with Wilbur Ware and Elvin Jones, Blue Note BLP 1581 (jazzdisco gives 1957, Wikipedia 1958); Finian's Rainbow standard (1947) → Rollins's trio reading as the jazz reference, over Miles Davis (Blue Haze); not the afternoon version (Bailey, La Roca); sources: jazzdisco, Wikipedia; video: "Provided to YouTube by Universal Music Group", A Night At The Village Vanguard, "Evening Take", the same take
 
 # bar | chord | scale
 

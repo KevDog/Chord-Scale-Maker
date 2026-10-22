@@ -4,7 +4,10 @@ style: Ballad
 key: Eb
 form: AABCD, 40 bars
 source: Colorado Cookbook, p. 275
+recording: Billie Holiday; Billie Holiday Sings; Columbia; 1950
+youtube: UJpo6E-XhGs
 # analysis: 2026-10-19, rules v2; Eb
+# recording: recorded 1938-05-11, NYC, Billie Holiday and Her Orchestra (Charlie Shavers, Buster Bailey, Babe Russin, Claude Thornhill, John Kirby, Cozy Cole), take 22921-1; first issued on 78 (Vocalion 4126), first LP the 10" Columbia CL 6129 (1950); songbook standard (1938) → Holiday's reading is the reference, over Coleman Hawkins (1946); sources: jazzdisco; video: "Provided to YouTube by Legacy/Columbia", Billie Holiday Love Songs, "You Go to My Head (Take 1)", the same take
 
 # bar | chord | scale
 

@@ -4,7 +4,10 @@ style: Ballad
 key: C
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 266
+recording: John Coltrane Quartet; Ballads; Impulse!; 1963
+youtube: SsXprfyx99w
 # analysis: 2026-10-19, rules v2; C
+# recording: recorded 1962-09-18, Van Gelder Studio, Englewood Cliffs, Coltrane with McCoy Tyner, Jimmy Garrison, Elvin Jones, Impulse! A-32 (also the B side of the single 45-212, 1962); songbook standard (1939) → Coltrane's reading is the jazz reference; sources: jazzdisco, MusicBrainz; video: "Provided to YouTube by Universal Music Group", Ballads, the same take
 
 # bar | chord | scale
 

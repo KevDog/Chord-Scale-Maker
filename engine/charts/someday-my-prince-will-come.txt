@@ -6,7 +6,10 @@ key: F
 time: 3/4
 form: AA, 32 bars
 source: Colorado Cookbook, p. 211
+recording: Miles Davis; Someday My Prince Will Come; Columbia; 1961
+youtube: fWN9UfUV9eE
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded 1961-03-20, Columbia 30th Street Studio, New York, with Hank Mobley, John Coltrane, Wynton Kelly, Paul Chambers, Jimmy Cobb, CL 1656, released 1961-12-11; film song (1937) → the title-track jazz reference, over Bill Evans (Portrait in Jazz, 1960) and Dave Brubeck (1957); sources: jazzdisco, Wikipedia; video: "Provided to YouTube by Columbia/Legacy", Someday My Prince Will Come, the same take
 
 # bar | chord | scale
 

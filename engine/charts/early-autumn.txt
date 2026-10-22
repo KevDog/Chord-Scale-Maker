@@ -4,7 +4,10 @@ style: Medium ballad
 key: C
 form: ABC, 32 bars
 source: The New Real Book, Vol. 1
+recording: Woody Herman and His Orchestra; Classics in Jazz; Capitol; 1952
+youtube: GRlehhQI4ug
 # analysis: 2026-10-19, rules v2; C
+# recording: recorded 1948-12-30, Los Angeles, Woody Herman's Second Herd with the Stan Getz solo, master 3831-2; first issued on 78 (Capitol 57-616, with Keeper of the Flame), 1949; first LP the 10" Capitol H 324 (1952); the composers' own band, the first recording under this title (the theme first appeared as "Summer Sequence Part 4", Columbia, 1947); sources: jazzdisco, Discogs; video: "Provided to YouTube by Universal Music Group", Early Autumn (Capitol), the same take (not the 1952 Mars remake)
 
 # bar | chord
 # the pickup bar before A

@@ -6,7 +6,10 @@ key: Bb
 time: 3/4
 form: AABC, 56 bars
 source: Colorado Cookbook, p. 253
+recording: Art Blakey and the Jazz Messengers; Three Blind Mice; United Artists; 1962
+youtube: yi1_-XK4pGs
 # analysis: 2026-10-19, rules v2; Bb
+# recording: recorded live 1962-03-18 at The Renaissance, Hollywood (Freddie Hubbard, Curtis Fuller, Wayne Shorter, Cedar Walton, Jymie Merritt), the first recording of it, with the composer on trumpet, UAJ 14002; Hubbard recorded it under his own name on Backlash (Atlantic, 1967) (jazzdisco, Wikipedia); video: "Provided to YouTube by Universal Music Group", Three Blind Mice, the 9:49 master, the same take (not the 5:18 alternate)
 
 # bar | chord | scale
 

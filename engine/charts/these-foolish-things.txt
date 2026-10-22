@@ -5,7 +5,10 @@ style: Medium ballad
 key: Eb
 form: AABA, 32 bars
 source: The New Real Book, Vol. 1
+recording: Billie Holiday; Billie Holiday Sings; Clef; 1952
+youtube: bYe-5sIHSzc
 # analysis: 2026-10-19, rules v2; Eb
+# recording: recorded 1952-03-26, Radio Recorders, Los Angeles, with Charlie Shavers, Flip Phillips, Oscar Peterson, Barney Kessel, Ray Brown, Alvin Stoller; 10" Mercury/Clef MGC-118, reissued on Solitude (Clef MGC-690, 1956); songbook standard → Lester Young's 1945 Aladdin side is the jazz landmark, but its first LP couldn't be confirmed, so Holiday's well-documented LP reading (Monk's trio, Prestige, 1953, is the other choice); sources: jazzdisco, MusicBrainz, Wikipedia; video: "Provided to YouTube by Universal Music Group", Solitude, the same take
 # the book's letters: A (16 bars, the two A's), B, C (the last A)
 # alt (for soloing): A bars 4 and 12 and C bar 4 (Cm9 F9 Bm9 E9)
 
