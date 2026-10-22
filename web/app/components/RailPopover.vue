@@ -1,8 +1,9 @@
 <template>
   <!-- inline: stacked under its toggle (in the Controls dialog); else a button whose panel opens over the sheet, so the rail keeps each group one control tall (#293) -->
   <div v-if="inline" class="flex flex-col items-start gap-2"><slot /></div>
+  <!-- above or below (the click's bar): on a phone its panel is placed on the bar, its width, not on the button -->
   <!-- eslint-disable-next-line vuejs-accessibility/no-static-element-interactions -- Escape from the button or panel inside bubbles here -->
-  <div v-else ref="root" class="relative" :class="summary && 'w-full'" @keydown.esc="close">
+  <div v-else ref="root" :class="[place === 'side' ? 'relative' : 'sm:relative', summary && 'w-full']" @keydown.esc="close">
     <!-- summary: reads as a select (Catalyst's listbox button) naming what's set, its panel below -->
     <button
       v-if="summary"
@@ -36,9 +37,9 @@
           summary
             ? 'top-full left-0 mt-2 max-sm:right-0 max-sm:left-auto'
             : place === 'above'
-              ? 'right-0 bottom-full mb-2'
+              ? 'bottom-full left-0 mb-2 max-sm:right-4 max-sm:left-4 max-sm:w-auto'
               : place === 'below'
-                ? 'top-full right-0 mt-2'
+                ? 'top-full left-0 mt-2 max-sm:right-4 max-sm:left-4 max-sm:w-auto'
                 : 'top-0 left-full ml-2 max-sm:top-full max-sm:left-0 max-sm:mt-2 max-sm:ml-0',
         ]"
       >
@@ -58,7 +59,7 @@ import { vInteractive } from '~/utils/interactive'
  * a group's details, opened beside it: open stays until a click outside, Escape, or the button again. summary: the
  * button reads as a select showing what's set ("Piano · F3–E6"), named "label: summary", its panel below.
  */
-/** place: a button's panel beside it (the rail), or above or below it (the click's bar: its ⋯ button) */
+/** place: a button's panel beside it (the rail), or above or below it (the click's bar: its ⋯ button; on a phone, across the bar, which is positioned) */
 withDefaults(defineProps<{ label: string; inline?: boolean; summary?: string; place?: 'side' | 'above' | 'below' }>(), { summary: undefined, place: 'side' })
 // the panel's controls name themselves: a UiField the popover sits in labels its button, not them
 provide(FIELD, undefined)

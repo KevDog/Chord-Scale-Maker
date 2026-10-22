@@ -8,7 +8,8 @@ import { readStored, writeStored } from '~/utils/storage'
  * clicks fall in each lookahead window; this books them on the AudioContext's clock, so a busy page never makes it
  * drift, and lights the beat that is sounding. Tempo and feel are remembered per chart, the rest in this browser.
  */
-export type ClickSettings = Readonly<{ hat: boolean; countIn: 0 | 1 | 2; sound: ClickSound }>
+/** folded: the bar shows only Start/Stop, the tempo and the lights */
+export type ClickSettings = Readonly<{ hat: boolean; countIn: 0 | 1 | 2; sound: ClickSound; folded: boolean }>
 export type ClickChart = Readonly<{ beats: Beats; style: string; metreChanges: boolean }>
 export type ClickDeps = Readonly<{
   audio?: () => ClickAudio | null
@@ -21,7 +22,7 @@ export type ClickDeps = Readonly<{
 export const LOOKAHEAD = { interval: 25, ahead: 0.1, hiddenAhead: 1.2 } as const
 
 const SETTINGS_KEY = 'csm-click'
-const DEFAULT_SETTINGS: ClickSettings = { hat: false, countIn: 0, sound: 'wood' }
+const DEFAULT_SETTINGS: ClickSettings = { hat: false, countIn: 0, sound: 'wood', folded: false }
 
 function parseSettings(raw: string | null): ClickSettings {
   try {
@@ -30,6 +31,7 @@ function parseSettings(raw: string | null): ClickSettings {
       hat: typeof v.hat === 'boolean' ? v.hat : DEFAULT_SETTINGS.hat,
       countIn: v.countIn === 0 || v.countIn === 1 || v.countIn === 2 ? v.countIn : DEFAULT_SETTINGS.countIn,
       sound: CLICK_SOUNDS.includes(v.sound as ClickSound) ? (v.sound as ClickSound) : DEFAULT_SETTINGS.sound,
+      folded: typeof v.folded === 'boolean' ? v.folded : DEFAULT_SETTINGS.folded,
     }
   } catch {
     return DEFAULT_SETTINGS

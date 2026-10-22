@@ -794,7 +794,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   synthesized in `clickSounds.ts` (no samples, no CSP change). `ClickBar` is its controls, docked at the window's foot on
   the song page (the body's `click-docked` class keeps the page's foot clear of it, not in print) or a row of focus
   mode's bar. The rail's Click shows it; Space starts and stops it outside a control.
-- **State:** `csm-click` holds the settings (count-in, hat, sound); `csm-click:<key>` a chart's tempo and
+- **State:** `csm-click` holds the settings (count-in, hat, sound, and `folded`: the bar down to Start/Stop, the tempo and the lights); `csm-click:<key>` a chart's tempo and
   feel, written only when the player sets them, so an unset tempo follows the style as it's edited. Never in the chart
   or a share link.
 

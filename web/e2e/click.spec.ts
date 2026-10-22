@@ -16,6 +16,8 @@ test('the click opens from the rail, runs, and follows into focus mode (#254)', 
   await clickUntil(page, page.getByRole('button', { name: 'Click', exact: true }), clickBar(page))
   const bar = clickBar(page)
   await expect(bar.getByRole('spinbutton', { name: 'Tempo' })).toHaveValue('132') // style: Medium
+  const settingsAt = (await bar.getByRole('button', { name: 'Click settings' }).boundingBox())!.x
+  expect(settingsAt).toBeLessThan((await bar.getByTestId('click-lights').boundingBox())!.x) // ⋯ with the controls, not by Hide
   await bar.getByRole('button', { name: 'Start' }).click()
   await expect(bar.getByRole('button', { name: 'Stop' })).toHaveAttribute('aria-pressed', 'true')
   await expect(bar.locator('[data-testid=click-lights] i[data-on]')).toHaveCount(1)
@@ -97,6 +99,10 @@ for (const [phone, viewport] of [['iPhone 14', { width: 390, height: 844 }], ['P
       expect(s.x + s.width).toBeLessThanOrEqual(viewport.width)
       expect(s.y).toBeGreaterThanOrEqual(0)
       await page.keyboard.press('Escape')
+      // folded: one row, still there to stop
+      await bar.getByRole('button', { name: 'Click controls' }).click()
+      expect((await bar.boundingBox())!.height).toBeLessThanOrEqual(64)
+      await expect(bar.getByRole('button', { name: 'Start' })).toBeVisible()
       await page.evaluate(() => window.scrollTo(0, document.documentElement.scrollHeight))
       const foot = (await page.locator('footer').last().boundingBox())!
       expect(foot.y + foot.height).toBeLessThanOrEqual((await bar.boundingBox())!.y + 1)
@@ -105,7 +111,7 @@ for (const [phone, viewport] of [['iPhone 14', { width: 390, height: 844 }], ['P
     test('in focus mode the click fits above the pages', async ({ page }) => {
       await page.goto('/song/autumn-leaves')
       await clickUntil(page, page.getByRole('button', { name: 'Click', exact: true }), clickBar(page))
-      await page.getByRole('button', { name: 'Controls' }).click()
+      await page.getByRole('button', { name: 'Controls', exact: true }).click()
       await page.getByRole('dialog', { name: 'Controls' }).getByRole('button', { name: 'Focus', exact: true }).click()
       const focus = page.getByRole('dialog', { name: 'Focus mode' })
       const bar = (await focus.getByRole('toolbar', { name: 'Click' }).boundingBox())!

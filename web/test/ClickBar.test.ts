@@ -86,6 +86,26 @@ describe('ClickBar', () => {
     expect(w.text()).not.toMatch(/Skip note|Eighths/)
   })
 
+  it('folds to Start/Stop, the tempo and the lights, still playing, and unfolds; it stays folded', async () => {
+    const { w, click, button } = await mountBar()
+    await button('Start')!.trigger('click')
+    const toggle = () => button('Click controls')!
+    expect(toggle().attributes('aria-expanded')).toBe('true')
+    await toggle().trigger('click')
+    expect(toggle().attributes('aria-expanded')).toBe('false')
+    for (const name of ['Slower', 'Faster', 'Tap the tempo', 'Click settings', 'Hide the click']) expect(button(name), name).toBeUndefined()
+    expect(w.find('input[aria-label=Tempo]').exists()).toBe(false)
+    expect(w.find('fieldset').exists()).toBe(false)
+    expect(button('Stop')).toBeDefined()
+    expect(click.running.value).toBe(true)
+    expect(w.findAll('[data-testid=click-lights] i')).toHaveLength(4)
+    expect(w.text()).toContain('160')
+    const again = await mountBar()
+    expect(again.button('Click controls')!.attributes('aria-expanded')).toBe('false')
+    await toggle().trigger('click')
+    expect(button('Slower')).toBeDefined()
+  })
+
   it('docked, the page’s foot clears it until it goes', async () => {
     const { w } = await mountBar()
     expect(document.body.classList.contains('click-docked')).toBe(true)
