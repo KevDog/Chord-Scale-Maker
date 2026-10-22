@@ -1,6 +1,6 @@
 /**
  * Every internal link on the prerendered site resolves: its page (or asset) is in the output and its #fragment is an
- * id on that page. Only <a href>; external links, mailto/tel and the server's /api/ are skipped (no network).
+ * id on that page (or #top). Only <a href>; external links, mailto/tel and the server's /api/ are skipped (no network).
  * Run over .output/public by check-links.ts.
  */
 
@@ -38,14 +38,17 @@ export const brokenLinks = (pages: ReadonlyMap<string, string>, files: ReadonlyS
     for (const [, raw] of html.matchAll(ANCHOR)) {
       const href = unescape(raw!)
       if (!href || SKIP.test(href)) continue
-      const [beforeHash, fragment] = href.split('#', 2) as [string, string | undefined]
-      const path = beforeHash.split('?')[0]!
+      const hash = href.indexOf('#')
+      const beforeHash = hash < 0 ? href : href.slice(0, hash)
+      const fragment = hash < 0 ? undefined : href.slice(hash + 1)
+      const path = beforeHash.split('?')[0] ?? ''
       const target = path ? resolve(path, files) : page
       if (!target) {
         problems.push(`${page}: ${href} (missing page)`)
         continue
       }
-      if (fragment && pages.has(target) && !idsOf(target).has(decode(fragment))) problems.push(`${page}: ${href} (missing #${fragment})`)
+      // #top is the top of the page, id or none (the HTML spec)
+      if (fragment && fragment !== 'top' && pages.has(target) && !idsOf(target).has(decode(fragment))) problems.push(`${page}: ${href} (missing #${fragment})`)
     }
   }
   return problems.sort()

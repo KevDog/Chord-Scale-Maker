@@ -83,7 +83,8 @@ export const CHROMATIC_CELLS: readonly Readonly<{ id: Dashed<(typeof DOMINANT_ON
 ]
 
 export type CellId = keyof typeof CELL_SYSTEMS | (typeof SINGLE_CELLS)[number]['id'] | (typeof CHROMATIC_CELLS)[number]['id']
-const isSystemId = (id: CellId): id is keyof typeof CELL_SYSTEMS => id in CELL_SYSTEMS
+/** a system (a pair of cells), the only cells Phrase aims */
+export const isSystemId = (id: CellId): id is keyof typeof CELL_SYSTEMS => id in CELL_SYSTEMS
 const chromaticOf = (id: string) => CHROMATIC_CELLS.find((c) => c.id === id)
 export const isCellId = (x: unknown): x is CellId =>
   typeof x === 'string' && (x in CELL_SYSTEMS || SINGLE_CELLS.some((c) => c.id === x) || chromaticOf(x) !== undefined)
@@ -159,9 +160,10 @@ export function cellPitches(tones: readonly Spelled[], contour: Contour, first: 
 /** a partial contour's open moves, each the nearer way between the two notes (the smaller semitone distance; a tritone goes up) */
 export function fillContour(tones: readonly Spelled[], contour: PartialContour): Contour {
   return contour.map((m, i) => {
+    const [from, to] = [tones[i], tones[i + 1]]
+    if (!from || !to) throw new Error(`a contour's move ${i + 1} is between two notes: ${tones.length} notes`)
     if (m) return m
-    const up = mod(pcOf(tones[i + 1] as Spelled) - pcOf(tones[i] as Spelled), 12)
-    return up <= 6 ? 'u' : 'd'
+    return mod(pcOf(to) - pcOf(from), 12) <= 6 ? 'u' : 'd'
   })
 }
 
@@ -189,6 +191,9 @@ function pairOf(id: CellId, chord: string): readonly [Cell, Cell] | null {
 }
 
 type Ordered = ReturnType<typeof orderCell>
+
+/** the pair's cell for a slot count: A on an even count, B on an odd */
+const cellAt = (pair: readonly [Cell, Cell], count: number): Cell => (count % 2 === 0 ? pair[0] : pair[1])
 
 /** a cell placed whole in the part's range (placeWhole) */
 const placeCell = (tones: readonly Spelled[], contour: Contour, range: Range, prev: number | null): readonly number[] =>
@@ -260,7 +265,7 @@ function cellsOf(part: Part, chords: readonly GuideInput[], index: number, line:
   const readsAt = (nth: number, count: number): readonly Read[] => {
     const s = subOf(nth)
     const reads = s ? subs.get(s.chord) : undefined
-    return reads?.some((r) => r.cell === pair[count % 2]) ? reads : own
+    return reads?.some((r) => r.cell === cellAt(pair, count)) ? reads : own
   }
   const readOf = (reads: readonly Read[], c: Cell) => reads.find((r) => r.cell === c)
   const [a, b] = [readOf(own, pair[0]), readOf(own, pair[1])]
@@ -272,17 +277,17 @@ function cellsOf(part: Part, chords: readonly GuideInput[], index: number, line:
     up: true,
     midi: placeCell(r.tones, fillContour(r.tones, r.ordered.contour), range, prev),
   })
-  /** a cell's first note over a chord, as a pitch class (none: null) */
+  /** a cell's first note over a chord, as a pitch class; null where the cell has no tones there (the slot plays the arpeggio, #462) */
   const firstOf = (over: Over, c: Cell): number | null => {
-    const first = (over.sub ? substituteTones : cellTones)(part, over.chord, over.scale, orderCell(c, order).degrees.slice(0, 1))?.[0]
+    const first = (over.sub ? substituteTones : cellTones)(part, over.chord, over.scale, orderCell(c, order).degrees)?.[0]
     return first ? pcOf(first) : null
   }
   /**
    * the next slot's target pitch class: its system cell's first note over this chord (its substitute's for a
-   * substitute slot, else its own), or the next (none, or a rest: none)
+   * substitute slot, else its own), or the next (none, a rest, or a cell with no tones there: none)
    */
   const targetOf = (count: number, nth: number, follows: Follows): number | null => {
-    const c = pair[(count + 1) % 2] as Cell
+    const c = cellAt(pair, count + 1)
     if (follows === 'cell' || (follows === 'chord' && chords[index + 1] !== run.next)) {
       // this chord's next slot, or its restatement's (the same chord, its run's next slot)
       const s = subOf(nth + 1)
@@ -298,7 +303,7 @@ function cellsOf(part: Part, chords: readonly GuideInput[], index: number, line:
     next: (prev, count, last, nth, follows = null) => {
       cellCounts.set(index, nth + 1)
       const reads = readsAt(nth, count)
-      const r = readOf(reads, pair[count % 2] as Cell)
+      const r = readOf(reads, cellAt(pair, count))
       if (r) {
         const target = aims ? targetOf(count, nth, follows) : null
         return played(target === null ? r : (readOf(reads, aimedCell(r.cell, r.tones, target, (c) => readOf(reads, c)?.tones ?? null, order)) ?? r), prev)

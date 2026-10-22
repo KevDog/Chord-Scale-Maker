@@ -1,7 +1,6 @@
-import { chartMeta, LIMITS, MODES, parseChart } from '@chord-scale-maker/engine'
+import { chartMeta, LIMITS, parseChart, type SavedKind, type SavedMeta, savedMetaFrom } from '@chord-scale-maker/engine'
 import { ref } from 'vue'
 import { LEGACY_STARTER_CHART } from '~/utils/starterChart'
-import { practiceKey } from '~/utils/practiceKey'
 
 /**
  * My charts: charts saved in this browser's localStorage, with no account and nothing sent anywhere. An index of
@@ -12,41 +11,22 @@ import { practiceKey } from '~/utils/practiceKey'
  * - copy: Save as a copy, of a library chart or of one of yours
  * - new: started blank, opened from a file, or saved from a share link
  */
-export type SavedKind = 'edited' | 'copy' | 'new'
-export type SavedMeta = Readonly<{ id: string; title: string; kind: SavedKind; basedOn?: string; createdAt: number; updatedAt: number }>
+export type { SavedKind, SavedMeta }
 export type SavedChart = Readonly<{ meta: SavedMeta; text: string }>
 export type SaveResult = Readonly<{ ok: true; meta: SavedMeta }> | Readonly<{ ok: false; reason: 'full' | 'tooLong' }>
 
 export const MY_CHARTS_MAX = 200
 const INDEX = 'csm-charts'
 const textKey = (id: string): string => `csm-chart:${id}`
-const KINDS: readonly string[] = ['edited', 'copy', 'new']
-const ID = /^[A-Za-z0-9_-]{6,40}$/
 
 export const titleOf = (text: string): string => chartMeta(parseChart(text).value).title.trim() || 'Untitled'
 
 export const newChartId = (): string => crypto.randomUUID().replace(/-/g, '').slice(0, 12)
 
-/** a stored index entry, if it is one */
-function metaFrom(v: unknown): SavedMeta | null {
-  if (!v || typeof v !== 'object') return null
-  const o = v as Record<string, unknown>
-  if (typeof o.id !== 'string' || !ID.test(o.id) || typeof o.kind !== 'string' || !KINDS.includes(o.kind)) return null
-  if (typeof o.createdAt !== 'number' || typeof o.updatedAt !== 'number') return null
-  return {
-    id: o.id,
-    title: typeof o.title === 'string' ? o.title.slice(0, LIMITS.maxMeta) : 'Untitled',
-    kind: o.kind as SavedKind,
-    ...(typeof o.basedOn === 'string' ? { basedOn: o.basedOn } : {}),
-    createdAt: o.createdAt,
-    updatedAt: o.updatedAt,
-  }
-}
-
 function readIndex(): SavedMeta[] {
   try {
     const v: unknown = JSON.parse(readStored(INDEX) ?? '[]')
-    return Array.isArray(v) ? v.map(metaFrom).filter((m): m is SavedMeta => m !== null) : []
+    return Array.isArray(v) ? v.map(savedMetaFrom).filter((m): m is SavedMeta => m !== null) : []
   } catch {
     return []
   }
@@ -88,12 +68,35 @@ export function saveChart(input: Readonly<{ id: string; text: string; kind: Save
   return { ok: true, meta }
 }
 
-/** remove a chart, with its practice picks */
+/** what a chart's view keeps per chart, under `<prefix>:<key>` (practice adds `:<mode>`): one list for delete, the sweep and a backup (#466) */
+export const PER_CHART_PREFIXES = ['csm-practice', 'csm-level', 'csm-pent-path', 'csm-pent-picks', 'csm-undo'] as const
+const MINE_KEY = new RegExp(`^(?:${PER_CHART_PREFIXES.join('|')}):mine:([A-Za-z0-9_-]+)(?::[a-z]+)?$`)
+
+/** the saved chart id a per-chart key belongs to, if it's one of yours */
+const mineIdOf = (key: string): string | null => MINE_KEY.exec(key)?.[1] ?? null
+
+/** remove a chart, with everything kept for it */
 export function deleteChart(id: string): void {
   writeStored(INDEX, JSON.stringify(readIndex().filter((m) => m.id !== id)))
   removeStored(textKey(id))
-  for (const mode of MODES) removeStored(practiceKey(`mine:${id}`, mode))
+  for (const key of storedKeys()) if (mineIdOf(key) === id) removeStored(key)
   savedRevision.value++
+}
+
+/** drop what charts deleted before #467 left behind; nothing when the index can't be read, so a broken one never costs your picks */
+export function sweepOrphans(): void {
+  let ids: Set<string>
+  try {
+    const v: unknown = JSON.parse(readStored(INDEX) ?? '[]')
+    if (!Array.isArray(v)) return
+    ids = new Set(v.map(savedMetaFrom).flatMap((m) => (m ? [m.id] : [])))
+  } catch {
+    return
+  }
+  for (const key of storedKeys()) {
+    const id = mineIdOf(key)
+    if (id !== null && !ids.has(id)) removeStored(key)
+  }
 }
 
 /** the old single draft (the hidden New chart's), moved into My charts once; one still holding a starter is left behind */

@@ -10,10 +10,17 @@
         <UiButton outline href="/contact">Request a chart</UiButton>
         <UiButton outline :disabled="opener.busy.value" :title="ireal ? 'Open a chart saved as a .txt file, or an iReal Pro export (or drop one on this page)' : 'Open a chart saved as a .txt file (or drop one on this page)'" @click="fileInput?.click()"><FolderOpenIcon data-slot="icon" />Open chart…</UiButton>
         <UiButton v-if="ireal" outline :disabled="opener.busy.value" @click="opener.cancel(); linkOpen = true"><ArrowDownTrayIcon data-slot="icon" />Import iReal link…</UiButton>
+        <UiDropdown v-if="backup">
+          <UiDropdownButton outline><ArchiveBoxIcon data-slot="icon" />Backup<ChevronDownIcon data-slot="icon" /></UiDropdownButton>
+          <UiDropdownMenu anchor="end">
+            <UiDropdownItem @click="backUp"><ArrowDownTrayIcon data-slot="icon" />Back up…</UiDropdownItem>
+            <UiDropdownItem :disabled="opener.busy.value" @click="fileInput?.click()"><ArrowUpTrayIcon data-slot="icon" />Restore from backup…</UiDropdownItem>
+          </UiDropdownMenu>
+        </UiDropdown>
         <UiButton color="note" href="/song?new=1" class="max-md:hidden"><PlusIcon data-slot="icon" />New chart</UiButton>
       </div>
     </div>
-    <input ref="fileInput" type="file" :accept="ireal ? '.txt,text/plain,.html,.htm,text/html' : '.txt,text/plain'" class="sr-only" tabindex="-1" aria-hidden="true" @change="pick">
+    <input ref="fileInput" type="file" :accept="accept" class="sr-only" tabindex="-1" aria-hidden="true" @change="pick">
     <UiText v-if="opener.error.value && !linkOpen" role="alert" class="mt-3 text-red-700! dark:text-red-400!">{{ opener.error.value }}</UiText>
     <!-- Import iReal link…, and a playlist's picker or a song's report from either way in -->
     <IRealImportDialog
@@ -29,6 +36,8 @@
       @confirm="linkOpen = false; opener.confirm()"
       @close="linkOpen = false; opener.cancel()"
     />
+
+    <ClientOnly><RestoreDialog v-if="backup" :restoring="opener.restoring.value" @close="opener.cancel()" /></ClientOnly>
 
     <div class="mt-8 max-w-md">
       <UiInputGroup>
@@ -94,7 +103,7 @@
 <script setup lang="ts">
 import { PAGE_HEAD, seoMeta, songPath } from '~/utils/site'
 import { letterIndex } from '~/utils/libraryIndex'
-import { ArrowDownTrayIcon, FolderOpenIcon, MagnifyingGlassIcon, PlusIcon } from '@heroicons/vue/16/solid'
+import { ArchiveBoxIcon, ArrowDownTrayIcon, ArrowUpTrayIcon, ChevronDownIcon, FolderOpenIcon, MagnifyingGlassIcon, PlusIcon } from '@heroicons/vue/16/solid'
 import { MusicalNoteIcon } from '@heroicons/vue/24/outline'
 
 useSeoMeta(seoMeta(PAGE_HEAD.library))
@@ -129,6 +138,14 @@ onMounted(() => {
 })
 const opener = useOpenChart()
 const ireal = useFeature('ireal')
+/** Back up… and Restore from backup… (#466): a backup also opens through Open chart… or a drop */
+const backup = useFeature('backup')
+const accept = ['.txt,text/plain', ireal && '.html,.htm,text/html', backup && '.json,application/json'].filter(Boolean).join(',')
+const version = String(useRuntimeConfig().public.version ?? '')
+function backUp(): void {
+  const file = backupDownload(version)
+  downloadText(file.filename, file.text)
+}
 /** the Import iReal link… dialog's link step */
 const linkOpen = ref(false)
 const fileInput = ref<HTMLInputElement | null>(null)

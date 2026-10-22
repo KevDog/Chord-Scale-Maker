@@ -66,6 +66,7 @@ onMounted(() => {
   window.addEventListener('storage', onStorage)
 })
 onBeforeUnmount(() => window.removeEventListener('storage', onStorage))
+watch(savedRevision, refresh) // this tab saved some (a restore)
 
 watch(() => charts.value.length, (n) => emit('count', n), { immediate: true })
 const shown = computed(() => charts.value.filter((c) => searchLibrary([{ slug: c.id, title: c.title, name: c.title, subtitle: '', details: '', key: '', style: '', form: '', composer: '', aka: [], text: '' }], props.query).length))

@@ -35,6 +35,15 @@ describe('brokenLinks', () => {
     expect(site({ 'index.html': ['https://x.org/a', 'http://x.org', '//x.org', 'mailto:a@b.c', 'tel:1', '/api/contact'].map(a).join('') })).toEqual([])
   })
 
+  it('reads the fragment from the first #: a second # is part of it (#407)', () => {
+    expect(site({ 'index.html': a('/help#a#b'), 'help/index.html': '<h2 id="a"></h2>' })).toEqual(['index.html: /help#a#b (missing #a#b)'])
+    expect(site({ 'index.html': a('/help#a#b'), 'help/index.html': '<h2 id="a#b"></h2>' })).toEqual([])
+  })
+
+  it('passes a bare #top, the top of the page with or without the id (#407)', () => {
+    expect(site({ 'index.html': a('#top') + a('/help#top'), 'help/index.html': '' })).toEqual([])
+  })
+
   it('decodes &amp;', () => {
     expect(site({ 'index.html': a('/library?a=1&amp;b=2#top'), 'library/index.html': '<div id="top"></div>' })).toEqual([])
   })
