@@ -536,8 +536,16 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   print too. The sheets' subtitle gains "Alternate changes" while that set plays.
 - **Flag off:** the app reads the doc itself, so a chart with `alt` rows plays standard only, with no toggle or small
   line. The engine always treats `alt` rows as real.
-- **Sheet editing is off** for a chart with alternates until #469 (it would write the played set over both; edit.ts knows
-  only `row`), flag on or off; the source stays editable, so the Source is offered at every Interface level.
+- **Sheet editing (#469):** the editing components draw from `doc` (the played set, `changesFor(doc, set)`) and write
+  against `source` (the real doc), passing `set`; this relies on `changesFor`'s line-count invariant (a played row maps
+  to the same source line). `edit.ts` holds the set-aware ops: `setBarChordsIn` / `setLineChordIn` (a chord edit in
+  the played set: on a shared bar in Alternate it makes the bar an alternate, retyping it back removes it) and
+  `setAltBarChords` / `altBarChords` (the alt line's entry for one bar). Bar ops keep `alt` rows with their bar.
+- **Redundancy:** checked only in `setAltBarChords`: an alternate equal to the bar's standard chords, scales and
+  functions is dropped (decision `alt.same`); an empty entry removes the alternate. An alternate can't be held.
+- **App:** `SheetAltChord.vue` is the alt line's entry (Tab / Shift+Tab move between bars, Enter commits, Esc cancels);
+  `altEditing` in EditorView turns it on for a wide screen with Standard playing. A `copy:` section shows its alternates
+  but takes no new ones. The Source is no longer forced open for a chart with alternates.
 
 ### Guide tones on Changes ([spec](superpowers/specs/2026-10-10-guide-tone-lines-design.md), amended by [independent lines](superpowers/specs/2026-10-10-independent-guide-tone-lines-design.md) and [the diverge note](superpowers/specs/2026-10-11-guide-lines-diverge-note.md); first built as [guide tones on Changes](superpowers/specs/2026-10-10-guide-tones-on-changes-design.md))
 

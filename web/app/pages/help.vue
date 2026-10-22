@@ -223,8 +223,20 @@
             </div>
           </dl>
           <UiText>
-            Both settings are remembered per chart in this browser and travel in a share link. A chart with alternates can't be edited bar by bar yet;
-            its source stays editable.
+            Both settings are remembered per chart in this browser and travel in a share link.
+          </UiText>
+          <UiText>
+            <strong class="font-semibold text-zinc-950 dark:text-white">Editing alternates.</strong> While you edit on a wide screen with
+            Standard playing, a small line above the bars takes each bar's alternate. Click <UiCode>+ alt</UiCode> (or a bar's alternate)
+            and type its chords: Tab moves to the next bar, Shift+Tab to the one before, Enter keeps it, Esc cancels. Leave it empty to
+            remove the bar's alternate. Chords the same as what the Alternate changes already play there aren't kept.
+          </UiText>
+          <UiText>
+            With Changes set to Alternate, the big chords are the alternate set. Retype a bar both sets share and it becomes an alternate;
+            retype it back and the alternate goes. Tapping a chord sets its scale and function as usual: on an alternate bar it sets the
+            alternate's, on a shared bar the shared chord's. An alternate can't be held. Adding, deleting or splitting bars, pasting and
+            new sections act on both sets. On a phone, switch to Alternate and tap a chord. A repeated section shows its alternates but
+            can't be given new ones on the line: write the section out first.
           </UiText>
         </div>
 

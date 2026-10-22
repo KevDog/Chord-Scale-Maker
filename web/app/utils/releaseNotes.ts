@@ -8,6 +8,12 @@ export type ReleaseNote = Readonly<{ date: string; items: readonly ReleaseItem[]
 
 export const RELEASE_NOTES: readonly ReleaseNote[] = [
   {
+    date: '2026-10-22',
+    items: [
+      { text: 'Edit alternate changes on the sheet: while editing, a small line above the bars takes each bar’s alternate (+ alt, then type; Tab for the next bar), and with Changes set to Alternate the big chords are the alternate set. A chart with alternates no longer forces its Source open.', pr: 469 },
+    ],
+  },
+  {
     date: '2026-10-21',
     items: [
       { text: 'Rhythm Changes now carries alternate changes: Changes → Alternate, in the toolbar above the sheet, plays them on every sheet, and Other changes prints the other set small above the bars.', pr: 476 },
