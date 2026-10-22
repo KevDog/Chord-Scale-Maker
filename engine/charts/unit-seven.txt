@@ -5,30 +5,30 @@ style: Mixed
 key: C
 form: AABC, 44 bars
 source: Colorado Cookbook, p. 252
-# analysis: 2026-10-19, rules v2; C, blues
+# analysis: 2026-10-22, rules v2; C, blues
 
 # bar | chord | scale
 
 section: A1
-1  | C7      # I7 of the blues: a tonic with dominant colour, Mixolydian
-5  | F7      # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-7  | C7      # I7 of the blues: a tonic with dominant colour, Mixolydian
+1  | C7      # I7 of the blues: a tonic with dominant color, Mixolydian
+5  | F7      # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+7  | C7      # I7 of the blues: a tonic with dominant color, Mixolydian
 8  | A7alt   # from the symbol: altered
 9  | AbMaj7  # ♭VImaj7, borrowed from C minor: Lydian (its ♯11 is in the key)
 10 | G7alt   # from the symbol: altered
-11 | C7      # I7 of the blues: a tonic with dominant colour, Mixolydian
+11 | C7      # I7 of the blues: a tonic with dominant color, Mixolydian
 11 | A7      # extended dominant: each one falls a fifth into the next: natural tensions
 12 | D7      # V7 of V7: the dominant of the dominant: natural tensions
 12 | G7alt   # from the symbol: altered
 
 section: A2
-1  | C7      # I7 of the blues: a tonic with dominant colour, Mixolydian
-5  | F7      # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-7  | C7      # I7 of the blues: a tonic with dominant colour, Mixolydian
+1  | C7      # I7 of the blues: a tonic with dominant color, Mixolydian
+5  | F7      # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+7  | C7      # I7 of the blues: a tonic with dominant color, Mixolydian
 8  | A7alt   # from the symbol: altered
 9  | AbMaj7  # ♭VImaj7, borrowed from C minor: Lydian (its ♯11 is in the key)
 10 | G7alt   # from the symbol: altered
-11 | C7      # I7 of the blues: a tonic with dominant colour, Mixolydian
+11 | C7      # I7 of the blues: a tonic with dominant color, Mixolydian
 12 | A7alt   # from the symbol: altered
 
 section: B
@@ -44,12 +44,12 @@ section: B
 8  | G7      # extended dominant: V7 of C7
 
 section: C
-1  | C7      # I7 of the blues: a tonic with dominant colour, Mixolydian
-5  | F7      # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-7  | C7      # I7 of the blues: a tonic with dominant colour, Mixolydian
+1  | C7      # I7 of the blues: a tonic with dominant color, Mixolydian
+5  | F7      # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+7  | C7      # I7 of the blues: a tonic with dominant color, Mixolydian
 8  | A7alt   # from the symbol: altered
 9  | AbMaj7  # ♭VImaj7, borrowed from C minor: Lydian (its ♯11 is in the key)
 10 | G7alt   # from the symbol: altered
-11 | C7      # I7 of the blues: a tonic with dominant colour, Mixolydian
+11 | C7      # I7 of the blues: a tonic with dominant color, Mixolydian
 11 | A7alt   # from the symbol: altered
 12 | D7      # II7 in C, not resolving: natural tensions

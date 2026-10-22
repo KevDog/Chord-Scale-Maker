@@ -55,7 +55,7 @@ export function versionProblems(charts: readonly Source[]): readonly string[] {
     if (mains.length > 1) out.push(`${mains.map((c) => c.slug).join(', ')}: two charts of "${mains[0]!.title}" without version: (give all but one a version:)`)
     const byLabel = new Map<string, Read[]>()
     for (const c of cs) if (c.label) byLabel.set(c.label, [...(byLabel.get(c.label) ?? []), c])
-    for (const [label, same] of byLabel) if (same.length > 1) out.push(`${same.map((c) => c.slug).join(', ')}: two versions of "${cs[0]!.title}" labelled "${label}"`)
+    for (const [label, same] of byLabel) if (same.length > 1) out.push(`${same.map((c) => c.slug).join(', ')}: two versions of "${cs[0]!.title}" labeled "${label}"`)
     const head = mains[0]
     // an aka:-joined chart may be titled otherwise; one that shares the main's key should spell it the same
     if (head) for (const c of cs) if (c.label && c.key === head.key && c.title !== head.title) out.push(`${c.slug}: title "${c.title}" differs from its main chart's "${head.title}"`)

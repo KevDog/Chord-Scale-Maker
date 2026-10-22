@@ -5,7 +5,7 @@ import { CONCERT, type Part } from '../part'
 const TENOR: Part = { clef: 'treble', trans: 'Bb' }
 
 describe('pentatonicChoices', () => {
-  it('lists all 12 in pentatonicRanking order, labelled with degree and shared count', () => {
+  it('lists all 12 in pentatonicRanking order, labeled with degree and shared count', () => {
     const c = pentatonicChoices('Cmaj7', 'C Ionian', CONCERT)
     expect(c).toHaveLength(12)
     expect(c[0]).toMatchObject({ name: 'Dm', degree: 2, shared: 5, pc: 2, label: 'Dm pent · on 2 · 5 shared' }) // the ranking's Auto: of the three that share 5, fewest fifths from C

@@ -225,7 +225,7 @@ describe('functionCandidates', () => {
 })
 
 describe('the round trip with the Changes sheet', () => {
-  it('reads back every numeral the analyser gives the library, in the same spelling', () => {
+  it('reads back every numeral the analyzer gives the library, in the same spelling', () => {
     for (const { f, r } of libraryRows()) {
       if (r.numeral === '?' || r.numeral === '→') continue // no function: an unread chord, a link of a chain of dominants
       const back = parseFunction(r.numeral)

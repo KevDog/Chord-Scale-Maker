@@ -22,7 +22,7 @@
 <script setup lang="ts">
 /**
  * the song page's control rail: the sheet's settings at left, its actions at right (.interface-design/system.md).
- * Sticky from lg while editing (practising, it scrolls away: the notes are what matter): its parents up to the Preview section are display: contents, so it sticks over the whole sheet.
+ * Sticky from lg while editing (practicing, it scrolls away: the notes are what matter): its parents up to the Preview section are display: contents, so it sticks over the whole sheet.
  * Below the sheet's popovers (z-10), except while one of its own menus is open; its height (--rail-h) sets how far
  * clear of it the sheet's controls scroll into view.
  */

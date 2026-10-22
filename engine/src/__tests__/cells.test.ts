@@ -227,7 +227,7 @@ describe('chromatic cells (#377)', () => {
     expect(noteNames(play([at(0, chord, scale, 0)], '5-s5-6-7'))).toEqual(arpeggio)
   })
 
-  it('1 ♮7 7 6 over G7alt has no doubled neighbours: G F♯ F E♭', () => {
+  it('1 ♮7 7 6 over G7alt has no doubled neighbors: G F♯ F E♭', () => {
     expect(noteNames(play([at(0, 'G7alt', 'G Altered', 0)], '1-n7-7-6'))).toEqual(['G', 'F#', 'F', 'Eb'])
   })
 

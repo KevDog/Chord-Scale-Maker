@@ -45,7 +45,7 @@ describe('UiListbox', () => {
   })
 
   it('names its button by a label and its value, so a screen reader hears both (#425)', async () => {
-    const Labelled = defineComponent({
+    const Labeled = defineComponent({
       components: { UiListbox, UiListboxOption, UiListboxLabel },
       setup: () => ({ value: ref('ballad') }),
       template: `<span id="version-label">Version</span><UiListbox v-model="value" labelled-by="version-label">
@@ -53,7 +53,7 @@ describe('UiListbox', () => {
           <UiListboxOption value="ballad"><UiListboxLabel>Ballad</UiListboxLabel></UiListboxOption>
         </UiListbox>`,
     })
-    const w = await mountSuspended(Labelled, { attachTo: document.body })
+    const w = await mountSuspended(Labeled, { attachTo: document.body })
     const button = w.find('button')
     const id = button.attributes('id')
     expect(id).toBeTruthy()

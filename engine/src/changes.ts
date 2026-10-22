@@ -280,7 +280,7 @@ const mapChords = (line: ChangesLine, f: (c: ChangesChord) => ChangesChord): Cha
 const mapPentatonics = (line: ChangesLine, f: (p: ChangesPentatonic) => ChangesPentatonic): ChangesLine => mapChords(line, (c) => (c.pentatonic ? { ...c, pentatonic: f(c.pentatonic) } : c))
 
 /**
- * the pentatonic row as printed (#255), run after breakLines: a chord's label stays on a line's first labelled chord
+ * the pentatonic row as printed (#255), run after breakLines: a chord's label stays on a line's first labeled chord
  * and wherever it differs from the last one shown on the line (relative keys share a home: shown once); elsewhere
  * its label is '' (not printed), its key and ladder kept for nothing but the model's completeness. A chord with no
  * pentatonic ends the line's last shown label: the label after the gap prints again. A printed label's run (#272) is its

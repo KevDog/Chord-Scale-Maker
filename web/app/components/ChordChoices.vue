@@ -111,7 +111,7 @@ const note = computed((): RowNote | undefined => (row.value ? rowNotes(props.doc
 const analysed = computed(() => note.value?.analysed ?? '')
 const analysedNote = computed(() => [note.value?.numeral, note.value?.rule && `rule ${note.value.rule}`].filter(Boolean).join(', '))
 const pinned = computed(() => !!analysed.value && note.value?.source === 'written')
-const pinnedText = computed(() => (samePitchScale(row.value?.scale ?? '', analysed.value) ? 'your choice; the analyser’s too' : `your choice; the analyser says ${analysed.value}`))
+const pinnedText = computed(() => (samePitchScale(row.value?.scale ?? '', analysed.value) ? 'your choice; the analyzer’s too' : `your choice; the analyzer says ${analysed.value}`))
 /** the options, by pitch, each once: the analysed scale stands for any the same */
 const listed = (scale: string | null | undefined): boolean => !!scale && !samePitchScale(scale, analysed.value)
 const usual = computed(() => (listed(choices.value.defaultScale) ? choices.value.defaultScale : null))
@@ -171,7 +171,7 @@ const found = computed(() => searchScales(query.value, rootText.value))
 
 function setScale(scale: string): void {
   emit('update:doc', setRowField(props.source ?? props.doc, props.line, 'scale', scale))
-  emit('said', `${row.value?.chord}: ${scale || `${analysed.value}, the analyser’s`}`)
+  emit('said', `${row.value?.chord}: ${scale || `${analysed.value}, the analyzer’s`}`)
 }
 function pick(scale: string): void {
   setScale(scale)

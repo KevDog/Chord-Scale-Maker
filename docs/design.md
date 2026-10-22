@@ -107,7 +107,7 @@ and `chord_scales.json`, since they sit outside Vite's root.
 ## 3. Engine
 
 Pure functions over immutable data, with no Vue or DOM imports. The core began as a one-to-one port of the
-Python CLI's `jazz_scales.py` (retired after `v1-launch`), and keeps its names and behaviour. Transposing a chart,
+Python CLI's `jazz_scales.py` (retired after `v1-launch`), and keeps its names and behavior. Transposing a chart,
 interval labels and guide tones are built on top of it in their own modules.
 
 ### Types
@@ -180,7 +180,7 @@ directives, until the next `section:`. Bars count from 1 in each section.
 
 ```ts
 type ChartLine =
-  | { kind: 'meta'; key: MetaKey; value: string }  // the header: title, subtitle; key, bars, context (analyser hints); minor (reserved); time; composer, style, form, source, aka, kind
+  | { kind: 'meta'; key: MetaKey; value: string }  // the header: title, subtitle; key, bars, context (analyzer hints); minor (reserved); time; composer, style, form, source, aka, kind
   | { kind: 'section'; name: string }              // opens a block
   | { kind: 'sectionMeta'; field: 'key' | 'time' | 'context' | 'bars' | 'outside' | 'copy'; value: string }
   | { kind: 'row'; bar: string; chord: string; scale: string; function?: string; comment?: string }  // bar from 1 in its section; scale '' = default; function: a stated function ('V7/ii', 'D: V7/ii'); comment: a trailing # …
@@ -207,7 +207,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   names each line's block.
 - **Rests:** a row whose chord is `N.C.` (`isRest`: "NC", "N.C", any case; #336) is a bar with no chord. It takes its
   bars on the Changes sheet (its symbol over slashes, no numeral or scale, every line rests there), gets no staff on
-  the Scales sheet, no entry in the analysis stream (the chords around it are neighbours, the one before it lasts
+  the Scales sheet, no entry in the analysis stream (the chords around it are neighbors, the one before it lasts
   through it: `resolveScales` gives it `{ scale: null, source: 'rest' }`), no scale or function picker, and
   transposes as itself.
 - **Fatal diagnostics** (`isFatal`) mean a hard input limit was exceeded: length, rows or expanded rows. The UI
@@ -250,7 +250,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   the chart (§7a; docs/plan-analysis.md §5.4); absent, it is detected. A value that is none of the three keeps its
   line (like a bad `key:`) and is a diagnostic; the analysis then detects, and reports the bad line. `minor:` is
   reserved (accepted, kept, reported as ignored). A section's `context:` and `@context BAR CONTEXT` are parsed,
-  validated and serialised; the analysis reports them as not yet supported and keeps the chart's context.
+  validated and serialized; the analysis reports them as not yet supported and keeps the chart's context.
 - **Bar labels are section-relative everywhere** (`A2, bar 1`; a chord pick's popover lists `A1 bar 6, A2 bar 6`); no
   display shows absolute bar numbers (decided 2026-10-16, #329).
 - **The retired row format** (`SECTION | BAR | CHORD …`, absolute bars, `@copy SRC DST OFFSET`) is migrated, never
@@ -302,7 +302,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
     the editor open, the Changes sheet is the editor,
     under a banner ("Editing the sheet", Undo, Redo, Source, Save, Done editing). A chord is a button that
     opens into a field on its beat (`SheetChord`) with completions that read each candidate in that bar
-    (`chordCompletions`, `chordPreview`: numeral → scale at the sheet's level, labelled as the sheet labels scales,
+    (`chordCompletions`, `chordPreview`: numeral → scale at the sheet's level, labeled as the sheet labels scales,
     `sheetScale`); Enter and Tab commit (Tab to the next bar's first chord, ⇧Tab the previous; → at the end of the
     text and ← at its start to the next or previous chord, through the bar and then into the next bar's: both
     `nextChordLine`, by bar or by chord, skipping held bars; inside the text the arrows move the caret), Space adds a
@@ -337,7 +337,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
     blanked, so it follows the level; then `owned` is dropped.
   - **Ladders** (`ladders` in `chord_scales.json`, plan-analysis.md §11): a row whose Standard is not its
     quality's default climbs that scale's ladder instead of the quality's tags, so the analysis's choice keeps its
-    colour: D7 on Phrygian Dominant (V7 of G minor) goes to G Minor Pentatonic at Basic and Altered at
+    color: D7 on Phrygian Dominant (V7 of G minor) goes to G Minor Pentatonic at Basic and Altered at
     Advanced (Spanish Phrygian stays in the menu: a rung holds one scale), not to D Major Pentatonic and Bebop
     Dominant. A ladder without a rung keeps the Standard (`ladderScale`). `quality_ladders` overrides a ladder for
     one chord quality: `m` and `m7` on Phrygian (iii, or v of a minor key) are Dorian at Advanced, not Dorian ♭2;
@@ -400,7 +400,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 
 ### Patterns sheet (flag `patterns`, on; [spec](superpowers/specs/2026-10-17-practice-patterns-design.md))
 
-- **What:** a pattern (moves between neighbouring notes of the scale or the chord tones, e.g. `+2 −1`) run over each
+- **What:** a pattern (moves between neighboring notes of the scale or the chord tones, e.g. `+2 −1`) run over each
   scale line, one stave a line, drawn by the Arpeggios sheet's staff. `buildPatternSheet` (`engine/src/patterns.ts`)
   builds the model; `ArpeggioSheet` takes `moves` and draws it, headed Patterns.
 - **Controls (Pattern group, only on this sheet):** a listbox of the 14 library patterns plus Custom… (`aria-label="Pattern"`;
@@ -450,7 +450,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   lights the scale notes that one shares (`pentatonicPick`) and captions the staff with its name and shared count,
   always (`Dm pent · 5 shared`). Its other notes join the staff (#308, `outsideNotes`): spelled from the pentatonic,
   in pitch order within the staff's octave (from the root, or from the start note), lit in the second accent
-  (`vf-second`, mid-grey in print), flagged in `StaffModel.outside` and named in the staff's accessible label; they
+  (`vf-second`, mid-gray in print), flagged in `StaffModel.outside` and named in the staff's accessible label; they
   are not the scale's, so they make no practice box and aren't among the lit keys a custom pick starts from. Under
   Pentatonic and Hexatonic the boxes show no pressed state (each staff lights its own degrees); a click starts a
   custom pick from the lit keys, with that box on. The usual inside choices (all five shared): on 2, 3 or 6 over Ionian, 1, 2 or 5
@@ -473,9 +473,9 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   1 … 8 (plain numbers; the help text says what *n* means), a grouping listbox, and a legend of the two groups. Spec:
   docs/superpowers/specs/2026-10-14-hexatonic-practice-design.md.
 - **Highlighting:** `drawStaff` tags each note's group `vf-selected` or `vf-dimmed` (and a hexatonic's group B
-  `vf-second` too), and `main.css` colours them: on screen, picked notes keep the staff's ink in light mode (as the
+  `vf-second` too), and `main.css` colors them: on screen, picked notes keep the staff's ink in light mode (as the
   clef) and take the accent in dark mode, group B a second accent, while the rest are faint (35% opacity in dark
-  mode). In print, picked notes are black, group B mid-grey and the rest light grey.
+  mode). In print, picked notes are black, group B mid-gray and the rest light gray.
 
 ### Changes sheet ([plan-changes.md](plan-changes.md))
 
@@ -520,7 +520,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   single-set doc: the other set's rows become blank lines and the chosen alt rows become `row`s. **Line-count
   invariant:** the result has the same lines as the original, so line indices (and anything keyed by them) match
   across both sets and the source. A doc with no `alt` rows comes back as itself. Everything downstream (analysis,
-  `sheet.ts`, transpose, part, practice) takes that result and knows nothing of alternates. The analyser, `--ambiguous`,
+  `sheet.ts`, transpose, part, practice) takes that result and knows nothing of alternates. The analyzer, `--ambiguous`,
   `--strip` and golden (`<slug>~alternate` entries) run on each set; saved reasons document the standard reading, `alt`
   rows the alternate one. `expandRows`/`layout.ts` ignore non-`row` kinds, so prerendered pages (OG, song page, JSON-LD,
   search) use the standard set.
@@ -579,7 +579,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
     and the lines may coincide again. Together since a restart, line A counts as the one below. Apart, each moves on
     its own; a held chord holds both, and the same chord in a new block counts as new.
   - **Holds:** a chord whose 3rd and 7th are spelled as the previous chord's, in the same block, holds the line:
-    the same pitch, tied, labelled again. The same pitches in swapped roles (Dm7 → G7sus4) strike again. A hold never crosses a block (section) boundary or the start of a 2nd
+    the same pitch, tied, labeled again. The same pitches in swapped roles (Dm7 → G7sus4) strike again. A hold never crosses a block (section) boundary or the start of a 2nd
     ending; there the chord strikes again, untied.
   - **Rests:** a chord with no guide tones rests and ends the run; the next chord restarts by rule 1.
   - **Form:** repeats and endings are voiced in written order, a 2nd ending from the 1st ending's last chord; the
@@ -736,7 +736,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   (its tonic minor: Am in C major), ranked by notes shared with the key's Aeolian: rung 0–6 share 5 5 4 3 2 1 0.
   Spelled by walking fifths (♯ side sharps, ♭ side flats; rung 6 the ♭ walk's), then `simplifyRoot(…, 'aeolian')`.
 - **Model:** `buildChanges(…, pentatonic)` gives each chord its area's `pentatonic` ({ label, key, ladder }, written for
-  the part); `showPentatonics` (after `breakLines`) blanks the label except on a line's first *labelled* chord and
+  the part); `showPentatonics` (after `breakLines`) blanks the label except on a line's first *labeled* chord and
   wherever it differs from the last one shown (relative keys share a home, so print once). `changesLinesPerPage`
   counts the row: with no guide line 8 a page, 7 with numerals, scales and pentatonics all shown; with a line 7 with no
   row, 6 with any row, 5 with all three (the 5 and 7 measured on Stardust, tuba, From 7th).
@@ -749,7 +749,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **Paths** (#264, #276, [spec](superpowers/specs/2026-10-13-pentatonic-paths-design.md), [steps](superpowers/specs/2026-10-14-pentatonic-path-steps-design.md)): Path listbox: One rung (Rung + Side, as before), Side-slip, Fifths, Minor thirds, Major thirds. A preset cycles from Home one step a unit (`pentatonicCycle`): Step by Section (each form section), Key area (each run of one key area; a revisit takes the next step) or Bars (every 2, 4 or 8 bars of the form, through section breaks); outside the form, Home. `buildChanges` lays it over the units (`PentatonicPlan.path`/`step`) and names it in the Changes subtitle (`ChangesSheet.pentatonicCaption`). A pick in a label's ladder doesn't change the path (see Picks); a stored Custom still plays its sections. Per chart, with its step: `csm-pent-path:<slug>` (`usePentatonicPath`). Labels carry the shared count (`B♭m♪ 1`) off One rung.
 - **Tint** (#265, #277): off One rung, labels take their rung's tint (`--color-rung-0…6`, Home slate → 6 rust; dark
   values on screen only), ordered by lightness (darker each rung on light paper, brighter on dark) so the ramp reads
-  without hue. The shared count printed after each label (and in its accessible name) is the non-colour cue, so there
+  without hue. The shared count printed after each label (and in its accessible name) is the non-color cue, so there
   is no rung-number setting. The contour band #265 drew under the row was removed (#277); triad pairs (#262) follow.
 - **Ranked against** (#272, [spec](superpowers/specs/2026-10-14-pentatonic-per-chord-design.md)): Key (the area's
   ladder, as above) or Chord (each chord ranks the 12 against its own scale, `pentatonicRanking`, and plays the one
@@ -860,7 +860,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   bundled, not taken from a CDN, so the CSP stays `script-src 'self'`.
   - Its Bravura font is embedded as a `data:` URL, so the CSP needs `font-src 'self' data:`.
   - Drawing waits for `document.fonts.load`.
-- **Colour:** the SVG uses `currentColor`, so it follows light and dark mode and prints black.
+- **Color:** the SVG uses `currentColor`, so it follows light and dark mode and prints black.
 - **Drawing space:** a scale staff is drawn 1200 units wide; the Changes sheet uses 300 units a bar.
 - **Cropping:** each SVG's viewBox is cropped to its notes' vertical range by `cropBand`. The range comes from
   VexFlow's note-head positions plus room for accidentals; SVG `getBBox` can't be used, because it measures glyphs
@@ -894,8 +894,8 @@ paper and its focus-mode pages, the rail, the More menu, the header, the library
   components. A single `app/assets/css/main.css` holds `@import "tailwindcss"`, the theme tokens and the print
   rules.
 - **Palette: Duotone Blue**, Blue Note-inspired (chosen from three mocked directions).
-  - **Neutrals:** `zinc` is retuned in `main.css` to cool, navy-tinted greys (paper `#F3F6FB` to night `#08111F`).
-    Catalyst's `zinc-*` class strings therefore stay verbatim and recolour together.
+  - **Neutrals:** `zinc` is retuned in `main.css` to cool, navy-tinted grays (paper `#F3F6FB` to night `#08111F`).
+    Catalyst's `zinc-*` class strings therefore stay verbatim and recolor together.
   - **Accent:** a `note` blue scale. `note-800` navy is the one primary button of a view (`<UiButton color="note">`)
     and the header's band (the sleeve); the accent (`note-600`, dark `note-300`) marks the selected state, focus
     and links.
@@ -903,7 +903,7 @@ paper and its focus-mode pages, the rail, the More menu, the header, the library
   - **Contrast** (AA): white on `note-500` is 4.7:1, `note-600` text on paper 5.9:1, `zinc-500` text on white 5.0:1.
 - **Headings:** Jost, a geometric typeface in the style of Futura (`font-display`). It's bundled from
   `@fontsource-variable/jost` (OFL), so the CSP's `font-src 'self'` covers it. Body text stays the system font.
-- **Print** stays black on white. Its few grey labels use `neutral`, not the tinted `zinc`.
+- **Print** stays black on white. Its few gray labels use `neutral`, not the tinted `zinc`.
 - **Components:** Tailwind Plus Catalyst, ported to Vue in `components/ui/` on `@headlessui/vue` and
   `@heroicons/vue`.
   - Catalyst's class strings are kept verbatim. The `v-interactive` directive (`utils/interactive.ts`) sets the
@@ -911,7 +911,7 @@ paper and its focus-mode pages, the rail, the More menu, the header, the library
   - Field, Label and Description wire ids through provide/inject (`utils/field.ts`).
   - The licensed kits live git-ignored in `design/tailwind-plus/` and are never committed.
   - A dev-only `/ui` page shows every component; it's removed from the production build.
-- **Navigation** (`utils/siteNav.ts`, #496): the navbar is Library and Scales (Chords joins them, #498), then a
+- **Navigation** (`utils/siteNav.ts`, #496): the navbar is Library, Scales and Composers (Chords joins them, #498), then a
   Help dropdown (`UiNavbarDropdown`, opened by click) of How it works, How it decides, Functions, About and
   Contact. The phone menu lists the same pages flat, with icons. The footer still links every page.
 - **Header quote:** a random quote in the navbar on tablet and desktop widths, kept for the visit
@@ -1017,10 +1017,10 @@ its reasons into a chart as comments.
   under the function). Rules that could only guess carry a `fallback` flag, and `--ambiguous` lists those rows with
   the functions each might have and the key areas an `@key` would pin, each with a second `@key` back to the next
   area (an `@key` holds until the next); the bar editor's Key change here (`insertKeyChange`) adds the same pair. The
-  analyser never writes a function, an `@key` or a `context:`. The report's second line says which context
+  analyzer never writes a function, an `@key` or a `context:`. The report's second line says which context
   decided and why (`context: modal (stated)`, `context: modal (detected: 0 of 8 chords in cadences, median chord 2
   bars)`); `--ambiguous` also names a detection within one chord of a threshold. `rowNotes` (`engine/src/notes.ts`) gives each row's reason, key,
-  the scale played and its `source`; it says "analyser: X (reason); you chose Y" only of a written scale that differs;
+  the scale played and its `source`; it says "analyzer: X (reason); you chose Y" only of a written scale that differs;
   the inspector's Why and the Changes sheet's numeral/scale notes show it, the note with where its key
   came from (a key the author set is starred).
 - **The scale played** (`engine/src/resolve.ts`, [proposed scales spec](superpowers/specs/2026-10-11-proposed-scales-design.md)
@@ -1049,7 +1049,7 @@ its reasons into a chart as comments.
   the expected target's (the target and the scale ignore the flag, and the fit doesn't ask for the resolution), and
   the sheet prints the parentheses. A target keeps the case written: upper case is a major chord, lower case a
   minor one, as the sheet prints them (`(V7/II)` stays `(V7/II)`; reading an upper-case target's quality from the key,
-  G6 in the function labels spec, is deferred). Every numeral the analyser gives the library reads back to itself, and in
+  G6 in the function labels spec, is deferred). Every numeral the analyzer gives the library reads back to itself, and in
   parentheses to itself in parentheses (`functions.test.ts`). `chord_scales.json` lists `∆` wherever it lists `Δ`.
 - **The reason note** (`ChangesNote.vue`): a click-to-open Headless UI popover (role dialog, "Why: <chord>", the chord as
   drawn for the part: `ChangesChord.written`), not
@@ -1104,7 +1104,7 @@ its reasons into a chart as comments.
     pitch, so a Whole-Half the analysis respelled (F♯ on G♭°7) is still the default. ♭III°7 follows M&H (fig. 7.22)
     where N&G p. 116 reaches it by enharmonic equivalence with ♯II°7; where no root spells a function's scale without
     double accidentals or B♯/E♯/C♭/F♭, the equivalent figure's lettering is used. The scale root is spelled per scale
-    by `simplifyRoot`. One helper, `cleanLettering` (`scales.ts`), makes that choice for the analyser, for a
+    by `simplifyRoot`. One helper, `cleanLettering` (`scales.ts`), makes that choice for the analyzer, for a
     transposed chart and for the `dim7` menu's diatonic diminished options. A few rows keep a single C♭ or F♭ for want
     of a clean root. A dim7's interval labels and practice presets are by semitone, not by degree.
   - **Libraries:** Wave follows the *Songbook Tom Jobim* in full; The Girl from Ipanema's bars 7–8 and bridge do;
@@ -1129,8 +1129,7 @@ its reasons into a chart as comments.
     "lead-sheet style" (and "Chords only, no melody" where it fits). `tuneTitle` (`utils/site.ts`) is the title:
     "Blue Trane (John Coltrane): Chord Changes and Lead Sheet Practice Charts"; the preview's is "Blue Trane (John
     Coltrane) · Chord Scale Maker", and robots is `index, follow, max-image-preview:large`. The head comes from
-    `songHead` (`utils/songHead.ts`), with the text under the sheet: a "Chord changes (lead-sheet style)" heading
-    and a sentence that the page gives the changes, not the melody (its other titles too), prerendered (#310).
+    `songHead` (`utils/songHead.ts`). The "Chord changes (lead-sheet style)" text under the sheet (#310) was removed.
   - **The gate:** `tuneGaps` lists what a library chart's song page lacks (`title:`, `key:`, `style:`, `form:`, and
     `composer:` unless `kind:` is `form` or `exercise`); `libraryMeta.test.ts` fails on any. `tuneAdvice` (no
     `source:`, no `aka:`) is only reported, by `npm run analyse`.
@@ -1394,7 +1393,7 @@ static file, §7b), so the attack surface is small. The measures:
   - scale options (with `note`, `default`, `outside`) and defaults for a chord corpus
   - the parsed rows of each chart in `engine/charts/`, and two inline charts for parser edge cases
 
-  `engine/fixtures/analysis.json` is the analyser's report over every library chart, one row per line (key, areas, and
+  `engine/fixtures/analysis.json` is the analyzer's report over every library chart, one row per line (key, areas, and
   each row's scale, rule, function and reason); `make golden` rewrites both fixtures. `npm run fixture-scales -w engine [--
   <ref>]` (`engine/scripts/fixtureScales.ts`) compares only their scales with a ref's (default `main`) and exits 1 on any
   difference: the check for a change meant to move text but no scale.
@@ -1412,7 +1411,7 @@ static file, §7b), so the attack surface is small. The measures:
     holds, and a library test that no tie reaches into another block
   - the Changes sheet with guide tones: off is today's sheet, a folded copy is voiced once, a 2nd ending follows the
     1st ending's last chord, 2 and 4 bars a line give the same pitches, and `changesLinesPerPage`
-  - the analyser: one test per rule (`analysis.test.ts`, named for the rule, from a real tune), key finding,
+  - the analyzer: one test per rule (`analysis.test.ts`, named for the rule, from a real tune), key finding,
     key areas and contexts, and writing back (fill, force, keep, save, rerun, `copy:` conflicts)
 - **App tests (`web/test/`):** `@nuxt/test-utils` (Nuxt runtime, happy-dom) with Vue Test Utils. They cover:
   - `useChartEditor` sync and debounce, and `useChartHistory` undo

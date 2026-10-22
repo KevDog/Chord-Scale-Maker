@@ -5,7 +5,7 @@ context: blues
 key: E
 form: ABB, 26 bars
 source: iReal Pro
-# analysis: 2026-10-19, rules v2; E, blues
+# analysis: 2026-10-22, rules v2; E, blues
 
 section: Intro
 1  | E     # I of the blues: a triad here implies its ♭7, Mixolydian
@@ -14,7 +14,7 @@ section: Intro
 3  | E
 4  | E
 4  | N.C.
-5  | A7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+5  | A7    # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 6  | A     # IV of the blues: a triad here implies its ♭7, Mixolydian
 6  | N.C.
 7  | E     # I of the blues: a triad here implies its ♭7, Mixolydian
@@ -28,14 +28,14 @@ section: A
 3  | E
 4  | E
 4  | N.C.
-5  | A7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+5  | A7    # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 6  | A     # IV of the blues: a triad here implies its ♭7, Mixolydian
 6  | N.C.
 7  | E     # I of the blues: a triad here implies its ♭7, Mixolydian
 8  | E
 8  | N.C.
 9  | B7    # V7 of the blues: a dominant that needn’t resolve, Mixolydian
-10 | A7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+10 | A7    # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 10 | N.C.
 11 | E     # I of the blues: a triad here implies its ♭7, Mixolydian
 12 | E
@@ -46,7 +46,7 @@ section: A
 15 | E
 16 | E
 16 | N.C.
-17 | A7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+17 | A7    # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 18 | A     # IV of the blues: a triad here implies its ♭7, Mixolydian
 18 | N.C.
 @coda 12
@@ -68,10 +68,10 @@ section: Coda
 3  | E
 4  | E
 4  | N.C.
-5  | A7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+5  | A7    # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 6  | A     # IV of the blues: a triad here implies its ♭7, Mixolydian
 6  | N.C.
 7  | E     # I of the blues: a triad here implies its ♭7, Mixolydian
 8  | E
-9  | E7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+9  | E7    # I7 of the blues: a tonic with dominant color, Mixolydian
 @coda 1

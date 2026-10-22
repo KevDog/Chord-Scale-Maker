@@ -42,7 +42,7 @@
           <UiText>
             How fancy the scales get. <strong :class="EM">Basic</strong> leans on pentatonics (five notes, hard to land on a
             wrong one), <strong :class="EM">Standard</strong> is the usual chord-scale for each chord, and
-            <strong :class="EM">Advanced</strong> reaches for bebop, Lydian and altered colours. Each level moves the
+            <strong :class="EM">Advanced</strong> reaches for bebop, Lydian and altered colors. Each level moves the
             scale the analysis chose, so a dominant resolving to minor climbs a different ladder from one resolving to major.
             A tonic minor chord is Aeolian at Basic, and in a blues the I, IV and V play the key's Blues scale
             (<UiTextLink href="#scale.blues">a blues</UiTextLink>).
@@ -349,7 +349,7 @@
 
         <DecisionSection id="patterns.run">
           <UiText v-if="patternsOn">
-            A pattern is a list of steps between neighbouring notes: <UiCode>+2 −1</UiCode> is up a third, back a step. The
+            A pattern is a list of steps between neighboring notes: <UiCode>+2 −1</UiCode> is up a third, back a step. The
             Patterns sheet runs it over each scale line, through the scale or through the chord tones: the group starts again
             from each next note up an octave, then the octave itself closes the run. Down is the same run reflected; Up &amp;
             down goes up and comes back from the top. Each run is placed whole with the fewest notes out of your range.
@@ -457,7 +457,7 @@
             Weiskopf's <em>Intervalic Improvisation</em>: the major triads on 4 and 5 of a major key (<UiCode>F/G</UiCode>
             across <UiCode>Dm7 G7 Cmaj7</UiCode> in C), and harmonic minor's minor iv and augmented V in a minor key
             (<UiCode>Gm/A+</UiCode> in D minor). Where a chord's scale doesn't hold the key's pair (a Dm6's scale, with its
-            B♮, holds no G minor triad), it plays its own Auto pair, greyed. The label prints once for the run, as the
+            B♮, holds no G minor triad), it plays its own Auto pair, grayed. The label prints once for the run, as the
             pentatonics' do. On the Scales sheet the Hexatonic preset ranks each staff likewise, by the key area of the
             first chord it covers; the Arpeggios sheet's Triad pairs follow the Changes sheet's choice.
           </UiText>
@@ -467,7 +467,7 @@
         <DecisionSection id="hex.group">
           <UiText>
             On the Scales sheet the six notes are split in two and tinted apart, by the grouping you choose: the two triads,
-            the chord tones and the colour notes, a pentatonic and one more, or the lowest three and highest three.
+            the chord tones and the color notes, a pentatonic and one more, or the lowest three and highest three.
           </UiText>
         </DecisionSection>
 
@@ -640,12 +640,12 @@
             The feel is read on its own: Latin, bossa, samba, even or straight 8ths, funk and rock play
             <strong :class="EM">straight</strong>, everything else swings, so an up samba is fast and straight. Swing plays the
             skip note two thirds through each beat, straight an eighth halfway; Quarters, the beats alone, is one tap away. It plays the
-            chart's time signature, the one it starts in, all the way through: a chart that changes metre partway keeps its
+            chart's time signature, the one it starts in, all the way through: a chart that changes meter partway keeps its
             first until the click can follow the form.
           </UiText>
           <UiText>
             <strong :class="EM">What you can change:</strong> the tempo and the feel, on the click itself. The chart remembers
-            them, so a tune opens at the tempo you last practised it at.
+            them, so a tune opens at the tempo you last practiced it at.
           </UiText>
         </DecisionSection>
       </section>

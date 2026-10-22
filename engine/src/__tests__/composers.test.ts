@@ -46,7 +46,7 @@ describe('composers', () => {
     expect(index.map((c) => [c.slug, c.tunes])).toEqual([['dizzy-gillespie', ['a', 'b']], ['charlie-parker', ['a', 'b']]])
   })
 
-  it('lists composers who may be one person spelt two ways (same surname)', () => {
+  it('lists composers who may be one person spelled two ways (same surname)', () => {
     const index = composerIndex([chart('a', 'composer: Duke Ellington'), chart('b', 'composer: Edward Kennedy Ellington'), chart('c', 'composer: Miles Davis')])
     expect(nearDuplicateComposers(index)).toEqual([['duke-ellington', 'edward-kennedy-ellington']])
   })

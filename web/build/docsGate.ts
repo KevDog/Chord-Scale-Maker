@@ -4,7 +4,7 @@
  * note, or says why not with `Release notes: none — <reason>`. Run by check-docs.ts in .github/workflows/docs.yml.
  */
 
-/** user-facing behaviour: the engine (not its tests), its scale table, the interface's components and the song page */
+/** user-facing behavior: the engine (not its tests), its scale table, the interface's components and the song page */
 export const NEEDS_DOCS: readonly RegExp[] = [
   /^engine\/src\/(?!__tests__\/)/,
   /^engine\/chord_scales\.json$/,
@@ -40,7 +40,7 @@ export const docsGate = (files: readonly string[], body: string | null): GateRes
   if (docs && note) return { ok: true, why: `${docs}; ${note}` }
   const more = triggers.length > SHOWN ? `\n  …and ${triggers.length - SHOWN} more` : ''
   const message = [
-    'This PR changes user-facing behaviour:',
+    'This PR changes user-facing behavior:',
     ...triggers.slice(0, SHOWN).map((f) => `  ${f}`),
   ].join('\n') + more + [
     ...(docs ? [] : ['', 'It changes no documentation page. Update the docs (Help, How it decides, Functions or engine/src/decisions.ts), or add a line to the PR description:', '  Docs: none — <why no docs change is needed>']),

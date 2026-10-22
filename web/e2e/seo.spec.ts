@@ -22,12 +22,11 @@ const attr = (html: string, tag: RegExp, name: string): string | undefined =>
 test.describe('without JavaScript', () => {
   test.use({ javaScriptEnabled: false })
 
-  test('a song is all there in its HTML: heading, composer, lead-sheet note, structured data, canonical, indexable', async ({ page }) => {
+  test('a song is all there in its HTML: heading, composer, structured data, canonical, indexable', async ({ page }) => {
     await page.goto('/song/blue-trane')
     await expect(page.getByRole('heading', { name: 'Blue Trane', level: 1 })).toBeVisible()
     await expect(page.getByRole('link', { name: 'John Coltrane', exact: true })).toHaveAttribute('href', '/composers/john-coltrane')
-    await expect(page.getByRole('heading', { name: 'Chord changes (lead-sheet style)', level: 2 })).toBeVisible()
-    await expect(page.getByText(/without the melody/)).toContainText('also known as Blue Train')
+    await expect(page.getByRole('heading', { name: 'Chord changes (lead-sheet style)' })).toHaveCount(0)
     await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute('href', `${SITE_URL}/song/blue-trane`)
     await expect(page.locator('head meta[name="robots"]')).toHaveAttribute('content', 'index, follow, max-image-preview:large')
     await expect(page.locator('head meta[name="description"]')).toHaveAttribute('content', /lead-sheet/)

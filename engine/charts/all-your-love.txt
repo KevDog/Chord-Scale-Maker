@@ -6,7 +6,7 @@ key: Em
 form: AAB, 36 bars
 source: iReal Pro
 aka: All Your Love (I Miss Loving)
-# analysis: 2026-10-19, rules v2; E minor, blues
+# analysis: 2026-10-22, rules v2; E minor, blues
 
 section: A1
 1  | Em  # i of the minor blues: Dorian
@@ -31,12 +31,12 @@ section: B
 2  | E
 3  | E
 4  | E
-5  | A9  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-6  | A7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+5  | A9  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+6  | A7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 7  | E   # I of the blues: a triad here implies its ♭7, Mixolydian
 8  | E
 9  | B7 | B Mixolydian  # keep: the B section is in E major, so the V7 has the G♯
-10 | A7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+10 | A7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 11 | E   # I of the blues: a triad here implies its ♭7, Mixolydian
 12 | E
 @nav 12 D.C. al Fine

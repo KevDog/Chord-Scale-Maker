@@ -5,7 +5,7 @@ context: blues
 key: C
 form: A, 16 bars
 source: iReal Pro
-# analysis: 2026-10-19, rules v2; C, blues
+# analysis: 2026-10-22, rules v2; C, blues
 
 section: A
 1  | C   # I of the blues: a triad here implies its ♭7, Mixolydian
@@ -21,6 +21,6 @@ section: A
 11 | C   # I of the blues: a triad here implies its ♭7, Mixolydian
 12 | C
 13 | C
-14 | F7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+14 | F7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 15 | C   # I of the blues: a triad here implies its ♭7, Mixolydian
 16 | C

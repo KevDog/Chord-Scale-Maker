@@ -12,7 +12,7 @@ describe('UiButton', () => {
     expect(b.classes()).toContain('cursor-default')
   })
 
-  it('takes a colour, or the outline / plain styles', async () => {
+  it('takes a color, or the outline / plain styles', async () => {
     const note = await mountSuspended(UiButton, { props: { color: 'note' }, slots: { default: 'Go' } })
     expect(note.find('button').classes()).toContain('[--btn-bg:var(--color-note-800)]')
     const outline = await mountSuspended(UiButton, { props: { outline: true }, slots: { default: 'Go' } })

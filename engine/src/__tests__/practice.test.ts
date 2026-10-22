@@ -99,7 +99,7 @@ describe('practice selection', () => {
 })
 
 describe('practice boxes', () => {
-  it('lists the keys present in the chart, by degree then flattest first, labelled for the mode', () => {
+  it('lists the keys present in the chart, by degree then flattest first, labeled for the mode', () => {
     const rows = [row('Dm7'), row('G7b9', 'G Half-Whole'), row('C', 'C Major Pentatonic')]
     const root = practiceBoxes(staves(rows, 'root'), 'root', 'C')
     expect(root.map((b) => b.key)).toEqual(['1', 'b2', '2', 'b3', '3', '4', '#4', '5', '6', 'b7'])
