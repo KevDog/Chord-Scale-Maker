@@ -47,6 +47,17 @@ describe('ClickBar', () => {
     expect(field.element.value).toBe('300')
   })
 
+  it('the tempo field’s arrows step it, by 5 with Shift', async () => {
+    const { w, click } = await mountBar()
+    const field = w.find<HTMLInputElement>('input[aria-label=Tempo]')
+    await field.trigger('keydown', { key: 'ArrowUp' })
+    expect(click.tempo.value).toBe(161)
+    await field.trigger('keydown', { key: 'ArrowDown', shiftKey: true })
+    expect(click.tempo.value).toBe(156)
+    await nextTick()
+    expect(field.element.value).toBe('156')
+  })
+
   it('starts and stops, pressed while running', async () => {
     const { click, button } = await mountBar()
     await button('Start')!.trigger('click')

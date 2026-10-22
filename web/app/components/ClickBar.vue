@@ -24,6 +24,8 @@
         class="w-18 text-center tabular-nums"
         @change="commit"
         @keydown.enter="commit"
+        @keydown.up.prevent="nudge(1, $event)"
+        @keydown.down.prevent="nudge(-1, $event)"
       />
       <UiButton plain aria-label="Faster" title="Faster (Shift: 5)" @click="step(1, $event)"><PlusIcon data-slot="icon" /></UiButton>
     </span>
@@ -99,8 +101,13 @@ function commit(e: Event): void {
   if (text !== '' && !Number.isNaN(Number(text))) click.tempo.value = clampTempo(Number(text))
   el.value = String(click.tempo.value)
 }
-function step(by: 1 | -1, e: MouseEvent): void {
+function step(by: 1 | -1, e: MouseEvent | KeyboardEvent): void {
   click.tempo.value = clampTempo(click.tempo.value + by * (e.shiftKey ? 5 : 1))
+}
+// the field's arrows: from what's typed, by 1, or 5 with Shift, as − and + do
+function nudge(by: 1 | -1, e: KeyboardEvent): void {
+  commit(e)
+  step(by, e)
 }
 
 const settingsOpen = ref(false)
