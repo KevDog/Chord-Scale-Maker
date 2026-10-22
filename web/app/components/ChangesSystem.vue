@@ -1,5 +1,16 @@
 <template>
   <div ref="root" data-slot="system" class="relative break-inside-avoid" @pointerleave="leaveBar" @focusout="leaveBar">
+    <!-- a chart with alternates (#215): the other set's chords, small, over their beats (chord symbols only; printed) -->
+    <div v-if="otherMarks.length" data-slot="other-changes" class="relative h-5 print:h-3">
+      <span class="sr-only">Other changes:</span>
+      <span
+        v-for="o in otherMarks"
+        :key="o.key"
+        :data-chord="o.written"
+        class="absolute bottom-0 text-xs/4 font-medium whitespace-nowrap text-zinc-600 dark:text-zinc-400 print:text-[0.6rem]/3 print:text-neutral-700"
+        :style="{ left: `${o.x * 100}%` }"
+      ><ChordSymbol v-if="o.tokens" :tokens="o.tokens" /><template v-else>{{ o.written }}</template></span>
+    </div>
     <!-- section markers and key areas, then chord symbols, over their beats -->
     <div ref="names" data-slot="names" class="relative h-12 print:h-7">
       <template v-for="m in marks" :key="m.key">
@@ -237,7 +248,9 @@
 
 <script setup lang="ts">
 import {
+  type AltChord,
   barKey,
+  chordTokensOrNull,
   type ChangesHexatonic,
   type ChangesLine,
   type ChangesPentatonic,
@@ -292,6 +305,7 @@ const props = defineProps<{
   overlay?: OverlayPlan | null // the row under the chords: the Pentatonic overlay's rungs, the Hexatonic or the Quartal; null/undefined: no row
   counted?: boolean // the sheet's pentatonics count (tints)
   part?: Part // the sheet's part, for the chord pick popovers' wording and picks (#303); concert without
+  others?: ReadonlyMap<string, readonly AltChord[]> | null // the other set's chords by bar (barKey), written (#215); null: none
 }>()
 const emit = defineEmits<{
   tap: [chord: SheetChordEdit] // a chord tapped, for the chord editor dialog
@@ -340,6 +354,12 @@ const marks = computed(() => {
   })
   return all.map((m, i) => ({ ...m, room: Math.max(0.05, (all[i + 1]?.x ?? 1) - m.x) }))
 })
+/** the other set's chords in this line's bars (#215), over their beats; already written for the part, so drawn as they are */
+const otherMarks = computed(() =>
+  props.line.bars.flatMap((bar, b) =>
+    (props.others?.get(barKey(bar.at)) ?? []).map((c, k) => ({ key: `${b}-${k}`, written: c.written, tokens: chordTokensOrNull(CONCERT, c.written), x: Math.max(0, (xs.value[b]?.[c.beat] ?? 0) - 0.012) })),
+  ),
+)
 /** the marks that print a pentatonic label (#255) */
 const pentatonicMarks = computed(() => marks.value.flatMap((m) => (m.pentatonic?.label ? [{ key: m.key, x: m.x, room: m.room, written: m.written, p: m.pentatonic }] : [])))
 /** ranked against the key, a pair that isn't the key's (#432): drawn greyed */

@@ -33,6 +33,7 @@
             :focus-at="focusAt"
             :overlay="overlay"
             :counted="counted"
+            :others="others"
             @tap="emit('tap', $event)"
             @pick="(kind, run, value) => emit('pick', kind, run, value)"
             @edit="emit('edit', $event)"
@@ -60,7 +61,7 @@
 import { SHEET_PAGED } from '~/utils/sheetPaged'
 import { PlusIcon, Square2StackIcon } from '@heroicons/vue/16/solid'
 import type { SheetChordEdit, SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
-import { type Approach, breakLines, buildChanges, changesLinesPerPage, type ChartDoc, type ChordAt, type ChordPreview, chunk, type GridPos, isArpeggioPattern, pageSubtitle, type OverlayPlan, type Part, type PentatonicPlan, type PickKind, type ScaleView, showHexatonics, showPentatonics, showQuartals, type ChangesLineChoice } from '@chord-scale-maker/engine'
+import { type Approach, breakLines, buildChanges, otherChords, changesLinesPerPage, type ChartDoc, type ChordAt, type ChordPreview, chunk, type GridPos, isArpeggioPattern, pageSubtitle, type OverlayPlan, type Part, type PentatonicPlan, type PickKind, type ScaleView, showHexatonics, showPentatonics, showQuartals, type ChangesLineChoice } from '@chord-scale-maker/engine'
 
 /** the Changes sheet (docs/plan-changes.md): the chart as a study lead sheet, 4 bars a line (2 on phones), fewer where the chords' names don't fit */
 const { shows } = useInterface()
@@ -83,6 +84,7 @@ const props = defineProps<{
   preview?: ChordPreview | null // the open field's draft, read in its bar
   focusAt?: SheetFocus | null // a chord the editor wants focus on
   overlay?: OverlayPlan | null // the row under the chords: the Pentatonic overlay's rungs, the Hexatonic or the Quartal; null: off
+  otherDoc?: ChartDoc | null // the other set of a chart with alternates (#215), its chords drawn small above the bars; null: none
 }>()
 const emit = defineEmits<{
   tap: [chord: SheetChordEdit]
@@ -108,6 +110,8 @@ const line = computed((): ChangesLineChoice => props.line ?? 'off')
 const lineName = computed(() => (typeof line.value === 'object' ? ({ pentatonic: 'pentatonic', 'triad-pair': 'triad pair', quartal: 'quartal', cells: 'cells' } as const)[line.value.kind] : undefined))
 const arpeggio = computed(() => !!lineName.value || isArpeggioPattern(line.value))
 const built = computed(() => buildChanges(props.doc, props.part, barsPerLine.value, true, line.value, props.view, props.overlay ?? null, props.approach ?? 'none'))
+/** the other set's chords in each bar where they differ (#215), written for the part and spelled at the level as the main set's are */
+const others = computed(() => (props.otherDoc ? otherChords(built.value, buildChanges(props.otherDoc, props.part, barsPerLine.value, true, 'off', props.view)) : null))
 /** the bars that start a line because the names before them didn't fit (ChangesSystem measures): until the sheet changes */
 const breaks = shallowRef<ReadonlySet<string>>(new Set())
 watch(built, () => (breaks.value = new Set()))
