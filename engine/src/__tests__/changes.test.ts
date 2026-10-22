@@ -1261,6 +1261,15 @@ describe('the rhythm line and target beats (rhythm spec §8)', () => {
     expect(sheet.rhythmCaption).toBe('Rhythm: 8ths in 3, with accents · back on one every 3 bars')
   })
 
+  it('ties nothing from a 1st ending into the 2nd', () => {
+    const doc = parseChart('key: C\n\nsection: A\n1 | Dm7\n2 | G7\n3 | CMaj7\n4 | Am7\n@ending 1 3\n@ending 2 4\n').value
+    const sheet = buildChanges(doc, CONCERT, 4, false, 'off', undefined, null, 'none', { rhythm: 'unit:8:5:tied' })
+    expect(bars(sheet).map((b) => b.volta?.n ?? null)).toEqual([null, null, 1, 2])
+    expect(bars(sheet)[2]?.rhythm.at(-1)?.tie).toBe(false)
+    expect(bars(sheet)[3]?.rhythm[0]).toMatchObject({ tiedIn: false, rest: false })
+    expect(bars(sheet).map((b) => b.rhythm)).toEqual(rhythmNotes(layRhythm('unit:8:5:tied', [4, 4, 4, 4], [3])!))
+  })
+
   it('counts a rhythm as a voiced line on a printed page', () => {
     expect(changesLinesPerPage('off', { numerals: true, scales: true }, true)).toBe(6)
     expect(changesLinesPerPage('off', { numerals: true, scales: true })).toBe(8)

@@ -792,8 +792,11 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
   const counted = counts ? deduped.map((l) => mapPentatonics(l, (p) => ({ ...p, label: `${p.label} ${p.shared}` }))) : deduped
   const pentatonicCaption = pentatonic && basis === 'key' ? pentatonicPathCaption(pentatonic.path ?? 'one', step) : null
   // the rhythm, laid over the bars as drawn (a repeat drawn with repeat signs counts once), with the Line off
-  const lengths = counted.flatMap((l) => l.bars.map((b) => b.beats))
-  const laid = line === 'off' ? layRhythm(rhythm, lengths) : null
+  const drawnBars = counted.flatMap((l) => l.bars)
+  const lengths = drawnBars.map((b) => b.beats)
+  // no tie from a 1st ending into the 2nd (or later): the player jumps there from before the 1st
+  const breaks = drawnBars.flatMap((b, i) => ((b.volta?.n ?? 0) > 1 && b.volta?.n !== drawnBars[i - 1]?.volta?.n ? [i] : []))
+  const laid = line === 'off' ? layRhythm(rhythm, lengths, breaks) : null
   const notes = laid ? rhythmNotes(laid) : []
   const firstOf = counted.reduce<number[]>((acc, l) => [...acc, acc.at(-1)! + l.bars.length], [0]) // each line's first bar, counted over the sheet
   const rhythmLines = counted.map((l, n): ChangesLine => ({

@@ -37,12 +37,15 @@ type Segment = Readonly<{ start: number; length: number; rest: boolean; accent: 
 
 const range = (n: number): number[] => Array.from({ length: n }, (_, i) => i)
 
-/** Cells to notes: a `_` holds the note before it, but sounds as an attack first on the sheet or after a rest (§2). */
-function segments(cells: readonly Cell[]): readonly Segment[] {
+/**
+ * Cells to notes: a `_` holds the note before it, but sounds as an attack first on the sheet, after a rest, or at a
+ * break (a pulse no tie crosses, as into a 2nd ending) (§2).
+ */
+function segments(cells: readonly Cell[], breaks: ReadonlySet<number>): readonly Segment[] {
   return cells.reduce<Segment[]>((out, c, i) => {
     const last = out.at(-1)
     if (c === '.') return [...out, { start: i, length: 1, rest: true, accent: false }]
-    if (c === '_' && last && !last.rest) return [...out.slice(0, -1), { ...last, length: last.length + 1 }]
+    if (c === '_' && last && !last.rest && !breaks.has(i)) return [...out.slice(0, -1), { ...last, length: last.length + 1 }]
     return [...out, { start: i, length: 1, rest: false, accent: c === '>x' }]
   }, [])
 }
@@ -94,8 +97,12 @@ function barEvents(segs: readonly Segment[], start: number, length: number, stat
     }, [])
 }
 
-/** A rhythm laid over the drawn bars (each bar's length in beats, in sheet order), or null for Off or no bars. */
-export function layRhythm(id: RhythmId, bars: readonly number[]): Laid | null {
+/**
+ * A rhythm laid over the drawn bars (each bar's length in beats, in sheet order), or null for Off or no bars.
+ * breaks: the bars no tie runs into (a 2nd ending after the 1st): the stream keeps counting, but a note held into
+ * one starts afresh there.
+ */
+export function layRhythm(id: RhythmId, bars: readonly number[], breaks: readonly number[] = []): Laid | null {
   const r = rhythmOf(id)
   if (!r || bars.length === 0) return null
   const pulse = r.kind === 'repeat' ? r.rhythm.pulse : r.pulse
@@ -103,11 +110,12 @@ export function layRhythm(id: RhythmId, bars: readonly number[]): Laid | null {
   const lengths = bars.map(b => b * per)
   const starts = lengths.reduce<number[]>((acc, _, i) => [...acc, i === 0 ? 0 : acc[i - 1]! + lengths[i - 1]!], [])
   const total = starts.at(-1)! + lengths.at(-1)!
+  const cut = new Set(breaks.map(b => starts[b]).filter((p): p is number => p !== undefined))
   if (r.kind === 'repeat') {
     // a repeating rhythm as one stream: the cells, statement after statement, over the total of the bars' pulses;
     // then each note (an attack and its following '_') is cut at the barlines
     const unit = r.rhythm.cells.length
-    const segs = segments(range(total).map(i => r.rhythm.cells[i % unit]!))
+    const segs = segments(range(total).map(i => r.rhythm.cells[i % unit]!), cut)
     return {
       pulse,
       kind: 'repeat',
@@ -117,7 +125,7 @@ export function layRhythm(id: RhythmId, bars: readonly number[]): Laid | null {
       starts,
     }
   }
-  const segs = segments(perBarCells(r.bar, r.n, r.k, bars, lengths, starts, total))
+  const segs = segments(perBarCells(r.bar, r.n, r.k, bars, lengths, starts, total), cut)
   return {
     pulse,
     kind: 'bar',

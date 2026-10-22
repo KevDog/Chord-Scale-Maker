@@ -55,6 +55,20 @@ describe('layRhythm events', () => {
     expect(laid.bars[1]![0]).toMatchObject({ at: 0, length: 1, tiedIn: true })
   })
 
+  it('breaks the tie into a break bar (a 2nd ending) with a fresh attack, the stream still counting', () => {
+    // 8ths in 3, tied: the third statement (pulses 6–8) would tie into bar 1
+    const laid = layRhythm('unit:8:3:tied', [4, 4], [1])!
+    expect(laid.bars[0]!.at(-1)).toMatchObject({ at: 6, length: 2, tie: false })
+    expect(laid.bars[1]![0]).toMatchObject({ at: 0, length: 1, rest: false, tiedIn: false, accent: false, statement: 2 })
+    expect(laid.landings).toEqual(layRhythm('unit:8:3:tied', [4, 4])!.landings)
+    expect(laid.bars[1]!.slice(1)).toEqual(layRhythm('unit:8:3:tied', [4, 4])!.bars[1]!.slice(1))
+  })
+
+  it('leaves bars with no tie into them alone at a break', () => {
+    expect(layRhythm('unit:8:4:tied', [4, 4], [1])).toEqual(layRhythm('unit:8:4:tied', [4, 4]))
+    expect(layRhythm('run:8:4:6', [4, 4], [1])).toEqual(layRhythm('run:8:4:6', [4, 4]))
+  })
+
   it('spills a run into the next bar and merges it with that bar’s own run (§3)', () => {
     const r = layRhythm('run:8:4:6', [4, 4])!
     expect(r.bars[1]!.filter(e => !e.rest).map(e => e.at)).toEqual([0, 1, 6, 7])
