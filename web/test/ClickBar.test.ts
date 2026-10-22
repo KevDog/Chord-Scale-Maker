@@ -47,6 +47,17 @@ describe('ClickBar', () => {
     expect(field.element.value).toBe('300')
   })
 
+  it('the tempo field’s arrows step it, by 5 with Shift', async () => {
+    const { w, click } = await mountBar()
+    const field = w.find<HTMLInputElement>('input[aria-label=Tempo]')
+    await field.trigger('keydown', { key: 'ArrowUp' })
+    expect(click.tempo.value).toBe(161)
+    await field.trigger('keydown', { key: 'ArrowDown', shiftKey: true })
+    expect(click.tempo.value).toBe(156)
+    await nextTick()
+    expect(field.element.value).toBe('156')
+  })
+
   it('starts and stops, pressed while running', async () => {
     const { click, button } = await mountBar()
     await button('Start')!.trigger('click')
@@ -55,17 +66,44 @@ describe('ClickBar', () => {
     expect(button('Stop')!.attributes('aria-pressed')).toBe('true')
   })
 
-  it('hides the hat option outside 4/4 and names the subdivision for the feel', async () => {
+  it('hides the hat option outside 4/4', async () => {
     const three = await mountBar({ beats: 3, style: 'Jazz waltz', metreChanges: false })
     await three.button('Click settings')!.trigger('click')
     expect(three.w.text()).not.toContain('Hat on 2 & 4')
-    expect(three.w.text()).toContain('Skip note')
-    three.click.feel.value = 'straight'
-    await nextTick()
-    expect(three.w.text()).toContain('Eighths')
     const four = await mountBar()
     await four.button('Click settings')!.trigger('click')
     expect(four.w.text()).toContain('Hat on 2 & 4')
+  })
+
+  it('one Feel on the bar: Quarters, Swing or Straight, and nothing more for it under ⋯', async () => {
+    const { w, click, button } = await mountBar()
+    const feel = w.find('fieldset')
+    expect(feel.text()).toContain('Feel')
+    expect(feel.findAll('input[type=radio]').map((r) => r.element.labels?.[0]?.textContent?.trim())).toEqual(['Quarters', 'Swing', 'Straight'])
+    await feel.findAll('input[type=radio]')[0]!.setValue(true)
+    expect(click.feel.value).toBe('quarters')
+    await button('Click settings')!.trigger('click')
+    expect(w.text()).not.toMatch(/Skip note|Eighths/)
+  })
+
+  it('folds to Start/Stop, the tempo and the lights, still playing, and unfolds; it stays folded', async () => {
+    const { w, click, button } = await mountBar()
+    await button('Start')!.trigger('click')
+    const toggle = () => button('Click controls')!
+    expect(toggle().attributes('aria-expanded')).toBe('true')
+    await toggle().trigger('click')
+    expect(toggle().attributes('aria-expanded')).toBe('false')
+    for (const name of ['Slower', 'Faster', 'Tap the tempo', 'Click settings', 'Hide the click']) expect(button(name), name).toBeUndefined()
+    expect(w.find('input[aria-label=Tempo]').exists()).toBe(false)
+    expect(w.find('fieldset').exists()).toBe(false)
+    expect(button('Stop')).toBeDefined()
+    expect(click.running.value).toBe(true)
+    expect(w.findAll('[data-testid=click-lights] i')).toHaveLength(4)
+    expect(w.text()).toContain('160')
+    const again = await mountBar()
+    expect(again.button('Click controls')!.attributes('aria-expanded')).toBe('false')
+    await toggle().trigger('click')
+    expect(button('Slower')).toBeDefined()
   })
 
   it('docked, the page’s foot clears it until it goes', async () => {

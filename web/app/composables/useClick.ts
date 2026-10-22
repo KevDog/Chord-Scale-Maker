@@ -8,7 +8,8 @@ import { readStored, writeStored } from '~/utils/storage'
  * clicks fall in each lookahead window; this books them on the AudioContext's clock, so a busy page never makes it
  * drift, and lights the beat that is sounding. Tempo and feel are remembered per chart, the rest in this browser.
  */
-export type ClickSettings = Readonly<{ subdivision: boolean; hat: boolean; countIn: 0 | 1 | 2; sound: ClickSound }>
+/** folded: the bar shows only Start/Stop, the tempo and the lights */
+export type ClickSettings = Readonly<{ hat: boolean; countIn: 0 | 1 | 2; sound: ClickSound; folded: boolean }>
 export type ClickChart = Readonly<{ beats: Beats; style: string; metreChanges: boolean }>
 export type ClickDeps = Readonly<{
   audio?: () => ClickAudio | null
@@ -21,16 +22,16 @@ export type ClickDeps = Readonly<{
 export const LOOKAHEAD = { interval: 25, ahead: 0.1, hiddenAhead: 1.2 } as const
 
 const SETTINGS_KEY = 'csm-click'
-const DEFAULT_SETTINGS: ClickSettings = { subdivision: false, hat: false, countIn: 0, sound: 'wood' }
+const DEFAULT_SETTINGS: ClickSettings = { hat: false, countIn: 0, sound: 'wood', folded: false }
 
 function parseSettings(raw: string | null): ClickSettings {
   try {
     const v = JSON.parse(raw ?? '') as Partial<Record<keyof ClickSettings, unknown>>
     return {
-      subdivision: typeof v.subdivision === 'boolean' ? v.subdivision : DEFAULT_SETTINGS.subdivision,
       hat: typeof v.hat === 'boolean' ? v.hat : DEFAULT_SETTINGS.hat,
       countIn: v.countIn === 0 || v.countIn === 1 || v.countIn === 2 ? v.countIn : DEFAULT_SETTINGS.countIn,
       sound: CLICK_SOUNDS.includes(v.sound as ClickSound) ? (v.sound as ClickSound) : DEFAULT_SETTINGS.sound,
+      folded: typeof v.folded === 'boolean' ? v.folded : DEFAULT_SETTINGS.folded,
     }
   } catch {
     return DEFAULT_SETTINGS
@@ -44,7 +45,7 @@ function readChart(key: string | undefined): Readonly<{ tempo?: number; feel?: C
     const v = JSON.parse(readStored(`${SETTINGS_KEY}:${key}`) ?? '') as Record<string, unknown>
     return {
       tempo: typeof v.tempo === 'number' ? clampTempo(v.tempo) : undefined,
-      feel: v.feel === 'swing' || v.feel === 'straight' ? v.feel : undefined,
+      feel: v.feel === 'quarters' || v.feel === 'swing' || v.feel === 'straight' ? v.feel : undefined,
     }
   } catch {
     return {}
@@ -97,7 +98,7 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
 
   const plan = computed(
     (): ClickPlan => ({
-      options: { beats: chart.value.beats, feel: feel.value, subdivision: settings.value.subdivision, hat: settings.value.hat },
+      options: { beats: chart.value.beats, feel: feel.value, hat: settings.value.hat },
       tempo: clampTempo(tempo.value),
       countIn: settings.value.countIn,
     }),
@@ -107,7 +108,8 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
   let timer: number | null = null
   let state: ClickState = { barStart: 0, bar: 0 }
   let booked = 0 // the audio clock's time booked up to
-  let recent: readonly TimedClick[] = [] // booked clicks the lights still need (the beats, not the hat or the subdivision)
+  let recent: readonly TimedClick[] = [] // booked clicks the lights still need (the beats, not the hat or the note between them)
+  let run = 0 // each start and stop: a start whose resume settles after another start or a stop gives way
 
   function lights(): void {
     if (!audio || !running.value) return
@@ -145,14 +147,16 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
       return
     }
     running.value = true
+    const mine = ++run
     try {
       await audio.resume()
     } catch {
+      if (mine !== run) return
       running.value = false // refused (closed under it, or the browser said no): stopped, and said so
       unavailable.value = true
       return
     }
-    if (!running.value) return // stopped while resuming
+    if (mine !== run) return // stopped, or started again, while resuming
     state = { barStart: audio.now(), bar: 0 }
     booked = audio.now()
     recent = []
@@ -162,6 +166,7 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
   }
 
   function stop(): void {
+    run++
     if (timer !== null) clearTimer(timer)
     timer = null
     running.value = false

@@ -13,9 +13,9 @@ describe('useClick', () => {
     const c = useClick(chart(), ref('autumn-leaves'), { audio: fakeAudio })
     expect([c.tempo.value, c.feel.value]).toEqual([160, 'swing'])
     c.tempo.value = 140
-    c.feel.value = 'straight'
+    c.feel.value = 'quarters'
     const again = useClick(chart(), ref('autumn-leaves'), { audio: fakeAudio })
-    expect([again.tempo.value, again.feel.value]).toEqual([140, 'straight'])
+    expect([again.tempo.value, again.feel.value]).toEqual([140, 'quarters'])
     expect(useClick(chart(), ref(undefined), { audio: fakeAudio }).tempo.value).toBe(160) // a draft: not remembered
   })
 
@@ -23,6 +23,7 @@ describe('useClick', () => {
     const audio = fakeAudio()
     const t = timers()
     const c = useClick(chart(), ref(undefined), { audio: () => audio, ...t })
+    c.feel.value = 'quarters'
     await c.start()
     expect(c.running.value).toBe(true)
     t.tick()
@@ -103,8 +104,8 @@ describe('useClick', () => {
   it('keeps its settings in this browser', () => {
     localStorage.clear()
     const c = useClick(chart(), ref(undefined), { audio: fakeAudio })
-    c.settings.value = { subdivision: true, hat: true, countIn: 2, sound: 'beep' }
-    expect(useClick(chart(), ref(undefined), { audio: fakeAudio }).settings.value).toEqual({ subdivision: true, hat: true, countIn: 2, sound: 'beep' })
+    c.settings.value = { hat: true, countIn: 2, sound: 'beep', folded: true }
+    expect(useClick(chart(), ref(undefined), { audio: fakeAudio }).settings.value).toEqual({ hat: true, countIn: 2, sound: 'beep', folded: true })
   })
 
   it('back from a hidden tab, books no beat twice', async () => {
@@ -155,5 +156,37 @@ describe('useClick', () => {
     const c = useClick(chart(), ref(undefined), { audio: () => audio, ...timers() })
     await c.start()
     expect([c.running.value, c.unavailable.value]).toEqual([false, true])
+  })
+
+  it('Start, Stop and Start again before the audio resumes runs one scheduler', async () => {
+    const pending: (() => void)[] = []
+    const audio = { ...fakeAudio(), resume: () => new Promise<void>((r) => pending.push(r)) }
+    let intervals = 0
+    let frames = 0
+    const c = useClick(chart(), ref(undefined), { audio: () => audio, setInterval: () => ++intervals, clearInterval: () => {}, raf: () => ++frames })
+    const first = c.start()
+    c.stop()
+    const second = c.start()
+    for (const r of pending) r()
+    await Promise.all([first, second])
+    expect([intervals, frames, c.running.value]).toEqual([1, 1, true])
+  })
+
+  it('a swing style plays its skip note from the start; Quarters plays the beats alone', async () => {
+    const audio = fakeAudio()
+    const t = timers()
+    const c = useClick(chart(), ref(undefined), { audio: () => audio, ...t })
+    await c.start()
+    for (const at of [0, 0.2]) {
+      audio.clock.t = at
+      t.tick()
+    }
+    expect(audio.played.map((p) => p.kind)).toEqual(['accent', 'sub']) // 160 bpm: the skip note at 0.25 s
+    c.feel.value = 'quarters'
+    for (const at of [0.4, 0.6, 0.8, 1.0, 1.2, 1.4]) {
+      audio.clock.t = at
+      t.tick()
+    }
+    expect(audio.played.slice(2).some((p) => p.kind === 'sub')).toBe(false)
   })
 })

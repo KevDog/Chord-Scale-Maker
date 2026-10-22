@@ -4,24 +4,25 @@
  */
 import type { Beats } from './chart'
 
-export type ClickFeel = 'swing' | 'straight'
+/** quarters: the beats alone; swing: the skip note two thirds through each beat; straight: eighths halfway */
+export type ClickFeel = 'quarters' | 'swing' | 'straight'
 export type ClickKind = 'accent' | 'beat' | 'hat' | 'sub' | 'count'
 /** at: beats from the bar's start */
 export type ClickEvent = Readonly<{ at: number; kind: ClickKind }>
-/** subdivision: swing's skip note, or straight eighths; hat: on 2 and 4, in 4/4 only */
-export type ClickOptions = Readonly<{ beats: Beats; feel: ClickFeel; subdivision: boolean; hat: boolean }>
+/** hat: on 2 and 4, in 4/4 only */
+export type ClickOptions = Readonly<{ beats: Beats; feel: ClickFeel; hat: boolean }>
 
 export const CLICK_TEMPO = { min: 40, max: 300, fallback: 120 } as const
 
 const byTime = (a: ClickEvent, b: ClickEvent): number => a.at - b.at
 
-/** one bar's clicks: the accent on 1, a click on the other beats, then the subdivision and the hat */
+/** one bar's clicks: the accent on 1, a click on the other beats, then the feel's note between them and the hat */
 export function clickBar(o: ClickOptions): readonly ClickEvent[] {
   const beats = Array.from({ length: o.beats }, (_, n) => n)
-  const sub = o.feel === 'swing' ? 2 / 3 : 1 / 2
+  const sub = o.feel === 'swing' ? 2 / 3 : o.feel === 'straight' ? 1 / 2 : null
   return [
     ...beats.map((n): ClickEvent => ({ at: n, kind: n === 0 ? 'accent' : 'beat' })),
-    ...(o.subdivision ? beats.map((n): ClickEvent => ({ at: n + sub, kind: 'sub' })) : []),
+    ...(sub === null ? [] : beats.map((n): ClickEvent => ({ at: n + sub, kind: 'sub' }))),
     ...(o.hat && o.beats === 4 ? [1, 3].map((n): ClickEvent => ({ at: n, kind: 'hat' })) : []),
   ].sort(byTime)
 }

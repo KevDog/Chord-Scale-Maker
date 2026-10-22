@@ -638,7 +638,8 @@
           </UiText>
           <UiText>
             The feel is read on its own: Latin, bossa, samba, even or straight 8ths, funk and rock play
-            <strong :class="EM">straight</strong>, everything else swings, so an up samba is fast and straight. It plays the
+            <strong :class="EM">straight</strong>, everything else swings, so an up samba is fast and straight. Swing plays the
+            skip note two thirds through each beat, straight an eighth halfway; Quarters, the beats alone, is one tap away. It plays the
             chart's time signature, the one it starts in, all the way through: a chart that changes metre partway keeps its
             first until the click can follow the form.
           </UiText>

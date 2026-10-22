@@ -6,13 +6,15 @@
     aria-label="Click"
     :class="[
       'flex flex-wrap items-center gap-x-3 gap-y-2 print:hidden',
-      home === 'docked' && 'fixed inset-x-0 bottom-0 z-30 bg-raised px-4 py-2 shadow-raised',
+      home === 'docked' ? 'fixed inset-x-0 bottom-0 z-30 bg-raised px-4 py-2 shadow-raised' : 'relative', // positioned: on a phone the settings open across it
     ]"
   >
     <ToggleButton :model-value="click.running.value" @update:model-value="click.toggle()">
       <StopIcon v-if="click.running.value" data-slot="icon" /><PlayIcon v-else data-slot="icon" />{{ click.running.value ? 'Stop' : 'Start' }}
     </ToggleButton>
-    <span class="flex items-center gap-1">
+    <!-- folded (the chevron): Start/Stop, the tempo and the lights, one row, so a phone keeps its screen for the music -->
+    <UiText v-if="folded" class="tabular-nums">{{ click.tempo.value }} bpm</UiText>
+    <span v-if="!folded" class="flex items-center gap-1">
       <UiButton plain aria-label="Slower" title="Slower (Shift: 5)" @click="step(-1, $event)"><MinusIcon data-slot="icon" /></UiButton>
       <UiInput
         :model-value="String(click.tempo.value)"
@@ -24,11 +26,19 @@
         class="w-18 text-center tabular-nums"
         @change="commit"
         @keydown.enter="commit"
+        @keydown.up.prevent="nudge(1, $event)"
+        @keydown.down.prevent="nudge(-1, $event)"
       />
       <UiButton plain aria-label="Faster" title="Faster (Shift: 5)" @click="step(1, $event)"><PlusIcon data-slot="icon" /></UiButton>
     </span>
-    <UiButton outline aria-label="Tap the tempo" title="Tap the beat a few times" @click="click.tap()">Tap</UiButton>
-    <SegmentedControl v-model="click.feel.value" legend="Feel" :name="`click-feel-${home}`" :options="FEELS" />
+    <UiButton v-if="!folded" outline aria-label="Tap the tempo" title="Tap the beat a few times" @click="click.tap()">Tap</UiButton>
+    <SegmentedControl v-if="!folded" v-model="click.feel.value" legend="Feel" :name="`click-feel-${home}`" :options="FEELS" />
+    <!-- its settings beside the controls they qualify, not by Hide (the owner, #497) -->
+    <RailPopover v-if="!folded" v-model:open="settingsOpen" label="Click settings" :place="home === 'docked' ? 'above' : 'below'">
+      <SegmentedControl v-model="countIn" legend="Count-in" :name="`click-count-${home}`" :options="COUNT_INS" />
+      <UiCheckbox v-if="chart.beats === 4" v-model="hat">Hat on 2 &amp; 4</UiCheckbox>
+      <SegmentedControl v-model="sound" legend="Sound" :name="`click-sound-${home}`" :options="SOUNDS" />
+    </RailPopover>
     <span data-testid="click-lights" aria-hidden="true" class="flex items-center gap-1.5">
       <i
         v-for="n in chart.beats"
@@ -42,21 +52,24 @@
       />
     </span>
     <UiText v-if="click.unavailable.value" role="status" class="text-amber-800! dark:text-amber-400!">Sound isn’t available in this browser.</UiText>
-    <UiText v-else class="min-w-0 truncate max-sm:order-last">{{ metreText }}</UiText>
+    <UiText v-else-if="!folded" class="min-w-0 truncate max-sm:order-last">{{ metreText }}</UiText>
     <span class="ml-auto flex items-center gap-1">
-      <RailPopover v-model:open="settingsOpen" label="Click settings" :place="home === 'docked' ? 'above' : 'below'">
-        <SegmentedControl v-model="countIn" legend="Count-in" :name="`click-count-${home}`" :options="COUNT_INS" />
-        <UiCheckbox v-model="subdivision">{{ click.feel.value === 'swing' ? 'Skip note' : 'Eighths' }}</UiCheckbox>
-        <UiCheckbox v-if="chart.beats === 4" v-model="hat">Hat on 2 &amp; 4</UiCheckbox>
-        <SegmentedControl v-model="sound" legend="Sound" :name="`click-sound-${home}`" :options="SOUNDS" />
-      </RailPopover>
-      <UiButton v-if="home === 'docked'" plain aria-label="Hide the click" title="Hide the click" @click="emit('hide')"><XMarkIcon data-slot="icon" /></UiButton>
+      <UiButton
+        plain
+        aria-label="Click controls"
+        :aria-expanded="!folded"
+        :title="folded ? 'Show all the click’s controls' : 'Fold the click to Start, the tempo and the beat'"
+        @click="folded = !folded"
+      >
+        <component :is="(home === 'docked') === folded ? ChevronUpIcon : ChevronDownIcon" data-slot="icon" />
+      </UiButton>
+      <UiButton v-if="home === 'docked' && !folded" plain aria-label="Hide the click" title="Hide the click" @click="emit('hide')"><XMarkIcon data-slot="icon" /></UiButton>
     </span>
   </div>
 </template>
 
 <script setup lang="ts">
-import { MinusIcon, PlayIcon, PlusIcon, StopIcon, XMarkIcon } from '@heroicons/vue/16/solid'
+import { ChevronDownIcon, ChevronUpIcon, MinusIcon, PlayIcon, PlusIcon, StopIcon, XMarkIcon } from '@heroicons/vue/16/solid'
 import { type ClickFeel, clampTempo } from '@chord-scale-maker/engine'
 import { CLICK, type Click, type ClickChart, type ClickSettings } from '~/composables/useClick'
 import type { ClickSound } from '~/utils/clickSounds'
@@ -72,7 +85,9 @@ function missing(): never {
 }
 const emit = defineEmits<{ hide: [] }>()
 
+// the feel is what plays between the beats: nothing, swing's skip note, or straight eighths
 const FEELS: readonly { value: ClickFeel; label: string }[] = [
+  { value: 'quarters', label: 'Quarters' },
   { value: 'swing', label: 'Swing' },
   { value: 'straight', label: 'Straight' },
 ]
@@ -99,8 +114,13 @@ function commit(e: Event): void {
   if (text !== '' && !Number.isNaN(Number(text))) click.tempo.value = clampTempo(Number(text))
   el.value = String(click.tempo.value)
 }
-function step(by: 1 | -1, e: MouseEvent): void {
+function step(by: 1 | -1, e: MouseEvent | KeyboardEvent): void {
   click.tempo.value = clampTempo(click.tempo.value + by * (e.shiftKey ? 5 : 1))
+}
+// the field's arrows: from what's typed, by 1, or 5 with Shift, as − and + do
+function nudge(by: 1 | -1, e: KeyboardEvent): void {
+  commit(e)
+  step(by, e)
 }
 
 const settingsOpen = ref(false)
@@ -110,8 +130,8 @@ function setting<K extends keyof ClickSettings>(key: K) {
     set: (v: ClickSettings[K]) => (click.settings.value = { ...click.settings.value, [key]: v }),
   })
 }
-const subdivision = setting('subdivision')
 const hat = setting('hat')
+const folded = setting('folded')
 const sound = setting('sound')
 const countInSetting = setting('countIn')
 const countIn = computed({

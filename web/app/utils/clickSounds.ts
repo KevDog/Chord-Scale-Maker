@@ -24,16 +24,25 @@ const PEAK: Readonly<Record<Exclude<ClickKind, 'hat'>, number>> = { accent: 1, b
 const DECAY = 0.06 // s
 const HAT = { length: 0.03, cutoff: 6000, gain: 0.4 } as const
 
+/** the hat's noise: made once a context, played from its own source each hit */
+const noises = new WeakMap<BaseAudioContext, AudioBuffer>()
+function noiseFor(ctx: BaseAudioContext): AudioBuffer {
+  const made = noises.get(ctx)
+  if (made) return made
+  const buffer = ctx.createBuffer(1, Math.ceil(ctx.sampleRate * HAT.length), ctx.sampleRate)
+  const data = buffer.getChannelData(0)
+  for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1
+  noises.set(ctx, buffer)
+  return buffer
+}
+
 /** one click at `time` on the context's clock, into `out` */
 export function playClick(ctx: AudioContext, out: AudioNode, kind: ClickKind, time: number, sound: ClickSound): void {
   const env = ctx.createGain()
   env.connect(out)
   if (kind === 'hat') {
-    const buffer = ctx.createBuffer(1, Math.ceil(ctx.sampleRate * HAT.length), ctx.sampleRate)
-    const data = buffer.getChannelData(0)
-    for (let i = 0; i < data.length; i++) data[i] = Math.random() * 2 - 1
     const noise = ctx.createBufferSource()
-    noise.buffer = buffer
+    noise.buffer = noiseFor(ctx)
     const filter = ctx.createBiquadFilter()
     filter.type = 'highpass'
     filter.frequency.value = HAT.cutoff

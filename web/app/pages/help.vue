@@ -264,15 +264,17 @@
             <div>
               <dt class="font-semibold text-zinc-950 dark:text-white">Click</dt>
               <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
-                Shows a metronome along the bottom of the window (in focus mode, in the bar at the top), so you can play the
+                The note icon beside Print shows a metronome along the bottom of the window (in focus mode, in the bar at the top), so you can play the
                 tune from the sheet without another app. It's set to the chart's time signature, with a tempo and a feel read
                 from its style (<DecisionLink id="click.tempo">how</DecisionLink>). <strong class="font-semibold">Start</strong>
                 plays it, and <kbd>Space</kbd> starts and stops it from anywhere on the page.
                 <strong class="font-semibold">−</strong> and <strong class="font-semibold">+</strong> change the tempo by one
-                (with Shift, by five), or type it, 40 to 300; <strong class="font-semibold">Tap</strong> takes it from a few
-                taps of the beat. <strong class="font-semibold">Swing</strong> or <strong class="font-semibold">Straight</strong>
-                sets the feel. Under <strong class="font-semibold">⋯</strong>: a count-in of one or two bars, the skip note
-                (swing) or eighths (straight) between the beats, a hat on 2 and 4 in 4/4, and the sound, Wood or Beep. The
+                (with Shift, by five), as do the arrow keys in the tempo, or type it, 40 to 300; <strong class="font-semibold">Tap</strong> takes it from a few
+                taps of the beat. The feel is what plays between the beats: <strong class="font-semibold">Quarters</strong>, the
+                beats alone; <strong class="font-semibold">Swing</strong>, the skip note of swung eighths; or
+                <strong class="font-semibold">Straight</strong>, even eighths. Under <strong class="font-semibold">⋯</strong>: a
+                count-in of one or two bars, a hat on 2 and 4 in 4/4, and the sound, Wood or Beep. The chevron folds it to
+                Start, the tempo and the beat, playing on, to leave a phone's screen to the music. The
                 chart remembers its tempo and feel. A chart that changes time signature partway plays the one it starts in.
                 On an iPhone or iPad the sound stops when the screen locks.
               </dd>
