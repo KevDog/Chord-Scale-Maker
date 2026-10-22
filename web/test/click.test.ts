@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
-import { ref } from 'vue'
+import { nextTick, ref } from 'vue'
 import { useClick } from '~/composables/useClick'
 import { fakeAudio, timers } from './clickFakes'
 
@@ -105,5 +105,55 @@ describe('useClick', () => {
     const c = useClick(chart(), ref(undefined), { audio: fakeAudio })
     c.settings.value = { subdivision: true, hat: true, countIn: 2, sound: 'beep' }
     expect(useClick(chart(), ref(undefined), { audio: fakeAudio }).settings.value).toEqual({ subdivision: true, hat: true, countIn: 2, sound: 'beep' })
+  })
+
+  it('back from a hidden tab, books no beat twice', async () => {
+    const audio = fakeAudio()
+    const t = timers()
+    const hidden = vi.spyOn(document, 'hidden', 'get').mockReturnValue(true)
+    const c = useClick(chart(), ref(undefined), { audio: () => audio, ...t })
+    await c.start()
+    for (const at of [1, 2, 3.4]) { // the last lookahead ends mid-bar (bars at 0, 1.5, 3, 4.5 s)
+      audio.clock.t = at
+      t.tick()
+    }
+    hidden.mockReturnValue(false)
+    for (let at = 3.5; at < 5; at += 0.025) {
+      audio.clock.t = at // the interval's 25 ms, back in the foreground
+      t.tick()
+    }
+    hidden.mockRestore()
+    const times = audio.played.map((p) => p.time)
+    expect(times.length).toBe(new Set(times).size)
+  })
+
+  it('a chart’s style, edited, moves the tempo it hasn’t been given, and stores nothing', async () => {
+    localStorage.removeItem('csm-click:mine:abc')
+    const style = ref({ beats: 4 as const, style: 'M', metreChanges: false })
+    const c = useClick(style, ref('mine:abc'), { audio: fakeAudio })
+    style.value = { ...style.value, style: 'Medium up' }
+    await nextTick()
+    expect(c.tempo.value).toBe(160)
+    expect(localStorage.getItem('csm-click:mine:abc')).toBeNull()
+    c.tempo.value = 100
+    style.value = { ...style.value, style: 'Ballad' }
+    await nextTick()
+    expect(c.tempo.value).toBe(100) // the player's tempo stays
+  })
+
+  it('a draft keeps the tempo the player set when its style changes', async () => {
+    const style = ref({ beats: 4 as const, style: 'Medium', metreChanges: false })
+    const c = useClick(style, ref(undefined), { audio: fakeAudio })
+    c.tempo.value = 90
+    style.value = { ...style.value, style: 'Up' }
+    await nextTick()
+    expect(c.tempo.value).toBe(90)
+  })
+
+  it('a refused resume leaves it stopped and says so', async () => {
+    const audio = { ...fakeAudio(), resume: () => Promise.reject(new Error('no')) }
+    const c = useClick(chart(), ref(undefined), { audio: () => audio, ...timers() })
+    await c.start()
+    expect([c.running.value, c.unavailable.value]).toEqual([false, true])
   })
 })

@@ -68,15 +68,28 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
   const stored = readChart(storageKey.value)
   const tempo = ref(stored.tempo ?? defaultTempo(chart.value.style))
   const feel = ref<ClickFeel>(stored.feel ?? defaultFeel(chart.value.style))
-  // a chart's key or style changing (another version, the heading edited): its own, else the style's
-  watch([storageKey, () => chart.value.style], ([key, style]) => {
-    const s = readChart(key)
-    tempo.value = s.tempo ?? defaultTempo(style)
-    feel.value = s.feel ?? defaultFeel(style)
+  // only what the player sets is stored: a tempo and feel still the style's follow the style as it's edited
+  let chosen = stored.tempo !== undefined || stored.feel !== undefined
+  let following = false // the style's own values being applied, not the player's
+  function follow(t: number, f: ClickFeel): void {
+    following = true
+    tempo.value = t
+    feel.value = f
+    following = false
+  }
+  // another chart (its key): its own, else its style's; the style edited: the style's, unless the player chose
+  watch([storageKey, () => chart.value.style], ([key, style], [oldKey]) => {
+    if (key !== oldKey) {
+      const s = readChart(key)
+      chosen = s.tempo !== undefined || s.feel !== undefined
+      follow(s.tempo ?? defaultTempo(style), s.feel ?? defaultFeel(style))
+    } else if (!chosen) follow(defaultTempo(style), defaultFeel(style))
   })
   watch(
     [tempo, feel],
     ([t, f]) => {
+      if (following) return
+      chosen = true
       if (storageKey.value) writeStored(`${SETTINGS_KEY}:${storageKey.value}`, JSON.stringify({ tempo: t, feel: f }))
     },
     { flush: 'sync' },
@@ -112,7 +125,7 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
     const next = scheduleClicks(plan.value, state, Math.max(booked, now), until)
     for (const e of next.events) audio.play(e.kind, e.time, settings.value.sound)
     state = next.state
-    booked = until
+    booked = Math.max(booked, until) // a shorter lookahead (the tab shown again) mustn't reopen what's booked
     const beats = next.events.filter((e) => e.kind !== 'hat' && e.kind !== 'sub')
     recent = [...recent.filter((e) => e.time > now - 2), ...beats]
     lights()
@@ -132,7 +145,13 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
       return
     }
     running.value = true
-    await audio.resume()
+    try {
+      await audio.resume()
+    } catch {
+      running.value = false // refused (closed under it, or the browser said no): stopped, and said so
+      unavailable.value = true
+      return
+    }
     if (!running.value) return // stopped while resuming
     state = { barStart: audio.now(), bar: 0 }
     booked = audio.now()

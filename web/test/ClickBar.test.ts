@@ -70,9 +70,9 @@ describe('ClickBar', () => {
 
   it('docked, the page’s foot clears it until it goes', async () => {
     const { w } = await mountBar()
-    expect(document.body.style.paddingBottom).toBe('var(--click-h, 0px)')
+    expect(document.body.classList.contains('click-docked')).toBe(true)
     w.unmount()
-    expect(document.body.style.paddingBottom).toBe('')
+    expect(document.body.classList.contains('click-docked')).toBe(false)
   })
 
   it('in focus has no ✕ and isn’t fixed to the window', async () => {

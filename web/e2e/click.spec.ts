@@ -48,6 +48,17 @@ test('a tempo typed out of range is clamped, and the chart remembers it', async 
   await expect(clickBar(page).getByRole('spinbutton', { name: 'Tempo' })).toHaveValue('300')
 })
 
+test('the docked bar’s room at the page’s foot doesn’t print', async ({ page }) => {
+  await page.goto('/song/autumn-leaves')
+  await clickUntil(page, page.getByRole('button', { name: 'Click', exact: true }), clickBar(page))
+  const padding = () => page.evaluate(() => getComputedStyle(document.body).paddingBottom)
+  await expect.poll(padding).not.toBe('0px')
+  await page.emulateMedia({ media: 'print' })
+  // a real print may lay out before the bar's height is measured again: the CSS alone must drop the room
+  await page.evaluate(() => document.documentElement.style.setProperty('--click-h', '60px'))
+  expect(await padding()).toBe('0px')
+})
+
 test('focus mode’s pages fit under its bar with the click in it', async ({ page }) => {
   await page.goto('/song/autumn-leaves')
   await clickUntil(page, page.getByRole('button', { name: 'Click', exact: true }), clickBar(page))

@@ -124,7 +124,7 @@ const root = useTemplateRef<HTMLElement>('root')
 let sized: ResizeObserver | undefined
 onMounted(() => {
   if (props.home !== 'docked') return
-  document.body.style.paddingBottom = 'var(--click-h, 0px)'
+  document.body.classList.add('click-docked') // main.css: the room, and none in print
   if (!root.value || typeof ResizeObserver === 'undefined') return
   sized = new ResizeObserver(([e]) => {
     if (e) document.documentElement.style.setProperty('--click-h', `${Math.ceil(e.borderBoxSize[0]?.blockSize ?? e.contentRect.height)}px`)
@@ -134,7 +134,7 @@ onMounted(() => {
 onBeforeUnmount(() => {
   sized?.disconnect()
   if (props.home !== 'docked') return
-  document.body.style.removeProperty('padding-bottom')
+  document.body.classList.remove('click-docked')
   document.documentElement.style.removeProperty('--click-h')
 })
 </script>
