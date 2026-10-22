@@ -1,5 +1,6 @@
 import { isSheetLine, type SheetLine } from './arpeggios'
 import { type Approach, isApproach } from './approaches'
+import { isRhythmId, type RhythmId } from './rhythm'
 import { type CellId, isCellId, isSystemId } from './cells'
 import { type CellOrder, isCellOrder } from './cellOrder'
 import { type ArpDirection, type ArpNotes, isArpDirection, isArpNotes } from './arpeggioSheet'
@@ -53,6 +54,9 @@ export type ShareView = Readonly<{
   line?: ShareLine
   /** the guide tone line's Approach (#298); absent: none */
   approach?: Approach
+  /** the Changes sheet's rhythm line and its target beats (rhythm spec §9); absent: off */
+  rhythm?: RhythmId
+  targets?: boolean
   sheet?: ShareSheet
   /** the Arpeggios sheet's choices: 7th Chord, Extended or Triad pairs; Up, Down or Up & down; Triad pairs' shape (#436) */
   arpNotes?: ArpNotes
@@ -151,6 +155,8 @@ export function shareViewFrom(v: unknown): ShareView | undefined {
     ...(typeof o.scaleNames === 'boolean' ? { scaleNames: o.scaleNames } : {}),
     ...(line && line !== 'off' ? { line } : {}), // anything else: off
     ...(isApproach(o.approach) ? { approach: o.approach } : {}),
+    ...(typeof o.rhythm === 'string' && isRhythmId(o.rhythm) && o.rhythm !== 'off' ? { rhythm: o.rhythm } : {}),
+    ...(o.targets === true ? { targets: true } : {}),
     ...(o.sheet === 'scales' || o.sheet === 'changes' || o.sheet === 'arpeggios' || o.sheet === 'patterns' ? { sheet: o.sheet } : {}),
     ...(isArpNotes(o.arpNotes) ? { arpNotes: o.arpNotes } : {}),
     ...(isArpDirection(o.arpDir) ? { arpDir: o.arpDir } : {}),

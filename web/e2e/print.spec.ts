@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test'
-import { arpeggiosDrawn, closePentatonicOptions, pentatonicLineDrawn, showPentatonicLine, chooseInstrument, chooseSuperimpose, chooseSheet, drawn, expect, guidesDrawn, hexatonicPreset, pentatonicPreset, pickOption, rankedAgainstChord, showArpeggios, showGuides, showPentatonics, staves, test, writeChart } from './fixtures'
+import { arpeggiosDrawn, closePentatonicOptions, pentatonicLineDrawn, showPentatonicLine, chooseInstrument, chooseRhythm, chooseSuperimpose, chooseSheet, drawn, expect, guidesDrawn, hexatonicPreset, pentatonicPreset, pickOption, rankedAgainstChord, rhythmDrawn, showArpeggios, showTargets, showGuides, showPentatonics, staves, test, writeChart } from './fixtures'
 
 const pdfPages = (pdf: Buffer): number => (pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? []).length
 
@@ -34,15 +34,21 @@ test('prints 12 staves per letter page when a line names several chords (wish-fo
 })
 
 // the other set's small line (#215) fits each page's budget: Rhythm Changes' eight lines, numerals and scales on, with it shown
-for (const [what, guides, pentatonics, pages] of [
-  ['slashes', false, false, 1], // 8 a page
-  ['guide tones', true, false, 2], // 6
-  ['slashes and pentatonics', false, true, 2], // 7
-  ['guide tones and pentatonics', true, true, 2], // 5
+// Target beats (rhythm spec §7) take no line of their own: the dots sit in the drawing's headroom, so the budgets hold
+for (const [what, guides, pentatonics, pages, targets] of [
+  ['slashes', false, false, 1, false], // 8 a page
+  ['guide tones', true, false, 2, false], // 6
+  ['slashes and pentatonics', false, true, 2, false], // 7
+  ['guide tones and pentatonics', true, true, 2, false], // 5
+  ['slashes and target beats', false, false, 1, true],
+  ['slashes, pentatonics and target beats', false, true, 2, true],
+  ['guide tones and target beats', true, false, 2, true],
+  ['guide tones, pentatonics and target beats', true, true, 2, true],
 ] as const) {
   test(`prints the Changes with the other changes' line in its pages (${what})`, async ({ page }) => {
     await page.goto('/song/rhythm-changes')
     await expect(page.locator('[data-slot="other-changes"]').first()).toBeVisible()
+    if (targets) await showTargets(page)
     if (pentatonics) {
       await showPentatonics(page)
       await closePentatonicOptions(page) // its popover (#293) opens over the Line control
@@ -91,11 +97,14 @@ test('the Changes sheet shows 1st/2nd endings and a D.S. al Coda', async ({ page
 // raised above the stems, and a bass part in the lowest guide tone range (the tuba's, C2–B♭3). On Stardust From 7th
 // reaches F♯2, below the staff; From 3rd, placed nearer the centre, bottoms out at C3, inside it. Each sheet page
 // holds changesLinesPerPage lines, so the PDF has as many pages as the sheet: a page that overflowed would add one
+// (and with Target beats, rhythm spec §7: their dots take no room of their own)
 for (const line of ['From 3rd', 'From 7th'] as const) {
-test(`prints the Changes with a guide tone line (${line}), a sheet page to a letter page, in the tallest case`, async ({ page }) => {
+for (const targets of [false, true]) {
+test(`prints the Changes with a guide tone line (${line}${targets ? ', target beats' : ''}), a sheet page to a letter page, in the tallest case`, async ({ page }) => {
   await page.goto('/song/stardust')
   await chooseInstrument(page, 'Tuba')
   await showGuides(page, line)
+  if (targets) await showTargets(page)
   await expect(page.getByRole('button', { name: 'Numerals' })).toHaveAttribute('aria-pressed', 'true')
   await expect(page.getByRole('button', { name: 'Scales', exact: true })).toHaveAttribute('aria-pressed', 'true')
   await guidesDrawn(page)
@@ -110,12 +119,15 @@ test(`prints the Changes with a guide tone line (${line}), a sheet page to a let
   expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(sheetPages)
 })
 }
+}
 
 // an arpeggio line: sixteenths and beams on the tuba's bass staff, the same tune; again a sheet page to a letter page
-test('prints the Changes with a 7th chord line, a sheet page to a letter page', async ({ page }) => {
+for (const targets of [false, true]) {
+test(`prints the Changes with a 7th chord line${targets ? ' and target beats' : ''}, a sheet page to a letter page`, async ({ page }) => {
   await page.goto('/song/stardust')
   await chooseInstrument(page, 'Tuba')
   await showArpeggios(page, 'Up · root')
+  if (targets) await showTargets(page)
   await expect(page.getByRole('button', { name: 'Numerals' })).toHaveAttribute('aria-pressed', 'true')
   await expect(page.getByRole('button', { name: 'Scales', exact: true })).toHaveAttribute('aria-pressed', 'true')
   await arpeggiosDrawn(page)
@@ -126,6 +138,7 @@ test('prints the Changes with a 7th chord line, a sheet page to a letter page', 
   await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden()
   expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(sheetPages)
 })
+}
 
 // the Pentatonic line (#284): the arpeggio line's notes under the Pentatonics row, the tuba's tallest case; lines a page unchanged
 test('prints the Changes with the Pentatonic line, a sheet page to a letter page', async ({ page }) => {
@@ -234,6 +247,27 @@ test('prints the Changes with a pentatonic path and no line, a sheet page to a l
   await page.emulateMedia({ media: 'print' })
   expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(sheetPages)
 })
+
+// the rhythm line (rhythm spec §8) counts as a voiced line: its stems, accents, ties and bracket, with Numerals, Scales
+// and Target beats on, and Stardust's endings raised over the stems; and a 5/4 chart, its bars the widest
+const BARS_5_4 = Array.from({ length: 48 }, (_, i) => `${i + 1} | ${['Dm7', 'G7', 'CMaj7', 'A7'][i % 4]}`).join('\n')
+for (const [what, open] of [
+  ['Stardust', (page: Page) => page.goto('/song/stardust')],
+  ['a 5/4 chart', (page: Page) => writeChart(page, `title: F\nkey: C\ntime: 5/4\n\nsection: A\n${BARS_5_4}\n`)],
+] as const) {
+  test(`prints the Changes with a rhythm line, a sheet page to a letter page (${what})`, async ({ page }) => {
+    await open(page)
+    await chooseRhythm(page, '8ths', { In: 'In 5', Variation: 'syncopated' })
+    await showTargets(page)
+    await rhythmDrawn(page)
+    const svgs = page.locator('svg[aria-label^="Bars:"]')
+    const sheetPages = await svgs.evaluateAll((els) => new Set(els.map((e) => e.closest('section'))).size)
+    expect(sheetPages).toBeGreaterThanOrEqual(2) // at least one full page
+    await page.emulateMedia({ media: 'print' })
+    await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden()
+    expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(sheetPages)
+  })
+}
 
 /** how many captions are taller than one line of their text */
 const wrappedCaptions = (page: Page, slot: 'hexatonic' | 'pentatonic' = 'hexatonic'): Promise<number> =>

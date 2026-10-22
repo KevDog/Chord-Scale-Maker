@@ -128,6 +128,10 @@
     </div>
     <div class="relative">
       <div ref="el" class="text-zinc-900 dark:text-zinc-100 print:text-black" />
+      <!-- target beats (rhythm spec §7): a dot over each strong beat, on the slashes or the notes, in the row the drawing keeps for them -->
+      <div v-if="dotsAt !== null" data-slot="targets" aria-hidden="true" class="pointer-events-none absolute inset-0 text-zinc-900 dark:text-zinc-100 print:text-black">
+        <span v-for="d in targetDots" :key="d.key" :data-target-beat="d.beat" class="absolute size-1.5 -translate-1/2 rounded-full bg-current print:size-1" :style="{ left: `${d.x * 100}%`, top: `${dotsAt * 100}%` }" />
+      </div>
       <!-- the sheet as the editor: each bar's strip over the staff tells which bar the pointer is on -->
       <template v-if="editing !== undefined">
         <div v-for="(b, i) in line.bars" :key="`h${i}`" :data-bar="i" class="absolute inset-y-0 print:hidden" :style="{ left: `${barLeft(i) * 100}%`, width: `${(barLeft(i + 1) - barLeft(i)) * 100}%` }" @pointerenter="enterBar(i)" />
@@ -334,6 +338,7 @@ const props = defineProps<{
   clef?: 'treble' | 'bass' // with key signatures or a guide tone on: the part's clef, drawn (with any signature) on the first line only
   arpeggio?: boolean // the voice is an arpeggio line: beamed, no label row
   lineName?: string // that arpeggio line's name in the aria-label: 'pentatonic' (#284), 'triad pair' (#325), 'quartal' (#432); else 7th chords
+  rhythmCaption?: string | null // the sheet's rhythm caption, for the aria-label of a line with a rhythm (rhythm spec §8)
   editable?: boolean // each chord a button that asks to edit it
   selectedLine?: number | null // the chart line of the chord the editor is on, outlined
   doc?: ChartDoc // the chart (the set played, #469), for the sheet editor's field
@@ -371,6 +376,7 @@ const el = ref<HTMLElement | null>(null)
 const names = ref<HTMLElement | null>(null)
 const xs = ref<readonly (readonly number[])[]>([])
 const ends = ref<readonly number[]>([]) // each bar's right edge
+const dotsAt = ref<number | null>(null) // the target dots' row, as a fraction of the drawing's height
 const otherScales = ref<readonly ReadonlyMap<number, number>[]>([]) // each other-set name's scale, by beat, likewise
 const nameScales = ref<readonly (readonly number[])[]>([]) // each chord name's scale, where the line can't fit it
 const drawError = ref<string | null>(null)
@@ -564,6 +570,13 @@ const editLabel = (m: { written: string; text: string; row: { section: string; b
 const repeats = computed(() =>
   props.line.bars.flatMap((bar, b) => (bar.repeatEnd > 2 ? [{ key: b, x: Math.min(1, (xs.value[b]?.at(-1) ?? 1) + 0.03), times: bar.repeatEnd }] : [])),
 )
+/** each bar's target beats (rhythm spec §7), at the beat's x once drawn */
+const targetDots = computed(() =>
+  props.line.bars.flatMap((bar, b) => bar.targets.flatMap((beat) => {
+    const x = xs.value[b]?.[beat]
+    return x === undefined ? [] : [{ key: `${b}-${beat}`, beat, x }]
+  })),
+)
 /** whether the line draws a guide tone line (else slashes, or an arpeggio line, which has no label row), and so its label row */
 const hasGuideLine = computed(() => !props.arpeggio && props.line.bars.some((b) => b.voice.length > 0))
 
@@ -602,9 +615,10 @@ async function draw(): Promise<void> {
     await document.fonts?.ready // names measured in their own font
     const names = measureNames()
     drawn = key(names)
-    const layout = drawChangesLine(vf, el.value, props.line, { first: props.first, barsPerLine: props.barsPerLine, ...(props.clef ? { clef: props.clef } : {}), ...(props.arpeggio ? { arpeggio: true } : {}), ...(props.lineName ? { lineName: props.lineName } : {}), ...(names ? { names } : {}) })
+    const layout = drawChangesLine(vf, el.value, props.line, { first: props.first, barsPerLine: props.barsPerLine, ...(props.clef ? { clef: props.clef } : {}), ...(props.arpeggio ? { arpeggio: true } : {}), ...(props.lineName ? { lineName: props.lineName } : {}), ...(props.rhythmCaption ? { rhythmCaption: props.rhythmCaption } : {}), ...(names ? { names } : {}) })
     xs.value = layout.xs
     ends.value = layout.ends
+    dotsAt.value = layout.dots
     nameScales.value = nameScalesOf(names, layout.scales)
     otherScales.value = otherScalesOf(names, layout.scales)
     const breakAt = props.line.bars[layout.fits]
@@ -633,5 +647,5 @@ onBeforeUnmount(() => {
   observer?.disconnect()
   clearTimeout(resized)
 })
-watch(() => [props.line, props.first, props.barsPerLine, props.clef, props.arpeggio, props.lineName, props.others], () => nextTick(draw))
+watch(() => [props.line, props.first, props.barsPerLine, props.clef, props.arpeggio, props.lineName, props.rhythmCaption, props.others], () => nextTick(draw))
 </script>

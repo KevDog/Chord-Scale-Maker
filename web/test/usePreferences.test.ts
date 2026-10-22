@@ -4,8 +4,8 @@ import { effectScope, nextTick } from 'vue'
 import { linkPreferences, usePreferences } from '~/composables/usePreferences'
 import { INSTRUMENTS, type ShareView } from '@chord-scale-maker/engine'
 
-const flags = vi.hoisted(() => ({ cells: true, approaches: true, phraseCells: true }))
-mockNuxtImport('useFeature', () => (name: string) => (name === 'cells' && flags.cells) || (name === 'approaches' && flags.approaches) || (name === 'phraseCells' && flags.phraseCells))
+const flags = vi.hoisted(() => ({ cells: true, approaches: true, phraseCells: true, rhythm: true }))
+mockNuxtImport('useFeature', () => (name: string) => (name === 'cells' && flags.cells) || (name === 'approaches' && flags.approaches) || (name === 'phraseCells' && flags.phraseCells) || (name === 'rhythm' && flags.rhythm))
 
 function prefs() {
   const scope = effectScope()
@@ -27,6 +27,7 @@ describe('usePreferences', () => {
     flags.cells = true
     flags.approaches = true
     flags.phraseCells = true
+    flags.rhythm = true
   })
 
   it("defaults to piano spelled from the chart's key, with interval labels on", () => {
@@ -143,6 +144,28 @@ describe('usePreferences', () => {
     expect(prefs().approach.value).toBe('enclosure')
     localStorage.setItem('csm-approach', 'sideways')
     expect(prefs().approach.value).toBe('none')
+  })
+
+  it('reads a stored rhythm, and Off for one the engine rejects or with the rhythm flag off, keeping it stored', () => {
+    localStorage.setItem('csm-rhythm', 'unit:8:5:accents')
+    expect(prefs().rhythm.value).toBe('unit:8:5:accents')
+    for (const bad of ['unit:8:8:accents', 'unit:32:3:accents']) {
+      localStorage.setItem('csm-rhythm', bad)
+      expect(prefs().rhythm.value).toBe('off')
+    }
+    localStorage.setItem('csm-rhythm', 'unit:8:5:accents')
+    flags.rhythm = false
+    expect(prefs().rhythm.value).toBe('off')
+    expect(localStorage.getItem('csm-rhythm')).toBe('unit:8:5:accents')
+  })
+
+  it('stores the target beats as on/off, off until chosen and with the flag off', () => {
+    expect(prefs().targets.value).toBe(false)
+    localStorage.setItem('csm-targets', 'on')
+    expect(prefs().targets.value).toBe(true)
+    flags.rhythm = false
+    expect(prefs().targets.value).toBe(false)
+    expect(localStorage.getItem('csm-targets')).toBe('on')
   })
 
   it('reads a stored Approach as None with the approaches flag off, and keeps it stored', async () => {

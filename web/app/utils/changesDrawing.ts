@@ -1,4 +1,4 @@
-import { accText, type ChangesBar, type ChangesLine, type GuideNote, type Pitched, signatureAccidentals, toVexKey } from '@chord-scale-maker/engine'
+import { accText, barKey, type ChangesBar, type ChangesLine, type GuideNote, type Pitched, type RhythmNote, signatureAccidentals, toVexKey } from '@chord-scale-maker/engine'
 import { BAR_UNITS, cropBand, fitSvg, headCentre, inkStave, signatureLead, STAVE_Y, svgContext, TIME_SPACE, type VexFlowModule } from './vexflow'
 
 /**
@@ -25,14 +25,16 @@ export const INK = { fillStyle: 'currentColor', strokeStyle: 'currentColor' } //
 
 /**
  * per bar, each beat's x (its slash's or note head's centre) and its right edge, as fractions of the width; each chord
- * name's scale; and how many of the leading bars fit the line (fitBars): fewer than the line's, it should break there
+ * name's scale; how many of the leading bars fit the line (fitBars): fewer than the line's, it should break there; and
+ * the target dots' row (rhythm spec §7) as a fraction of the drawing's height from its top (null: no target beats)
  */
-export type ChangesLayout = Readonly<{ xs: readonly (readonly number[])[]; ends: readonly number[]; scales: readonly (readonly number[])[]; fits: number }>
+export type ChangesLayout = Readonly<{ xs: readonly (readonly number[])[]; ends: readonly number[]; scales: readonly (readonly number[])[]; fits: number; dots: number | null }>
 
 type Clef = 'treble' | 'bass'
 /** names: each bar's chords, their widths as fractions of the line, to widen the bars they crowd (fitBars) */
 /** first: the sheet's first line, which starts with the clef */
-type Opts = Readonly<{ first: boolean; barsPerLine: number; clef?: Clef; names?: readonly (readonly NamedBeat[])[]; arpeggio?: boolean; lineName?: string }>
+/** rhythmCaption: the sheet's rhythm caption, for the aria-label of a line with a rhythm (rhythm spec §8) */
+type Opts = Readonly<{ first: boolean; barsPerLine: number; clef?: Clef; names?: readonly (readonly NamedBeat[])[]; arpeggio?: boolean; lineName?: string; rhythmCaption?: string | null }>
 type Band = Readonly<{ top: number; bottom: number }>
 type Beam = InstanceType<VexFlowModule['Beam']>
 type Stave = InstanceType<VexFlowModule['Stave']>
@@ -44,6 +46,27 @@ type Tick = StaveNote | GhostNote
 /** how far (0 or less) to raise a line's ending brackets so their foot clears its highest ink by VOLTA_MARGIN */
 export function voltaShift(inkTops: readonly number[], bracketBottom: number): number {
   return inkTops.length ? Math.min(0, Math.min(...inkTops) - VOLTA_MARGIN - bracketBottom) : 0
+}
+
+const STAFF_TOP = 80 // the staff's top line
+const DOT_RISE = 12 // a target dot's center over the highest ink: the staff, a stem tip or an accent
+const DOT_ROOM = 6 // the crop's room over a dot's center
+/** a slash line's target dots: in the staff's top space, over the slashes (which reach only the lines either side of the middle), so no line grows and the page budgets hold */
+export const SLASH_TARGET_ROW = STAFF_TOP + 5
+
+/** the target dots' row (rhythm spec §7), in drawing units: over the staff and the line's ink tops */
+export function targetRow(inkTops: readonly number[], staffTop = STAFF_TOP): number {
+  return Math.min(staffTop, ...inkTops) - DOT_RISE
+}
+
+/**
+ * the target dots' row (null: none) in the crop, as a fraction of its height from its top (null: none). The crop never
+ * opens for them, so no line grows and the page budgets hold: a row over its headroom comes down to DOT_ROOM under its
+ * top (only where the staff, not ink, sets the row: a voiced line's crop keeps 24 over its ink, the row 12)
+ */
+export function withTargets(band: Band, row: number | null): Readonly<{ band: Band; at: number | null }> {
+  if (row === null) return { band, at: null }
+  return { band, at: (Math.max(row, band.top + DOT_ROOM) - band.top) / (band.bottom - band.top) }
 }
 
 /** a guide tone line's crop: its note heads and stem tips, at least the clef's band, and over its bracket (null: none) */
@@ -166,6 +189,13 @@ export function arpeggioAria(line: ChangesLine, name = '7th chords'): string {
   return `; ${name}: ${bars.join(' | ')}`
 }
 
+/** the aria-label's rhythm line (rhythm spec §8): its caption without "Rhythm: "; '' with no rhythm drawn */
+export function rhythmAria(caption: string | null): string {
+  return caption ? `; rhythm: ${caption.replace(/^Rhythm: /, '')}` : ''
+}
+
+const hasTargets = (line: ChangesLine): boolean => line.bars.some((b) => b.targets.length > 0)
+
 const barsLabel = (line: ChangesLine): string => `Bars: ${line.bars.map((b) => b.chords.map((c) => c.text).join(' ') || '–').join(' | ')}`
 
 type Geometry = Readonly<{ clef: Clef | undefined; total: number; widths: readonly number[]; scales: readonly (readonly number[])[]; fits: number }>
@@ -241,6 +271,7 @@ function tickFor(vf: VexFlowModule, n: GuideNote, clef: Clef, restate: string | 
 
 export function drawChangesLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, opts: Opts): ChangesLayout {
   if (line.bars.some((b) => b.voice.length)) return drawGuideLine(vf, el, line, opts)
+  if (line.bars.some((b) => b.rhythm.length)) return drawRhythmLine(vf, el, line, opts)
   const { clef, total, widths, scales, fits } = geometry(vf, line, opts)
   const ctx = svgContext(vf, el, total)
   const xs: number[][] = []
@@ -258,9 +289,9 @@ export function drawChangesLine(vf: VexFlowModule, el: HTMLElement, line: Change
     x += width
   })
   const plain = clef ? CLEF_BAND : BAND
-  const band = line.bars.some((b) => b.volta) ? { top: VOLTA_BAND.top, bottom: plain.bottom } : plain
+  const { band, at } = withTargets(line.bars.some((b) => b.volta) ? { top: VOLTA_BAND.top, bottom: plain.bottom } : plain, hasTargets(line) ? SLASH_TARGET_ROW : null)
   fitSvg(el, band, total, barsLabel(line))
-  return { xs, ends: endsOf(widths, total), scales, fits }
+  return { xs, ends: endsOf(widths, total), scales, fits, dots: at }
 }
 
 type Laid = Readonly<{
@@ -308,7 +339,9 @@ function drawGuideLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, op
   const tips = pitched.filter((n) => n.hasStem()).map((n) => n.getStemExtents().topY)
   const first = laid[0]?.stave
   const bracket = first && line.bars.some((b) => b.volta) ? first.getYForTopText(first.getNumLines()) + VOLTA_Y : null
-  const shift = first && bracket !== null ? voltaShift([...tips, ...heads.map((y) => y - ACCIDENTAL_RISE)], bracket + 1.5 * first.getSpacingBetweenLines()) : 0
+  const tops = [...tips, ...heads.map((y) => y - ACCIDENTAL_RISE)]
+  const row = hasTargets(line) ? targetRow([...tips, ...heads]) : null // a dot sits over its head's center, clear of the accidental to its left
+  const shift = first && bracket !== null ? voltaShift([...tops, ...(row === null ? [] : [row - DOT_ROOM])], bracket + 1.5 * first.getSpacingBetweenLines()) : 0
   laid.forEach((l) => {
     setVolta(vf, l.stave, l.bar, VOLTA_Y + shift)
     l.stave.setContext(ctx).draw()
@@ -336,6 +369,132 @@ function drawGuideLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, op
     })
     return beatXs(starts, l.grid.map((g) => g.getAbsoluteX()), total)
   })
-  fitSvg(el, voicedBand([...heads, ...tips], bracket === null ? null : bracket + shift), total, barsLabel(line) + (opts.arpeggio ? arpeggioAria(line, opts.lineName) : guideAria(line)))
-  return { xs, ends: endsOf(widths, total), scales, fits }
+  const { band, at } = withTargets(voicedBand([...heads, ...tips], bracket === null ? null : bracket + shift), row)
+  fitSvg(el, band, total, barsLabel(line) + (opts.arpeggio ? arpeggioAria(line, opts.lineName) : guideAria(line)))
+  return { xs, ends: endsOf(widths, total), scales, fits, dots: at }
+}
+
+const ACCENT_RISE = 12 // an accent over a stem tip
+const TUPLET_RISE = 10 // a triplet's 3 over its bracket's line
+const BRACKET_DROP = 10 // Saindon's bracket: under the staff's bottom line
+const BRACKET_FOOT = 5 // its feet, up towards the staff
+const onBeat = (beat: number): boolean => Math.abs(beat - Math.round(beat)) < 1e-6 // a beat in thirds is never exact
+
+/** a rhythm note: a slash on the middle line, its stem up and drawn, or a rest; dotted, accented */
+function rhythmTick(vf: VexFlowModule, n: RhythmNote, clef: Clef): StaveNote {
+  // the engine's values are VexFlow's durations: a trailing d is a dot
+  const note = new vf.StaveNote({ keys: [REST_KEY[clef]], duration: n.value, type: n.rest ? 'r' : 's', clef, stemDirection: 1 })
+  if (n.value.endsWith('d')) vf.Dot.buildAndAttach([note], { all: true })
+  if (!n.rest) note.setStemStyle(INK) // stems carry their own default (black), not the context's currentColor
+  if (n.accent) note.addModifier(new vf.Articulation('a>'), 0)
+  return note
+}
+
+/** notes grouped by an index (a tuplet's, a beam's), in order; null: in none */
+const groupsOf = <T>(ticks: readonly T[], index: (i: number) => number | null): T[][] => {
+  const groups = new Map<number, T[]>()
+  ticks.forEach((t, i) => {
+    const g = index(i)
+    if (g !== null) groups.set(g, [...(groups.get(g) ?? []), t])
+  })
+  return [...groups.values()]
+}
+
+type RhythmLaid = Readonly<{
+  bar: ChangesBar
+  stave: Stave
+  ticks: readonly StaveNote[]
+  grid: readonly GhostNote[]
+  all: readonly Voice[]
+  beams: readonly Beam[]
+  tuplets: readonly InstanceType<VexFlowModule['Tuplet']>[]
+}>
+
+/**
+ * a line with a rhythm (rhythm spec §8), in the guide line's two passes: each bar's notes in place of its slashes,
+ * with its tuplets, beams and accents; then the brackets over the stem tips, the ties as one chain across the line,
+ * and Saindon's bracket under the staff (data-rhythm-bracket: its bar)
+ */
+function drawRhythmLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, opts: Opts): ChangesLayout {
+  const { clef, total, widths, scales, fits } = geometry(vf, line, opts)
+  const noteClef: Clef = opts.clef ?? 'treble'
+  const ctx = svgContext(vf, el, total)
+
+  // pass 1: every bar's stave and notes, formatted (not drawn), so the stem tips are known
+  let x = 0
+  const laid = line.bars.map((bar, b): RhythmLaid => {
+    const width = widths[b] ?? 0
+    const stave = staveFor(vf, bar, b === 0, x, width, clef)
+    const ticks = bar.rhythm.length ? bar.rhythm.map((n) => rhythmTick(vf, n, noteClef)) : slashes(vf, bar.beats)
+    const tuplets = groupsOf(ticks, (i) => bar.rhythm[i]?.tuplet ?? null).map((notes) => new vf.Tuplet(notes, { numNotes: 3, notesOccupied: 2, location: 1 }))
+    const grid = Array.from({ length: bar.beats }, () => new vf.GhostNote('q'))
+    const all = [ticks, grid].map((list) => {
+      list.forEach((t) => t.setStave(stave))
+      return voiceOf(vf, bar.beats, list)
+    })
+    const beams = groupsOf(ticks, (i) => bar.rhythm[i]?.beam ?? null).filter((g) => g.length > 1).map((notes) => new vf.Beam(notes))
+    new vf.Formatter().joinVoices(all).format(all, room(stave, x, width))
+    beams.forEach((beam) => beam.postFormat())
+    x += width
+    return { bar, stave, ticks, grid, all, beams, tuplets }
+  })
+
+  // pass 2: raise the brackets over the highest stem tip, accent or triplet, level across the line; draw staves, then notes
+  const struck = laid.flatMap((l) => l.ticks.filter((t, i) => !t.isRest() && l.bar.rhythm[i]))
+  const accented = new Set(laid.flatMap((l) => l.ticks.filter((_, i) => l.bar.rhythm[i]?.accent)))
+  const tips = [
+    ...struck.filter((n) => n.hasStem()).map((n) => n.getStemExtents().topY - (accented.has(n) ? ACCENT_RISE : 0)),
+    ...laid.flatMap((l) => l.tuplets.map((t) => t.getYPosition() - TUPLET_RISE)), // the triplets' 3s and brackets
+  ]
+  const heads = struck.flatMap((n) => n.getYs())
+  const first = laid[0]?.stave
+  const bracket = first && line.bars.some((b) => b.volta) ? first.getYForTopText(first.getNumLines()) + VOLTA_Y : null
+  const row = hasTargets(line) ? targetRow(tips) : null
+  const shift = first && bracket !== null ? voltaShift([...tips, ...(row === null ? [] : [row - DOT_ROOM])], bracket + 1.5 * first.getSpacingBetweenLines()) : 0
+  laid.forEach((l) => {
+    setVolta(vf, l.stave, l.bar, VOLTA_Y + shift)
+    l.stave.setContext(ctx).draw()
+  })
+  laid.forEach((l) => l.all.forEach((v) => v.draw(ctx, l.stave)))
+  laid.forEach((l) => l.beams.forEach((b) => b.setContext(ctx).draw()))
+  laid.forEach((l) => l.tuplets.forEach((t) => t.setContext(ctx).draw()))
+
+  // ties, one chain across the line: open at its end, and a half-tie in where the line starts tied
+  const chain = laid.flatMap((l) => l.bar.rhythm.map((m, i) => ({ m, t: l.ticks[i] ?? null })))
+  const tie = (firstNote: StaveNote | null, lastNote: StaveNote | null): void => {
+    new vf.StaveTie({ firstNote, lastNote, firstIndexes: [0], lastIndexes: [0] }).setContext(ctx).draw()
+  }
+  chain.forEach(({ m, t }, i) => {
+    if (m.rest || !t) return
+    if (i === 0 && m.tiedIn) tie(null, t)
+    if (m.tie) tie(t, chain[i + 1]?.t ?? null)
+  })
+
+  // Saindon's bracket: from its first note's head to its last's, under the staff, feet up
+  const under = (first?.getBottomLineY() ?? 120) + BRACKET_DROP
+  laid.forEach((l) => {
+    const from = l.bar.rhythm.findIndex((m) => m.bracket === 'start' || m.bracket === 'both')
+    if (from < 0) return
+    const to = l.bar.rhythm[from]?.bracket === 'both' ? from : l.bar.rhythm.findIndex((m, i) => i > from && m.bracket === 'end')
+    const a = l.ticks[from]
+    const b = l.ticks[to < 0 ? l.ticks.length - 1 : to]
+    if (!a || !b) return
+    const group: unknown = ctx.openGroup('rhythm-bracket')
+    if (group instanceof Element) group.setAttribute('data-rhythm-bracket', barKey(l.bar.at))
+    ctx.beginPath().moveTo(a.getNoteHeadBeginX(), under - BRACKET_FOOT).lineTo(a.getNoteHeadBeginX(), under).lineTo(b.getNoteHeadEndX(), under).lineTo(b.getNoteHeadEndX(), under - BRACKET_FOOT).stroke()
+    ctx.closeGroup()
+  })
+
+  const xs = laid.map((l) => {
+    const starts = new Map<number, number>()
+    l.bar.rhythm.forEach((m, i) => {
+      const t = l.ticks[i]
+      if (t && onBeat(m.beat) && !starts.has(Math.round(m.beat))) starts.set(Math.round(m.beat), headCentre(t, total))
+    })
+    return beatXs(starts, l.grid.map((g) => g.getAbsoluteX()), total)
+  })
+  const hasBracket = line.bars.some((b) => b.rhythm.some((m) => m.bracket))
+  const { band, at } = withTargets(voicedBand([...heads, ...tips, ...(hasBracket ? [under] : [])], bracket === null ? null : bracket + shift), row)
+  fitSvg(el, band, total, barsLabel(line) + rhythmAria(opts.rhythmCaption ?? null))
+  return { xs, ends: endsOf(widths, total), scales, fits, dots: at }
 }

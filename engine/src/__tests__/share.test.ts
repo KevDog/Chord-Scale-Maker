@@ -153,6 +153,11 @@ describe('share links', () => {
     expect(shareViewFrom({ line: 'cells:1-2-3-5~free' })).toEqual({ line: 'cells:1-2-3-5' })
   })
 
+  it('keeps a rhythm and the target beats, dropping what is not one', () => {
+    expect(shareViewFrom({ rhythm: 'run:8:4:3', targets: true })).toEqual({ rhythm: 'run:8:4:3', targets: true })
+    expect(shareViewFrom({ sheet: 'changes', rhythm: 'bogus', targets: 'yes' })).toEqual({ sheet: 'changes' })
+  })
+
   it("carries the Changes sheet's Approach (#298), dropping an unknown one", async () => {
     for (const approach of ['enclosure', 'chromatic-below', 'none'] as const) {
       const view = { sheet: 'changes', line: 'third', approach } as const

@@ -392,3 +392,48 @@ async function practicePreset(page: Page, name: 'Pentatonic' | 'Hexatonic' | 'Qu
   await page.locator('fieldset', { hasText: 'Practice' }).getByRole('button', { name, exact: true }).click()
   await expect(page.locator(`[data-slot="${name.toLowerCase()}"]`).first()).toBeVisible()
 }
+
+/**
+ * choose the Changes sheet's rhythm (rhythm spec §9, flag `rhythm`) in Line options: a family from the Rhythm listbox
+ * ("8ths", "Runs of 16ths", "Upbeats", …), then each detail by its listbox ({ In: 'In 5', Variation: 'syncopated' });
+ * retried until the page has hydrated and the listbox reads it; the panel is closed after
+ */
+export async function chooseRhythm(page: Page, family: string, detail: Readonly<Record<string, string>> = {}): Promise<void> {
+  await inControls(page, async () => {
+    const panel = await panelButton(page, 'Line options').isVisible() // in the Controls dialog it's inline
+    if (panel) await openPanel(page, 'Line options')
+    const listbox = page.getByRole('button', { name: 'Rhythm', exact: true })
+    await expect(async () => {
+      if ((await listbox.textContent())?.trim() !== `Rhythm: ${family}`) {
+        await listbox.click({ timeout: 1000 })
+        await page.getByRole('option', { name: family, exact: true }).click({ timeout: 1000 })
+      }
+      await expect(listbox).toHaveText(`Rhythm: ${family}`, { timeout: 1000 })
+    }).toPass({ timeout: 10_000 })
+    for (const [name, option] of Object.entries(detail)) {
+      await page.getByRole('button', { name, exact: true }).click()
+      await page.getByRole('option', { name: option, exact: true }).click()
+      await expect(page.getByRole('button', { name, exact: true })).toHaveText(option)
+    }
+    if (panel) await closePanel(page, 'Line options')
+  })
+}
+
+/** wait until every Changes line has been drawn with its rhythm */
+export async function rhythmDrawn(page: Page): Promise<void> {
+  await expect
+    .poll(() => page.locator('svg[aria-label^="Bars:"]').evaluateAll((els) => els.length > 0 && els.every((e) => e.getAttribute('aria-label')?.includes('; rhythm: '))))
+    .toBe(true)
+}
+
+/** Target beats on (rhythm spec §7, flag `rhythm`), retried until the page has hydrated and the toggle reads it */
+export async function showTargets(page: Page): Promise<void> {
+  await inControls(page, async () => {
+    const toggle = page.getByRole('button', { name: 'Target beats' })
+    await expect(async () => {
+      if ((await toggle.getAttribute('aria-pressed')) !== 'true') await toggle.click({ timeout: 1000 })
+      await expect(toggle).toHaveAttribute('aria-pressed', 'true', { timeout: 1000 })
+    }).toPass({ timeout: 10_000 })
+  })
+  await expect(page.locator('[data-target-beat]').first()).toBeAttached()
+}

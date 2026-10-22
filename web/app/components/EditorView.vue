@@ -130,6 +130,8 @@
             v-model:line-mode="prefs.lineMode.value"
             v-model:guide-line="prefs.guideLine.value"
             v-model:approach="prefs.approach.value"
+            v-model:rhythm="prefs.rhythm.value"
+            v-model:targets="prefs.targets.value"
             v-model:arpeggio="prefs.arpeggio.value"
             v-model:cells="prefs.cells.value"
             v-model:cells-order="prefs.cellsOrder.value"
@@ -224,6 +226,8 @@
             :scales="showScaleNames"
             :line="changesLine"
             :approach="approachShown"
+            :rhythm="prefs.rhythm.value"
+            :targets="prefs.targets.value"
             :editable="sheetEditing && !focus.on.value"
             :selected-line="selectedLine"
             :view="scaleView"
@@ -626,7 +630,7 @@ const picksInForce = computed((): boolean => {
 const approachShown = computed(() => (approachApplies(prefs.lineMode.value, prefs.overlay.value) ? prefs.approach.value : 'none'))
 /** settings in force whose controls this Interface level hides (a share link, a stored preference): the notice offers to show them or reset them */
 const hidden = computed(() =>
-  hiddenSettings(ui.level.value, { sheet: sheet.value, scaleLevel: scaleLevel.level.value, numerals: showNumerals.value, scaleNames: showScaleNames.value, lineMode: prefs.lineMode.value, spell: prefs.spell.value, practice: selection.value, overlay: prefs.overlay.value, picks: picksInForce.value, approach: approachShown.value }),
+  hiddenSettings(ui.level.value, { sheet: sheet.value, scaleLevel: scaleLevel.level.value, numerals: showNumerals.value, scaleNames: showScaleNames.value, lineMode: prefs.lineMode.value, spell: prefs.spell.value, practice: selection.value, overlay: prefs.overlay.value, picks: picksInForce.value, approach: approachShown.value, rhythm: prefs.rhythm.value, targets: prefs.targets.value }),
 )
 /** each reset, given the mode in force before any of them ran (resetting the spelling changes the mode) */
 const RESETS: Readonly<Record<HiddenSetting, (inForce: Mode) => void>> = {
@@ -635,6 +639,10 @@ const RESETS: Readonly<Record<HiddenSetting, (inForce: Mode) => void>> = {
   'scale-names': () => (prefs.scaleNames.value = true),
   line: () => (prefs.lineMode.value = 'off'),
   approaches: () => (prefs.approach.value = 'none'),
+  rhythm: () => {
+    prefs.rhythm.value = 'off'
+    prefs.targets.value = false
+  },
   spell: () => (prefs.spell.value = 'key'),
   practice: (inForce) => practice.setSelection(inForce, null),
   pentatonics: () => {
@@ -916,6 +924,8 @@ async function shareUrl(): Promise<string> {
     ...(sheetLine.value !== 'off' ? { line: sheetLine.value } : {}), // absent: off
     sheet: sheet.value,
     ...(sheet.value === 'changes' && approachShown.value !== 'none' ? { approach: approachShown.value } : {}), // the line's Approach (#298, #381)
+    ...(sheet.value === 'changes' && prefs.rhythm.value !== 'off' ? { rhythm: prefs.rhythm.value } : {}), // the rhythm line (rhythm spec §9); absent: off
+    ...(sheet.value === 'changes' && prefs.targets.value ? { targets: true } : {}), // target beats; absent: off
     ...(sheet.value === 'patterns' ? { pattern: prefs.pattern.value, patternNotes: prefs.patternNotes.value, patternDir: prefs.patternDir.value } : {}),
     ...(sheet.value === 'arpeggios' ? { arpNotes: prefs.arpNotes.value, arpDir: prefs.arpDir.value, ...(prefs.arpNotes.value === 'pairs' ? { arpShape: prefs.arpShape.value } : {}) } : {}),
     ...(sheet.value === 'changes' && prefs.lineMode.value === 'arpeggio' ? { arpDir: prefs.arpDir.value, pentLeave: prefs.pentLeave.value, pairLine: prefs.pairLine.value } : {}), // the Pentatonic (#284), Triad pair (#325, #432) and Quartal lines', under the receiver's own overlay

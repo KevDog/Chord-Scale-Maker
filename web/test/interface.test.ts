@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { CONTROL_TIERS, hiddenSettings, initialLevel, INTERFACE_LEVELS, isInterfaceLevel, levelLabel, shows, type ViewSettings } from '~/utils/interface'
 
-const DEFAULTS: ViewSettings = { sheet: 'changes', scaleLevel: 'standard', numerals: true, scaleNames: true, lineMode: 'off', spell: 'key', practice: null, overlay: 'off', picks: false, approach: 'none' }
+const DEFAULTS: ViewSettings = { sheet: 'changes', scaleLevel: 'standard', numerals: true, scaleNames: true, lineMode: 'off', spell: 'key', practice: null, overlay: 'off', picks: false, approach: 'none', rhythm: 'off', targets: false }
 
 describe('interface levels', () => {
   it('orders the levels and names them', () => {
@@ -21,6 +21,7 @@ describe('interface levels', () => {
       patterns: 'intermediate',
       cells: 'intermediate',
       approaches: 'intermediate',
+      rhythm: 'intermediate',
       'scale-choice': 'intermediate',
       'form-editing': 'intermediate',
       why: 'intermediate',
@@ -73,6 +74,13 @@ describe('hiddenSettings', () => {
     expect(hiddenSettings('essentials', { ...DEFAULTS, approach: 'enclosure' })).toEqual({ settings: ['approaches'], needs: 'intermediate' })
     expect(hiddenSettings('intermediate', { ...DEFAULTS, approach: 'enclosure' })).toBeNull()
     expect(hiddenSettings('essentials', { ...DEFAULTS, sheet: 'scales', approach: 'enclosure' })).toBeNull()
+  })
+
+  it('names a rhythm or target beats in force on the Changes sheet at Intermediate', () => {
+    expect(hiddenSettings('essentials', { ...DEFAULTS, rhythm: 'card:upbeats' })).toEqual({ settings: ['rhythm'], needs: 'intermediate' })
+    expect(hiddenSettings('essentials', { ...DEFAULTS, targets: true })).toEqual({ settings: ['rhythm'], needs: 'intermediate' })
+    expect(hiddenSettings('intermediate', { ...DEFAULTS, rhythm: 'card:upbeats', targets: true })).toBeNull()
+    expect(hiddenSettings('essentials', { ...DEFAULTS, sheet: 'scales', rhythm: 'card:upbeats' })).toBeNull()
   })
 
   it('puts a pentatonic practice selection at Everything', () => {
