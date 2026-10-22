@@ -1,5 +1,5 @@
 import type { Component } from 'vue'
-import { BookOpenIcon, EnvelopeIcon, InformationCircleIcon, LightBulbIcon, MusicalNoteIcon, QuestionMarkCircleIcon, VariableIcon } from '@heroicons/vue/20/solid'
+import { BookOpenIcon, EnvelopeIcon, InformationCircleIcon, LightBulbIcon, MusicalNoteIcon, QuestionMarkCircleIcon, UserGroupIcon, VariableIcon } from '@heroicons/vue/20/solid'
 
 /** a page in the navbar (icon: the phone menu's) */
 export type NavLink = Readonly<{ label: string; href: string; icon: Component }>
@@ -7,10 +7,11 @@ export type NavLink = Readonly<{ label: string; href: string; icon: Component }>
 export type NavMenu = Readonly<{ label: string; items: readonly NavLink[] }>
 export type NavEntry = NavLink | NavMenu
 
-/** the navbar, left to right: the reference pages as links (Chords joins Scales with #498), the rest in the Help menu */
+/** the navbar, left to right: the reference pages as links (Chords joins them with #498), the rest in the Help menu */
 export const NAV: readonly NavEntry[] = [
   { label: 'Library', href: '/library', icon: BookOpenIcon },
   { label: 'Scales', href: '/scales', icon: MusicalNoteIcon },
+  { label: 'Composers', href: '/composers', icon: UserGroupIcon },
   {
     label: 'Help',
     items: [

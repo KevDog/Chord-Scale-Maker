@@ -115,7 +115,7 @@ test('the footer links the About, Contact and Privacy pages', async ({ page }) =
   await expect(page.getByText('Vercel Web Analytics')).toBeVisible()
 })
 
-test('the navbar: Library and Scales, then a Help menu of the other pages (#496)', async ({ page }) => {
+test('the navbar: Library, Scales and Composers, then a Help menu of the other pages (#496)', async ({ page }) => {
   await page.goto('/scales/dorian')
   const banner = page.getByRole('banner')
   await expect(banner.getByRole('link', { name: 'Scales', exact: true })).toHaveAttribute('aria-current', 'page')
@@ -139,7 +139,7 @@ test('on a phone, the menu lists every page flat', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 800 })
   await page.goto('/')
   await page.getByRole('button', { name: 'Open navigation' }).click()
-  await expect(page.getByRole('dialog').getByRole('link')).toHaveText(['Library', 'Scales', 'How it works', 'How it decides', 'Functions', 'About', 'Contact'])
+  await expect(page.getByRole('dialog').getByRole('link')).toHaveText(['Library', 'Scales', 'Composers', 'How it works', 'How it decides', 'Functions', 'About', 'Contact'])
 })
 
 test('Help is in the navbar and footer, and its contents jump to each section', async ({ page }) => {
