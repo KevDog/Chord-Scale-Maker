@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test'
-import { arpeggiosDrawn, pentatonicLineDrawn, showPentatonicLine, chooseInstrument, chooseSuperimpose, chooseSheet, drawn, expect, guidesDrawn, hexatonicPreset, pentatonicPreset, pickOption, rankedAgainstChord, showArpeggios, showGuides, showPentatonics, staves, test, writeChart } from './fixtures'
+import { arpeggiosDrawn, closePentatonicOptions, pentatonicLineDrawn, showPentatonicLine, chooseInstrument, chooseSuperimpose, chooseSheet, drawn, expect, guidesDrawn, hexatonicPreset, pentatonicPreset, pickOption, rankedAgainstChord, showArpeggios, showGuides, showPentatonics, staves, test, writeChart } from './fixtures'
 
 const pdfPages = (pdf: Buffer): number => (pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? []).length
 
@@ -43,7 +43,10 @@ for (const [what, guides, pentatonics, pages] of [
   test(`prints the Changes with the other changes' line in its pages (${what})`, async ({ page }) => {
     await page.goto('/song/rhythm-changes')
     await expect(page.locator('[data-slot="other-changes"]').first()).toBeVisible()
-    if (pentatonics) await showPentatonics(page)
+    if (pentatonics) {
+      await showPentatonics(page)
+      await closePentatonicOptions(page) // its popover (#293) opens over the Line control
+    }
     if (guides) {
       await showGuides(page, 'From 3rd')
       await guidesDrawn(page)
