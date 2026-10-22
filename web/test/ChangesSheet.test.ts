@@ -151,7 +151,7 @@ describe('ChangesSheet pentatonic tints, no contour band (#265, #277)', () => {
   const doc = parseChart('title: T\nkey: C\n\nsection: A\n1 | Cmaj7\n3 | Cmaj7\n\nsection: B\nbars: 3\n1 | Cmaj7').value
   const plan: PentatonicPlan = { kind: 'pentatonic', bySection: { B: { rung: 5, side: 'flat' } }, fallback: { rung: 0, side: 'flat' }, counts: true }
 
-  it('tints the labels by rung and draws no band, the shared count carrying the rung without colour', async () => {
+  it('tints the labels by rung and draws no band, the shared count carrying the rung without color', async () => {
     const w = await mountSuspended(ChangesSheet, { props: { doc, title: 'T', subtitle: '', part: CONCERT, instrumentLabel: '', numerals: true, scales: true, overlay: plan } })
     expect(w.find('[data-slot="contour"]').exists()).toBe(false)
     const b = w.find('[data-slot="pentatonic"] [data-section="B"]')

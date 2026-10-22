@@ -389,22 +389,22 @@ describe('R2: the blues I7 and IV7 by D9 before D3 (docs/superpowers/specs/2026-
   const fJazzBlues = library('f-jazz-blues')
 
   it('I7 of the blues is D9, not an extended dominant (F Jazz Blues bar 1)', () => {
-    expect(reasoned(fJazzBlues, '1 F7')).toBe('F Mixolydian (D9): I7 of the blues: a tonic with dominant colour, Mixolydian')
+    expect(reasoned(fJazzBlues, '1 F7')).toBe('F Mixolydian (D9): I7 of the blues: a tonic with dominant color, Mixolydian')
   })
 
   it('IV7 of the blues is Mixolydian, D9 (F Jazz Blues bar 5)', () => {
-    expect(reasoned(fJazzBlues, '5 Bb7')).toBe('Bb Mixolydian (D9): IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)')
+    expect(reasoned(fJazzBlues, '5 Bb7')).toBe('Bb Mixolydian (D9): IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)')
   })
 
   it('a IV7 whose symbol moves it off Mixolydian drops the Mixolydian clause (Ab7#11 in an Eb blues)', () => {
     const text = chart('', '1 Eb7, 5 Ab7#11, 7 Eb7, 9 Bb7, 10 Ab7, 11 Eb7, 12 Bb7')
     expect(analyse(parseChart(text).value).context).toBe('blues')
-    expect(reasoned(text, '5 Ab7#11')).toBe('Ab Lydian Dominant (D1+D9): IV7 of the blues: a subdominant with dominant colour; #11 from the symbol')
-    expect(reasoned(library('blue-trane'), 'A 5 Ab7#11')).toBe('Ab Lydian Dominant (D1+D9): IV7 of the blues: a subdominant with dominant colour; #11 from the symbol')
+    expect(reasoned(text, '5 Ab7#11')).toBe('Ab Lydian Dominant (D1+D9): IV7 of the blues: a subdominant with dominant color; #11 from the symbol')
+    expect(reasoned(library('blue-trane'), 'A 5 Ab7#11')).toBe('Ab Lydian Dominant (D1+D9): IV7 of the blues: a subdominant with dominant color; #11 from the symbol')
   })
 
   it('an I7 whose symbol moves it names the symbol’s notes, not natural tensions (Eb7#9)', () => {
-    expect(reasoned(library('blue-trane'), 'A 1 Eb7#9')).toBe('Eb Half-Whole Diminished (D1+D9): I7 of the blues: a tonic with dominant colour; b9, #9 and #11 from the symbol')
+    expect(reasoned(library('blue-trane'), 'A 1 Eb7#9')).toBe('Eb Half-Whole Diminished (D1+D9): I7 of the blues: a tonic with dominant color; b9, #9 and #11 from the symbol')
   })
 
   it('no I7 row of any library blues is reasoned by D3', () => {
@@ -655,7 +655,7 @@ describe('stated functions and @key (docs/superpowers/specs/2026-10-09-chart-fun
   const rowOf = (text: string, barChord: string) => analyse(parseChart(text).value).rows.find((r) => `${r.bar} ${r.chord}` === barChord)
   const C_TUNE = ['1 | CMaj7', '2 | D7', '3 | Dm7', '4 | G7', '5 | Am7', '6 | Dm7', '7 | G7', '8 | CMaj7']
 
-  it('a stated target overrides the neighbour: D7 going nowhere, stated V7/V', () => {
+  it('a stated target overrides the neighbor: D7 going nowhere, stated V7/V', () => {
     const plain = lines('C', C_TUNE)
     expect(verdict(plain, '2 D7')).toBe('D Mixolydian (D5)')
     expect(rowOf(plain, '2 D7')?.fallback).toBe(true)
@@ -789,7 +789,7 @@ describe('refreshAnalysis', () => {
 })
 
 describe('N.C. in the analysis', () => {
-  it('leaves a rest out of the stream: it gets no row and no problem, and the chords around it are neighbours', () => {
+  it('leaves a rest out of the stream: it gets no row and no problem, and the chords around it are neighbors', () => {
     const a = analyse(parseChart('title: T\nkey: F\n\nsection: A\nbars: 4\n1 | C7\n2 | N.C.\n3 | FMaj7\n').value)
     expect(a.rows.map((r) => r.chord)).toEqual(['C7', 'FMaj7'])
     expect(a.rows[0]).toMatchObject({ rule: 'D4', reason: 'V7 of F: natural tensions' })

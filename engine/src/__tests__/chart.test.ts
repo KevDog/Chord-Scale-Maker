@@ -340,7 +340,7 @@ describe('context: and @context (docs/superpowers/specs/2026-10-10-chart-context
     expect(serializeChart(value)).toBe('section: A\n@context 1 modal\n@context 17 blues\n')
   })
 
-  it('reads @time BAR METRE and writes it back (#235)', () => {
+  it('reads @time BAR METER and writes it back (#235)', () => {
     const { value, diagnostics } = parseChart('section: A\n1 | C\n@time 3 2/4\n@time 4 6/4\n')
     expect(diagnostics).toEqual([])
     expect(value.lines.slice(2)).toEqual([
@@ -352,7 +352,7 @@ describe('context: and @context (docs/superpowers/specs/2026-10-10-chart-context
 
   it('rejects a malformed @time', () => {
     for (const bad of ['@time 1', '@time x 3/4', '@time 1 6/8', '@time 1 3/4 extra'])
-      expect(parseChart(`section: A\n${bad}`).diagnostics[0]?.message, bad).toBe('use  @time BAR METRE  (2/4, 3/4, 4/4, 5/4, 6/4 or 7/4)')
+      expect(parseChart(`section: A\n${bad}`).diagnostics[0]?.message, bad).toBe('use  @time BAR METER  (2/4, 3/4, 4/4, 5/4, 6/4 or 7/4)')
   })
 
   it('rejects a malformed @context', () => {

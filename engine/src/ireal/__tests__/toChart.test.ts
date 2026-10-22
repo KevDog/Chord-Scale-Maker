@@ -206,7 +206,7 @@ describe('irealToChart', () => {
   it('reports what it can’t write: 6/8, a bass alone, an unknown chord, a third time through', () => {
     const { diagnostics } = irealToChart(song('{*AT68C7 |W/E |Co^7 |<3x>F7 }Z'))
     expect(diagnostics.map((d) => d.message)).toEqual([
-      'A bar 1: 6/8 is not a metre the sheets have; read as 4/4',
+      'A bar 1: 6/8 is not a meter the sheets have; read as 4/4',
       'A bar 2: a bass note with no chord (W/E) is left out',
       'A bar 3: Co^7: no chord like it here, left out',
       'A bar 4: played 3 times; written as twice',

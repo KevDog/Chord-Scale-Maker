@@ -36,7 +36,7 @@ async function expectRefusal(w: W, why: string) {
 describe('SheetChord', () => {
   beforeEach(() => (document.body.innerHTML = ''))
 
-  it('is a labelled button when not editing, and asks to edit on click', async () => {
+  it('is a labeled button when not editing, and asks to edit on click', async () => {
     const w = await mount(null)
     const b = w.find('button')
     expect(b.attributes('aria-label')).toBe('Edit G7, A bar 2')

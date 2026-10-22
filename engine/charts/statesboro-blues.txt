@@ -5,18 +5,18 @@ key: D
 form: A, 12 bars
 context: blues
 source: iReal Pro
-# analysis: 2026-10-19, rules v2; D, blues
+# analysis: 2026-10-22, rules v2; D, blues
 
 section: A
-1  | D7  # I7 of the blues: a tonic with dominant colour, Mixolydian
-2  | G7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-3  | D7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+1  | D7  # I7 of the blues: a tonic with dominant color, Mixolydian
+2  | G7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+3  | D7  # I7 of the blues: a tonic with dominant color, Mixolydian
 4  | D7
-5  | G7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+5  | G7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 6  | G7
-7  | D7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+7  | D7  # I7 of the blues: a tonic with dominant color, Mixolydian
 8  | D7
 9  | A7  # V7 of the blues: a dominant that needn’t resolve, Mixolydian
-10 | G7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-11 | D7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+10 | G7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+11 | D7  # I7 of the blues: a tonic with dominant color, Mixolydian
 12 | D7

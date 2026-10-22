@@ -11,7 +11,7 @@ import { defaultScaleOrNull } from './qualities'
  */
 
 /**
- * title: and subtitle: are the heading. key:, bars: and context: are hints for the analyser (docs/plan-analysis.md
+ * title: and subtitle: are the heading. key:, bars: and context: are hints for the analyzer (docs/plan-analysis.md
  * §12; context: functional, modal or blues, §5.4); minor: is reserved (accepted, ignored); composer:, style:, form:
  * and source: describe the tune (where the chart came from); aka: lists its other titles, `;` between them; recording:
  * names one notable recording (artist; album; label; year) and youtube: its video's ID; kind: says
@@ -24,7 +24,7 @@ export type ChartKind = 'tune' | 'form' | 'exercise'
 const CHART_KINDS: readonly ChartKind[] = ['tune', 'form', 'exercise']
 const asKind = (value: string): ChartKind | undefined => CHART_KINDS.find((k) => k === value.trim().toLowerCase())
 
-/** how the analyser reads a chart (docs/plan-analysis.md §5.4): its rule families and whether key areas are found */
+/** how the analyzer reads a chart (docs/plan-analysis.md §5.4): its rule families and whether key areas are found */
 export type ChartContext = 'functional' | 'modal' | 'blues'
 /** a `context:` or `@context` value, case-blind ("Modal"), a trailing " # …" dropped; null if it is none of the three */
 export function parseContext(text: string): ChartContext | null {
@@ -64,7 +64,7 @@ export type ChartLine =
   | Readonly<{ kind: 'key'; bar: number; key: string }>
   // the metre (2/4 to 7/4), from this bar to the end of its section (#235)
   | Readonly<{ kind: 'time'; bar: number; time: string }>
-  // the author's context, from this bar to the end of its section (parsed; the analyser doesn't use it yet)
+  // the author's context, from this bar to the end of its section (parsed; the analyzer doesn't use it yet)
   | Readonly<{ kind: 'context'; bar: number; context: ChartContext }>
   | Readonly<{ kind: 'comment'; text: string }>
   | Readonly<{ kind: 'blank' }>
@@ -117,7 +117,7 @@ function parseDirective(line: string, low: string): ChartLine | string | null {
   if (low.startsWith('@time')) {
     const m = /^@time\s+(\S+)\s+(\S+)$/i.exec(line)
     const time = (m?.[2] ?? '').trim()
-    if (!m || !INT_RE.test(m[1] ?? '') || !time || beatsPerBar(time) === null) return 'use  @time BAR METRE  (2/4, 3/4, 4/4, 5/4, 6/4 or 7/4)'
+    if (!m || !INT_RE.test(m[1] ?? '') || !time || beatsPerBar(time) === null) return 'use  @time BAR METER  (2/4, 3/4, 4/4, 5/4, 6/4 or 7/4)'
     return { kind: 'time', bar: Number(m[1]), time }
   }
   if (low.startsWith('@context')) {

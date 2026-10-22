@@ -167,7 +167,7 @@ test('a chart opens on the Changes sheet, and Scales, Arpeggios and Patterns are
   await page.keyboard.press('Escape')
 })
 
-test('From 3rd or From 7th puts each chord’s guide tone in place of its slashes, labelled, and stays chosen', async ({ page }) => {
+test('From 3rd or From 7th puts each chord’s guide tone in place of its slashes, labeled, and stays chosen', async ({ page }) => {
   await writeChart(page, 'title: T\nkey: C\n\nsection: A\n1 | Dm7\n1 | G7sus4\n2 | C6\n2 | C\n3 | Em7\n3 | A7\n4 | Dm7\n4 | G7\n')
   const line = lines(page).first()
   await expect(line).toHaveAttribute('aria-label', /^Bars: Dm7 G7sus4 \| C6 C \| Em7 A7 \| Dm7 G7$/) // no guide tones yet
@@ -197,7 +197,7 @@ test('choosing Off, From 3rd, From 7th and Off again redraws the line each time'
   await expect.poll(async () => (await drawn(line)).heads.length).toBeGreaterThan(0)
   const third = { aria: await line.getAttribute('aria-label'), ys: (await drawn(line)).heads.map((h) => h.y) }
   await showGuides(page, 'From 7th')
-  await expect(labelRow(line)).toHaveText(/^\s*7\s*3\s*7\s*$/) // another line, not the same one relabelled
+  await expect(labelRow(line)).toHaveText(/^\s*7\s*3\s*7\s*$/) // another line, not the same one relabeled
   await expect(line).not.toHaveAttribute('aria-label', third.aria ?? '') // the staff is redrawn: other notes
   await expect.poll(async () => (await drawn(line)).heads.map((h) => h.y)).not.toEqual(third.ys)
   expect((await drawn(line)).heads.length).toBeGreaterThan(0)

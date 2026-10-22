@@ -173,7 +173,7 @@ export type CellsLine = Readonly<{ kind: 'cells'; id: CellId; order?: CellOrder;
 /** a cell's note value: sixteenths in a chord shorter than two beats, else eighths (four notes make two beats) */
 export const CELL_VALUE = (chordBeats: number): NoteValue => (chordBeats < 2 ? 0.25 : 0.5)
 
-/** two neighbouring notes on one pitch class */
+/** two neighboring notes on one pitch class */
 const doubled = (tones: readonly Spelled[]): boolean => tones.some((t, i) => i > 0 && pcOf(t) === pcOf(tones[i - 1] as Spelled))
 
 /** a dominant 7th chord, by the analysis's family (not sus) */

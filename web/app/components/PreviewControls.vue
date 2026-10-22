@@ -1,7 +1,7 @@
 <template>
   <!-- display: contents, so the rail's sticky box is the whole Preview section -->
   <div id="preview-toolbar" class="contents space-y-4">
-    <!-- the rail: labelled groups wrap on the left (Work on · Instrument · Level · Show (on the Changes: Analysis · Line) · Spell Scale), the actions pinned right (on their own line, still right, once the row is too narrow); top-aligned so every label sits on one line -->
+    <!-- the rail: labeled groups wrap on the left (Work on · Instrument · Level · Show (on the Changes: Analysis · Line) · Spell Scale), the actions pinned right (on their own line, still right, once the row is too narrow); top-aligned so every label sits on one line -->
     <SheetRail :sticky="stickyRail">
       <template #left>
         <UiField class="w-36">
@@ -184,7 +184,7 @@
                               <template #selected="{ value }"><UiListboxLabel>{{ orderLabel(value) }}</UiListboxLabel></template>
                               <UiListboxOption v-for="o in CELL_ORDERS" :key="o" :value="o"><UiListboxLabel>{{ CELL_ORDER_LABELS[o] }}</UiListboxLabel></UiListboxOption>
                             </UiListbox>
-                            <ToggleButton v-if="cells in CELL_SYSTEMS" v-model="cellsPhrase" title="Aim each cell at the next chord, and colour long dominants">Phrase</ToggleButton>
+                            <ToggleButton v-if="cells in CELL_SYSTEMS" v-model="cellsPhrase" title="Aim each cell at the next chord, and color long dominants">Phrase</ToggleButton>
                           </EaseReveal>
                           </div>
                         </RailPopover>
@@ -270,7 +270,7 @@
     import ControlsDialog from './ControlsDialog.vue'
     import RailPopover from './RailPopover.vue'
 
-    /** the preview toolbar, in labelled groups: Work on (sheet), Instrument, #version, #level, Show (on the Changes: Analysis, Guide Tones), in the rail, with #actions at its right */
+    /** the preview toolbar, in labeled groups: Work on (sheet), Instrument, #version, #level, Show (on the Changes: Analysis, Guide Tones), in the rail, with #actions at its right */
     const sheet = defineModel<SheetKind>('sheet', { required: true })
     const instrument = defineModel<InstrumentName>('instrument', { required: true })
     /** instrumentChosen: picked from the instrument listbox, not as a pitch's first (InstrumentPicker) */

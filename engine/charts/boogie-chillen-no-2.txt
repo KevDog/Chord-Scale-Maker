@@ -5,10 +5,10 @@ context: blues
 key: A
 form: A, 12 bars
 source: iReal Pro
-# analysis: 2026-10-19, rules v2; A, blues
+# analysis: 2026-10-22, rules v2; A, blues
 
 section: A
-1  | A7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+1  | A7  # I7 of the blues: a tonic with dominant color, Mixolydian
 2  | A7
 3  | A7
 4  | A7

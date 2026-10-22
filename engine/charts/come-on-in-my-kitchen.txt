@@ -5,19 +5,19 @@ context: blues
 key: Bb
 form: AA, 22 bars
 source: iReal Pro
-# analysis: 2026-10-19, rules v2; Bb, blues
+# analysis: 2026-10-22, rules v2; Bb, blues
 
 section: A1
-1  | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+1  | Bb7  # I7 of the blues: a tonic with dominant color, Mixolydian
 2  | Bb7
 3  | Bb7
 4  | Bb7
 5  | Bb7
 6  | Bb7
 7  | F7   # V7 of the blues: a dominant that needn’t resolve, Mixolydian
-8  | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+8  | Bb7  # I7 of the blues: a tonic with dominant color, Mixolydian
 8  | F7   # V7 of the blues: a dominant that needn’t resolve, Mixolydian
-9  | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+9  | Bb7  # I7 of the blues: a tonic with dominant color, Mixolydian
 10 | Bb7
 11 | Bb7
 

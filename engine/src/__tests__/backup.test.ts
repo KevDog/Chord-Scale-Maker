@@ -239,7 +239,7 @@ describe('planImport: charts', () => {
     expect(index(after).filter((m) => m.basedOn === 'blue-bossa')).toEqual([expect.objectContaining({ id: 'bbbbbb2', kind: 'edited', title: 'Their Bossa' })])
   })
 
-  it('each chart is one step that writes its text before the index, labelled with its title', () => {
+  it('each chart is one step that writes its text before the index, labeled with its title', () => {
     const { steps, charts } = applyChoices(plan, {}, ids('kkkkkk1', 'kkkkkk2'))
     expect(steps.map((s) => [s.kind, s.label])).toEqual([
       ['chart', 'Theirs (imported)'],

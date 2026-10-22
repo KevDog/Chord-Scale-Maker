@@ -1,6 +1,6 @@
 <template>
   <!-- a tune with more than one chart, the library's and yours: pick which version the sheets show (#411) -->
-  <!-- a rail group (#427), labelled as the others are; on a phone, label hidden, beside the actions so it costs no row (phone.spec.ts) -->
+  <!-- a rail group (#427), labeled as the others are; on a phone, label hidden, beside the actions so it costs no row (phone.spec.ts) -->
   <UiField v-if="all.length" class="print:hidden">
     <!-- names the button with its value ("Version Ballad"): hidden, on a phone or aria-hidden, it is still read so (#425) -->
     <UiLabel :id="labelId" class="pl-3 max-sm:hidden" aria-hidden="true">Version</UiLabel>

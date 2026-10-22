@@ -778,7 +778,7 @@ const MOVES: Partial<Record<SheetDone, Readonly<{ dir: 'next' | 'prev'; step: 'b
 const sheetView = computed(() => barView(editor.doc.value))
 /** the click (#254): the chart's main metre and style, one per page, its tempo kept with the chart's practice settings */
 const metronomeOn = useFeature('metronome')
-const CLICK_TITLE = 'A click to practise with (Space starts and stops it)'
+const CLICK_TITLE = 'A click to practice with (Space starts and stops it)'
 const clickChart = computed(
   (): ClickChart => ({
     beats: chartBeats(editor.doc.value),

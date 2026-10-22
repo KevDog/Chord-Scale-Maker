@@ -209,7 +209,7 @@ describe('guide tone lines over the library', () => {
 
   for (const [name, part] of [['concert', CONCERT], ['bass', BASS]] as const)
     for (const line of ['third', 'seventh'] as const)
-      it(`from the ${line === 'third' ? '3rd' : '7th'}, ${name}: at least 85% of moves are steps; every chord is labelled and the line stays in range`, () => {
+      it(`from the ${line === 'third' ? '3rd' : '7th'}, ${name}: at least 85% of moves are steps; every chord is labeled and the line stays in range`, () => {
         let moves = 0
         let steps = 0
         const faults: string[] = []
@@ -218,7 +218,7 @@ describe('guide tone lines over the library', () => {
           const g = guideVoices(chords, part, chartBeats(doc), null, line)
           if (g.missing.length) faults.push(`${chart}: ${g.missing.join('; ')}`)
           const sounding = chords.filter((c) => !isRest(c.chord)).length // a rest (N.C.) gets no label
-          if (g.labels.size !== sounding) faults.push(`${chart}: ${g.labels.size} of ${sounding} chords labelled`)
+          if (g.labels.size !== sounding) faults.push(`${chart}: ${g.labels.size} of ${sounding} chords labeled`)
           const bars = [...g.bars.entries()].sort(([a], [b]) => a - b)
           for (const [bar, voice] of bars)
             for (const n of voice)
