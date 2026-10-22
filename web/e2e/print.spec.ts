@@ -33,6 +33,27 @@ test('prints 12 staves per letter page when a line names several chords (wish-fo
   expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(Math.ceil(lines / 12))
 })
 
+// the other set's small line (#215) fits each page's budget: Rhythm Changes' eight lines, numerals and scales on, with it shown
+for (const [what, guides, pentatonics, pages] of [
+  ['slashes', false, false, 1], // 8 a page
+  ['guide tones', true, false, 2], // 6
+  ['slashes and pentatonics', false, true, 2], // 7
+  ['guide tones and pentatonics', true, true, 2], // 5
+] as const) {
+  test(`prints the Changes with the other changes' line in its pages (${what})`, async ({ page }) => {
+    await page.goto('/song/rhythm-changes')
+    await expect(page.locator('[data-slot="other-changes"]').first()).toBeVisible()
+    if (pentatonics) await showPentatonics(page)
+    if (guides) {
+      await showGuides(page, 'From 3rd')
+      await guidesDrawn(page)
+    }
+    await page.emulateMedia({ media: 'print' })
+    await expect(page.locator('[data-slot="other-changes"]').first()).toBeVisible()
+    expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(pages)
+  })
+}
+
 // eight lines a page with guide tones off: a 32-bar AABA written out (Satin Doll) on one; Tunisia's nine lines (with the tag) on two
 for (const [chart, pages] of [
   ['autumn-leaves', 1],

@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test'
-import { chooseInterface, chooseSheet, expect, test } from './fixtures'
+import { chooseInterface, chooseSheet, expect, pickOption, test } from './fixtures'
 
 const SONG = '/song/rhythm-changes'
 const lines = (page: Page) => page.locator('svg[aria-label^="Bars:"]')
@@ -45,6 +45,23 @@ test('a chart with alternates plays either set, the other small above its bars, 
   await expect(changesGroup(page).getByRole('radio', { name: 'Alternate' })).toBeChecked()
   await expect(otherToggle(page)).toHaveAttribute('aria-pressed', 'false')
   await expect(lines(page).first()).toHaveAttribute('aria-label', /^Bars: Bb6 Bdim7 \|/)
+})
+
+test('each set keeps its own practice selection (#215)', async ({ page }) => {
+  await page.goto(SONG)
+  await chooseSheet(page, 'Scales')
+  await pickOption(page, 'Where each scale starts', 'From root') // the presets are From root's
+  const guideTones = page.locator('fieldset', { hasText: 'Practice' }).getByRole('button', { name: 'Guide tones' })
+  await play(page, 'Alternate')
+  await guideTones.click()
+  await expect(guideTones).toHaveAttribute('aria-pressed', 'true')
+  await expect(page.locator('.vf-selected').first()).toBeAttached()
+  await play(page, 'Standard')
+  await expect(guideTones).toHaveAttribute('aria-pressed', 'false')
+  await expect(page.locator('.vf-selected')).toHaveCount(0)
+  await play(page, 'Alternate')
+  await expect(guideTones).toHaveAttribute('aria-pressed', 'true')
+  await expect(page.locator('.vf-selected').first()).toBeAttached()
 })
 
 test('a share link opens in the alternate set (#215)', async ({ page, browser }) => {

@@ -199,6 +199,9 @@
             <SheetStatus v-if="statusText || copyError" :text="statusText" :failed="saveFailed" :error="copyError" class="mb-2 print:hidden" />
             <UiText class="text-red-600! dark:text-red-400!">Preview paused: the chart is over a size limit.</UiText>
           </template>
+          <!-- the played set's doc: on a chart with alternates its other set's rows are blank, so an update:doc from it would
+               drop them. Such a chart isn't sheet-editable (sheetEditing); before #469 enables it, sheet edits must merge
+               back into editor.doc -->
           <ChangesSheet
             v-else-if="sheet === 'changes'"
             :doc="playedDoc"
