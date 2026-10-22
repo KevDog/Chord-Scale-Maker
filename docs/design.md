@@ -783,6 +783,21 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **Tier:** the popovers are at Everything (`CONTROL_TIERS` `chord-picks`); picks in force at a lower level are named
   by the notice (`HiddenSetting` `chord-picks`).
 
+### The click (#254, flag `metronome`, on; [spec](superpowers/specs/2026-10-21-metronome-design.md))
+
+- **Engine** (`engine/src/click.ts`): `clickBar` and `countIn` lay out a bar's clicks (accent, beats, the skip note or
+  eighths, the hat on 2 and 4 in 4/4), `defaultTempo`/`defaultFeel` read the chart's `style:` by whole words
+  (`DECISIONS` `click.tempo`), and `scheduleClicks(plan, state, from, until)` says which clicks fall in a window. Phase 1
+  keeps time only: one metre (the chart's main one), no following the form.
+- **App:** `useClick` books those clicks on the AudioContext's clock from a 25 ms interval, 0.1 s ahead (1.2 s while the
+  tab is hidden), and never books a time twice; a beat missed in the background is skipped, not burst. The sounds are
+  synthesized in `clickSounds.ts` (no samples, no CSP change). `ClickBar` is its controls, docked at the window's foot on
+  the song page (the body's `click-docked` class keeps the page's foot clear of it, not in print) or a row of focus
+  mode's bar. The rail's Click shows it; Space starts and stops it outside a control.
+- **State:** `csm-click` holds the settings (count-in, subdivision, hat, sound); `csm-click:<key>` a chart's tempo and
+  feel, written only when the player sets them, so an unset tempo follows the style as it's edited. Never in the chart
+  or a share link.
+
 ### Documentation ([spec](superpowers/specs/2026-10-17-user-docs-restructure-design.md), Phases 1–2)
 
 - **Decision registry:** `DECISIONS` (`engine/src/decisions.ts`) names every heuristic the app applies when it chooses
