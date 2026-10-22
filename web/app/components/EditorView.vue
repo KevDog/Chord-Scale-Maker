@@ -545,8 +545,9 @@ const levelLabel = (v: (typeof SCALE_LEVELS)[number]): string => LEVEL_LABELS[v]
 if (props.shared?.practice) practice.setSelection(mode.value, props.shared.practice)
 const selection = computed(() => practice.selection(mode.value))
 /**
- * ⌘Z and ⇧⌘Z (#315): the chart's text and its note choices, one history for both sheets; view preferences stay out. A
- * chart opened with alternates keeps both sets' choices (#215); which set plays is a view preference, not a step.
+ * ⌘Z and ⇧⌘Z (#315): the chart's text and its note choices, one history for both sheets; view preferences stay out.
+ * Both sets' choices are kept (#215), inert for a chart without alternates (one given them later has them at once; a
+ * history stored before keeps its fields, so still restores); which set plays is a view preference, not a step.
  */
 const chartHistory = useChartHistory(editor, {
   picks: choice(() => picksBySet.standard.picks.value, picksBySet.standard.set),
@@ -558,13 +559,9 @@ const chartHistory = useChartHistory(editor, {
   hexBasis: refChoice(prefs.hexBasis),
   practiceRoot: choice(() => practiceBySet.standard.selection('root'), (s) => practiceBySet.standard.setSelection('root', s)),
   practiceFrom: choice(() => practiceBySet.standard.selection('from'), (s) => practiceBySet.standard.setSelection('from', s)),
-  ...(alternatesOn.value
-    ? {
-        picksAlt: choice(() => picksBySet.alternate.picks.value, picksBySet.alternate.set),
-        practiceRootAlt: choice(() => practiceBySet.alternate.selection('root'), (s) => practiceBySet.alternate.setSelection('root', s)),
-        practiceFromAlt: choice(() => practiceBySet.alternate.selection('from'), (s) => practiceBySet.alternate.setSelection('from', s)),
-      }
-    : {}),
+  picksAlt: choice(() => picksBySet.alternate.picks.value, picksBySet.alternate.set),
+  practiceRootAlt: choice(() => practiceBySet.alternate.selection('root'), (s) => practiceBySet.alternate.setSelection('root', s)),
+  practiceFromAlt: choice(() => practiceBySet.alternate.selection('from'), (s) => practiceBySet.alternate.setSelection('from', s)),
 }, props.practiceKey)
 // picks survive Built on, Path, Step, Rung, Side and Ranked against; a transposed chart: a legacy pick has no for to catch it.
 // An undo sets its own picks back with the text, so neither runs then. Each set's picks follow that set's chords.
