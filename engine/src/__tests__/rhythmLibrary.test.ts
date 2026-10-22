@@ -49,6 +49,14 @@ describe('rhythm library', () => {
     expect(isRhythmId('run:8t:2:12')).toBe(false)
   })
 
+  it('accepts canonical spellings only', () => {
+    for (const bad of ['unit:8:03:accents', 'run:8:04:03', 'run:8:4:03', 'custom:8: x . x', 'custom:8:x|.x', 'custom:8: x.x'])
+      expect(isRhythmId(bad), bad).toBe(false)
+    expect(isRhythmId('custom:8:x.x')).toBe(true)
+    expect(isRhythmId('run:8:4:0')).toBe(true)
+    expect(rhythmLabel('unit:8:03:accents' as RhythmId)).toBe('Off')
+  })
+
   it('cards in 3/4, 4/4 and 5/4', () => {
     expect(bar('card:halves', 3)).toBe('x___x_')
     expect(bar('card:halves', 4)).toBe('x___x___')

@@ -42,7 +42,7 @@ type Parsed =
   | Readonly<{ kind: 'card'; card: Card }>
   | Readonly<{ kind: 'custom'; rhythm: Rhythm }>
 
-const INT = /^\d{1,2}$/
+const INT = /^(0|[1-9]\d?)$/
 
 function parseId(s: string): Parsed | null {
   const parts = s.split(':')
@@ -66,7 +66,8 @@ function parseId(s: string): Parsed | null {
   }
   if (s.startsWith('custom:')) {
     const rhythm = parseRhythm(s.slice('custom:'.length))
-    return rhythm ? { kind: 'custom', rhythm } : null
+    // canonical spelling only: ids are persisted and shared
+    return rhythm && s === 'custom:' + formatRhythm(rhythm).replace(': ', ':') ? { kind: 'custom', rhythm } : null
   }
   return null
 }
