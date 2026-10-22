@@ -4,7 +4,10 @@ style: Up
 key: F
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 111
+recording: Dexter Gordon; Doin' Allright; Blue Note; 1961
+youtube: PhnIW4DTPek
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded 1961-05-06, Van Gelder Studio, Englewood Cliffs (Freddie Hubbard, Horace Parlan, George Tucker, Al Harewood), Blue Note BLP 4077, released 1961; songbook standard → the best-known jazz reading, over Doris Day's 1948 film introduction; sources: Wikipedia; video: "Provided to YouTube by Universal Music Group", Doin' Allright, the same take
 
 # bar | chord | scale
 

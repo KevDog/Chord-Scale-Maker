@@ -4,7 +4,10 @@ style: Ballad
 key: Bb
 form: AABA, 32 bars
 source: The New Real Book, Vol. 1
+recording: Charlie Parker; Charlie Parker with Strings; Mercury; 1950
+youtube: xxwu0-VccHQ
 # analysis: 2026-10-19, rules v2; Bb
+# recording: recorded 1949-11-30, Reeves Sound Studios, NYC, with Jimmy Carroll's orchestra (Mitch Miller, Stan Freeman, Ray Brown, Buddy Rich), master 320-3, first issued on 78 (Mercury 11036, with Just Friends), first LP 1950 (10", Mercury MGC-101); songbook standard (Sinatra with Tommy Dorsey, 1941, the first hit) → the jazz reading players know; sources: jazzdisco; video: "Provided to YouTube by Universal Music Group", Charlie Parker With Strings, the same take
 
 # bar | chord
 

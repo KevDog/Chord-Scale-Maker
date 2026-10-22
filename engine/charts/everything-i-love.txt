@@ -4,7 +4,10 @@ style: Medium
 key: Eb
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 70
+recording: Bill Evans Trio; How My Heart Sings!; Riverside; 1964
+youtube: AiwABaOujhU
 # analysis: 2026-10-19, rules v2; Eb
+# recording: recorded 1962-06-05, Sound Makers, New York (Chuck Israels, Paul Motian), RM 473, released 1964; songbook standard → the trio reading, the best-known instrumental jazz version (jazzdisco, Wikipedia); video: "Provided to YouTube by Universal Music Group", How My Heart Sings!, the master (not take 2, a later bonus), the same take
 
 # bar | chord | scale
 

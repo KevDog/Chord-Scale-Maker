@@ -5,7 +5,10 @@ style: Latin
 key: C
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 231
+recording: Duke Ellington; Theme Songs; RCA Victor; 1951
+youtube: rMsAwdDbTpA
 # analysis: 2026-10-19, rules v2; C
+# recording: recorded 1941-02-15, Hollywood, Duke Ellington and His Famous Orchestra (matrix PBS-055283-1), the composer's band's first recording; first issued on 78 (Victor 27380), first US LP 1951 (LPT-1, a 10" theme-song compilation) (DAHR, BSN Pubs RCA LPT listing); video: Never No Lament: The Blanton-Webster Band, the same take
 
 # bar | chord | scale
 

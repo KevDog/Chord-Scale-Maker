@@ -4,7 +4,10 @@ style: Medium up
 key: F
 form: AABC
 source: Colorado Cookbook, p. 85
+recording: Ella Fitzgerald; Ella Fitzgerald Sings the Rodgers & Hart Song Book; Verve; 1956
+youtube: 9y28DLdokR8
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded August 1956, with Buddy Bregman & His Orchestra, Verve MG V-4002-2; songbook standard (I'd Rather Be Right, 1937) → Ella's reading as the reference; no instrumental is clearly canonical; sources: Wikipedia; video: "Provided to YouTube by Universal Music Group", the album track, the same take
 
 # bar | chord | scale
 
