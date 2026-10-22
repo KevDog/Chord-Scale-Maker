@@ -51,6 +51,8 @@ export function voltaShift(inkTops: readonly number[], bracketBottom: number): n
 const STAFF_TOP = 80 // the staff's top line
 const DOT_RISE = 12 // a target dot's centre over the highest ink: the staff, a stem tip or an accent
 const DOT_ROOM = 6 // the crop's room over a dot's centre
+/** a slash line's target dots: in the staff's top space, over the slashes (which reach only the lines either side of the middle), so no line grows and the page budgets hold */
+export const SLASH_TARGET_ROW = STAFF_TOP + 5
 
 /** the target dots' row (rhythm spec §7), in drawing units: over the staff and the line's ink tops */
 export function targetRow(inkTops: readonly number[], staffTop = STAFF_TOP): number {
@@ -284,7 +286,7 @@ export function drawChangesLine(vf: VexFlowModule, el: HTMLElement, line: Change
     x += width
   })
   const plain = clef ? CLEF_BAND : BAND
-  const { band, at } = withTargets(line.bars.some((b) => b.volta) ? { top: VOLTA_BAND.top, bottom: plain.bottom } : plain, hasTargets(line) ? targetRow([]) : null)
+  const { band, at } = withTargets(line.bars.some((b) => b.volta) ? { top: VOLTA_BAND.top, bottom: plain.bottom } : plain, hasTargets(line) ? SLASH_TARGET_ROW : null)
   fitSvg(el, band, total, barsLabel(line))
   return { xs, ends: endsOf(widths, total), scales, fits, dots: at }
 }

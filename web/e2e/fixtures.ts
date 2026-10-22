@@ -425,3 +425,15 @@ export async function rhythmDrawn(page: Page): Promise<void> {
     .poll(() => page.locator('svg[aria-label^="Bars:"]').evaluateAll((els) => els.length > 0 && els.every((e) => e.getAttribute('aria-label')?.includes('; rhythm: '))))
     .toBe(true)
 }
+
+/** Target beats on (rhythm spec §7, flag `rhythm`), retried until the page has hydrated and the toggle reads it */
+export async function showTargets(page: Page): Promise<void> {
+  await inControls(page, async () => {
+    const toggle = page.getByRole('button', { name: 'Target beats' })
+    await expect(async () => {
+      if ((await toggle.getAttribute('aria-pressed')) !== 'true') await toggle.click({ timeout: 1000 })
+      await expect(toggle).toHaveAttribute('aria-pressed', 'true', { timeout: 1000 })
+    }).toPass({ timeout: 10_000 })
+  })
+  await expect(page.locator('[data-target-beat]').first()).toBeAttached()
+}

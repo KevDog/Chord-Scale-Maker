@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { ChangesBar, ChangesChord, ChangesLine, GuideNote, Letter } from '@chord-scale-maker/engine'
-import { arpeggioAria, beatXs, DURATIONS, fitBars, guideAria, mergeNames, restatedAccidental, rhythmAria, targetRow, voicedBand, voltaShift, withTargets } from '~/utils/changesDrawing'
+import { arpeggioAria, beatXs, DURATIONS, fitBars, guideAria, mergeNames, restatedAccidental, rhythmAria, SLASH_TARGET_ROW, targetRow, voicedBand, voltaShift, withTargets } from '~/utils/changesDrawing'
 
 const chord = (beat: number, text: string, guide: string): ChangesChord => ({
   beat,
@@ -218,6 +218,10 @@ describe('withTargets', () => {
   })
   it('opens the band upwards to hold them', () => {
     expect(withTargets({ top: 74, bottom: 126 }, 68)).toEqual({ band: { top: 62, bottom: 126 }, at: 6 / 64 })
+  })
+  it('keeps a slash line’s crop: its dots sit in the staff’s top space, over the slashes', () => {
+    expect(withTargets({ top: 74, bottom: 126 }, SLASH_TARGET_ROW).band).toEqual({ top: 74, bottom: 126 })
+    expect(SLASH_TARGET_ROW).toBe(85)
   })
   it('has no row without target beats', () => {
     expect(withTargets({ top: 74, bottom: 126 }, null)).toEqual({ band: { top: 74, bottom: 126 }, at: null })

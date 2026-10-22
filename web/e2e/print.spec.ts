@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test'
-import { arpeggiosDrawn, closePentatonicOptions, pentatonicLineDrawn, showPentatonicLine, chooseInstrument, chooseRhythm, chooseSuperimpose, chooseSheet, drawn, expect, guidesDrawn, hexatonicPreset, pentatonicPreset, pickOption, rankedAgainstChord, rhythmDrawn, showArpeggios, showGuides, showPentatonics, staves, test, writeChart } from './fixtures'
+import { arpeggiosDrawn, closePentatonicOptions, pentatonicLineDrawn, showPentatonicLine, chooseInstrument, chooseRhythm, chooseSuperimpose, chooseSheet, drawn, expect, guidesDrawn, hexatonicPreset, pentatonicPreset, pickOption, rankedAgainstChord, rhythmDrawn, showArpeggios, showTargets, showGuides, showPentatonics, staves, test, writeChart } from './fixtures'
 
 const pdfPages = (pdf: Buffer): number => (pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? []).length
 
@@ -34,15 +34,19 @@ test('prints 12 staves per letter page when a line names several chords (wish-fo
 })
 
 // the other set's small line (#215) fits each page's budget: Rhythm Changes' eight lines, numerals and scales on, with it shown
-for (const [what, guides, pentatonics, pages] of [
-  ['slashes', false, false, 1], // 8 a page
-  ['guide tones', true, false, 2], // 6
-  ['slashes and pentatonics', false, true, 2], // 7
-  ['guide tones and pentatonics', true, true, 2], // 5
+// Target beats (rhythm spec §7) take no line of their own: the dots sit in the drawing's headroom, so the budgets hold
+for (const [what, guides, pentatonics, pages, targets] of [
+  ['slashes', false, false, 1, false], // 8 a page
+  ['guide tones', true, false, 2, false], // 6
+  ['slashes and pentatonics', false, true, 2, false], // 7
+  ['guide tones and pentatonics', true, true, 2, false], // 5
+  ['slashes and target beats', false, false, 1, true],
+  ['slashes, pentatonics and target beats', false, true, 2, true],
 ] as const) {
   test(`prints the Changes with the other changes' line in its pages (${what})`, async ({ page }) => {
     await page.goto('/song/rhythm-changes')
     await expect(page.locator('[data-slot="other-changes"]').first()).toBeVisible()
+    if (targets) await showTargets(page)
     if (pentatonics) {
       await showPentatonics(page)
       await closePentatonicOptions(page) // its popover (#293) opens over the Line control
@@ -245,8 +249,7 @@ for (const [what, open] of [
   test(`prints the Changes with a rhythm line, a sheet page to a letter page (${what})`, async ({ page }) => {
     await open(page)
     await chooseRhythm(page, '8ths', { In: 'In 5', Variation: 'syncopated' })
-await page.getByRole('button', { name: 'Target beats' }).click()
-await expect(page.locator('[data-target-beat]').first()).toBeAttached()
+    await showTargets(page)
     await rhythmDrawn(page)
     const svgs = page.locator('svg[aria-label^="Bars:"]')
     const sheetPages = await svgs.evaluateAll((els) => new Set(els.map((e) => e.closest('section'))).size)

@@ -303,6 +303,7 @@
     import { degreeLabel, PENT_BASES, PENT_DEGREE_CHOICES, PENT_PATHS, PENT_RUNGS, PENT_SIDES, PENT_STEP_BARS, PENT_STEP_UNITS, pathLabel, rungLabel, sideShown } from '~/utils/pentatonics'
     import { approachApplies, type GuideFrom, type LineMode, lineModes } from '~/utils/sheetLine'
     import { HEX_BASES } from '~/utils/hexatonics'
+    import { rhythmTextError } from '~/utils/rhythmText'
     import { QUARTAL_LINE_NOTE_CHOICES, quartalNotesOf, type QuartalNotesText } from '~/utils/quartal'
     import { type Overlay, OVERLAY_CHOICES, OVERLAY_TITLE, overlayLabel } from '~/utils/overlay'
     import { type Spell, spellLabel, SPELLS } from '~/utils/scaleChoices'
@@ -503,7 +504,7 @@
     const rhythmCustom = ref(parsedRhythm.value?.kind === 'custom')
     const rhythmText = ref(parsedRhythm.value?.kind === 'custom' ? formatRhythm(parsedRhythm.value.rhythm) : '')
     const customId = (r: Rhythm): RhythmId => `custom:${formatRhythm(r).replace(': ', ':')}`
-    const rhythmError = computed(() => (rhythmText.value.trim() && !parseRhythm(rhythmText.value) ? 'Use x, ., _ and > after 4:, 8:, 8t: or 16:' : ''))
+    const rhythmError = computed(() => rhythmTextError(rhythmText.value))
     watch(rhythmText, (text) => {
       if (!rhythmCustom.value) return
       const r = parseRhythm(text)
