@@ -50,6 +50,7 @@ export const DECISIONS = [
   { id: 'backup.library', title: 'A restored tune’s picks and level', page: 'help', anchor: 'backup-library', summary: 'A library tune’s picks and level in a backup keep yours unless you choose Use imported.' },
   { id: 'backup.preferences', title: 'Restored preferences', page: 'help', anchor: 'backup-preferences', summary: 'A backup’s preferences apply by default only in a browser that has never opened the site.' },
   { id: 'spell.chord', title: 'Spelling a chord symbol', page: 'how-it-decides', anchor: 'spell.chord', summary: 'A chord symbol follows its scale’s spelling, and a slash bass keeps its interval from the root.' },
+  { id: 'click.tempo', title: 'The click’s tempo and feel', page: 'how-it-decides', anchor: 'click.tempo', summary: 'The click starts at a tempo and a feel read from the chart’s style: a ballad at 66, medium at 132, up at 220; Latin, bossa and even 8ths straight, the rest swing.' },
 ] as const satisfies readonly DecisionInfo[]
 
 export type DecisionId = (typeof DECISIONS)[number]['id'] | `rule-${string}`
