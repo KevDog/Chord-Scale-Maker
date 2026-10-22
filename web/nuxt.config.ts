@@ -110,6 +110,7 @@ export default defineNuxtConfig({
         phraseCells: true, // phrase cells: Order, Phrase, substitutes, Chromatic (#376–#380; docs/superpowers/specs/2026-10-21-phrase-cells-design.md)
         backup: true, // Back up… and Restore from backup… in the library (#466)
         alternates: true, // alternate changes on a chart (#215; docs/superpowers/specs/2026-10-21-alternate-changes-design.md)
+        metronome: false, // the click on the song page (#254; docs/superpowers/specs/2026-10-21-metronome-design.md)
         ireal: true, // iReal Pro import: Library's Open chart… and Import iReal link…, Paste bars (#261; docs/superpowers/specs/2026-10-17-ireal-import-design.md)
       },
     },
