@@ -26,12 +26,16 @@ const flip = (m: 'u' | 'd'): 'u' | 'd' => (m === 'u' ? 'd' : 'u')
  * moves 2 and 3 and leaving the last open; pairs swapped is b a d c with every move open
  */
 export function orderCell(cell: Cell, order: CellOrder): Readonly<{ degrees: readonly Degree[]; contour: PartialContour }> {
-  const [a, b, c, d] = cell.degrees as readonly [Degree, Degree, Degree, Degree]
+  const [a, b, c, d] = cell.degrees
+  const [, m2, m3] = cell.contour
+  if (cell.degrees.length !== 4 || a === undefined || b === undefined || c === undefined || d === undefined || m2 === undefined || m3 === undefined) {
+    throw new Error(`a cell has four degrees: ${cell.degrees.length}`)
+  }
   switch (order) {
     case 'reversed':
       return { degrees: [d, c, b, a], contour: [...cell.contour].reverse().map(flip) }
     case 'rotated':
-      return { degrees: [b, c, d, a], contour: [cell.contour[1]!, cell.contour[2]!, null] }
+      return { degrees: [b, c, d, a], contour: [m2, m3, null] }
     case 'swapped':
       return { degrees: [b, a, d, c], contour: [null, null, null] }
     case 'as-written':

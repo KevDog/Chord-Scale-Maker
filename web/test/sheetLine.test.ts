@@ -44,6 +44,8 @@ describe('the Cells line (#298)', () => {
     expect(shareLineOf('guide', 'third', 'up-root', '3rd-3rd', 'rotated', false)).toBe('third')
     expect(lineChoiceOf('cells:1-2-3-5~swapped')).toEqual({ mode: 'cells', cells: '1-2-3-5', order: 'swapped', phrase: true })
     expect(lineChoiceOf('cells:3rd-3rd~reversed~free')).toEqual({ mode: 'cells', cells: '3rd-3rd', order: 'reversed', phrase: false })
+    expect(lineChoiceOf('cells:3rd-3rd~as-written~rotated')).toEqual({ mode: 'cells', cells: '3rd-3rd', order: 'rotated', phrase: true })
+    expect(shareLineOf('cells', 'third', 'up-root', '1-2-3-5', 'as-written', false)).toBe('cells:1-2-3-5')
   })
   it('passes the Order and Phrase on to the cells line (#376)', () => {
     expect(changesLineOf({ ...base, mode: 'cells', cells: '1-2-3-5', overlay: 'off', order: 'reversed', phrase: false })).toEqual({ kind: 'cells', id: '1-2-3-5', order: 'reversed', phrase: false })

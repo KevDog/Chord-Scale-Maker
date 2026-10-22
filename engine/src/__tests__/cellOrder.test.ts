@@ -20,6 +20,9 @@ describe('orderCell', () => {
   it('pairs swapped leaves every move to the slot', () => {
     expect(orderCell(c, 'swapped')).toEqual({ degrees: [5, 3, 7, 1], contour: [null, null, null] })
   })
+  it('refuses a cell of other than four degrees (#462)', () => {
+    expect(() => orderCell(cell('1 3 5', 'uu'), 'reversed')).toThrow(/four degrees/)
+  })
   it('knows its orders and labels', () => {
     expect(CELL_ORDERS).toEqual(['as-written', 'reversed', 'rotated', 'swapped'])
     expect(CELL_ORDERS.map((o) => CELL_ORDER_LABELS[o])).toEqual(['As written', 'Reversed', 'Rotated', 'Pairs swapped'])
@@ -38,5 +41,8 @@ describe('fillContour', () => {
   })
   it('keeps a given move', () => {
     expect(fillContour(tones('G A B D'), ['d', null, null]).join('')).toBe('duu')
+  })
+  it('refuses a contour with a move past its notes (#462)', () => {
+    expect(() => fillContour(tones('G A B'), [null, null, null])).toThrow(/between two notes/)
   })
 })

@@ -100,6 +100,18 @@ describe('cells line', () => {
     const m = midis(bars.get(0))
     expect(m.slice(1).map((x, i) => Math.sign(x - m[i]!))).toEqual([-1, -1, -1])
   })
+  it('Order rotated plays 1 2 3 5 as 2 3 5 1: A B D G over G7, its last move the nearer way (up a 4th)', () => {
+    const { bars } = cellsVoices(seq(['G7', 2]), CONCERT, 4, null, { kind: 'cells', id: '1-2-3-5', order: 'rotated' })
+    expect(noteNames(bars.get(0))).toEqual(['A', 'B', 'D', 'G'])
+    const m = midis(bars.get(0))
+    expect(m.slice(1).map((x, i) => x - m[i]!)).toEqual([2, 3, 5])
+  })
+  it('Order pairs swapped plays 1 2 3 5 as 2 1 5 3: A G D B over G7, every move the nearer way', () => {
+    const { bars } = cellsVoices(seq(['G7', 2]), CONCERT, 4, null, { kind: 'cells', id: '1-2-3-5', order: 'swapped' })
+    expect(noteNames(bars.get(0))).toEqual(['A', 'G', 'D', 'B'])
+    const m = midis(bars.get(0))
+    expect(m.slice(1).map((x, i) => x - m[i]!)).toEqual([-2, -5, -3])
+  })
   it('with no Order, or as written, the line is the same', () => {
     const a = cellsVoices(seq(['G7', 4], ['C7', 4]), CONCERT, 4, null, line('3rd-3rd'))
     const b = cellsVoices(seq(['G7', 4], ['C7', 4]), CONCERT, 4, null, { kind: 'cells', id: '3rd-3rd', order: 'as-written' })

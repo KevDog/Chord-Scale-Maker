@@ -1,7 +1,7 @@
 import { isSheetLine, type SheetLine } from './arpeggios'
 import { type Approach, isApproach } from './approaches'
-import { type CellId, isCellId } from './cells'
-import { isCellOrder } from './cellOrder'
+import { type CellId, isCellId, isSystemId } from './cells'
+import { type CellOrder, isCellOrder } from './cellOrder'
 import { type ArpDirection, type ArpNotes, isArpDirection, isArpNotes } from './arpeggioSheet'
 import { isPairShape, type PairShape } from './triadPairSheet'
 import { type ChordPicks, chordPicksFrom, hasPicks } from './chordPicks'
@@ -24,14 +24,23 @@ import { type PracticeSelection, practiceSelectionFrom } from './practice'
 export type ShareSheet = 'scales' | 'changes' | 'arpeggios' | 'patterns' // a link from the retired Guide tones sheet drops its sheet and opens the default
 /** the Changes sheet's line in a link: a guide tone line, an arpeggio pattern, or cells:<id> (#298), then ~<order> unless as written and ~free with Phrase off (#376) */
 export type ShareLine = SheetLine | `cells:${CellId}` | `cells:${CellId}~${string}`
-/** a cells line in its one spelling: the Order, then free; an unknown suffix (or as written) dropped */
-function cellsLineFrom(x: string): ShareLine | undefined {
+/** a cells line read (#462): its first Order but As written (none: as written) and Phrase off for ~free; not a cells line or an unknown id: undefined */
+export function cellsLineOf(x: string): Readonly<{ id: CellId; order: CellOrder; phrase: boolean }> | undefined {
+  if (!x.startsWith('cells:')) return undefined
   const [id, ...suffixes] = x.slice(6).split('~')
   if (!isCellId(id)) return undefined
-  const suffix = [suffixes.find((s) => isCellOrder(s) && s !== 'as-written'), suffixes.includes('free') ? 'free' : undefined].filter(Boolean).join('~')
+  return { id, order: suffixes.find((s): s is CellOrder => isCellOrder(s) && s !== 'as-written') ?? 'as-written', phrase: !suffixes.includes('free') }
+}
+/** a cells line in its one spelling: the Order unless as written, then ~free with Phrase off for a system (the only cells Phrase aims) */
+export function cellsShareLine(id: CellId, order: CellOrder, phrase: boolean): ShareLine {
+  const suffix = [...(order === 'as-written' ? [] : [order]), ...(phrase || !isSystemId(id) ? [] : ['free'])].join('~')
   return suffix ? `cells:${id}~${suffix}` : `cells:${id}`
 }
-const lineFrom = (x: unknown): ShareLine | undefined => (isSheetLine(x) ? x : typeof x === 'string' && x.startsWith('cells:') ? cellsLineFrom(x) : undefined)
+const lineFrom = (x: unknown): ShareLine | undefined => {
+  if (isSheetLine(x)) return x
+  const cells = typeof x === 'string' ? cellsLineOf(x) : undefined
+  return cells && cellsShareLine(cells.id, cells.order, cells.phrase)
+}
 export type ShareView = Readonly<{
   instrument?: InstrumentName
   mode?: Mode

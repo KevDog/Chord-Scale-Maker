@@ -1,4 +1,4 @@
-import { type ArpDirection, type ArpeggioPattern, type CellId, type CellOrder, type ChangesLineChoice, isArpeggioPattern, isCellId, isCellOrder, type PairLineShape, type PentatonicLeave, type ShareLine, type SheetLine } from '@chord-scale-maker/engine'
+import { type ArpDirection, type ArpeggioPattern, type CellId, type CellOrder, cellsLineOf, cellsShareLine, type ChangesLineChoice, isArpeggioPattern, type PairLineShape, type PentatonicLeave, type ShareLine, type SheetLine } from '@chord-scale-maker/engine'
 import type { Overlay } from '~/utils/overlay'
 
 /** the Changes sheet's line as the toolbar picks it: a mode, and each mode's own choice */
@@ -9,11 +9,9 @@ export type GuideFrom = 'third' | 'seventh'
 export const sheetLineOf = (mode: LineMode, guide: GuideFrom, arpeggio: ArpeggioPattern): SheetLine =>
   mode === 'guide' ? guide : mode === 'arpeggio' ? arpeggio : 'off'
 
-/** the line as a share link carries it: the Cells line is cells:<id>, then ~<order> unless as written and ~free with Phrase off (#376) */
+/** the line as a share link carries it: the Cells line is cells:<id>, then ~<order> unless as written and ~free with Phrase off (#376; cellsShareLine) */
 export function shareLineOf(mode: LineMode, guide: GuideFrom, arpeggio: ArpeggioPattern, cells: CellId, order: CellOrder = 'as-written', phrase = true): ShareLine {
-  if (mode !== 'cells') return sheetLineOf(mode, guide, arpeggio)
-  const suffix = [...(order === 'as-written' ? [] : [order]), ...(phrase ? [] : ['free'])].join('~')
-  return suffix ? `cells:${cells}~${suffix}` : `cells:${cells}`
+  return mode === 'cells' ? cellsShareLine(cells, order, phrase) : sheetLineOf(mode, guide, arpeggio)
 }
 
 /**
@@ -51,8 +49,8 @@ export function lineModes(overlay: Overlay): readonly { value: LineMode; label: 
 /** a line (a share link's) as the mode and the choice it sets */
 export function lineChoiceOf(line: ShareLine | undefined): Readonly<{ mode: LineMode; guide?: GuideFrom; arpeggio?: ArpeggioPattern; cells?: CellId; order?: CellOrder; phrase?: boolean }> {
   if (typeof line === 'string' && line.startsWith('cells:')) {
-    const [id, ...suffixes] = line.slice(6).split('~')
-    return isCellId(id) ? { mode: 'cells', cells: id, order: suffixes.find(isCellOrder) ?? 'as-written', phrase: !suffixes.includes('free') } : { mode: 'off' }
+    const c = cellsLineOf(line)
+    return c ? { mode: 'cells', cells: c.id, order: c.order, phrase: c.phrase } : { mode: 'off' }
   }
   if (line === 'third' || line === 'seventh') return { mode: 'guide', guide: line }
   if (isArpeggioPattern(line)) return { mode: 'arpeggio', arpeggio: line }
