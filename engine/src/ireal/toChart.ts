@@ -67,14 +67,15 @@ type Played = Readonly<{
 function play(bars: readonly IRealBar[], at: readonly string[]): Parsed<readonly Played[]> {
   const out: Played[] = []
   const diagnostics: Diagnostic[] = []
-  let pending: readonly string[] | null = null // the second bar of an r
+  let pending: Played | null = null // the second bar of an r
   for (const [i, bar] of bars.entries()) {
     const n = i + 1
     const report = (message: string) => diagnostics.push(diag(n, `${at[i]}: ${message}`))
     if (pending && bar.items.length) report('a two-bar repeat cut short by chords in its second bar')
-    const chords: string[] = pending && !bar.items.length ? [...pending] : []
-    const alts: string[] = [...chords] // the alternate bar's chords, built beside the main bar's
-    let hasAlt = false
+    const filled = pending && !bar.items.length ? pending : null
+    const chords: string[] = filled ? [...filled.chords] : []
+    const alts: string[] = filled ? [...(filled.alts ?? filled.chords)] : [] // the alternate bar's chords, built beside the main bar's
+    let hasAlt = filled?.alts != null
     pending = null
     for (const item of bar.items) {
       if (item.kind === 'repeat') {
@@ -82,8 +83,9 @@ function play(bars: readonly IRealBar[], at: readonly string[]): Parsed<readonly
         if (!back) report('a repeat sign with no bar before it, left empty')
         else {
           chords.push(...back.chords)
-          alts.push(...back.chords)
-          if (item.bars === 2) pending = out.at(-1)?.chords ?? []
+          alts.push(...(back.alts ?? back.chords))
+          if (back.alts) hasAlt = true
+          if (item.bars === 2) pending = out.at(-1) ?? null
         }
       } else if (item.kind === 'rest') {
         chords.push(REST)
@@ -352,5 +354,12 @@ export function irealBars(song: IRealSong): Parsed<readonly (readonly string[])[
   const read = readMusic(song.music)
   const at = labels(read.value)
   const played = play(read.value, at)
-  return { value: played.value.map((p) => p.chords), diagnostics: [...read.diagnostics.map((d) => relabel(d, at)), ...played.diagnostics].sort((a, b) => a.line - b.line) }
+  // the editor holds no alternates (#469): each one is reported as left out
+  const dropped = read.value.flatMap((bar, i) =>
+    bar.items.flatMap((item) => {
+      const alt = item.kind === 'alt' || item.kind === 'chord' ? item.alt : undefined
+      return alt ? [diag(i + 1, `${at[i]}: the alternate chord ${alt} is left out`)] : []
+    }),
+  )
+  return { value: played.value.map((p) => p.chords), diagnostics: [...read.diagnostics.map((d) => relabel(d, at)), ...played.diagnostics, ...dropped].sort((a, b) => a.line - b.line) }
 }

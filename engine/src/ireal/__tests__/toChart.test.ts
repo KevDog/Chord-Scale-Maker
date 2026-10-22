@@ -137,6 +137,13 @@ describe('irealToChart', () => {
     expect(value).toContain('1 | C7\n1 | F7\nalt 1 | Db7\nalt 1 | F7\n2 | G7\n')
   })
 
+  it('a repeat sign repeats the earlier bar’s alternate too, x and the two-bar r', () => {
+    const x = irealToChart(song('[*AC7(Db7) |x Z')).value
+    expect(x).toContain('1 | C7\nalt 1 | Db7\n2 | C7\nalt 2 | Db7\n')
+    const r = irealToChart(song('[*AC7(Db7) |F7 |r|  Z')).value
+    expect(r).toContain('3 | C7\nalt 3 | Db7\n4 | F7\n')
+  })
+
   it('an alternate chord it can’t map is reported', () => {
     const { value, diagnostics } = irealToChart(song('[*AC7(Co^7) |F7 Z'))
     expect(diagnostics.map((d) => d.message)).toEqual(['A bar 1: Co^7: no chord like it here, left out'])
@@ -251,6 +258,12 @@ describe('irealToChart', () => {
 })
 
 describe('irealBars', () => {
+  it('keeps the main chords and reports each alternate as left out', () => {
+    const { value, diagnostics } = irealBars(song('[*AC7(Db7) |(Eb7)F7 Z'))
+    expect(value).toEqual([['C7'], ['F7']])
+    expect(diagnostics.map((d) => d.message)).toEqual(['A bar 1: the alternate chord Db7 is left out', 'A bar 2: the alternate chord Eb7 is left out'])
+  })
+
   it('the bars as Paste bars takes them, repeats filled in, sections and endings flat', () => {
     expect(irealBars(song('{*AC7 |x |N1F7 }|N2G7 |    Z')).value).toEqual([['C7'], ['C7'], ['F7'], ['G7'], []])
   })
