@@ -15,7 +15,7 @@ const labelRow = (line: Locator) => line.locator('xpath=ancestor::*[@data-slot="
 /** each chord's x on a line, as a fraction of its width (ChangesSystem sets a mark's left 0.012 before its beat) */
 const chordXs = (line: Locator): Promise<number[]> =>
   line.evaluate((el) =>
-    Array.from(el.closest('.break-inside-avoid')?.firstElementChild?.querySelectorAll(':scope > div') ?? []).map(
+    Array.from(el.closest('.break-inside-avoid')?.querySelector('[data-slot="names"]')?.querySelectorAll(':scope > div') ?? []).map(
       (d) => Number.parseFloat((d as HTMLElement).style.left) / 100 + 0.012,
     ),
   )

@@ -965,21 +965,38 @@ describe('EditorView interface fixes', () => {
     expect(w.find('textarea[aria-label="Chart text"]').exists()).toBe(true)
   })
 
-  it('a chart with alternates is not sheet-editable and offers its Source, with the alternates flag off (#469)', async () => {
+  it('a chart with alternates is sheet-editable, writing the chart itself, and its Source is not forced on, with the alternates flag off (#469)', async () => {
     useInterface().level.value = 'essentials'
     const text = 'title: T\n\nsection: A\nbars: 2\n1 | Cm7\nalt 1 | Dm7\n2 | G7\n'
     const w = await mountSuspended(EditorView, { props: { initialText: text }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } }, attachTo: document.body })
     await buttonCalled(w, 'Edit')?.trigger('click')
     await nextTick()
-    expect(changesSheet(w).props('editable')).toBe(false)
-    expect(w.find('button[aria-label="More editing options"]').exists()).toBe(true) // the Source, offered at Essentials
+    expect(changesSheet(w).props('editable')).toBe(true)
+    expect(changesSheet(w).props('set')).toBe('standard')
+    expect(changesSheet(w).props('doc')).toBe(changesSheet(w).props('source')) // the chart, alt rows and all
+    expect(w.find('button[aria-label="More editing options"]').exists()).toBe(false)
     w.unmount()
-    const plain = await mount()
-    await buttonCalled(plain, 'Edit')?.trigger('click')
-    await nextTick()
-    expect(changesSheet(plain).props('editable')).toBe(true)
-    expect(plain.find('button[aria-label="More editing options"]').exists()).toBe(false)
-    plain.unmount()
+  })
+
+  it('the alt line is typed while the sheet editor plays Standard, shown with Other changes off; not in Alternate (#469)', async () => {
+    const text = 'title: T\n\nsection: A\nbars: 2\n1 | Cm7\nalt 1 | Dm7\n2 | G7\n'
+    const open = async (main: 'standard' | 'alternate') => {
+      localStorage.setItem('csm-changes:k', JSON.stringify({ main, shown: false }))
+      const w = await mountSuspended(EditorView, { props: { initialText: text, practiceKey: 'k' }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } }, attachTo: document.body })
+      expect(changesSheet(w).props('altEditing')).toBe(false)
+      expect(changesSheet(w).props('otherDoc')).toBeNull()
+      await buttonCalled(w, 'Edit')?.trigger('click')
+      await nextTick()
+      return w
+    }
+    const standard = await open('standard')
+    expect(changesSheet(standard).props('altEditing')).toBe(true)
+    expect(changesSheet(standard).props('otherDoc')).not.toBeNull()
+    standard.unmount()
+    const alternate = await open('alternate')
+    expect(changesSheet(alternate).props('altEditing')).toBe(false)
+    expect(changesSheet(alternate).props('otherDoc')).toBeNull()
+    alternate.unmount()
   })
 
   it('Reset clears the practice selection in force, not another mode’s', async () => {

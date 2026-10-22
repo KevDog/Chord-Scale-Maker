@@ -1,7 +1,7 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { nextTick } from 'vue'
-import { type ChartDoc, parseChart, serializeChart } from '@chord-scale-maker/engine'
+import { changesFor, type ChartDoc, parseChart, serializeChart } from '@chord-scale-maker/engine'
 import SheetChordEditor from '~/components/SheetChordEditor.vue'
 import type { SheetChordEdit } from '~/utils/sheetChordEdit'
 
@@ -90,5 +90,34 @@ describe('SheetChordEditor', () => {
     await settle()
     ;[...document.querySelectorAll<HTMLButtonElement>('[role=dialog] button')].find((b) => b.textContent?.trim() === 'Done')?.click()
     expect(w.emitted('close')).toHaveLength(1)
+  })
+})
+
+describe('SheetChordEditor on a set of a chart with alternates (#469)', () => {
+  // lines: 5 A1 Dm7, 6 A2 G7, 7 alt A2 Db7, 8 A3 CMaj7
+  const real = parseChart('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n2 | G7\nalt 2 | Db7\n3 | CMaj7\n').value
+  const all = (d: ChartDoc | undefined): string => (d ? serializeChart(d).replace(/[ \t]*\|[ \t]*/g, ' | ') : '')
+  beforeEach(() => {
+    document.body.innerHTML = ''
+    localStorage.clear()
+  })
+
+  it('a chord typed on a shared bar in Alternate writes it an alt row', async () => {
+    const w = await mountSuspended(SheetChordEditor, { props: { doc: changesFor(real, 'alternate'), source: real, set: 'alternate', target: { line: 8, section: 'A', bar: '3' } }, attachTo: document.body })
+    await settle()
+    await type('Em7')
+    const next = all(w.emitted('update:doc')?.at(-1)?.[0] as ChartDoc | undefined)
+    expect(next).toMatch(/\n3 \| CMaj7\nalt 3 \| Em7\n/)
+    expect(next).toMatch(/\nalt 2 \| Db7\n/)
+  })
+
+  it('refuses blanking a shared bar in Alternate, saying an alternate can’t be held', async () => {
+    const w = await mountSuspended(SheetChordEditor, { props: { doc: changesFor(real, 'alternate'), source: real, set: 'alternate', target: { line: 8, section: 'A', bar: '3' } }, attachTo: document.body })
+    await settle()
+    await type('')
+    const why = 'An alternate can’t be held: type its chords, or switch to Standard to edit the bar.'
+    expect(w.emitted('update:doc')).toBeUndefined()
+    expect(dialog()?.textContent).toContain(why)
+    expect(w.emitted('said')?.at(-1)).toEqual([why])
   })
 })

@@ -2,7 +2,7 @@ import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises } from '@vue/test-utils'
 import ChangesSystem from '~/components/ChangesSystem.vue'
-import { buildChanges, type ChangesBar, type ChangesChord, type ChangesLine, type GuideNote, type Letter, CONCERT, hexatonicChoices, type OverlayPlan, type Part, parseChart, partFor, type PentatonicPlan, showHexatonics, showPentatonics, showQuartals } from '@chord-scale-maker/engine'
+import { buildChanges, type ChangesBar, type ChangesChord, type ChangesLine, changesFor, type ChartDoc, type GuideNote, type Letter, CONCERT, hexatonicChoices, type OverlayPlan, type Part, parseChart, partFor, type PentatonicPlan, showHexatonics, serializeChart, showPentatonics, showQuartals } from '@chord-scale-maker/engine'
 import PentatonicLadder from '~/components/PentatonicLadder.vue'
 
 vi.mock('~/utils/changesDrawing', async (importOriginal) => ({
@@ -235,6 +235,34 @@ describe('ChangesSystem as the editor', () => {
     const w = await mountSuspended(ChangesSystem, { props: { ...base, line: line() } })
     await w.find('button').trigger('click')
     expect(w.emitted('tap')?.[0]?.[0]).toMatchObject({ line: 2, section: 'A', bar: '1' })
+  })
+})
+
+describe('ChangesSystem editing a set of a chart with alternates (#469)', () => {
+  const real = parseChart('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | C\n2 | F\nalt 2 | Dm7\n3 | C\n4 | G7\n').value
+  const played = changesFor(real, 'alternate')
+  const first = (): ChangesLine => buildChanges(played, CONCERT, 4, true).lines[0]!
+  const lineOf = (bar: string): number => played.lines.findIndex((l) => l.kind === 'row' && l.bar === bar)
+  const base = { first: true, barsPerLine: 4, numerals: true, scales: true, editable: true, doc: played, source: real, set: 'alternate' as const }
+  const text = (doc: ChartDoc): string => serializeChart(doc).replace(/[ \t]*\|[ \t]*/g, ' | ')
+
+  it('a chord typed on a shared bar in Alternate writes it an alt row, its standard row kept', async () => {
+    const w = await mountSuspended(ChangesSystem, { props: { ...base, line: first(), editing: { kind: 'chord', line: lineOf('3'), at: { section: 'A', bar: '3' } } } })
+    const field = w.find('input[aria-label="Chord, A bar 3"]')
+    await field.setValue('E7')
+    await field.trigger('keydown', { key: 'Enter' })
+    const next = w.emitted('update:doc')?.[0]?.[0] as ChartDoc
+    expect(text(next)).toMatch(/\nalt 3 \| E7\n/)
+    expect(text(next)).toMatch(/\n3 \| C\n/)
+    expect(text(next)).toMatch(/\nalt 2 \| Dm7\n/)
+  })
+
+  it('a bar op acts on the real doc: + after keeps a later alt row, renumbered', async () => {
+    const w = await mountSuspended(ChangesSystem, { props: { ...base, line: first(), editing: null } })
+    await w.find('[data-bar="0"]').trigger('pointerenter')
+    await w.find('[role=toolbar]').findAll('button').find((b) => b.attributes('aria-label') === 'Insert a held bar after A bar 1')?.trigger('click')
+    const next = w.emitted('update:doc')?.[0]?.[0] as ChartDoc
+    expect(text(next)).toMatch(/\n3 \| F\nalt 3 \| Dm7\n/)
   })
 })
 

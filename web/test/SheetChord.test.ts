@@ -1,7 +1,7 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { nextTick } from 'vue'
-import { type ChartDoc, parseChart, serializeChart } from '@chord-scale-maker/engine'
+import { changesFor, type ChartDoc, parseChart, serializeChart } from '@chord-scale-maker/engine'
 import SheetChord from '~/components/SheetChord.vue'
 import type { SheetEdit } from '~/utils/sheetChordEdit'
 
@@ -252,5 +252,23 @@ describe('SheetChord', () => {
     await settle()
     expect(w.emitted('done')?.[0]).toEqual(['stay'])
     expect(w.emitted('said')?.at(-1)).toEqual(['A bar holds at most 4 chords.'])
+  })
+})
+
+describe('SheetChord on a set of a chart with alternates (#469)', () => {
+  // lines: 5 A1 Dm7, 6 A2 G7, 7 alt A2 Db7, 8 A3 CMaj7
+  const real = parseChart('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n2 | G7\nalt 2 | Db7\n3 | CMaj7\n').value
+  beforeEach(() => (document.body.innerHTML = ''))
+
+  it('refuses blanking a shared bar in Alternate, saying an alternate can’t be held', async () => {
+    const w = await mountSuspended(SheetChord, {
+      props: { doc: changesFor(real, 'alternate'), source: real, set: 'alternate', line: 8, section: 'A', bar: '3', text: 'CMaj7', tokens: null, label: 'Edit CMaj7, A bar 3', editing: { kind: 'chord', line: 8, at: { section: 'A', bar: '3' } }, selected: false },
+      attachTo: document.body,
+    })
+    await type(w, '')
+    await field(w).trigger('keydown', { key: 'Enter' })
+    await settle()
+    expect(w.emitted('update:doc')).toBeUndefined()
+    await expectRefusal(w, 'An alternate can’t be held: type its chords, or switch to Standard to edit the bar.')
   })
 })

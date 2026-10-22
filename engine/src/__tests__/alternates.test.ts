@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { expandRowLines, expandRows, parseChart } from '../chart'
+import { type ChartDoc, expandRowLines, expandRows, parseChart, serializeChart } from '../chart'
+import { altBarChords, setAltBarChords, setBarChords, setBarChordsIn, setLineChord, setLineChordIn } from '../edit'
 import { CHANGES_SETS, changesFor, isChangesSet } from '../alternates'
 import { chordPositions } from '../changes'
 import { sectionLayout } from '../layout'
@@ -70,5 +71,76 @@ describe('changesFor', () => {
         expect(c.lines[line]!.kind).toBe('row')
       }
     }
+  })
+})
+
+describe('setAltBarChords', () => {
+  const text = (d: ChartDoc) => serializeChart(d)
+  const lineOf = (d: ChartDoc, bar: string) => d.lines.findIndex((l) => l.kind === 'row' && l.bar === bar)
+
+  it('adds an alternate', () => {
+    const d = setAltBarChords(doc(BASE), 'A', 3, ['Ebmaj7'])
+    expect(text(d)).toContain('3 | C\nalt 3 | Ebmaj7')
+    expect(altBarChords(d, 'A', 3)).toEqual(['Ebmaj7'])
+    expect(altBarChords(doc(BASE), 'A', 3)).toEqual([])
+  })
+
+  it('replaces and removes', () => {
+    const one = setAltBarChords(doc(BASE), 'A', 2, ['Abm7'])
+    expect(one.lines.filter((l) => l.kind === 'altRow')).toHaveLength(1)
+    expect(altBarChords(one, 'A', 2)).toEqual(['Abm7'])
+    expect(setAltBarChords(doc(BASE), 'A', 2, []).lines.filter((l) => l.kind === 'altRow')).toHaveLength(0)
+  })
+
+  it('same as played: no alt rows', () => {
+    const d = doc(BASE)
+    expect(setAltBarChords(d, 'A', 1, ['C'])).toEqual(d)
+  })
+
+  it('keeps an alt that stops a carry', () => {
+    const d = doc('section: A\nbars: 2\n1 | Cmaj7\nalt 1 | Dm7\n')
+    expect(altBarChords(setAltBarChords(d, 'A', 2, ['Cmaj7']), 'A', 2)).toEqual(['Cmaj7'])
+  })
+
+  it('copy sections refused', () => {
+    const d = doc('section: A1\n1 | C\nsection: A2\ncopy: A1\n')
+    expect(setAltBarChords(d, 'A2', 1, ['D'])).toBe(d)
+  })
+
+  it('setLineChordIn alternate on a shared bar', () => {
+    const d = doc(BASE)
+    const e = setLineChordIn(d, 'alternate', lineOf(d, '3'), 'E7')
+    expect(text(e)).toContain('3 | C\nalt 3 | E7')
+  })
+
+  it('setLineChordIn standard', () => {
+    const d = doc(BASE)
+    const i = lineOf(d, '3')
+    expect(setLineChordIn(d, 'standard', i, 'E7')).toEqual(setLineChord(d, i, 'E7'))
+  })
+
+  it('setLineChordIn alternate: empty on a shared bar is a no-op', () => {
+    const d = doc(BASE)
+    expect(setLineChordIn(d, 'alternate', lineOf(d, '3'), '')).toBe(d)
+  })
+
+  it('% copies the set’s bar before', () => {
+    const d = doc(BASE)
+    const e = setLineChordIn(d, 'alternate', lineOf(d, '3'), '%')
+    expect(altBarChords(e, 'A', 3)).toEqual(['Abm7', 'Db7'])
+  })
+
+  it('setBarChordsIn routes by set', () => {
+    const d = doc(BASE)
+    expect(setBarChordsIn(d, 'standard', 'A', 3, ['F'])).toEqual(setBarChords(d, 'A', 3, ['F']))
+    expect(setBarChordsIn(d, 'alternate', 'A', 3, ['F'])).toEqual(setAltBarChords(d, 'A', 3, ['F']))
+  })
+
+  it('an alternate takes the scale and function of the chord it replaces', () => {
+    const d = doc('section: A\n1 | Dm7 | D Dorian\n')
+    expect(text(setAltBarChords(d, 'A', 1, ['Dm7']))).not.toContain('alt')
+    const e = setAltBarChords(d, 'A', 1, ['Em7'])
+    const alt = e.lines.find((l) => l.kind === 'altRow')
+    expect(alt && alt.kind === 'altRow' && alt.scale).toBe('E Dorian')
   })
 })
