@@ -280,6 +280,10 @@ describe('planImport: preferences', () => {
     expect(run({}, applyChoices(plan, {}, ids()).steps)).toEqual({ 'csm-instrument': 'alto-sax', 'csm-theme': 'dark' })
   })
 
+  it('the Interface level the app sets on arrival doesn’t count as use', () => {
+    expect(planImport({ 'csm-interface': 'essentials' }, theirs).preferences).toMatchObject({ status: 'conflict', apply: true })
+  })
+
   it('a browser that has been used is not fresh, even with no preferences of its own', () => {
     expect(planImport({ 'csm-recent': '[]' }, theirs).preferences).toMatchObject({ status: 'new', apply: false })
   })

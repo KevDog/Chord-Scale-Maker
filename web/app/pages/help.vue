@@ -385,6 +385,39 @@
           browser only. Another browser or device won't see it, and clearing this site's data wipes it. For anything
           you'd hate to lose, download it.
         </UiText>
+
+        <template v-if="backupOn">
+          <UiSubheading id="backup" :level="3" class="scroll-mt-6 pt-2">Back up and restore</UiSubheading>
+          <UiText>
+            <strong class="font-semibold">Backup → Back up…</strong> in the library saves everything this browser keeps
+            in one file: My charts, each chart's practice picks, level and chord picks, the same for library tunes, and
+            your preferences (instrument, range, theme, how the sheets look). Undo history stays behind.
+            <strong class="font-semibold">Restore from backup…</strong> (or <strong class="font-semibold">Open chart…</strong>,
+            or dropping the file on the library) brings it into another browser. It shows what's new, what's already
+            there and what differs before anything changes; nothing of yours is replaced unless you choose it.
+          </UiText>
+          <ul class="list-disc space-y-2 pl-5 text-base/6 text-zinc-600 sm:text-sm/6 dark:text-zinc-400">
+            <li id="backup-conflicts" class="scroll-mt-6">
+              <strong class="font-semibold text-zinc-950 dark:text-white">A chart that differs from yours:</strong>
+              <strong class="font-semibold">Keep both</strong> unless you choose otherwise. The backup's comes in beside
+              yours with “(imported)” on its title; an edited library tune comes in as a copy, so both show in its
+              Version menu. <strong class="font-semibold">Use imported</strong> replaces yours, its picks with it, and
+              clears its undo history; <strong class="font-semibold">Keep mine</strong> skips it.
+            </li>
+            <li id="backup-library" class="scroll-mt-6">
+              <strong class="font-semibold text-zinc-950 dark:text-white">A library tune's picks and level:</strong>
+              yours are kept unless you choose <strong class="font-semibold">Use imported</strong>.
+            </li>
+            <li id="backup-preferences" class="scroll-mt-6">
+              <strong class="font-semibold text-zinc-950 dark:text-white">Preferences:</strong> used straight away only in a
+              browser that has never opened this site; anywhere else, only if you tick the box. Reload to see them.
+            </li>
+          </ul>
+          <UiText>
+            If the browser's storage fills up partway, it stops and says what was restored and what wasn't; each chart
+            comes in whole or not at all. My charts holds at most 200.
+          </UiText>
+        </template>
       </section>
 
       <section class="scroll-mt-6 space-y-4" aria-labelledby="printing">
@@ -447,6 +480,7 @@ const cellsOn = useFeature('cells')
 const phraseCellsOn = useFeature('phraseCells')
 const approachesOn = useFeature('approaches')
 const ireal = useFeature('ireal')
+const backupOn = useFeature('backup')
 const SECTIONS = [
   { id: 'quick', title: 'The short version' },
   { id: 'sheets', title: 'The sheets' },

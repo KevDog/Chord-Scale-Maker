@@ -1,16 +1,19 @@
-import { type Diagnostic, decodeIReal, type IRealSong, irealToChart } from '@chord-scale-maker/engine'
+import { type Backup, type Diagnostic, decodeIReal, type IRealSong, irealToChart, parseBackup } from '@chord-scale-maker/engine'
 
 /**
  * Open chart…: a chart file becomes a new chart in My charts, then opens in the editor. With iReal import on, an
  * iReal Pro export or link does too: a playlist asks which song, and anything it couldn't map waits for Open anyway.
+ * With Back up on, a backup file waits in `restoring` for the restore dialog (#466).
  */
 export function useOpenChart() {
   const ireal = useFeature('ireal')
+  const backup = useFeature('backup')
   const error = ref('')
   const busy = ref(false)
   const songs = ref<readonly IRealSong[]>([])
   const playlist = ref('')
   const report = ref<readonly Diagnostic[]>([])
+  const restoring = shallowRef<Readonly<{ backup: Backup; dropped: number }> | null>(null)
   let pending = '' // the chart text waiting on Open anyway
 
   async function save(text: string): Promise<void> {
@@ -58,6 +61,7 @@ export function useOpenChart() {
     error.value = ''
     report.value = []
     songs.value = []
+    restoring.value = null
   }
 
   async function open(file: File | undefined): Promise<void> {
@@ -65,17 +69,18 @@ export function useOpenChart() {
     busy.value = true
     error.value = ''
     try {
-      const read = await readChartFile(file, { ireal })
+      const read = await readChartFile(file, { ireal, backup })
       if (!read.ok) {
         error.value = read.error
         return
       }
-      if (read.kind === 'ireal') await openIReal(read.text)
+      if (read.kind === 'backup') restoring.value = parseBackup(read.text)
+      else if (read.kind === 'ireal') await openIReal(read.text)
       else await save(read.text)
     } finally {
       busy.value = false
     }
   }
 
-  return { open, openIReal, choose, confirm, cancel, error: readonly(error), busy: readonly(busy), songs: readonly(songs), playlist: readonly(playlist), report: readonly(report) }
+  return { open, openIReal, choose, confirm, cancel, error: readonly(error), busy: readonly(busy), songs: readonly(songs), playlist: readonly(playlist), report: readonly(report), restoring: readonly(restoring) }
 }

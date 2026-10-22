@@ -70,4 +70,16 @@ describe('useOpenChart with iReal', () => {
     o.cancel()
     expect(o.songs.value).toEqual([])
   })
+
+  it('a backup file asks what to restore, and opens nothing', async () => {
+    const o = useOpenChart()
+    const text = JSON.stringify({ format: 'csm-backup', v: 1, exportedAt: '', version: '', charts: [{ meta: { id: 'aaaaaa1', title: 'A', kind: 'new', createdAt: 1, updatedAt: 1 }, text: 'title: A\n', state: {} }, 'junk'], library: {}, preferences: {} })
+    await o.open(new File([text], 'chord-scale-maker-backup-2026-10-21.json', { type: 'application/json' }))
+    expect(o.restoring.value?.backup.charts.map((c) => c.meta.id)).toEqual(['aaaaaa1'])
+    expect(o.restoring.value?.dropped).toBe(1)
+    expect(navigateTo).not.toHaveBeenCalled()
+    o.cancel()
+    expect(o.restoring.value).toBeNull()
+  })
 })
+
