@@ -91,11 +91,11 @@ describe('BarDialog', () => {
   it('the paste kind takes an iReal link: a song’s bars, a playlist’s song by choice, its report shown but not blocking', async () => {
     const { w, dialog, button } = await open('paste')
     const area = dialog.querySelector('textarea') as HTMLTextAreaElement
-    await type(area, irealLink([{ title: 'One', music: '[*AC7 |x |F7(Gb7) Z' }, { title: 'Two', music: '[*AG7 Z' }], 'Set'))
+    await type(area, irealLink([{ title: 'One', music: '[*AC7 |x |F7 W/E Z' }, { title: 'Two', music: '[*AG7 Z' }], 'Set'))
     const select = dialog.querySelector('select') as HTMLSelectElement
     expect([...select.options].map((o) => o.textContent)).toEqual(['One', 'Two'])
     expect(dialog.textContent).toContain('3 bars')
-    expect(dialog.textContent).toContain('the alternate chord Gb7 is left out')
+    expect(dialog.textContent).toContain('a bass note with no chord (W/E) is left out')
     button('Insert after bar 2')?.click()
     await nextTick()
     expect(w.emitted('submit')?.[0]).toEqual([{ kind: 'paste', bars: [['C7'], ['C7'], ['F7']], before: false }])

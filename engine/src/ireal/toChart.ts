@@ -58,11 +58,12 @@ type Played = Readonly<{
   n: number // the song's bar, from 1
   bar: IRealBar
   chords: readonly string[] // empty: the chord before holds
+  alts: readonly string[] | null // the bar's alternate chords, each ( ) in its chord's place; null: no alternate
   time?: string // a metre the sheets have, where this bar sets one
   navs: readonly string[]
 }>
 
-/** the bars as played: chords mapped, x/r filled from the bars before; reports what's left out */
+/** the bars as played: chords mapped, x/r filled from the bars before; reports what's left out; a bar's alternate chords alongside */
 function play(bars: readonly IRealBar[], at: readonly string[]): Parsed<readonly Played[]> {
   const out: Played[] = []
   const diagnostics: Diagnostic[] = []
@@ -72,6 +73,8 @@ function play(bars: readonly IRealBar[], at: readonly string[]): Parsed<readonly
     const report = (message: string) => diagnostics.push(diag(n, `${at[i]}: ${message}`))
     if (pending && bar.items.length) report('a two-bar repeat cut short by chords in its second bar')
     const chords: string[] = pending && !bar.items.length ? [...pending] : []
+    const alts: string[] = [...chords] // the alternate bar's chords, built beside the main bar's
+    let hasAlt = false
     pending = null
     for (const item of bar.items) {
       if (item.kind === 'repeat') {
@@ -79,16 +82,28 @@ function play(bars: readonly IRealBar[], at: readonly string[]): Parsed<readonly
         if (!back) report('a repeat sign with no bar before it, left empty')
         else {
           chords.push(...back.chords)
+          alts.push(...back.chords)
           if (item.bars === 2) pending = out.at(-1)?.chords ?? []
         }
-      } else if (item.kind === 'rest') chords.push(REST)
-      else if (item.kind === 'bass') report(`a bass note with no chord (W/${item.bass}) is left out`)
-      else if (item.kind === 'alt') report(`the alternate chord ${item.alt} is left out`)
+      } else if (item.kind === 'rest') {
+        chords.push(REST)
+        alts.push(REST)
+      } else if (item.kind === 'bass') report(`a bass note with no chord (W/${item.bass}) is left out`)
       else {
-        if (item.alt) report(`the alternate chord ${item.alt} is left out`)
-        const m = irealChord(item.text)
-        if (m.note) report(m.note)
-        if (m.chord !== null) chords.push(m.chord)
+        // a chord's ( ) stands in its place in the alternate; one on its own has no main chord
+        let main: string | null = null
+        if (item.kind === 'chord') {
+          const m = irealChord(item.text)
+          if (m.note) report(m.note)
+          main = m.chord
+          if (main !== null) chords.push(main)
+        }
+        if (item.alt) {
+          hasAlt = true
+          const m = irealChord(item.alt)
+          if (m.note) report(m.note)
+          if (m.chord !== null) alts.push(m.chord)
+        } else if (main !== null) alts.push(main)
       }
     }
     const supported = bar.time === undefined || METRES.has(bar.time)
@@ -99,7 +114,7 @@ function play(bars: readonly IRealBar[], at: readonly string[]): Parsed<readonly
       if (!nav) report(`the comment "${c}" is left out`)
       return nav ? [nav] : []
     })
-    out.push({ n, bar, chords, navs, ...(time ? { time } : {}) })
+    out.push({ n, bar, chords, alts: hasAlt && alts.length ? alts : null, navs, ...(time ? { time } : {}) })
   }
   return { value: out, diagnostics }
 }
@@ -259,7 +274,7 @@ function writeBlock(b: Block, { name, source, songTime, running, held }: Context
   const bars = b.sec.bars
   // a chord holds only within its section: one opening on a held bar restates it
   const chordsOf = (p: Played, i: number): readonly string[] => (i === 0 && !p.chords.length && held !== undefined ? [held] : p.chords)
-  const rows = bars.flatMap((p, i) => chordsOf(p, i).map((c) => `${i + 1} | ${c}`))
+  const rows = bars.flatMap((p, i) => [...chordsOf(p, i).map((c) => `${i + 1} | ${c}`), ...(p.alts ?? []).map((c) => `alt ${i + 1} | ${c}`)])
   const lastRow = bars.reduce((last, p, i) => (chordsOf(p, i).length ? i + 1 : last), 0)
   const marks = bars.flatMap((p, i) => [
     ...(p.bar.segno ? [`@segno ${i + 1}`] : []),

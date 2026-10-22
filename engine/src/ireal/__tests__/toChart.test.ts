@@ -118,10 +118,29 @@ describe('irealToChart', () => {
     expect(value).toContain('form: AB, 5 bars')
   })
 
-  it('a stand-alone alternate chord is reported as left out; the chord after it is read', () => {
+  it('a chord with an alternate writes the alternate as an alt row', () => {
+    const { value, diagnostics } = irealToChart(song('[*AC7(Db7) |F7 Z'))
+    expect(value).toContain('1 | C7\nalt 1 | Db7\n2 | F7\n')
+    expect(diagnostics).toEqual([])
+    valid(value)
+  })
+
+  it('a stand-alone alternate is in its place among the bar’s chords; the chord after it is read', () => {
     const { value, diagnostics } = irealToChart(song('[*A(C7)F7 |(Db7)Q G7 Z'))
-    expect(value).toContain('1 | F7\n2 | G7\n')
-    expect(diagnostics.map((d) => d.message)).toEqual(['A bar 1: the alternate chord C7 is left out', 'A bar 2: the alternate chord Db7 is left out'])
+    expect(value).toContain('1 | F7\nalt 1 | C7\nalt 1 | F7\n2 | G7\nalt 2 | Db7\nalt 2 | G7\n')
+    expect(diagnostics).toEqual([])
+    valid(value)
+  })
+
+  it('a bar’s alternate takes each chord’s own alternate in its place', () => {
+    const { value } = irealToChart(song('[*AC7(Db7) F7 |G7 Z'))
+    expect(value).toContain('1 | C7\n1 | F7\nalt 1 | Db7\nalt 1 | F7\n2 | G7\n')
+  })
+
+  it('an alternate chord it can’t map is reported', () => {
+    const { value, diagnostics } = irealToChart(song('[*AC7(Co^7) |F7 Z'))
+    expect(diagnostics.map((d) => d.message)).toEqual(['A bar 1: Co^7: no chord like it here, left out'])
+    expect(value).not.toContain('alt ')
   })
 
   it('a token it can’t read is reported by section and bar', () => {
@@ -159,10 +178,9 @@ describe('irealToChart', () => {
     valid(value)
   })
 
-  it('reports what it can’t write: 6/8, alternate chords, a bass alone, an unknown chord, a third time through', () => {
-    const { diagnostics } = irealToChart(song('{*AT68C7(Db7) |W/E |Co^7 |<3x>F7 }Z'))
+  it('reports what it can’t write: 6/8, a bass alone, an unknown chord, a third time through', () => {
+    const { diagnostics } = irealToChart(song('{*AT68C7 |W/E |Co^7 |<3x>F7 }Z'))
     expect(diagnostics.map((d) => d.message)).toEqual([
-      'A bar 1: the alternate chord Db7 is left out',
       'A bar 1: 6/8 is not a metre the sheets have; read as 4/4',
       'A bar 2: a bass note with no chord (W/E) is left out',
       'A bar 3: Co^7: no chord like it here, left out',
