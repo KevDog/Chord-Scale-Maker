@@ -1,9 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { APPROACH_LABELS, APPROACHES, approachNotes, isApproach } from '../approaches'
+import { APPROACH_LABELS, APPROACHES, approachNotes, isApproach, scaleStepsBelow } from '../approaches'
 import { type GuideInput, type GuideNote, guideVoices } from '../guideTones'
 import { CONCERT, type Pitched, rangeOf } from '../part'
 import { toVexKey } from '../sheet'
-import { accText, LETTERS, parseRoot, type Spelled } from '../pitch'
+import { accText, LETTERS, parseRoot, rootName, type Spelled } from '../pitch'
 import { SCALES, spellFrom } from '../scales'
 
 const cIonian: readonly Spelled[] = spellFrom({ letter: 0, acc: 0 }, SCALES.ionian[0])
@@ -187,5 +187,13 @@ describe('approaches on the guide tone line', () => {
     const at = (hi: number, a: Parameters<typeof guideVoices>[5]) => bars(guideVoices(chords(['Dm7', 'G7']), part(hi), 4, null, 'third', a))
     expect(at(65, 'chromatic-above')).toEqual(at(65, 'none'))
     expect(at(66, 'chromatic-above')[0]).toBe('0:f/4/3~ 3:f/4/0.5^ 3.5:gb/4/0.5')
+  })
+})
+
+describe('scale steps below', () => {
+  it('walks n steps down the scale, in time order, lowest first; null with no scale', () => {
+    const C4 = note('C', 60)
+    expect(scaleStepsBelow(C4, 3, cIonian)?.map((p) => [rootName(p), p.midi])).toEqual([['G', 55], ['A', 57], ['B', 59]])
+    expect(scaleStepsBelow(C4, 1, null)).toBeNull()
   })
 })

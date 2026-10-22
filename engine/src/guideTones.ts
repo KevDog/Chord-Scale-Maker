@@ -8,6 +8,7 @@ import { spellFrom } from './scales'
 import { orNull } from './util'
 import { guideToneLine } from './guideToneLines'
 import type { Candidate, GuideTones } from './voiceLeading'
+import type { RhythmNote } from './rhythm/notation'
 
 /**
  * Guide tones on the Changes sheet: one guide tone line (docs/superpowers/specs/2026-10-10-guide-tone-lines-design.md,
@@ -79,13 +80,21 @@ export function drawnLengths(length: number): NoteBeats[] {
   return [first, ...drawnLengths(length - first)]
 }
 
+/** a poured note's notation: its value, tuplet, beam group and accent */
+export type RhythmMark = Pick<RhythmNote, 'value' | 'tuplet' | 'beam' | 'accent'>
+
 /** one note (or rest) of a guide tone voice, within a bar */
 export type GuideNote = Readonly<{
   /** null: a rest */
   pitch: Pitched | null
   /** where it starts in the bar, from 0 */
   beat: number
-  beats: NoteBeats
+  /** its length in beats: a NoteBeats, or under a rhythm its value's (0.75, 1.5, ⅓ of a beat in a triplet…) */
+  beats: number
+  /** a poured note's notation, from the rhythm (rhythm-on-lines spec §7); none: drawn from beats, as before */
+  mark?: RhythmMark
+  /** a struck note on a target beat: a tone of the chord sounding there, or another note (§6) */
+  target?: 'tone' | 'other'
   /** tied into this voice's next note (in the next bar, which may be on the next line) */
   tie: boolean
   /** continues the previous note: no accidental, no label */

@@ -1,4 +1,4 @@
-import { accText, barKey, type ChangesBar, type ChangesLine, type GuideNote, type Pitched, type RhythmNote, signatureAccidentals, toVexKey } from '@chord-scale-maker/engine'
+import { accText, barKey, type ChangesBar, type ChangesLine, type GuideNote, type NoteBeats, type Pitched, type RhythmNote, signatureAccidentals, toVexKey } from '@chord-scale-maker/engine'
 import { BAR_UNITS, cropBand, fitSvg, headCentre, inkStave, signatureLead, STAVE_Y, svgContext, TIME_SPACE, type VexFlowModule } from './vexflow'
 
 /**
@@ -256,7 +256,7 @@ const room = (stave: Stave, x: number, width: number): number => width - (stave.
 
 /** a guide tone (or rest), its stem by VexFlow's usual rule (up below the middle line, down above) */
 function tickFor(vf: VexFlowModule, n: GuideNote, clef: Clef, restate: string | null): StaveNote {
-  const duration = DURATIONS[n.beats]
+  const duration = DURATIONS[n.beats as NoteBeats]
   const dotted = (note: StaveNote): StaveNote => {
     if (n.beats === 3 || n.beats === 6) vf.Dot.buildAndAttach([note], { all: true })
     return note
