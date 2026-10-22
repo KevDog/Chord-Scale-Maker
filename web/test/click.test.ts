@@ -156,4 +156,18 @@ describe('useClick', () => {
     await c.start()
     expect([c.running.value, c.unavailable.value]).toEqual([false, true])
   })
+
+  it('Start, Stop and Start again before the audio resumes runs one scheduler', async () => {
+    const pending: (() => void)[] = []
+    const audio = { ...fakeAudio(), resume: () => new Promise<void>((r) => pending.push(r)) }
+    let intervals = 0
+    let frames = 0
+    const c = useClick(chart(), ref(undefined), { audio: () => audio, setInterval: () => ++intervals, clearInterval: () => {}, raf: () => ++frames })
+    const first = c.start()
+    c.stop()
+    const second = c.start()
+    for (const r of pending) r()
+    await Promise.all([first, second])
+    expect([intervals, frames, c.running.value]).toEqual([1, 1, true])
+  })
 })

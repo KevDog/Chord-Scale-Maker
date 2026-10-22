@@ -108,6 +108,7 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
   let state: ClickState = { barStart: 0, bar: 0 }
   let booked = 0 // the audio clock's time booked up to
   let recent: readonly TimedClick[] = [] // booked clicks the lights still need (the beats, not the hat or the subdivision)
+  let run = 0 // each start and stop: a start whose resume settles after another start or a stop gives way
 
   function lights(): void {
     if (!audio || !running.value) return
@@ -145,14 +146,16 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
       return
     }
     running.value = true
+    const mine = ++run
     try {
       await audio.resume()
     } catch {
+      if (mine !== run) return
       running.value = false // refused (closed under it, or the browser said no): stopped, and said so
       unavailable.value = true
       return
     }
-    if (!running.value) return // stopped while resuming
+    if (mine !== run) return // stopped, or started again, while resuming
     state = { barStart: audio.now(), bar: 0 }
     booked = audio.now()
     recent = []
@@ -162,6 +165,7 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
   }
 
   function stop(): void {
+    run++
     if (timer !== null) clearTimer(timer)
     timer = null
     running.value = false
