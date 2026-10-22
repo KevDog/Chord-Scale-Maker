@@ -8,6 +8,12 @@ export type ReleaseNote = Readonly<{ date: string; items: readonly ReleaseItem[]
 
 export const RELEASE_NOTES: readonly ReleaseNote[] = [
   {
+    date: '2026-10-22',
+    items: [
+      { text: 'Charts can now be in 7/4: write time: 7/4 in the heading, or choose Bar in 7/4 from the bar menu for a single bar.', pr: 487 },
+    ],
+  },
+  {
     date: '2026-10-21',
     items: [
       { text: 'Rhythm Changes now carries alternate changes: Changes → Alternate, in the toolbar above the sheet, plays them on every sheet, and Other changes prints the other set small above the bars.', pr: 476 },
