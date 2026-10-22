@@ -4,7 +4,7 @@
     <UiText v-if="sheetEditing" class="md:hidden print:hidden">Full editing works on a larger screen. Tap a chord on the sheet to change it.</UiText>
 
     <ShareDialog :open="shareOpen" :link="shareLink" @close="shareOpen = false" />
-    <SheetChordEditor :doc="editor.doc.value" :target="sheetChord" @update:doc="editor.setDoc" @said="said = $event" @close="sheetChord = null" />
+    <SheetChordEditor :doc="playedDoc" :source="editor.doc.value" :set="mainSet" :target="sheetChord" @update:doc="editor.setDoc" @said="said = $event" @close="sheetChord = null" />
     <!-- the sheet editor's structure dialogs: a new section, a section from a bar, a jump, pasted bars, a repeat, a rename -->
     <BarDialog
       :kind="sheetDialog?.kind ?? null"
@@ -199,12 +199,13 @@
             <SheetStatus v-if="statusText || copyError" :text="statusText" :failed="saveFailed" :error="copyError" class="mb-2 print:hidden" />
             <UiText class="text-red-600! dark:text-red-400!">Preview paused: the chart is over a size limit.</UiText>
           </template>
-          <!-- the played set's doc: on a chart with alternates its other set's rows are blank, so an update:doc from it would
-               drop them. Such a chart isn't sheet-editable (sheetEditing, flag or not); before #469 enables it, sheet edits must merge
-               back into editor.doc -->
+          <!-- the sheet draws and reads the set played (sheetDoc); its edits are written to the chart itself, alt rows and
+               all, in that set (#469) -->
           <ChangesSheet
             v-else-if="sheet === 'changes'"
-            :doc="playedDoc"
+            :doc="sheetDoc"
+            :source="editor.doc.value"
+            :set="mainSet"
             :other-doc="otherDoc"
             :title="sheetTitle"
             :heading-level="1"
@@ -323,6 +324,7 @@ import {
   hasAlternates,
   insertHeldBar,
   keyStart,
+  posOfLine,
   renameSection,
   repeatSection,
   setNav,
@@ -433,6 +435,8 @@ const changesSet = useChangesSet(props.practiceKey, props.shared)
 const alternatesOn = computed(() => alternatesFlag && hasAlternates(editor.doc.value))
 const mainSet = computed((): ChangesSet => (alternatesOn.value ? changesSet.main.value : 'standard'))
 const playedDoc = computed(() => (alternatesOn.value ? changesFor(editor.doc.value, mainSet.value) : editor.doc.value))
+/** the doc the Changes sheet draws and reads: the set played; Standard, the chart itself (its layout skips alt rows) */
+const sheetDoc = computed(() => (mainSet.value === 'alternate' ? playedDoc.value : editor.doc.value))
 const playedRows = computed(() => (alternatesOn.value ? expandRows(playedDoc.value).value : editor.rows.value))
 /** the other set, for the small line; null while it's hidden */
 const otherDoc = computed(() => (alternatesOn.value && changesSet.shown.value ? changesFor(editor.doc.value, mainSet.value === 'standard' ? 'alternate' : 'standard') : null))
@@ -509,10 +513,10 @@ const sheetLine = computed(() => shareLineOf(prefs.lineMode.value, prefs.guideLi
 /** the line the Changes sheet draws: the stored one, the arpeggio slot read as the Pentatonic line under the Pentatonic overlay (#284) */
 const changesLine = computed(() => changesLineOf({ mode: prefs.lineMode.value, guide: prefs.guideLine.value, arpeggio: prefs.arpeggio.value, overlay: prefs.overlay.value, leave: prefs.pentLeave.value, dir: prefs.arpDir.value, cells: prefs.cells.value, shape: prefs.pairLine.value, order: phraseOn ? prefs.cellsOrder.value : 'as-written', phrase: phraseOn && prefs.cellsPhrase.value }))
 /**
- * chords on the Changes sheet open the chord editor while the editor is shown (on a phone, the whole editor); not on a
- * chart with alternates, whatever the flag (#469; edit.ts knows only `row`): its Source edits it
+ * chords on the Changes sheet open the chord editor while the editor is shown (on a phone, the whole editor); on a chart
+ * with alternates, in the set played (#469)
  */
-const sheetEditing = computed(() => editorShown.value && !editor.fatal.value && !hasAlternates(editor.doc.value))
+const sheetEditing = computed(() => editorShown.value && !editor.fatal.value)
 const sheetChord = ref<SheetChordEdit | null>(null)
 const selectedLine = ref<number | null>(null)
 const said = ref('')
@@ -520,13 +524,18 @@ const said = ref('')
 function editSheetChord(chord: SheetChordEdit): void {
   editor.flush()
   sheetChord.value = chord
+  sheetChordAt = posOfLine(barView(playedDoc.value), chord.line)?.chord ?? 0
 }
+/** the tapped chord's index in its bar: in Alternate a change can add or drop alt rows, moving its line (#469) */
+let sheetChordAt = 0
+watch(playedDoc, (doc) => {
+  const c = sheetChord.value
+  const line = c && mainSet.value === 'alternate' ? chordLineAt(doc, c, sheetChordAt) : null
+  if (c && line !== null && line !== c.line) sheetChord.value = { ...c, line }
+})
 /** the Source: in the banner, or under ⋯ below md, remembered; always shown for a chart over a size limit (only the text can fix it) */
-/**
- * the Source is offered from Everything, and at any level while the text has a problem or the chart has alternates, flag
- * on or off (only the text can fix or edit those: #469)
- */
-const sourceOffered = computed(() => ui.shows('source') || editor.diagnostics.value.length > 0 || hasAlternates(editor.doc.value))
+/** the Source is offered from Everything, and at any level while the text has a problem (only the text can fix it) */
+const sourceOffered = computed(() => ui.shows('source') || editor.diagnostics.value.length > 0)
 const sourceShown = computed(() => (sourceOffered.value && prefs.source.value) || editor.fatal.value)
 /** the chart's key, for the sheets' key signature, drawn once at the start */
 const homeKey = computed(() => chartKeyOf(editor.doc.value))
@@ -659,6 +668,16 @@ function openSheetEdit(e: SheetEdit): void {
   sheetEdit.value = e
   if (e.kind === 'chord') selectedLine.value = e.line
 }
+/** the open chord's index in its bar: in Alternate a commit can add or drop alt rows, moving the lines after it (#469) */
+let sheetChordIndex = 0
+watch(sheetEdit, (e) => {
+  if (e?.kind === 'chord') sheetChordIndex = posOfLine(barView(sheetDoc.value), e.line)?.chord ?? 0
+}, { flush: 'sync' })
+/** the line of the chord at a place in the sheet's doc: the bar's chord at that index, or its last */
+function chordLineAt(doc: ChartDoc, at: SheetPlace, k: number): number | null {
+  const chords = barView(doc).sections.find((s) => s.name === at.section)?.bars.find((b) => String(b.bar) === at.bar)?.chords ?? []
+  return chords[Math.min(k, chords.length - 1)]?.line ?? null
+}
 /**
  * the field closed: stay on the chord, move to the next (previous) bar's or chord, open the new chord slot, or nothing.
  * A chord taken out (blank) comes with its place: its line is gone, or names the chord after it, so moves go from there.
@@ -667,7 +686,7 @@ function sheetDone(then: SheetDone, taken?: GridPos): void {
   const e = sheetEdit.value
   sheetPreview.value = null
   if (!e) return
-  const doc = editor.doc.value
+  const doc = sheetDoc.value
   const sections = lineSections(doc)
   /** a row's place as written */
   const writtenAt = (line: number): SheetPlace | null => {
@@ -676,7 +695,9 @@ function sheetDone(then: SheetDone, taken?: GridPos): void {
     return l?.kind === 'row' && section ? { section, bar: l.bar } : null
   }
   // the chord the field was on: a slot's is the bar's last row (the chord it added, or the one before it)
-  const line = e.kind === 'chord' ? e.line : doc.lines.findLastIndex((l, i) => l.kind === 'row' && sections[i] === e.section && l.bar === e.bar)
+  const moved = e.kind === 'chord' && mainSet.value === 'alternate' ? chordLineAt(doc, e.at, sheetChordIndex) : null
+  if (moved !== null) selectedLine.value = moved
+  const line = e.kind === 'chord' ? (moved ?? e.line) : doc.lines.findLastIndex((l, i) => l.kind === 'row' && sections[i] === e.section && l.bar === e.bar)
   const at = e.kind === 'chord' ? e.at : { section: e.section, bar: e.bar }
   if (line < 0) return void (sheetEdit.value = null)
   if (then === 'add' && !taken) {

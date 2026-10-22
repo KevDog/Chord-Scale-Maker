@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test'
-import { chooseInterface, chooseSheet, expect, openEditor, pickOption, test } from './fixtures'
+import { chooseInterface, chooseSheet, expect, inControls, moreAction, openEditor, pickOption, sheetChord, test, typeChord } from './fixtures'
 
 const SONG = '/song/rhythm-changes'
 const lines = (page: Page) => page.locator('svg[aria-label^="Bars:"]')
@@ -79,6 +79,90 @@ test('a share link opens in the alternate set (#215)', async ({ page, browser })
   await expect(changesGroup(visitor).getByRole('radio', { name: 'Alternate' })).toBeChecked()
   await expect(paper(visitor)).toContainText('Alternate changes')
   await fresh.close()
+})
+
+/** a My charts copy of the chart, the sheet the editor (from md up) */
+async function editCopy(page: Page): Promise<void> {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await page.goto(SONG)
+  await moreAction(page, 'Save as a copy')
+  await expect(page).toHaveURL(/\/song\?mine=/)
+  await expect(async () => {
+    const edit = page.getByRole('button', { name: 'Edit', exact: true })
+    if (await edit.isVisible()) await edit.click({ timeout: 1000 })
+    await expect(sheetChord(page, 'Bb6', 'A1', 1)).toBeVisible({ timeout: 1000 })
+  }).toPass({ timeout: 10_000 })
+}
+/** the chart text without its column padding */
+const source = async (page: Page): Promise<string> => (await page.getByLabel('Chart text').inputValue()).replace(/[ \t]*\|[ \t]*/g, ' | ')
+
+test.describe('editing a chart with alternates (#469)', () => {
+  test.describe('at Intermediate', () => {
+    test.use({ interfaceLevel: 'intermediate' })
+    test('the sheet is the editor, its Source not forced on', async ({ page }) => {
+      await editCopy(page)
+      await expect(sheetChord(page, 'G7b9', 'A1', 1)).toBeVisible()
+      await expect(page.getByRole('button', { name: 'Source', exact: true })).toHaveCount(0)
+      await expect(page.getByLabel('Chart text')).toHaveCount(0)
+    })
+  })
+
+  test('in Standard, a chord retyped keeps the Changes control', async ({ page }) => {
+    await editCopy(page)
+    await typeChord(page, 'A1', 1, 'Bb6', 'BbMaj7')
+    await expect(sheetChord(page, 'BbMaj7', 'A1', 1)).toBeVisible()
+    await expect(changesGroup(page).getByRole('radio', { name: 'Standard' })).toBeChecked()
+  })
+
+  test('in Alternate, a shared bar retyped becomes an alternate, the Other changes line showing Standard there', async ({ page }) => {
+    await editCopy(page)
+    await play(page, 'Alternate')
+    await typeChord(page, 'A1', 3, 'Bb6', 'Dm7')
+    await expect(sheetChord(page, 'Dm7', 'A1', 3)).toBeVisible()
+    await expect(otherLine(page).locator('[data-other-name="2-0"]')).toHaveAttribute('data-chord', 'Bb6')
+    await openEditor(page)
+    await expect.poll(() => source(page)).toMatch(/\n3 \| Bb6 [^\n]*\n3 \| G7b9 [^\n]*\nalt 3 \| Dm7\nalt 3 \| G7b9/)
+  })
+
+  test('in Alternate, a scale picked on an alt chord is written on its alt row', async ({ page }) => {
+    await editCopy(page)
+    await openEditor(page)
+    await play(page, 'Alternate')
+    await page.locator('[data-slot="system"]').first().locator('[data-slot=scale]').nth(1).getByRole('button').click() // Bdim7's
+    await page.getByRole('dialog', { name: 'Scale: Bdim7' }).getByRole('radio').nth(1).click()
+    await expect.poll(() => source(page)).toMatch(/\nalt 1 \| Bdim7 \| [A-G]/)
+    expect(await source(page)).toMatch(/\n1 \| G7b9 +#/) // the standard row as it was
+  })
+
+  test('on a phone, in Alternate, a shared bar retyped stays open in the chord sheet', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.goto(SONG)
+    await moreAction(page, 'Save as a copy')
+    await expect(page).toHaveURL(/\/song\?mine=/)
+    await inControls(page, async () => {
+      await page.getByRole('dialog', { name: 'Controls' }).getByRole('button', { name: 'Edit', exact: true }).click()
+    })
+    await page.getByRole('button', { name: 'Controls', exact: true }).click()
+    await play(page, 'Alternate')
+    await page.keyboard.press('Escape')
+    await expect(page.getByRole('dialog', { name: 'Controls' })).toHaveCount(0)
+    await sheetChord(page, 'Bb6', 'A1', 3).click()
+    const sheet = page.getByRole('dialog')
+    const input = sheet.getByRole('textbox', { name: 'Chord' })
+    await input.fill('Dm7')
+    await input.press('Enter')
+    await expect(input).toBeVisible()
+    await expect(input).toHaveValue('Dm7')
+    await expect(sheet).toContainText('A1, bar 3')
+  })
+
+  test('+ after on a bar before an alternate keeps the alternate, renumbered', async ({ page }) => {
+    await editCopy(page)
+    await openEditor(page)
+    await sheetChord(page, 'Bb6', 'A1', 1).hover()
+    await page.getByRole('button', { name: 'Insert a held bar after A1 bar 1' }).click()
+    await expect.poll(() => source(page)).toMatch(/\n3 \| F7 [^\n]*\nalt 3 \| Cm7 [^\n]*\nalt 3 \| C#dim7/)
+  })
 })
 
 test('a chart without alternates has no Changes toggle (#215)', async ({ page }) => {

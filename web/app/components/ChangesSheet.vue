@@ -7,7 +7,7 @@
       <template v-if="$slots.status" #status><slot name="status" /></template>
       <!-- the sheet as the editor: the heading edited where it prints -->
       <template v-if="editing !== undefined" #heading>
-        <SheetHeading :doc="doc" :level="headingLevel" @update:doc="emit('update:doc', $event)" />
+        <SheetHeading :doc="source ?? doc" :level="headingLevel" @update:doc="emit('update:doc', $event)" />
         <!-- the heading replaces the subtitle on screen, so the path a preset plays shows under it (print has it in the subtitle) -->
         <p v-if="built.pentatonicCaption" data-slot="pent-caption" class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{{ built.pentatonicCaption }}</p>
       </template>
@@ -28,6 +28,8 @@
             :editable="editable"
             :selected-line="selectedLine"
             :doc="doc"
+            :source="source"
+            :set="set"
             :editing="editing"
             :preview="preview"
             :focus-at="focusAt"
@@ -61,7 +63,7 @@
 import { SHEET_PAGED } from '~/utils/sheetPaged'
 import { PlusIcon, Square2StackIcon } from '@heroicons/vue/16/solid'
 import type { SheetChordEdit, SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
-import { type Approach, breakLines, buildChanges, otherChords, changesLinesPerPage, type ChartDoc, type ChordAt, type ChordPreview, chunk, type GridPos, isArpeggioPattern, pageSubtitle, type OverlayPlan, type Part, type PentatonicPlan, type PickKind, type ScaleView, showHexatonics, showPentatonics, showQuartals, type ChangesLineChoice } from '@chord-scale-maker/engine'
+import { type Approach, breakLines, buildChanges, otherChords, changesLinesPerPage, type ChangesSet, type ChartDoc, type ChordAt, type ChordPreview, chunk, type GridPos, isArpeggioPattern, pageSubtitle, type OverlayPlan, type Part, type PentatonicPlan, type PickKind, type ScaleView, showHexatonics, showPentatonics, showQuartals, type ChangesLineChoice } from '@chord-scale-maker/engine'
 
 /** the Changes sheet (docs/plan-changes.md): the chart as a study lead sheet, 4 bars a line (2 on phones), fewer where the chords' names don't fit */
 const { shows } = useInterface()
@@ -84,6 +86,8 @@ const props = defineProps<{
   preview?: ChordPreview | null // the open field's draft, read in its bar
   focusAt?: SheetFocus | null // a chord the editor wants focus on
   overlay?: OverlayPlan | null // the row under the chords: the Pentatonic overlay's rungs, the Hexatonic or the Quartal; null: off
+  source?: ChartDoc // the chart the editor writes, with its alt rows, line for line doc (#469); undefined: doc
+  set?: ChangesSet // the set doc plays; undefined: standard
   otherDoc?: ChartDoc | null // the other set of a chart with alternates (#215), its chords drawn small above the bars; null: none
 }>()
 const emit = defineEmits<{

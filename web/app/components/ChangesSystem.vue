@@ -39,6 +39,8 @@
           <SheetChord
             v-if="editing !== undefined && doc && m.line >= 0"
             :doc="doc"
+            :source="source"
+            :set="set"
             :line="m.line"
             :section="m.row.section"
             :bar="m.row.bar"
@@ -75,6 +77,8 @@
           v-if="toolbarBar && m.barIndex === toolbarBar.index && m.lastInBar"
           :key="toolbarBar.key"
           :doc="doc!"
+          :source="source"
+          :set="set"
           :section="toolbarBar.section"
           :bar="toolbarBar.bar"
           :repeat-of="toolbarBar.repeatOf"
@@ -130,7 +134,7 @@
         :title="notesOn && m.reason ? undefined : m.numeral"
       >
         <template v-if="drafted(m)">{{ preview?.readable ? preview.numeral : '' }}</template>
-        <SheetLabelPicker v-else-if="editing !== undefined && shows('function-choice') && doc && m.line >= 0 && !m.slot && !isRest(m.text)" :doc="doc" :line="m.line" kind="numeral" :chord="m.text" :fallback="m.fallback" :pinned="false" :blank="!m.numeral" @update:doc="emit('update:doc', $event)" @said="emit('said', $event)">{{ m.numeral }}<span v-if="m.problem" class="ml-0.5 text-amber-700 no-underline dark:text-amber-400 print:hidden" aria-hidden="true">⚠</span></SheetLabelPicker>
+        <SheetLabelPicker v-else-if="editing !== undefined && shows('function-choice') && doc && m.line >= 0 && !m.slot && !isRest(m.text)" :doc="doc" :source="source" :line="m.line" kind="numeral" :chord="m.text" :fallback="m.fallback" :pinned="false" :blank="!m.numeral" @update:doc="emit('update:doc', $event)" @said="emit('said', $event)">{{ m.numeral }}<span v-if="m.problem" class="ml-0.5 text-amber-700 no-underline dark:text-amber-400 print:hidden" aria-hidden="true">⚠</span></SheetLabelPicker>
         <ChangesNote v-else-if="notesOn && m.reason && m.numeral" :reason="m.reason" :heard-in="m.heardIn" :key-from="m.keyFrom" :rule="m.rule" :fallback="m.fallback" :chord="m.written" :concert="m.text" :numeral="m.numeral" :scale="m.scale" :at="m.row" :problem="m.problem" :pinned="m.pinned" :slash="m.slash" :level-note="m.levelNote">{{ m.numeral }}<span v-if="m.problem" class="ml-0.5 text-amber-700 no-underline dark:text-amber-400 print:hidden" aria-hidden="true">⚠</span></ChangesNote>
         <template v-else>{{ m.numeral }}<span v-if="m.problem" class="ml-0.5 text-amber-700 dark:text-amber-400 print:hidden" :title="m.problem">⚠</span></template>
       </span>
@@ -145,7 +149,7 @@
         :style="{ left: `${m.x * 100}%`, maxWidth: `${m.room * 100}%` }"
       >
         <template v-if="drafted(m)">{{ preview?.readable ? sheetScale(CONCERT, preview.scale) : '' }}</template>
-        <SheetLabelPicker v-else-if="editing !== undefined && shows('scale-choice') && doc && m.line >= 0 && !m.slot && !isRest(m.text)" :doc="doc" :line="m.line" kind="scale" :chord="m.text" :fallback="false" :blank="!m.scale" :pinned="notes?.get(m.line)?.source === 'written'" :scale="notes?.get(m.line)?.scale" @update:doc="emit('update:doc', $event)" @said="emit('said', $event)">{{ m.scale }}</SheetLabelPicker>
+        <SheetLabelPicker v-else-if="editing !== undefined && shows('scale-choice') && doc && m.line >= 0 && !m.slot && !isRest(m.text)" :doc="doc" :source="source" :line="m.line" kind="scale" :chord="m.text" :fallback="false" :blank="!m.scale" :pinned="notes?.get(m.line)?.source === 'written'" :scale="notes?.get(m.line)?.scale" @update:doc="emit('update:doc', $event)" @said="emit('said', $event)">{{ m.scale }}</SheetLabelPicker>
         <ChangesNote v-else-if="notesOn && m.reason && m.scale" :reason="m.reason" :heard-in="m.heardIn" :key-from="m.keyFrom" :rule="m.rule" :fallback="m.fallback" :chord="m.written" :concert="m.text" :numeral="m.numeral" :scale="m.scale" :at="m.row" :problem="m.problem" :pinned="m.pinned" :slash="m.slash" :level-note="m.levelNote" wrap>{{ m.scale }}</ChangesNote>
         <template v-else>{{ m.scale }}</template>
       </span>
@@ -256,6 +260,7 @@ import {
   type ChangesLine,
   type ChangesPentatonic,
   type ChangesQuartal,
+  type ChangesSet,
   type ChartDoc,
   type ChordAt,
   type ChordPreview,
@@ -299,7 +304,9 @@ const props = defineProps<{
   lineName?: string // that arpeggio line's name in the aria-label: 'pentatonic' (#284), 'triad pair' (#325), 'quartal' (#432); else 7th chords
   editable?: boolean // each chord a button that asks to edit it
   selectedLine?: number | null // the chart line of the chord the editor is on, outlined
-  doc?: ChartDoc // the chart, for the sheet editor's field
+  doc?: ChartDoc // the chart (the set played, #469), for the sheet editor's field
+  source?: ChartDoc // the chart the sheet editor writes, with its alt rows (#469); undefined: doc
+  set?: ChangesSet // the set doc plays; undefined: standard
   editing?: SheetEdit | null // the sheet is the editor: what it's editing (null: nothing yet); undefined: the chord editor dialog instead
   preview?: ChordPreview | null // the reading of the draft in the open field, shown under its chord
   focusAt?: SheetFocus | null // a chord the editor wants focus on (its field closed with nowhere to go)
