@@ -4,7 +4,10 @@ style: Medium samba
 key: Gm
 form: Interlude ABC, 54 bars
 source: The New Real Book, Vol. 1
+recording: Dave Frishberg; The Dave Frishberg Songbook Volume No. 2; Omnisound; 1983
+youtube: 0lyhjzn-Qdo
 # analysis: 2026-10-19, rules v2; G minor
+# recording: recorded December 1982, Mountain Sound, Pennsylvania, Frishberg (vocal, piano) with Steve Gilmore and Bill Goodwin, Omnisound N-1051, the first recording of it, the composer singing; reissued on Dave Frishberg Classics (Concord, 1991) (MusicBrainz, library catalogues); video: "Provided to YouTube by Universal Music Group", Dave Frishberg Classics, the same take (not the 2006 Jazz Bakery version)
 # book: Med. Samba, half note = 92. The repeat runs from the Interlude to the end of C, 3 times in all
 # book: (3 verses); the 3rd time, take the Coda after C bar 10.
 # book: arrows mark pushed chords; a chord pushed onto beat 4 is written in the bar it leads into

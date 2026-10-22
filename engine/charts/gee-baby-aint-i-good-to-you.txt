@@ -4,7 +4,10 @@ style: Medium slow
 key: Eb
 form: AB, 16 bars
 source: The New Real Book, Vol. 1
+recording: King Cole Trio; Harvest of Hits; Capitol; 1950
+youtube: PWfV0Uzc2tk
 # analysis: 2026-10-19, rules v2; Eb
+# recording: recorded 1943-11-30, C.P. MacGregor Studios, Hollywood, Nat King Cole with Oscar Moore and Johnny Miller, matrix 124, first issued on 78 (Capitol 169, with I Realize Now, 1944), first LP 10" H-213 (1950); songbook standard (Redman–Razaf; McKinney's Cotton Pickers, 1929) → the Trio's hit as the reference; no alternate take (Wikipedia, Nat King Cole Capitol discography); video: "Provided to YouTube by Universal Music Group", The Classic Singles, the same take
 # book: Med.-Slow Swing (Bluesy); the melody is freely interpreted, in a blues style
 
 # bar | chord

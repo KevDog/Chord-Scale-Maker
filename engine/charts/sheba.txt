@@ -4,7 +4,10 @@ style: Ballad
 key: Bb
 form: AABC, 32 bars
 source: Colorado Cookbook, p. 196
+recording: Clark Terry's Big-B-A-D-Band; Clark Terry's Big-B-A-D-Band Live! at the Wichita Jazz Festival 1974; Vanguard; 1975
+youtube: cE6Nt-YzEUk
 # analysis: 2026-10-19, rules v2; Bb
+# recording: recorded live in 1974 at the Wichita Jazz Festival, Clark Terry's big band (Duke Jordan, piano), Vanguard VSD-79355, with Mumbles and Cold 'Tater Stomp; the earliest documented recording of it, the composer leading (BnF, MusicBrainz, AllMusic); video: "Provided to YouTube by Universal Music Group", Clark Terry's Big-B-A-D-Band Live!, the same take (not the 1990 Village Gate quintet version)
 
 # bar | chord | scale
 

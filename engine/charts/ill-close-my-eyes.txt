@@ -4,7 +4,10 @@ style: Medium
 key: F
 form: AA, 32 bars
 source: Colorado Cookbook, p. 99
+recording: Blue Mitchell; Blue's Moods; Riverside; 1960
+youtube: NlVPDaYu5EQ
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded 1960-08-24/25, Plaza Sound Studios, NYC, Blue Mitchell Quartet (Wynton Kelly, Sam Jones, Roy Brooks), Riverside RLP 336; songbook standard (1945) → Mitchell's reading as the jazz reference (jazzdisco, Wikipedia); video: "Provided to YouTube by Universal Music Group", Blue's Moods, the same take
 
 # bar | chord | scale
 

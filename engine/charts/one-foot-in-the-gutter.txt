@@ -5,7 +5,10 @@ style: Medium
 key: F
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 169
+recording: Clark Terry Quartet with Thelonious Monk; In Orbit; Riverside; 1958
+youtube: 41ycRb-qlWA
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded 1958-05-07/12, Reeves Sound Studios, NYC, with Thelonious Monk, Sam Jones, Philly Joe Jones, RLP 12-271, also a single (R-45-411, with Pea-Eye), the first recording of it, the composer leading; over Dave Bailey's title-track version (Epic, 1960) (jazzdisco, MusicBrainz); video: "Provided to YouTube by Universal Music Group", In Orbit, the same take
 
 # bar | chord | scale
 

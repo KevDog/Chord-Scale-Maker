@@ -4,7 +4,10 @@ style: Medium swing
 key: C
 form: AB, 32 bars
 source: The New Real Book, Vol. 1
+recording: Bill Evans Trio; How My Heart Sings!; Riverside; 1964
+youtube: nmucNv81yD4
 # analysis: 2026-10-19, rules v2; C
+# recording: recorded 1962-06-05, Sound Makers, NYC, Bill Evans with Chuck Israels and Paul Motian, Riverside RM 473, released 1964; songbook standard (1944) → Evans's trio reading at the chart's medium swing, over Monk's solo ballad versions (Blue Note 1948, Thelonious Himself 1957) (jazzdisco); video: Bill Evans's official channel (Craft Recordings), "Official Visualizer" from How My Heart Sings!, the same take
 # the book: also played as a ballad
 
 # bar | chord

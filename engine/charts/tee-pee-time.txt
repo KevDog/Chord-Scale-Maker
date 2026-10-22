@@ -6,7 +6,10 @@ key: Bb
 context: blues
 form: AABC, 44 bars
 source: Colorado Cookbook, p. 234
+recording: Clark Terry; It's What's Happenin'; Impulse!; 1967
+youtube: 8zKscPDnqOE
 # analysis: 2026-10-22, rules v2; Bb, blues
+# recording: recorded 1967-07-24, NYC, Clark Terry (Varitone trumpet) with Don Friedman, George Duvivier, Dave Bailey, Impulse! AS-9157, the first recording of it (Wikipedia, MusicBrainz); video: "Provided to YouTube by Universal Music Group", It's What's Happenin' - The Varitone Sound Of Clark Terry, the same take
 
 # bar | chord | scale
 

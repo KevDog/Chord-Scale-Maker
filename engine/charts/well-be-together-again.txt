@@ -4,7 +4,10 @@ style: Medium ballad
 key: C
 form: ABC, 32 bars
 source: The New Real Book, Vol. 1
+recording: Tony Bennett and Bill Evans; The Tony Bennett/Bill Evans Album; Fantasy; 1975
+youtube: EGqm0L4uA0c
 # analysis: 2026-10-19, rules v2; C
+# recording: recorded June 1975, Fantasy Studios, Berkeley, Tony Bennett with Bill Evans (piano), duo, produced by Helen Keane, Fantasy F-9489; songbook standard (1945, Carl Fischer and Frankie Laine) → the Bennett/Evans duo, the reading most cited by jazz players, over Billie Holiday's and Sinatra's; sources: Wikipedia, jazzstandards.com; video: "Provided to YouTube by Universal Music Group", The Tony Bennett / Bill Evans Album (2023 Craft remaster), the same take
 # book: Med. Ballad. Two changes in a bar get two beats apiece. Repeat signs around the whole form.
 
 # bar | chord

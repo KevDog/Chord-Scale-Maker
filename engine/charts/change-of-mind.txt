@@ -5,7 +5,10 @@ time: 3/4
 key: F
 form: ABCD, 70 bars
 source: The New Real Book, Vol. 1
+recording: Peter Erskine; Peter Erskine; Contemporary; 1982
+youtube: rpG54XD3ji0
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded June 1982, NYC, Peter Erskine with Bob Mintzer, Michael Brecker, Randy Brecker, Kenny Kirkland, Don Grolnick, Mike Mainieri, Eddie Gomez, Don Alias, Contemporary 14010; the first recording found, with the composer on tenor (Jazz Journal, Wikipedia); video: "Provided to YouTube by Universal Music Group", Peter Erskine, the same take
 
 # the intro (4/4, 5/4, 3/4 horn and bass figures, repeated) is written out with no chord symbols: left out
 # the form is in 3/4; the head is ABCD, solos on ABC, then D (with pickup) and D.S. al Fine

@@ -4,7 +4,10 @@ style: Latin
 key: Am
 form: AABC, 32 bars
 source: Colorado Cookbook, p. 140
+recording: Clare Fischer; Manteca!; Pacific Jazz; 1965
+youtube: 3Rm1pMsVJGQ
 # analysis: 2026-10-19, rules v2; A minor
+# recording: released November 1965, Pacific Jazz PJ-10096/ST-20096, produced by Richard Bock, the first recording of it, with the composer on piano; Fischer's first Afro-Cuban album; later versions by Cal Tjader (Soul Burst, 1966) and Fischer's Salsa Picante (1978) (Wikipedia, MusicBrainz); video: "Provided to YouTube by Universal Music Group", Manteca!, the same take
 
 # bar | chord | scale
 

@@ -4,7 +4,10 @@ style: Medium swing
 key: Cm
 form: ABC, 30 bars
 source: The New Real Book, Vol. 1
+recording: Dave Frishberg; The Dave Frishberg Songbook Volume No. 2; Omnisound; 1983
+youtube: WB_qZWor_gY
 # analysis: 2026-10-19, rules v2; C minor
+# recording: recorded December 1982, Mountain Sound, Pennsylvania, Frishberg (vocal, piano) with Steve Gilmore and Bill Goodwin, Omnisound N-1051, the first recording of it (words by Samantha Frishberg), the composer singing; reissued on Dave Frishberg Classics (Concord, 1991) (MusicBrainz, library catalogues); video: "Provided to YouTube by Universal Music Group", Dave Frishberg Classics, the same take
 
 # the book's 13sus chords are written 9sus4 (Bb13sus → Bb9sus4); its Cm(add9) as Cm
 # the head is played three times (three verses): the 5-bar Eb pedal interlude returns to A; 3rd time, B's last bar goes to the coda

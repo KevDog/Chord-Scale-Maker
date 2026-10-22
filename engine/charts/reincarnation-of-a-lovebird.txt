@@ -4,7 +4,10 @@ style: Medium up
 key: F#m
 form: ABCDE, 66 bars
 source: The New Real Book, Vol. 1
+recording: Charles Mingus; The Clown; Atlantic; 1957
+youtube: owaJorHIuFo
 # analysis: 2026-10-19, rules v2; F# minor
+# recording: recorded 1957-03-12, NYC, Charles Mingus with Jimmy Knepper, Shafi Hadi (Curtis Porter), Wade Legge, Dannie Richmond, the first issued recording of it (a 1957-02-13 take is unissued), Atlantic 1260, released September 1957; sources: jazzdisco, Wikipedia; video: "Provided to YouTube by Rhino Atlantic", The Clown, the same take
 # book: Medium-up swing; letter C is a half-time ballad (half note = quarter), letter D back to the original tempo
 # book: the whole chart (A to E) is in repeats; Fine at the end of E; last time: molto rit. in the last two bars
 

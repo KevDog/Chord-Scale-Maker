@@ -5,7 +5,10 @@ style: Medium swing
 key: F
 form: ABC, 32 bars
 source: The New Real Book, Vol. 1
+recording: Benny Goodman; B.G. in Hi-Fi; Capitol; 1955
+youtube: 5k72_aDpbsw
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded November 1954, Riverside Studios, New York, Benny Goodman with Mel Powell, Ruby Braff, Al Klink, George Duvivier, Bobby Donaldson and others, Capitol W-565; swing-era standard (1941) → Goodman's band, whose instrumental was the No. 1 hit of 1942 (Okeh 6590, recorded 1942-01-23 per FAU's archive, Columbia 38062); that take's first LP could not be confirmed, so Goodman's own well-documented LP-era remake, with Mel Powell again on piano; sources: Discogs, Wikipedia, FAU Recorded Sound Archives; video: "Provided to YouTube by Universal Music Group", B. G. In Hi Fi, the same take
 
 # the book's A is two 8-bar A's (AABA); its C is the last A
 # bar | chord

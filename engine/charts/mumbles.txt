@@ -5,7 +5,10 @@ style: Blues
 key: Eb
 form: A, 12 bars
 source: Colorado Cookbook, p. 144
+recording: Oscar Peterson Trio + One; Oscar Peterson Trio + One: Clark Terry; Mercury; 1964
+youtube: FxrTl7Hqt1Q
 # analysis: 2026-10-22, rules v2; Eb, blues
+# recording: recorded 1964-08-17, NYC, Clark Terry (vocal) with Oscar Peterson, Ray Brown, Ed Thigpen, Mercury MG-20975/SR-60975, also a single (Mercury 72342, with Incoherent Blues), the first recording of it (jazzdisco, MusicBrainz); video: "Provided to YouTube by Universal Music Group", Oscar Peterson's Finest Hour, the same 1964 take (one take only)
 
 # bar | chord | scale
 

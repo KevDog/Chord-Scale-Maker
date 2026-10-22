@@ -5,7 +5,9 @@ style: Latin
 key: F
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 202
+recording: Nat King Cole; Ballads of the Day; Capitol; 1956
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded 1954-07-27, Capitol Studios, Hollywood, Nat King Cole with Nelson Riddle's orchestra, the hit vocal (No. 10 US, No. 2 UK); first issued on 78 and 45 (Capitol 2897, with It's Crazy), first LP Ballads of the Day (Capitol T-680, April 1956); film theme (Modern Times, 1936) → Cole's reading as the reference, though the chart is a samba and follows no named version; no official upload of the 1954 take found (the Nat King Cole Story video is the 1961 remake); sources: Wikipedia, Discogs
 
 # bar | chord | scale
 

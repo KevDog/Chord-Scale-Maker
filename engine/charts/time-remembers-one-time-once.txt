@@ -5,7 +5,10 @@ key: F#m
 time: 3/4
 form: AA, 38 bars
 source: The New Real Book, Vol. 1
+recording: Denny Zeitlin & Charlie Haden; Time Remembers One Time Once; ECM; 1983
+youtube: WT3STutYzL4
 # analysis: 2026-10-19, rules v2; F# minor
+# recording: recorded live July 1981, Keystone Korner, San Francisco, piano–bass duo, ECM 1239, released April 1983, the title track and the first recording of it (Wikipedia, MusicBrainz); video: "Provided to YouTube by Universal Music Group", Time Remembers One Time Once, the same take (not the 2012 Wherever You Are trio version)
 # form: A (8 bars) with a 1st ending of 8 bars and a 2nd ending of 14 bars
 # the book: "Chords in parentheses are used for solos."
 

@@ -4,7 +4,10 @@ style: Up
 key: Bb
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 214
+recording: The Clark Terry Spacemen; Squeeze Me!; Chiaroscuro; 1989
+youtube: 4oRpWmZV4UE
 # analysis: 2026-10-19, rules v2; Bb
+# recording: recorded 1989-02-13, Van Gelder Studio, Englewood Cliffs, with Virgil Jones, Al Grey, Britt Woodman, Phil Woods, Red Holloway, Haywood Henry, Chiaroscuro CR(D)309, the earliest documented recording of it, the composer leading (Wikipedia, MusicBrainz); video: "Provided to YouTube by Music Video Distributors", The Clark Terry Spacemen (Chiaroscuro), the same take (6:25)
 
 # bar | chord | scale
 

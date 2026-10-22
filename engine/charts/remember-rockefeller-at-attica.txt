@@ -4,7 +4,10 @@ style: Medium up
 key: Db
 form: ABC, 51 bars
 source: The New Real Book, Vol. 1
+recording: Charles Mingus; Changes One; Atlantic; 1975
+youtube: IM6vIURo5OI
 # analysis: 2026-10-19, rules v2; Db
+# recording: recorded 1974-12-27/28/30, Atlantic Studios, NYC, Charles Mingus with Jack Walrath, George Adams, Don Pullen, Dannie Richmond, the first recording of it, Atlantic SD 1677, released October 1975; sources: jazzdisco, Wikipedia, MusicBrainz; video: "Provided to YouTube by Rhino Atlantic", Changes One, the same take (not the 1975 Bremen live version)
 # book: Medium-up swing (in 4); 2-beat feel from letter B, the original feel again at B bar 9
 # book: the whole chart is in repeats; the last bar (51) is piano only every chorus, with a fermata the last time
 
