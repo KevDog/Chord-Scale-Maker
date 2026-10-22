@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test'
-import { chooseInterface, chooseSheet, expect, pickOption, test } from './fixtures'
+import { chooseInterface, chooseSheet, expect, openEditor, pickOption, test } from './fixtures'
 
 const SONG = '/song/rhythm-changes'
 const lines = (page: Page) => page.locator('svg[aria-label^="Bars:"]')
@@ -86,4 +86,18 @@ test('a chart without alternates has no Changes toggle (#215)', async ({ page })
   await expect(lines(page).first()).toBeVisible()
   await expect(changesGroup(page)).toHaveCount(0)
   await expect(otherToggle(page)).toHaveCount(0)
+})
+
+test('a bar of long alternate chords widens to keep their names apart (#475)', async ({ page }) => {
+  await page.setViewportSize({ width: 900, height: 1000 }) // four bars a line, a beat narrower than these names
+  await page.goto('/song?new=1')
+  await openEditor(page)
+  await page.getByLabel('Chart text').fill('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | C\nalt 1 | C7#9b13\nalt 1 | F#7#11\nalt 1 | Bm7b5/F\nalt 1 | E7alt\n2 | F\n3 | G7\n4 | C\n')
+  await expect(lines(page).first()).toHaveAttribute('aria-label', /^Bars: C \| F \|/)
+  const names = otherLine(page).locator('[data-chord]')
+  await expect(names).toHaveCount(4)
+  await expect(async () => {
+    const boxes = await names.evaluateAll((els) => els.map((e) => e.getBoundingClientRect()).map((r) => ({ left: r.left, right: r.right })))
+    for (let i = 1; i < boxes.length; i++) expect(boxes[i]!.left).toBeGreaterThanOrEqual(boxes[i - 1]!.right)
+  }).toPass({ timeout: 10_000 })
 })

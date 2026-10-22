@@ -7,6 +7,7 @@
         v-for="o in otherMarks"
         :key="o.key"
         :data-chord="o.written"
+        :data-other-name="o.key"
         class="absolute bottom-0 text-xs/4 font-medium whitespace-nowrap text-zinc-600 dark:text-zinc-400 print:text-[0.6rem]/3 print:text-neutral-700"
         :style="{ left: `${o.x * 100}%` }"
       ><ChordSymbol v-if="o.tokens" :tokens="o.tokens" /><template v-else>{{ o.written }}</template></span>
@@ -278,7 +279,7 @@ import {
   sheetScale,
 } from '@chord-scale-maker/engine'
 import { choiceId, hexChoiceRows, pickFooter, pickHeader } from '~/utils/chordPicks'
-import { drawChangesLine, type NamedBeat } from '~/utils/changesDrawing'
+import { drawChangesLine, mergeNames, type NamedBeat } from '~/utils/changesDrawing'
 import { DEFAULT_VIEW, SCALE_VIEW } from '~/utils/scaleView'
 import type { SheetChordEdit, SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
 
@@ -357,7 +358,7 @@ const marks = computed(() => {
 /** the other set's chords in this line's bars (#215), over their beats; already written for the part, so drawn as they are */
 const otherMarks = computed(() =>
   props.line.bars.flatMap((bar, b) =>
-    (props.others?.get(barKey(bar.at)) ?? []).map((c, k) => ({ key: `${b}-${k}`, written: c.written, tokens: chordTokensOrNull(CONCERT, c.written), x: Math.max(0, (xs.value[b]?.[c.beat] ?? 0) - 0.012) })),
+    (props.others?.get(barKey(bar.at)) ?? []).map((c, k) => ({ key: `${b}-${k}`, barIndex: b, beat: c.beat, written: c.written, tokens: chordTokensOrNull(CONCERT, c.written), x: Math.max(0, (xs.value[b]?.[c.beat] ?? 0) - 0.012) })),
   ),
 )
 /** the marks that print a pentatonic label (#255) */
@@ -506,14 +507,23 @@ const hasGuideLine = computed(() => !props.arpeggio && props.line.bars.some((b) 
 /**
  * each bar's chord names (and the marker or key area over its first), their widths as fractions of the line, which
  * widen the bars they crowd: measured at their full size, against the line as drawn or as printed (narrower, at
- * PRINT_LINE px with screen-size names), whichever is tighter; undefined while the line isn't laid out
+ * PRINT_LINE px with screen-size names), whichever is tighter; undefined while the line isn't laid out. With the other
+ * set's line over them (#215), its names too: each beat as wide as the wider of the two (mergeNames)
  */
 function measureNames(): NamedBeat[][] | undefined {
   const width = Math.min(el.value?.clientWidth ?? 0, PRINT_LINE)
   if (!width || !root.value) return undefined
   const px = new Map(Array.from(root.value.querySelectorAll<HTMLElement>('[data-name]'), (n) => [n.dataset.name, n.offsetWidth]))
-  return props.line.bars.map((_, b) => marks.value.filter((m) => m.barIndex === b && !m.slot).map((m) => ({ beat: m.beat, width: ((px.get(m.key) ?? 0) + NAME_GAP) / width })))
+  const otherPx = new Map(Array.from(root.value.querySelectorAll<HTMLElement>('[data-other-name]'), (n) => [n.dataset.otherName, n.offsetWidth]))
+  const named = (w: number | undefined): number => ((w ?? 0) + NAME_GAP) / width
+  return props.line.bars.map((_, b) => mergeNames(
+    marks.value.filter((m) => m.barIndex === b && !m.slot).map((m) => ({ beat: m.beat, width: named(px.get(m.key)) })),
+    otherMarks.value.filter((o) => o.barIndex === b).map((o) => ({ beat: o.beat, width: named(otherPx.get(o.key)) })),
+  ))
 }
+/** each bar's chord names' scales, by their index in the bar (shrunk), from the scales of its merged beats */
+const nameScalesOf = (names: readonly (readonly NamedBeat[])[] | undefined, scales: readonly (readonly number[])[]): number[][] =>
+  props.line.bars.map((_, b) => marks.value.filter((m) => m.barIndex === b && !m.slot).map((m) => scales[b]?.[names?.[b]?.findIndex((n) => n.beat === m.beat) ?? -1] ?? 1))
 const PRINT_LINE = 800 // a printed line (about 700px) with the print's smaller names (text-sm: 14/16), in screen px
 const NAME_GAP = 8 // px between a name and the next
 const key = (names: readonly (readonly NamedBeat[])[] | undefined): string => JSON.stringify(names?.map((b) => b.map((c) => [c.beat, +c.width.toFixed(3)])))
@@ -530,7 +540,7 @@ async function draw(): Promise<void> {
     const layout = drawChangesLine(vf, el.value, props.line, { first: props.first, barsPerLine: props.barsPerLine, ...(props.clef ? { clef: props.clef } : {}), ...(props.arpeggio ? { arpeggio: true } : {}), ...(props.lineName ? { lineName: props.lineName } : {}), ...(names ? { names } : {}) })
     xs.value = layout.xs
     ends.value = layout.ends
-    nameScales.value = layout.scales
+    nameScales.value = nameScalesOf(names, layout.scales)
     const breakAt = props.line.bars[layout.fits]
     if (breakAt) emit('overfull', barKey(breakAt.at))
     drawError.value = null
@@ -557,5 +567,5 @@ onBeforeUnmount(() => {
   observer?.disconnect()
   clearTimeout(resized)
 })
-watch(() => [props.line, props.first, props.barsPerLine, props.clef, props.arpeggio, props.lineName], () => nextTick(draw))
+watch(() => [props.line, props.first, props.barsPerLine, props.clef, props.arpeggio, props.lineName, props.others], () => nextTick(draw))
 </script>
