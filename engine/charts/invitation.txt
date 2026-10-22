@@ -5,7 +5,10 @@ style: Mixed
 key: Ebm
 form: ABCDEF, 48 bars
 source: Colorado Cookbook, p. 110
+recording: John Coltrane; Standard Coltrane; Prestige; 1962
+youtube: 6nsJtrTpewU
 # analysis: 2026-10-19, rules v2; Eb minor
+# recording: recorded 1958-07-11, Van Gelder Studio, Hackensack, with Wilbur Harden, Red Garland, Paul Chambers, Jimmy Cobb, PRLP 7243, released 1962; film song (1952) → the best-known instrumental jazz reading (a ballad, where the chart mixes Latin and swing); sources: jazzdisco, Wikipedia; video: "Provided to YouTube by Universal Music Group", Standard Coltrane, the same take
 
 # bar | chord | scale
 

@@ -5,7 +5,10 @@ style: Medium
 key: F
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 46
+recording: Miles Davis; 'Round About Midnight; Columbia; 1957
+youtube: CieM9gurwZ4
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded 1956-06-05, Columbia 30th Street Studio, New York, with John Coltrane, Red Garland, Paul Chambers, Philly Joe Jones, CL 949, released 1957-03-04; songbook standard (1926) → Miles's reading is the jazz reference; sources: jazzdisco, Wikipedia; video: "Provided to YouTube by Columbia/Legacy", 'Round About Midnight, the same take (not take 1 or the live versions)
 
 # bar | chord | scale
 

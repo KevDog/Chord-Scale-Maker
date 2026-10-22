@@ -4,7 +4,10 @@ style: Medium
 key: Db
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 225
+recording: Chick Webb; The Immortal Chick Webb: Stompin' at the Savoy; Columbia; 1967
+youtube: kS060bisAXs
 # analysis: 2026-10-19, rules v2; Db
+# recording: recorded 1934-05-18, NYC, Chick Webb's Savoy Orchestra with Edgar Sampson (alto sax, composer-arranger), Mario Bauzá, Taft Jordan, Sandy Williams, John Kirby, matrix W152740 (one take only); first issued on 78 (Columbia 2926-D), first LP Columbia CL 2639 (1967; no earlier LP found); the composer's own band's first recording, over Benny Goodman's 1936 Victor hit; sources: DAHR, Discogs, MusicBrainz, Wikipedia; video: "Provided to YouTube by Columbia/Legacy", The World Of Swing, the same take
 
 # bar | chord | scale
 

@@ -4,7 +4,9 @@ style: Up
 key: F
 form: AA, 32 bars
 source: Colorado Cookbook, p. 118
+recording: Charlie Parker; Charlie Parker with Strings; Mercury; 1950
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded 1949-11-30, Reeves Sound Studios, New York, with Jimmy Carroll's orchestra (Mitch Miller, Stan Freeman, Ray Brown, Buddy Rich), master 319-5, first issued on 78 (Mercury 11036, with Everything Happens to Me), first LP 1950 (10", MGC-101); songbook standard → the jazz reading players know; sources: jazzdisco; no video: the master's only upload is from a European reissue label
 
 # bar | chord | scale
 

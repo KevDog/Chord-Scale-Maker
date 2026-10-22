@@ -4,7 +4,10 @@ style: Ballad
 key: C
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 122
+recording: Clifford Brown; Clifford Brown with Strings; EmArcy; 1955
+youtube: -0aCplMFL1A
 # analysis: 2026-10-19, rules v2; C
+# recording: recorded 1955-01-19, Fine Sound, New York, Neal Hefti arranging and conducting, with Richie Powell, George Morrow, Max Roach, master 11122-8, MG 36005; songbook standard (1944 film) → over Charlie Parker with Strings (1950 Mercury 78), whose first LP is unclear in jazzdisco; sources: microgroove.jp, Wikipedia, jazzdisco; video: "Provided to YouTube by Universal Music Group", Brownie: The Complete EmArcy Recordings, the same take
 
 # bar | chord | scale
 # the lead sheet offers Bm7 E7 Am7 D7 over bar 4 and Am7 D7 Gm7 C7 over bar 8 as turnarounds;

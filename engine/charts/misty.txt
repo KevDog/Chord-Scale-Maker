@@ -4,7 +4,10 @@ style: Medium Ballad
 key: Eb
 form: AABA, 32 bars
 source: The New Real Book, Vol. 1
+recording: Erroll Garner; Contrasts; EmArcy; 1954
+youtube: UOLEEkYO4MA
 # analysis: 2026-10-19, rules v2; Eb
+# recording: recorded 1954-07-27, Universal Recording, Chicago, with Wyatt Ruther and Eugene "Fats" Heard, master 10845, the composer's first recording; first issued as a single in October 1954, LP December 1954 (MG 36001); sources: microgroove.jp, Wikipedia; video: "Provided to YouTube by Universal Music Group", The Original Misty (the CD of Contrasts), the same take
 # Bars 17, 19 and 32: the book's parenthesised chords are kept. Bars 5, 13 and 29: EbMaj7 may be played as Gm7.
 
 # bar | chord | scale

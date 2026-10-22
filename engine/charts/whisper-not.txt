@@ -4,7 +4,10 @@ style: Medium
 key: Cm
 form: AABC, 32 bars
 source: Colorado Cookbook, p. 269
+recording: Benny Golson; Benny Golson's New York Scene; Contemporary; 1958
+youtube: M5mpzcVq_CY
 # analysis: 2026-10-19, rules v2; C minor
+# recording: recorded 1957-10-14/17, NYC, Golson with Art Farmer, Wynton Kelly, Paul Chambers, Charlie Persip, Contemporary C3552, the composer's first recording under his own name (released 1958 per jazzdisco; MusicBrainz 1957); first recorded by Dizzy Gillespie's big band live at Birdland, 1956-12-01, Golson in the saxes (issued much later), then the Lee Morgan Sextet, 1956-12-02, in his arrangement (jazzdisco, Wikipedia); video: "Provided to YouTube by Universal Music Group", Benny Golson's New York Scene, the same take
 
 # bar | chord | scale
 

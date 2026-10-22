@@ -7,7 +7,10 @@ key: G#m
 form: AB, 24 bars
 context: modal
 source: The New Real Book, Vol. 1
+recording: Joe Henderson; Power to the People; Milestone; 1969
+youtube: JoHqlxQ076M
 # analysis: 2026-10-19, rules v2; G# minor, modal
+# recording: recorded 1969-05-29, Plaza Sound Studios, NYC, Henderson with Herbie Hancock, Ron Carter, Jack DeJohnette, the first recording of it, Milestone MSP 9024; he later named a 1977 album after it (jazzdisco, Wikipedia); video: Joe Henderson's official channel, "Official Audio", Power to the People, the same take
 
 # the head is played twice before and after the solos; Fine at the end of B
 # bar | chord

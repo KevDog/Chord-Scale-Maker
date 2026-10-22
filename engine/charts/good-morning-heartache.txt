@@ -4,7 +4,10 @@ style: Medium ballad
 key: F
 form: AABA, 32 bars
 source: The New Real Book, Vol. 1
+recording: Billie Holiday; The Lady Sings; Decca; 1956
+youtube: krZnoHuyCE8
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded 1946-01-22, NYC, Billie Holiday with Bill Stegmeyer's Orchestra (Joe Guy, Tiny Grimes, Sidney Catlett), produced by Milt Gabler; first issued on 78 (Decca 23673, with No Good Man), first LP Decca DL 8215 (1956); written for Holiday → hers is the reference; sources: jazzdisco; video: "Provided to YouTube by Universal Music Group", The Lady Sings, the same take
 
 # bar | chord
 

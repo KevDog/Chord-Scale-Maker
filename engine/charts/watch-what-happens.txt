@@ -5,7 +5,10 @@ style: Latin
 key: Eb
 form: AABC, 36 bars
 source: Colorado Cookbook, p. 259
+recording: Wes Montgomery; A Day in the Life; A&M; 1967
+youtube: GTKBrfkcwok
 # analysis: 2026-10-19, rules v2; Eb
+# recording: recorded June 1967, Van Gelder Studio, Englewood Cliffs, with Don Sebesky's orchestra, produced by Creed Taylor, A&M LP-2001; film song (The Umbrellas of Cherbourg, 1964) → Wes's bossa reading, the most familiar jazz version; sources: jazzdisco, MusicBrainz; video: "Provided to YouTube by Universal Music Group", A Day In The Life, the same take
 
 # bar | chord | scale
 

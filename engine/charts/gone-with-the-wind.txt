@@ -4,7 +4,10 @@ style: Medium swing
 key: Eb
 form: AB, 32 bars
 source: The New Real Book, Vol. 1
+recording: Wes Montgomery; The Incredible Jazz Guitar of Wes Montgomery; Riverside; 1960
+youtube: 9hNqzDp5MYE
 # analysis: 2026-10-19, rules v2; Eb
+# recording: recorded 1960-01-26/28, Reeves Sound Studios, NYC, Wes Montgomery with Tommy Flanagan, Percy Heath, Albert Heath, Riverside RLP 12-320; songbook standard (1937) → Wes's quartet reading as the jazz reference; sources: jazzdisco, Wikipedia; video: Wes Montgomery's official channel, "Official Audio", from The Incredible Jazz Guitar, the same take
 
 # bar | chord
 

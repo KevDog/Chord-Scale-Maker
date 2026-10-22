@@ -4,7 +4,10 @@ style: Medium up
 key: Bb
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 243
+recording: Miles Davis Quintet; Miles: The New Miles Davis Quintet; Prestige; 1956
+youtube: 4ZBCxqtZP2o
 # analysis: 2026-10-19, rules v2; Bb
+# recording: recorded 1955-11-16, Van Gelder Studio, Hackensack, Miles Davis with John Coltrane, Red Garland, Paul Chambers, Philly Joe Jones, Prestige PRLP 7014, the first quintet's first album; songbook standard (1936) → Miles's reading as the jazz reference, over Ahmad Jamal's; sources: jazzdisco; video: Miles Davis's official channel, "Official Visualizer", from Miles: The New Miles Davis Quintet, the same take
 
 # bar | chord | scale
 # the "standard" solo changes; the lead sheet offers Fm7 Bb7 | Em7 A7 | Ebm7 Ab7 | Dm7 G7 for bars 1–4

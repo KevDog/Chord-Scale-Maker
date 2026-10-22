@@ -4,7 +4,10 @@ style: Medium swing
 key: F
 form: ABC, 40 bars
 source: The New Real Book, Vol. 1
+recording: Bill Evans Trio; Portrait in Jazz; Riverside; 1960
+youtube: ZF9-NjhwgU4
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded 1959-12-28, Reeves Sound Studios, NYC, Bill Evans with Scott LaFaro and Paul Motian, Riverside RLP 12-315; songbook standard (1957; Sinatra's hit) → Evans's trio reading as the jazz reference; sources: jazzdisco, MusicBrainz; video: "Provided to YouTube by Universal Music Group", Portrait In Jazz, "Witch Craft", the same take
 # the head is played in 2 (letter B may be in 4); solos in 4
 
 # bar | chord

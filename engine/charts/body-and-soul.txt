@@ -4,7 +4,10 @@ style: Ballad
 key: Db
 form: AABC
 source: Colorado Cookbook, p. 41
+recording: Coleman Hawkins; Body and Soul: A Jazz Autobiography; RCA Victor; 1964
+youtube: LuNrVHCBSjE
 # analysis: 2026-10-19, rules v2; Db
+# recording: recorded 1939-10-11, New York, Coleman Hawkins and His Orchestra (Gene Rodgers, piano), matrix BS-042936-1; first issued on 78 (Bluebird B-10523, with Fine Dinner), LP 1964 (LPV-501, the only LP issue DAHR lists for the matrix); songbook standard → the jazz reference (National Recording Registry, 2004); sources: DAHR, Wikipedia; video: "Provided to YouTube by RCA Victor - Victor Jazz", Body & Soul, the 1939 take
 
 # bar | chord | scale
 

@@ -5,7 +5,10 @@ style: Mixed
 key: G
 form: AB, 24 bars
 source: Colorado Cookbook, p. 42
+recording: Cedar Walton; Eastern Rebellion; Timeless; 1976
+youtube: 3dX1QwyjvMg
 # analysis: 2026-10-19, rules v2; G
+# recording: recorded 1975-12-10, C.I. Recording, NYC, Walton with George Coleman, Sam Jones, Billy Higgins, Timeless SJP 101, the first recording of it (Wikipedia, jazzdisco); video: "Provided to YouTube by The Orchard Enterprises", Eastern Rebellion (Timeless), the same take
 
 # bar | chord | scale
 

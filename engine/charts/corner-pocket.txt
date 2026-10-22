@@ -6,7 +6,10 @@ style: Medium
 key: Bb
 form: AABA
 source: Colorado Cookbook, p. 55
+recording: Count Basie and His Orchestra; April in Paris; Verve; 1957
+youtube: bTcmPGdDecw
 # analysis: 2026-10-19, rules v2; Bb
+# recording: recorded 1955-07-26, Fine Sound, NYC, with the composer Freddie Green on guitar, Verve MGV 8012, the first recording of it as far as the sources show (Wikipedia); video: "Provided to YouTube by Universal Music Group", April In Paris, the same take (not the second take, a CD bonus)
 
 # bar | chord | scale
 

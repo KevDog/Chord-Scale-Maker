@@ -5,7 +5,10 @@ style: Latin
 key: Ab
 form: AB, 32 bars
 source: Colorado Cookbook, p. 51
+recording: Lee Morgan; Cornbread; Blue Note; 1967
+youtube: uRjshy_n_yE
 # analysis: 2026-10-19, rules v2; Ab
+# recording: recorded 1965-09-18, Van Gelder Studio, Englewood Cliffs (Hank Mobley, Herbie Hancock, Larry Ridley, Billy Higgins; Jackie McLean sits out), the first recording of it, BLP 4222 (jazzdisco); video: "Provided to YouTube by Universal Music Group", Cornbread, the same take
 
 # bar | chord | scale
 
