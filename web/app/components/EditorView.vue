@@ -175,7 +175,8 @@
                 <UiButton v-if="!editor.fatal.value" outline title="Show only the sheet music (Esc to leave)" @click="after(enterFocus)"><ArrowsPointingOutIcon data-slot="icon" />Focus</UiButton>
               </template>
               <template v-if="place === 'rail'">
-                <ToggleButton v-if="metronomeOn && !editor.fatal.value" :model-value="click.shown.value" :title="CLICK_TITLE" @update:model-value="$event ? click.show() : click.hide()"><MusicalNoteIcon data-slot="icon" />Click</ToggleButton>
+                <!-- the icon alone: the rail's actions row has no room for a word more (CI's e2e at 1440 wraps it to a third row) -->
+                <ToggleButton v-if="metronomeOn && !editor.fatal.value" :model-value="click.shown.value" aria-label="Click" :title="CLICK_TITLE" @update:model-value="$event ? click.show() : click.hide()"><MusicalNoteIcon data-slot="icon" /></ToggleButton>
                 <UiButton v-if="!editor.fatal.value" outline color="note" title="Print, or save a PDF from the print dialog" @click="print"><PrinterIcon data-slot="icon" />Print</UiButton>
                 <MoreMenu :items="moreItems" @action="onMore" />
               </template>
