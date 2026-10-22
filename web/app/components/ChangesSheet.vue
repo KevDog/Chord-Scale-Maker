@@ -36,6 +36,9 @@
             :overlay="overlay"
             :counted="counted"
             :others="others"
+            :alt-editing="altEditing"
+            :alt-open="altOpen"
+            :alt-focus="altFocus"
             @tap="emit('tap', $event)"
             @pick="(kind, run, value) => emit('pick', kind, run, value)"
             @edit="emit('edit', $event)"
@@ -47,6 +50,7 @@
             @dialog="(kind, section, bar) => emit('dialog', kind, section, bar)"
             @add-bar="emit('addBar', $event)"
             @overfull="breakAt"
+            @alt="onAlt"
           />
         </div>
       </template>
@@ -63,7 +67,7 @@
 import { SHEET_PAGED } from '~/utils/sheetPaged'
 import { PlusIcon, Square2StackIcon } from '@heroicons/vue/16/solid'
 import type { SheetChordEdit, SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
-import { type Approach, breakLines, buildChanges, otherChords, changesLinesPerPage, type ChangesSet, type ChartDoc, type ChordAt, type ChordPreview, chunk, type GridPos, isArpeggioPattern, pageSubtitle, type OverlayPlan, type Part, type PentatonicPlan, type PickKind, type ScaleView, showHexatonics, showPentatonics, showQuartals, type ChangesLineChoice } from '@chord-scale-maker/engine'
+import { type Approach, barKey, breakLines, buildChanges, otherChords, changesLinesPerPage, type ChangesSet, type ChartDoc, type ChordAt, type ChordPreview, chunk, type GridPos, isArpeggioPattern, pageSubtitle, type OverlayPlan, type Part, type PentatonicPlan, type PickKind, type ScaleView, showHexatonics, showPentatonics, showQuartals, type ChangesLineChoice } from '@chord-scale-maker/engine'
 
 /** the Changes sheet (docs/plan-changes.md): the chart as a study lead sheet, 4 bars a line (2 on phones), fewer where the chords' names don't fit */
 const { shows } = useInterface()
@@ -89,6 +93,7 @@ const props = defineProps<{
   source?: ChartDoc // the chart the editor writes, with its alt rows, line for line doc (#469); undefined: doc
   set?: ChangesSet // the set doc plays; undefined: standard
   otherDoc?: ChartDoc | null // the other set of a chart with alternates (#215), its chords drawn small above the bars; null: none
+  altEditing?: boolean // the sheet editor in Standard (#469): each written bar's alternate is typed on the small line
 }>()
 const emit = defineEmits<{
   tap: [chord: SheetChordEdit]
@@ -123,6 +128,21 @@ function breakAt(at: string): void {
   if (!breaks.value.has(at)) breaks.value = new Set([...breaks.value, at])
 }
 const sheet = computed(() => ({ ...built.value, lines: showQuartals(showHexatonics(showPentatonics(breakLines(built.value.lines, breaks.value)))) }))
+/**
+ * the alternate line while editing in Standard (#469): one bar's field open at a time; Tab and ⇧Tab go along the
+ * written bars (a copy: section's have none), off either end the field closes with focus on its button
+ */
+const altOpen = ref<string | null>(null)
+const altFocus = ref<{ key: string; n: number } | null>(null)
+const altKeys = computed(() => (props.altEditing ? [...new Set(sheet.value.lines.flatMap((l) => l.bars).filter((b) => !b.repeatOf).map((b) => barKey(b.at)))] : []))
+watch(() => props.altEditing, (on) => on || (altOpen.value = null))
+function onAlt(key: string, then: 'edit' | 'next' | 'prev' | 'close'): void {
+  if (then === 'edit') return void (altOpen.value = key)
+  if (altOpen.value !== key) return // a field closing as another opens
+  const to = then === 'close' ? undefined : altKeys.value[altKeys.value.indexOf(key) + (then === 'next' ? 1 : -1)]
+  altOpen.value = to ?? null
+  if (!to && then !== 'close') altFocus.value = { key, n: (altFocus.value?.n ?? 0) + 1 }
+}
 /** the plan counts: a path, the chord basis or a pick (the engine's post-pass rule) */
 const pentatonic = computed((): PentatonicPlan | null => (props.overlay?.kind === 'pentatonic' ? props.overlay : null))
 const counted = computed(() => !!pentatonic.value && (pentatonic.value.counts || pentatonic.value.basis === 'chord' || built.value.lines.some((l) => l.bars.some((b) => b.chords.some((c) => c.pentatonic?.picked)))))

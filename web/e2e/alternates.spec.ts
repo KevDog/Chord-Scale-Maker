@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test'
-import { chooseInterface, chooseSheet, expect, inControls, moreAction, openEditor, pickOption, sheetChord, test, typeChord } from './fixtures'
+import { chooseInterface, chooseSheet, expect, inControls, moreAction, openEditor, pickOption, sheetChord, test, typeChord, writeChart } from './fixtures'
 
 const SONG = '/song/rhythm-changes'
 const lines = (page: Page) => page.locator('svg[aria-label^="Bars:"]')
@@ -194,4 +194,53 @@ test('at a phone width the other set\'s names do not overlap (#215)', async ({ p
     ns.map((n) => n.getBoundingClientRect()).sort((a, b) => a.left - b.left).map((r) => ({ left: r.left, right: r.right })))
   expect(boxes.length).toBeGreaterThan(1)
   boxes.slice(1).forEach((b, i) => expect(b.left).toBeGreaterThanOrEqual(boxes[i]!.right - 0.5))
+})
+
+test.describe('the alternate line, typed bar by bar (#469)', () => {
+  const PLAIN = 'title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Em7\n2 | G7\n3 | CMaj7\n4 | A7\n'
+  const target = (page: Page, section: string, bar: number) => page.getByRole('button', { name: new RegExp(`^Alternate for ${section} bar ${bar}(:|$)`) })
+  const altField = (page: Page, section: string, bar: number) => page.getByRole('combobox', { name: `Alternate for ${section} bar ${bar}`, exact: true })
+
+  test('on a chart with none, the first alternate typed brings the Changes control; cleared, it goes', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 })
+    await writeChart(page, PLAIN)
+    await expect(changesGroup(page)).toHaveCount(0)
+    await expect(target(page, 'A', 2)).toHaveText('+ alt')
+    await target(page, 'A', 2).click()
+    await page.keyboard.type('Abm7')
+    await page.keyboard.press('Enter')
+    await expect(changesGroup(page)).toBeVisible()
+    await expect(target(page, 'A', 2)).toHaveAccessibleName('Alternate for A bar 2: Abm7')
+    await expect.poll(() => source(page)).toMatch(/\nalt 2 \| Abm7\n/)
+
+    await target(page, 'A', 2).click()
+    await page.keyboard.press('Tab')
+    await expect(altField(page, 'A', 3)).toBeFocused()
+    await page.keyboard.press('Shift+Tab')
+    await expect(altField(page, 'A', 2)).toBeFocused()
+    await expect(altField(page, 'A', 2)).toHaveValue('Abm7')
+    await altField(page, 'A', 2).fill('')
+    await page.keyboard.press('Enter')
+    await expect(changesGroup(page)).toHaveCount(0)
+    await expect(target(page, 'A', 2)).toHaveText('+ alt')
+    expect(await source(page)).not.toMatch(/\nalt /)
+  })
+
+  test('the targets show with Other changes off; none over a copy: section, none in Alternate', async ({ page }) => {
+    await editCopy(page)
+    await otherToggle(page).click()
+    await expect(otherToggle(page)).toHaveAttribute('aria-pressed', 'false')
+    await expect(target(page, 'A1', 1)).toHaveAccessibleName('Alternate for A1 bar 1: Bb6 Bdim7')
+    await expect(target(page, 'A2', 1)).toBeVisible()
+    await expect(target(page, 'A3', 1)).toHaveCount(0) // A3 is a copy: of A2
+    await play(page, 'Alternate')
+    await expect(page.getByRole('button', { name: /^Alternate for / })).toHaveCount(0)
+  })
+
+  test('on a phone there are no targets', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await writeChart(page, PLAIN)
+    await expect(sheetChord(page, 'G7', 'A', 2)).toBeAttached()
+    await expect(page.getByRole('button', { name: /^Alternate for / })).toHaveCount(0)
+  })
 })

@@ -59,6 +59,14 @@ for (const theme of ['light', 'dark'] as const) {
       await expect(page.getByRole('group', { name: 'Changes', exact: true })).toBeVisible()
       await expect(page.locator('[data-slot="other-changes"]').first()).toBeVisible()
       await expectAccessible(page)
+      // editing: the alternate line's targets (#469), and one's field open
+      await page.getByRole('button', { name: 'Edit', exact: true }).click()
+      await expect(page.getByRole('button', { name: 'Alternate for A1 bar 3', exact: true })).toBeVisible()
+      await expectAccessible(page)
+      await page.getByRole('button', { name: 'Alternate for A1 bar 3', exact: true }).click()
+      await page.keyboard.type('D')
+      await expect(page.getByRole('combobox', { name: 'Alternate for A1 bar 3' })).toBeFocused()
+      await expectAccessible(page)
     })
 
     test('a song’s version picker open, with your chart under Mine (#425)', async ({ page }) => {

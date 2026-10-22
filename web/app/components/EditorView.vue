@@ -207,6 +207,7 @@
             :source="editor.doc.value"
             :set="mainSet"
             :other-doc="otherDoc"
+            :alt-editing="altEditing"
             :title="sheetTitle"
             :heading-level="1"
             :subtitle="sheetSubtitle"
@@ -438,8 +439,8 @@ const playedDoc = computed(() => (alternatesOn.value ? changesFor(editor.doc.val
 /** the doc the Changes sheet draws and reads: the set played; Standard, the chart itself (its layout skips alt rows) */
 const sheetDoc = computed(() => (mainSet.value === 'alternate' ? playedDoc.value : editor.doc.value))
 const playedRows = computed(() => (alternatesOn.value ? expandRows(playedDoc.value).value : editor.rows.value))
-/** the other set, for the small line; null while it's hidden */
-const otherDoc = computed(() => (alternatesOn.value && changesSet.shown.value ? changesFor(editor.doc.value, mainSet.value === 'standard' ? 'alternate' : 'standard') : null))
+/** the other set, for the small line; null while it's hidden (typing alternates, altEditing, shows it) or there's none */
+const otherDoc = computed(() => (alternatesOn.value && (changesSet.shown.value || altEditing.value) ? changesFor(editor.doc.value, mainSet.value === 'standard' ? 'alternate' : 'standard') : null))
 const CHANGES_OPTIONS: readonly { value: ChangesSet; label: string }[] = [{ value: 'standard', label: 'Standard' }, { value: 'alternate', label: 'Alternate' }]
 /** the sheets' subtitle: a printed sheet says which set it plays */
 const sheetSubtitle = computed(() => (mainSet.value === 'alternate' ? [editor.heading.value.subtitle, 'Alternate changes'].filter(Boolean).join(' · ') : editor.heading.value.subtitle))
@@ -542,7 +543,6 @@ watch(playedDoc, (doc) => {
   const line = c && mainSet.value === 'alternate' ? chordLineAt(doc, c, sheetChordAt) : null
   if (c && line !== null && line !== c.line) sheetChord.value = { ...c, line }
 })
-/** the Source: in the banner, or under ⋯ below md, remembered; always shown for a chart over a size limit (only the text can fix it) */
 /** the Source is offered from Everything, and at any level while the text has a problem (only the text can fix it) */
 const sourceOffered = computed(() => ui.shows('source') || editor.diagnostics.value.length > 0)
 const sourceShown = computed(() => (sourceOffered.value && prefs.source.value) || editor.fatal.value)
@@ -649,6 +649,8 @@ const wide = useMediaQuery(WIDE, import.meta.client ? window.matchMedia(WIDE).ma
 /** phones: the short rail, its other controls in a dialog */
 const compactRail = computed(() => !wide.value)
 const sheetEditor = computed(() => wide.value && sheetEditing.value && !focus.on.value)
+/** the small line typed bar by bar (#469): the sheet editor playing Standard, on any chart, with or without alternates yet */
+const altEditing = computed(() => alternatesFlag && sheetEditor.value && mainSet.value === 'standard')
 /** numerals and scales as the sheet draws them: the editor forces both on (D3), so they don't count toward the notice while it's open (#291) */
 const showNumerals = computed(() => sheetEditor.value || prefs.numerals.value)
 const showScaleNames = computed(() => sheetEditor.value || prefs.scaleNames.value)

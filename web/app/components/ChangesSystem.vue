@@ -1,16 +1,44 @@
 <template>
   <div ref="root" data-slot="system" class="relative break-inside-avoid" @pointerleave="leaveBar" @focusout="leaveBar">
     <!-- a chart with alternates (#215): the other set's chords, small, over their beats (chord symbols only; printed) -->
-    <div v-if="otherMarks.length" data-slot="other-changes" class="relative h-5 print:h-3">
+    <div v-if="otherMarks.length || altTargets.length" data-slot="other-changes" class="relative h-5 print:h-3">
       <span class="sr-only">Other changes:</span>
-      <span
-        v-for="o in otherMarks"
-        :key="o.key"
-        :data-chord="o.written"
-        :data-other-name="o.key"
-        class="absolute bottom-0 origin-bottom-left text-xs/4 font-medium whitespace-nowrap text-zinc-600 dark:text-zinc-400 print:text-[0.6rem]/3 print:text-neutral-700"
-        :style="{ left: `${o.x * 100}%`, transform: otherScale(o) === 1 ? undefined : `scale(${otherScale(o)})` }"
-      ><ChordSymbol v-if="o.tokens" :tokens="o.tokens" /><template v-else>{{ o.written }}</template></span>
+      <template v-for="o in otherMarks" :key="o.key">
+        <span
+          v-if="!altBars.has(o.barIndex)"
+          :data-chord="o.written"
+          :data-other-name="o.key"
+          :class="OTHER"
+          :style="{ left: `${o.x * 100}%`, transform: otherScale(o) === 1 ? undefined : `scale(${otherScale(o)})` }"
+        ><ChordSymbol v-if="o.tokens" :tokens="o.tokens" /><template v-else>{{ o.written }}</template></span>
+      </template>
+      <!-- the sheet editor in Standard (#469): each written bar's alternate, a button over the bar ("+ alt" where it has none) or its field; 24px tall, a pointer target (#321) -->
+      <div v-for="t in altTargets" :key="`a${t.key}`" class="absolute bottom-0 h-6 text-xs/4 font-medium text-zinc-600 dark:text-zinc-400" :style="{ left: `${t.left * 100}%`, width: `${t.width * 100}%` }">
+        <SheetAltChord
+          :source="source ?? doc!"
+          :section="t.section"
+          :bar="t.bar"
+          :text="t.text"
+          :open="altOpen === t.key"
+          :refocus="altFocus?.key === t.key ? altFocus.n : undefined"
+          @edit="emit('alt', t.key, 'edit')"
+          @next="emit('alt', t.key, 'next')"
+          @prev="emit('alt', t.key, 'prev')"
+          @close="emit('alt', t.key, 'close')"
+          @update:doc="emit('update:doc', $event)"
+          @said="emit('said', $event)"
+          @refused="emit('refused', $event)"
+        >
+          <span
+            v-for="o in t.marks"
+            :key="o.key"
+            :data-chord="o.written"
+            :data-other-name="o.key"
+            :class="OTHER"
+            :style="{ left: `${((o.x - t.left) / t.width) * 100}%`, transform: otherScale(o) === 1 ? undefined : `scale(${otherScale(o)})` }"
+          ><ChordSymbol v-if="o.tokens" :tokens="o.tokens" /><template v-else>{{ o.written }}</template></span>
+        </SheetAltChord>
+      </div>
     </div>
     <!-- section markers and key areas, then chord symbols, over their beats -->
     <div ref="names" data-slot="names" class="relative h-12 print:h-7">
@@ -72,7 +100,9 @@
           </div>
         </div>
         <!-- the bar toolbar (the sheet as the editor), for the bar under the pointer or with focus: right after the bar's
-             last chord in the Tab order, above the bar's first beat (from the line's right edge for a bar past the middle) -->
+             last chord in the Tab order, above the bar's first beat (from the line's right edge for a bar past the middle),
+             and above the alternate line's targets while they show -->
+
         <SheetBarToolbar
           v-if="toolbarBar && m.barIndex === toolbarBar.index && m.lastInBar"
           :key="toolbarBar.key"
@@ -82,7 +112,7 @@
           :section="toolbarBar.section"
           :bar="toolbarBar.bar"
           :repeat-of="toolbarBar.repeatOf"
-          class="absolute top-0 z-20 -translate-y-full whitespace-nowrap"
+          :class="['absolute top-0 z-20 -translate-y-full whitespace-nowrap', altTargets.length && '-mt-6']"
           :style="toolbarBar.x > 0.6 ? { right: 0 } : { left: `${toolbarBar.x * 100}%` }"
           @pointerenter="holdBar"
           @focusin="holdBar"
@@ -314,6 +344,9 @@ const props = defineProps<{
   counted?: boolean // the sheet's pentatonics count (tints)
   part?: Part // the sheet's part, for the chord pick popovers' wording and picks (#303); concert without
   others?: ReadonlyMap<string, readonly AltChord[]> | null // the other set's chords by bar (barKey), written (#215); null: none
+  altEditing?: boolean // the sheet editor in Standard (#469): each written bar's alternate is a SheetAltChord
+  altOpen?: string | null // the bar (barKey) whose alternate field is open
+  altFocus?: Readonly<{ key: string; n: number }> | null // a bar whose alternate button the sheet wants focus on; n makes each request its own
 }>()
 const emit = defineEmits<{
   tap: [chord: SheetChordEdit] // a chord tapped, for the chord editor dialog
@@ -327,6 +360,7 @@ const emit = defineEmits<{
   dialog: [kind: 'split' | 'nav' | 'paste' | 'rename', section: string, bar: number]
   addBar: [section: string]
   overfull: [at: string] // the names don't fit the line: break it before this bar (barKey)
+  alt: [key: string, then: 'edit' | 'next' | 'prev' | 'close'] // a bar's alternate (barKey): open its field, move on (Tab, ⇧Tab), or it closed
 }>()
 
 const root = ref<HTMLElement | null>(null)
@@ -369,6 +403,19 @@ const otherMarks = computed(() =>
     (props.others?.get(barKey(bar.at)) ?? []).map((c, k) => ({ key: `${b}-${k}`, barIndex: b, beat: c.beat, written: c.written, tokens: chordTokensOrNull(CONCERT, c.written), x: Math.max(0, (xs.value[b]?.[c.beat] ?? 0) - 0.012) })),
   ),
 )
+/** the alternate line's targets while editing in Standard (#469): every bar but a copy: section's, over its width */
+const altTargets = computed(() =>
+  props.altEditing && (props.source ?? props.doc)
+    ? props.line.bars.flatMap((bar, b) => {
+        if (bar.repeatOf) return []
+        const marks = otherMarks.value.filter((o) => o.barIndex === b)
+        const left = barLeft(b)
+        return [{ key: barKey(bar.at), index: b, section: bar.at.section, bar: Number(bar.at.bar), text: marks.map((o) => o.written).join(' '), marks, left, width: Math.max(0.01, barLeft(b + 1) - left) }]
+      })
+    : [],
+)
+/** the bars drawn as targets, whose other-set chords are drawn in them */
+const altBars = computed(() => new Set(altTargets.value.map((t) => t.index)))
 /** the marks that print a pentatonic label (#255) */
 const pentatonicMarks = computed(() => marks.value.flatMap((m) => (m.pentatonic?.label ? [{ key: m.key, x: m.x, room: m.room, written: m.written, p: m.pentatonic }] : [])))
 /** ranked against the key, a pair that isn't the key's (#432): drawn greyed */
@@ -484,6 +531,8 @@ const toolbarBar = computed(() => {
   return { key: `${bar.at.section}-${bar.at.bar}`, index: i, section: bar.at.section, bar: Number(bar.at.bar), repeatOf: bar.repeatOf, x: Math.max(0, (xs.value[i]?.[0] ?? i / props.barsPerLine) - 0.012) }
 })
 const MARKER = 'rounded-sm border border-zinc-400 px-1 font-semibold text-zinc-700 dark:border-zinc-500 dark:text-zinc-300 print:border-neutral-600 print:text-black'
+/** an other-set chord on the small line (#215) */
+const OTHER = 'absolute bottom-0 origin-bottom-left text-xs/4 font-medium whitespace-nowrap text-zinc-600 dark:text-zinc-400 print:text-[0.6rem]/3 print:text-neutral-700'
 const GHOST = 'rounded-md border border-dashed border-zinc-400 text-xs font-semibold text-zinc-500 hover:border-note-500 hover:text-note-700 focus-visible:border-note-500 focus-visible:outline-none dark:border-zinc-500 dark:text-zinc-400 dark:hover:border-note-400 dark:hover:text-note-300 print:hidden'
 /**
  * the ghost bar (a section's last line, the sheet as the editor): the next bar's slot when the line has room, else a pill
