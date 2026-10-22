@@ -1145,7 +1145,7 @@ its reasons into a chart as comments.
     in a link (`view.picks`) go through `chordPicksFrom`, which drops any damaged entry. The router
     rewrites the address without its `#` while a prerendered page hydrates, so `plugins/arrivalHash.client.ts`
     keeps the original.
-- **Back up and restore** (#466, flag `backup`, off): `engine/src/backup.ts` turns a storage snapshot into one
+- **Back up and restore** (#466, flag `backup`, on): `engine/src/backup.ts` turns a storage snapshot into one
   `csm-backup` v1 JSON file (`chord-scale-maker-backup-YYYY-MM-DD.json`): every My-charts entry with its text and its
   `mine:<id>` state (practice, level, pentatonic path, chord picks; keyed without the id), library tunes' state per
   slug, and the global preferences (`isPreferenceKey`: `csm-<name>`, no colon, not the index, `csm-recent` or
@@ -1179,8 +1179,8 @@ its reasons into a chart as comments.
   - New flags start off, and every flag is fixed at build time. `NUXT_PUBLIC_FEATURES_<NAME>=true|false`
     overrides one for a build or `make dev`.
   - `npm run e2e` builds with every flag on.
-  - Now: `chartSubmissions` (off; Send to the library, §9), `analyticsEvents` (off) and `backup` (off; Back up and restore, above), and `offline`, `cells`,
-    `approaches`, `patterns`, `recordings`, `playerRange`, `ireal` (on).
+  - Now: `chartSubmissions` (off; Send to the library, §9), `analyticsEvents` (off), and `offline`, `cells`,
+    `approaches`, `patterns`, `recordings`, `playerRange`, `ireal`, `backup` (Back up and restore, above) (on).
   - There are none now: #296 turned the last ones on for good and removed them with their flag-off code (`myCharts`,
     `practice`, `changes`, `keySignatures`, `arpeggios`, `compactRail`, `functions`, `pentatonics`, `hexatonics`,
     `interfaceLevels`); `Feature` is `never` until a new flag names itself. The bar editor shipped behind `barEditor`; at its sign-off
