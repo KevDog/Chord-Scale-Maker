@@ -17,52 +17,62 @@ export const VARIATION_LABELS: Readonly<Record<Variation, string>> = {
 }
 
 const CARDS = ['downbeats', 'upbeats', 'halves'] as const
-type Card = (typeof CARDS)[number]
+export type RhythmCard = (typeof CARDS)[number]
 
-const CARD_LABELS: Readonly<Record<Card, string>> = {
+const CARD_LABELS: Readonly<Record<RhythmCard, string>> = {
   downbeats: 'Downbeats',
   upbeats: 'Upbeats',
   halves: 'Half notes',
 }
 
-export type RhythmId = 'off' | `unit:${string}` | `run:${string}` | `card:${Card}` | `custom:${string}`
+export type RhythmId = 'off' | `unit:${string}` | `run:${string}` | `card:${RhythmCard}` | `custom:${string}`
 
 /** One bar's cells at the id's pulse; a run's holds only its own attacks (spill is laid elsewhere). */
 export type BarRhythm = (beats: number) => readonly Cell[]
 
-const UNIT_G = [2, 3, 4, 5, 6, 7] as const
-const RUN_PULSES: readonly Pulse[] = ['8', '8t', '16']
+const range = (n: number): number[] => Array.from({ length: n }, (_, i) => i)
+
+/** A unit's group sizes ("In"). */
+export const UNIT_GROUPS: readonly number[] = [2, 3, 4, 5, 6, 7]
+/** A run's pulses, attacks and positions ("From"). */
+export const RUN_PULSES: readonly Pulse[] = ['8', '8t', '16']
+export const RUN_ATTACKS: readonly number[] = [2, 3, 4, 5, 6, 7]
 
 /** k runs from 0 to the pulses in a 4/4 bar, less one. */
 const maxK = (pulse: Pulse): number => 4 * PULSE_PER_BEAT[pulse] - 1
 
-type Parsed =
-  | Readonly<{ kind: 'unit'; pulse: Pulse; g: number; v: Variation }>
-  | Readonly<{ kind: 'run'; pulse: Pulse; n: number; k: number }>
-  | Readonly<{ kind: 'card'; card: Card }>
+/** A run's starting positions at a pulse, from 0 (beat 1) to the last pulse of a 4/4 bar. */
+export const runPositions = (pulse: Pulse): readonly number[] => range(maxK(pulse) + 1)
+
+/** An id's parts, as its listboxes show them. */
+export type ParsedRhythmId =
+  | Readonly<{ kind: 'unit'; pulse: Pulse; group: number; variation: Variation }>
+  | Readonly<{ kind: 'run'; pulse: Pulse; attacks: number; from: number }>
+  | Readonly<{ kind: 'card'; card: RhythmCard }>
   | Readonly<{ kind: 'custom'; rhythm: Rhythm }>
 
 const INT = /^(0|[1-9]\d?)$/
 
-function parseId(s: string): Parsed | null {
+/** An id's parts, or null for `off` or an invalid id. */
+export function parseRhythmId(s: string): ParsedRhythmId | null {
   const parts = s.split(':')
   if (parts[0] === 'unit' && parts.length === 4) {
     const [, p, gs, v] = parts as [string, string, string, string]
     const g = Number(gs)
-    if (!(PULSES as readonly string[]).includes(p) || !INT.test(gs) || g < 2 || g > 7) return null
+    if (!(PULSES as readonly string[]).includes(p) || !INT.test(gs) || !UNIT_GROUPS.includes(g)) return null
     if (!(VARIATIONS as readonly string[]).includes(v)) return null
-    return { kind: 'unit', pulse: p as Pulse, g, v: v as Variation }
+    return { kind: 'unit', pulse: p as Pulse, group: g, variation: v as Variation }
   }
   if (parts[0] === 'run' && parts.length === 4) {
     const [, p, ns, ks] = parts as [string, string, string, string]
     if (!(RUN_PULSES as readonly string[]).includes(p) || !INT.test(ns) || !INT.test(ks)) return null
     const n = Number(ns)
     const k = Number(ks)
-    if (n < 2 || n > 7 || k > maxK(p as Pulse)) return null
-    return { kind: 'run', pulse: p as Pulse, n, k }
+    if (!RUN_ATTACKS.includes(n) || k > maxK(p as Pulse)) return null
+    return { kind: 'run', pulse: p as Pulse, attacks: n, from: k }
   }
   if (parts[0] === 'card' && parts.length === 2) {
-    return (CARDS as readonly string[]).includes(parts[1]!) ? { kind: 'card', card: parts[1] as Card } : null
+    return (CARDS as readonly string[]).includes(parts[1]!) ? { kind: 'card', card: parts[1] as RhythmCard } : null
   }
   if (s.startsWith('custom:')) {
     const rhythm = parseRhythm(s.slice('custom:'.length))
@@ -73,7 +83,7 @@ function parseId(s: string): Parsed | null {
 }
 
 export function isRhythmId(s: string): s is RhythmId {
-  return s === 'off' || parseId(s) !== null
+  return s === 'off' || parseRhythmId(s) !== null
 }
 
 /** One group of g pulses (Saindon), repeated from the sheet's first beat. */
@@ -105,19 +115,17 @@ export function positionLabel(pulse: Pulse, k: number): string {
 
 export function rhythmLabel(id: RhythmId): string {
   if (id === 'off') return 'Off'
-  const p = parseId(id)
+  const p = parseRhythmId(id)
   if (!p) return 'Off'
   switch (p.kind) {
-    case 'unit': return `${PULSE_LABELS[p.pulse]} in ${p.g}, ${VARIATION_LABELS[p.v]}`
-    case 'run': return `${p.n} ${PULSE_LABELS[p.pulse]} from ${positionLabel(p.pulse, p.k)}`
+    case 'unit': return `${PULSE_LABELS[p.pulse]} in ${p.group}, ${VARIATION_LABELS[p.variation]}`
+    case 'run': return `${p.attacks} ${PULSE_LABELS[p.pulse]} from ${positionLabel(p.pulse, p.from)}`
     case 'card': return CARD_LABELS[p.card]
     case 'custom': return `Your rhythm (${formatRhythm(p.rhythm)})`
   }
 }
 
-const range = (n: number): number[] => Array.from({ length: n }, (_, i) => i)
-
-function cardBar(card: Card, beats: number): readonly Cell[] {
+function cardBar(card: RhythmCard, beats: number): readonly Cell[] {
   if (card === 'downbeats') return range(beats).flatMap((): Cell[] => ['x', '_'])
   if (card === 'upbeats') return range(beats).flatMap((): Cell[] => ['.', 'x'])
   return range(Math.ceil(beats / 2)).flatMap((i): Cell[] => (beats - 2 * i >= 2 ? ['x', '_', '_', '_'] : ['x', '_']))
@@ -131,21 +139,19 @@ export function rhythmOf(
   id: RhythmId,
 ): Readonly<{ kind: 'repeat'; rhythm: Rhythm } | { kind: 'bar'; pulse: Pulse; bar: BarRhythm; n: number; k: number }> | null {
   if (id === 'off') return null
-  const p = parseId(id)
+  const p = parseRhythmId(id)
   if (!p) return null
   switch (p.kind) {
-    case 'unit': return { kind: 'repeat', rhythm: unitRhythm(p.pulse, p.g, p.v) }
+    case 'unit': return { kind: 'repeat', rhythm: unitRhythm(p.pulse, p.group, p.variation) }
     case 'custom': return { kind: 'repeat', rhythm: p.rhythm }
-    case 'run': return { kind: 'bar', pulse: p.pulse, n: p.n, k: p.k, bar: beats => runBar(p.pulse, p.n, p.k, beats) }
+    case 'run': return { kind: 'bar', pulse: p.pulse, n: p.attacks, k: p.from, bar: beats => runBar(p.pulse, p.attacks, p.from, beats) }
     case 'card': return { kind: 'bar', pulse: '8', n: 0, k: 0, bar: beats => cardBar(p.card, beats) }
   }
 }
 
 /** Every unit, run and card, in listbox order (no `off`, no custom). */
 export const LIBRARY_IDS: readonly RhythmId[] = [
-  ...PULSES.flatMap(p => UNIT_G.flatMap(g => VARIATIONS.map(v => `unit:${p}:${g}:${v}` as RhythmId))),
-  ...RUN_PULSES.flatMap(p =>
-    range(6).flatMap(i => range(maxK(p) + 1).map(k => `run:${p}:${i + 2}:${k}` as RhythmId)),
-  ),
+  ...PULSES.flatMap(p => UNIT_GROUPS.flatMap(g => VARIATIONS.map(v => `unit:${p}:${g}:${v}` as RhythmId))),
+  ...RUN_PULSES.flatMap(p => RUN_ATTACKS.flatMap(n => runPositions(p).map(k => `run:${p}:${n}:${k}` as RhythmId))),
   ...CARDS.map(c => `card:${c}` as RhythmId),
 ]

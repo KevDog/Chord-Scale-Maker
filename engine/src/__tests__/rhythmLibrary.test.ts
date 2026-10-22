@@ -1,11 +1,17 @@
 import { describe, expect, it } from 'vitest'
-import { formatRhythm } from '../rhythm/rhythm'
+import { PULSES, formatRhythm } from '../rhythm/rhythm'
 import {
   LIBRARY_IDS,
+  RUN_ATTACKS,
+  RUN_PULSES,
+  UNIT_GROUPS,
+  VARIATIONS,
   isRhythmId,
+  parseRhythmId,
   positionLabel,
   rhythmLabel,
   rhythmOf,
+  runPositions,
   unitRhythm,
   type RhythmId,
 } from '../rhythm/library'
@@ -95,5 +101,36 @@ describe('rhythm library', () => {
       expect(rhythmOf(id), id).not.toBeNull()
       expect(rhythmLabel(id), id).not.toBe('')
     }
+  })
+})
+
+describe('rhythm id parts, for the listboxes', () => {
+  it('parses each kind of id into its parts', () => {
+    expect(parseRhythmId('unit:8t:5:syncopated')).toEqual({ kind: 'unit', pulse: '8t', group: 5, variation: 'syncopated' })
+    expect(parseRhythmId('run:16:3:15')).toEqual({ kind: 'run', pulse: '16', attacks: 3, from: 15 })
+    expect(parseRhythmId('card:upbeats')).toEqual({ kind: 'card', card: 'upbeats' })
+    expect(parseRhythmId('custom:8:x.x')).toEqual({ kind: 'custom', rhythm: { pulse: '8', cells: ['x', '.', 'x'] } })
+  })
+
+  it('is null for off and invalid ids', () => {
+    expect(parseRhythmId('off')).toBeNull()
+    expect(parseRhythmId('unit:8:9:accents')).toBeNull()
+    expect(parseRhythmId('run:8:4:8')).toBeNull()
+    expect(parseRhythmId('nonsense')).toBeNull()
+  })
+
+  it('gives the ranges', () => {
+    expect(UNIT_GROUPS).toEqual([2, 3, 4, 5, 6, 7])
+    expect(RUN_ATTACKS).toEqual([2, 3, 4, 5, 6, 7])
+    expect(RUN_PULSES).toEqual(['8', '8t', '16'])
+    expect(runPositions('8')).toEqual([0, 1, 2, 3, 4, 5, 6, 7])
+    expect(runPositions('8t')).toHaveLength(12)
+    expect(runPositions('16').at(-1)).toBe(15)
+  })
+
+  it('builds every library id from the ranges', () => {
+    const units = PULSES.length * UNIT_GROUPS.length * VARIATIONS.length
+    const runs = RUN_PULSES.reduce((n, p) => n + RUN_ATTACKS.length * runPositions(p).length, 0)
+    expect(LIBRARY_IDS.length).toBe(units + runs + 3)
   })
 })
