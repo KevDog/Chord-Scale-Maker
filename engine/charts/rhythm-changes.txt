@@ -57,7 +57,7 @@ alt 1 | Am7     # ii of D7: Dorian
 alt 1 | D7      # extended ii–V: a side-step, its own key
 alt 2 | D7
 3 | G7      # extended dominant: each one falls a fifth into the next: natural tensions
-alt 3 | Dm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+alt 3 | Dm7    |  | C: ii7  # * ii of the ii–V to C
 alt 3 | G7      # extended ii–V: a side-step, its own key
 alt 4 | G7
 5 | C7      # V7 of V7: the dominant of the dominant: natural tensions
