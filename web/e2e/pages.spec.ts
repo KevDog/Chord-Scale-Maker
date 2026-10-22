@@ -115,9 +115,37 @@ test('the footer links the About, Contact and Privacy pages', async ({ page }) =
   await expect(page.getByText('Vercel Web Analytics')).toBeVisible()
 })
 
+test('the navbar: Library and Scales, then a Help menu of the other pages (#496)', async ({ page }) => {
+  await page.goto('/scales/dorian')
+  const banner = page.getByRole('banner')
+  await expect(banner.getByRole('link', { name: 'Scales', exact: true })).toHaveAttribute('aria-current', 'page')
+  await expect(banner.getByRole('link', { name: 'About', exact: true })).toHaveCount(0)
+  const help = banner.getByRole('button', { name: 'Help' })
+  await help.focus()
+  await page.keyboard.press('Enter')
+  const items = page.getByRole('menu').getByRole('menuitem')
+  await expect(items).toHaveText(['How it works', 'How it decides', 'Functions', 'About', 'Contact'])
+  await page.keyboard.press('Escape')
+  await expect(page.getByRole('menu')).toHaveCount(0)
+  await expect(help).toBeFocused()
+  await help.click()
+  await page.getByRole('menuitem', { name: 'Functions' }).click()
+  await expect(page).toHaveURL(/\/functions$/)
+  await expect(banner.getByRole('button', { name: 'Help' })).toHaveAttribute('data-current', 'true')
+  await expect(banner.getByRole('link', { name: 'Scales', exact: true })).not.toHaveAttribute('aria-current', 'page')
+})
+
+test('on a phone, the menu lists every page flat', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 800 })
+  await page.goto('/')
+  await page.getByRole('button', { name: 'Open navigation' }).click()
+  await expect(page.getByRole('dialog').getByRole('link')).toHaveText(['Library', 'Scales', 'How it works', 'How it decides', 'Functions', 'About', 'Contact'])
+})
+
 test('Help is in the navbar and footer, and its contents jump to each section', async ({ page }) => {
   await page.goto('/')
-  await page.getByRole('banner').getByRole('link', { name: 'Help', exact: true }).click()
+  await page.getByRole('banner').getByRole('button', { name: 'Help' }).click()
+  await page.getByRole('menuitem', { name: 'How it works' }).click()
   await expect(page.getByRole('heading', { name: 'How it all works' })).toBeVisible()
   await page.getByRole('navigation', { name: 'On this page' }).getByRole('link', { name: 'Editing a chart' }).click()
   await expect(page).toHaveURL(/#editing$/)

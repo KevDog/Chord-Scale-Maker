@@ -28,6 +28,13 @@ for (const theme of ['light', 'dark'] as const) {
       }
     })
 
+    test('the navbar’s Help menu open (#496)', async ({ page }) => {
+      await page.goto('/functions')
+      if (theme === 'dark') await darkMode(page)
+      await opens(page, page.getByRole('banner').getByRole('button', { name: 'Help' }), page.getByRole('menu'))
+      await expectAccessible(page)
+    })
+
     test('the contact page with a chart for the library (#153)', async ({ page }) => {
       await page.goto('/contact')
       if (theme === 'dark') await darkMode(page)

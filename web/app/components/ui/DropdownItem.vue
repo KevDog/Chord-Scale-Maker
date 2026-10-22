@@ -1,6 +1,7 @@
 <template>
   <HMenuItem v-slot="{ active, disabled: itemDisabled }" :disabled="disabled" as="template">
-    <button type="button" :data-focus="dataFlag(active)" :data-disabled="dataFlag(itemDisabled)" :class="ITEM"><slot /></button>
+    <NuxtLink v-if="href !== undefined" :to="href" :data-focus="dataFlag(active)" :data-disabled="dataFlag(itemDisabled)" :class="ITEM"><slot /></NuxtLink>
+    <button v-else type="button" :data-focus="dataFlag(active)" :data-disabled="dataFlag(itemDisabled)" :class="ITEM"><slot /></button>
   </HMenuItem>
 </template>
 
@@ -8,8 +9,8 @@
 import { MenuItem as HMenuItem } from '@headlessui/vue'
 import { dataFlag } from '~/utils/interactive'
 
-/** Catalyst DropdownItem: a button in a UiDropdownMenu */
-defineProps<{ disabled?: boolean }>()
+/** Catalyst DropdownItem: a link (href) or a button in a UiDropdownMenu */
+withDefaults(defineProps<{ disabled?: boolean; href?: string }>(), { href: undefined })
 
 const ITEM = [
   // Base styles

@@ -871,6 +871,9 @@ paper and its focus-mode pages, the rail, the More menu, the header, the library
   - Field, Label and Description wire ids through provide/inject (`utils/field.ts`).
   - The licensed kits live git-ignored in `design/tailwind-plus/` and are never committed.
   - A dev-only `/ui` page shows every component; it's removed from the production build.
+- **Navigation** (`utils/siteNav.ts`, #496): the navbar is Library and Scales (Chords joins them, #498), then a
+  Help dropdown (`UiNavbarDropdown`, opened by click) of How it works, How it decides, Functions, About and
+  Contact. The phone menu lists the same pages flat, with icons. The footer still links every page.
 - **Header quote:** a random quote in the navbar on tablet and desktop widths, kept for the visit
   (`HeaderQuote`, `useQuote`).
   - It shows the whole quote (two lines at most) and its author under it, inside the header's fixed 64 px.

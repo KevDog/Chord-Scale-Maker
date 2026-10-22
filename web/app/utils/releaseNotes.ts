@@ -12,6 +12,7 @@ export const RELEASE_NOTES: readonly ReleaseNote[] = [
     items: [
       { text: 'Edit alternate changes on the sheet: while editing, a small line above the bars takes each bar’s alternate (+ alt, then type; Tab for the next bar), and with Changes set to Alternate the big chords are the alternate set. A chart with alternates no longer forces its Source open.', pr: 490 },
       { text: 'The small line of other changes shows a chord held from an earlier bar (in italics), and an alternate typed the same as the chord already held there isn’t kept.', pr: 495 },
+      { text: 'A simpler menu bar: Library, Scales, and a Help menu with How it works, How it decides, Functions, About and Contact.' },
     ],
   },
   {
