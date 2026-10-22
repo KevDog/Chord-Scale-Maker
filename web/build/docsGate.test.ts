@@ -41,6 +41,13 @@ describe('docsGate', () => {
     expect(docsGate([COMPONENT, RELEASE_NOTES_FILE], 'Docs: none — tooling only').ok).toBe(true)
   })
 
+  it('passes with the escape line: an en dash, or no space around the dash (#407)', () => {
+    for (const line of ['Docs: none – tests only', 'Docs: none —tests only', 'Docs: none—tests only', 'Docs: none --tests only']) {
+      expect(docsGate([COMPONENT, RELEASE_NOTES_FILE], line), line).toEqual({ ok: true, why: 'Docs: none — tests only; release notes changed' })
+    }
+    expect(docsGate([COMPONENT, HELP], 'Release notes: none – internal').ok).toBe(true)
+  })
+
   it('fails an empty reason', () => {
     expect(docsGate([COMPONENT, RELEASE_NOTES_FILE], 'Docs: none — ').ok).toBe(false)
     expect(docsGate([COMPONENT, RELEASE_NOTES_FILE], 'Docs: none —   \nnext').ok).toBe(false)
