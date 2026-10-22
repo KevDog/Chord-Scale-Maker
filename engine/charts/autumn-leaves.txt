@@ -5,7 +5,10 @@ composer: Joseph Kosma
 style: Medium
 key: Gm
 form: AAB
+recording: Cannonball Adderley; Somethin' Else; Blue Note; 1958
+youtube: CpB7-8SGlJ0
 # analysis: 2026-10-19, rules v2; G minor
+# recording: recorded 1958-03-09, Van Gelder Studio, Hackensack, with Miles Davis, Hank Jones, Sam Jones, Art Blakey; Blue Note BLP 1595, released 1958; standard → the canonical jazz reading, over Bill Evans' Portrait in Jazz (1960); sources: Wikipedia; video: "Provided to YouTube by Universal Music Group", Somethin' Else, the same take
 
 # bar | chord | scale
 

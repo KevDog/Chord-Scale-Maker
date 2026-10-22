@@ -4,7 +4,10 @@ style: Medium
 key: F
 form: AABC, 36 bars
 source: Colorado Cookbook, p. 97
+recording: Charlie Parker; Charlie Parker; Clef; 1954
+youtube: DLvmK7YC7Io
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded 1953-07-28, Fulton Recording, NYC (Charlie Parker Quartet: Al Haig, Percy Heath, Max Roach), master 1247-1 (the only take), first LP 1954 (10", Clef MGC-157), later on Now's the Time (Verve MGV-8005, 1956); songbook standard (The Fleet's In, 1942) → Bird's quartet reading as the jazz reference; sources: jazzdisco; video: "Provided to YouTube by Universal Music Group", Now's The Time: The Genius Of Charlie Parker #3, the same take
 
 # bar | chord | scale
 

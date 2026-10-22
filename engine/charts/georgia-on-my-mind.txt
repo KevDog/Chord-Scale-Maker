@@ -4,7 +4,10 @@ style: Ballad
 key: F
 form: AABC
 source: Colorado Cookbook, p. 77
+recording: Ray Charles; The Genius Hits the Road; ABC-Paramount; 1960
+youtube: ggGzE5KfCio
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded 1960, New York (March per the album's sources, May per the single's), arranged and conducted by Ralph Burns, produced by Sid Feller; ABC-Paramount 335, released September 1960; songbook standard → Ray Charles's reading is the reference; sources: Wikipedia; video: Ray Charles's official channel, the original studio recording, the same take
 
 # bar | chord | scale
 

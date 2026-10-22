@@ -4,7 +4,10 @@ style: Ballad
 key: Db
 form: AA, 32 bars
 source: Colorado Cookbook, p. 219
+recording: Nat King Cole; Love Is the Thing; Capitol; 1957
+youtube: EENrbo-Zvs8
 # analysis: 2026-10-19, rules v2; Db
+# recording: recorded December 1956, Capitol Studios, Hollywood, with Gordon Jenkins; Capitol W 824, released 1957; songbook standard → the best-known reading, over Hoagy's 1927 Gennett instrumental and Armstrong's 1931 OKeh 78 (first LPs unconfirmed); sources: Wikipedia; video: "Provided to YouTube by Universal Music Group", Love Is the Thing, the same take
 
 # bar | chord | scale
 

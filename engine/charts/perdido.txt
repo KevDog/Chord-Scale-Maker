@@ -4,7 +4,10 @@ style: Up
 key: Bb
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 175
+recording: Duke Ellington; In a Mellotone; RCA Victor; 1957
+youtube: npVIPKXLAC8
 # analysis: 2026-10-19, rules v2; Bb
+# recording: recorded 1942-01-21, Chicago, Duke Ellington and His Famous Orchestra (first done as a radio transcription 1941-12-03), matrix BS-070682, first issued on 78 (Victor 27880, with Raincheck); first LP 1957 (LPM-1364); the composer's band's first recording; sources: Wikipedia, DAHR, AllMusic; video: "Provided to YouTube by RCA Victor", Greatest Hits, the 1942 Victor recording
 
 # bar | chord | scale
 # the horn intro is a melody line (no chords), so it is left out

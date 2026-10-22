@@ -4,7 +4,10 @@ style: Ballad
 key: Cm
 form: ABCD, 36 bars
 source: Colorado Cookbook, p. 146
+recording: Miles Davis Quintet; Cookin' with the Miles Davis Quintet; Prestige; 1957
+youtube: -3lY1BwwmLM
 # analysis: 2026-10-19, rules v2; C minor
+# recording: recorded 1956-10-26, Van Gelder Studio, Hackensack (Miles with Red Garland, Paul Chambers, Philly Joe Jones; Coltrane sits out), Prestige PRLP 7094, released 1957; songbook standard (Babes in Arms, 1937) → Miles' reading as the reference, over Chet Baker's (Pacific Jazz); sources: Wikipedia; video: Craft Recordings upload on the Miles Davis channel, the album track, the same take
 
 # bar | chord | scale
 # the "standard" chords; the lead sheet also offers Fm F#m7 B7 Bbm7 Eb7 Dm7b5 G7b9 (A bars 6–8)

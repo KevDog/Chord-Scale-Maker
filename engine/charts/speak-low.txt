@@ -4,7 +4,10 @@ style: Up
 key: F
 form: AABC, 56 bars
 source: Colorado Cookbook, p. 215
+recording: Sonny Clark; Sonny's Crib; Blue Note; 1958
+youtube: K4-TDkdu5ds
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded 1957-09-01, Van Gelder Studio, Hackensack (Donald Byrd, Curtis Fuller, John Coltrane, Paul Chambers, Art Taylor), Blue Note BLP 1576; songbook standard (One Touch of Venus, 1943) → the hard-bop reading with Coltrane; Walter Bishop Jr.'s Speak Low (Jazztime, 1961) is the trio reading, but its master take isn't named in the sources; sources: jazzdisco, Wikipedia; video: "Provided to YouTube by Universal Music Group", Sonny's Crib, the same take
 
 # bar | chord | scale
 # the solo changes; the bridge's last two bars can also be Db7 | C7

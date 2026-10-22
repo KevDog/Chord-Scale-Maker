@@ -4,7 +4,10 @@ style: Medium
 key: Dm
 form: AB, 16 bars
 source: Colorado Cookbook, p. 228
+recording: Miles Davis; Porgy and Bess; Columbia; 1959
+youtube: PwigsX95quw
 # analysis: 2026-10-19, rules v2; D minor
+# recording: recorded 1958-08-04, Columbia 30th Street Studio, NYC, with Gil Evans and his orchestra; Columbia CL 1274, released 1959; songbook standard → the jazz reference reading, over Coltrane's My Favorite Things (Atlantic, 1961); sources: Wikipedia; video: "Provided to YouTube by Columbia/Legacy", Porgy and Bess (Mono Version), the same take
 
 # bar | chord | scale
 

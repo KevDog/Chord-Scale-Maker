@@ -4,7 +4,10 @@ style: Medium
 key: Bb
 form: AABA
 source: Colorado Cookbook, p. 105
+recording: Chet Baker; Chet Baker Sings; Pacific Jazz; 1956
+youtube: HmhzRC4h2Ko
 # analysis: 2026-10-19, rules v2; Bb
+# recording: recorded 1956-07-23, Forum Theatre, Los Angeles, with Russ Freeman; first issued on the 12" Chet Baker Sings (PJ-1222, 1956), which added six 1956 tracks to the 1954 10"; songbook standard (Guys and Dolls) → Chet's reading as the jazz reference (Wikipedia); video: "Provided to YouTube by Universal Music Group", Let's Get Lost: The Best of Chet Baker Sings ("Vocal Version"), the same take
 
 # bar | chord | scale
 

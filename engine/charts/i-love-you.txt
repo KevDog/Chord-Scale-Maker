@@ -4,7 +4,10 @@ style: Up
 key: F
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 94
+recording: John Coltrane; Lush Life; Prestige; 1961
+youtube: wiB1NutB8UI
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded 1957-08-16, Van Gelder Studio, Hackensack, trio with Earl May and Art Taylor, PRLP 7188, released 1961; songbook standard → Coltrane's up-tempo trio reading (jazzdisco); video: John Coltrane's official channel (Craft), from Lush Life, the same take
 
 # bar | chord | scale
 
