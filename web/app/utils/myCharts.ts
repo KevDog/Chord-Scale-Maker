@@ -1,7 +1,6 @@
-import { chartMeta, LIMITS, MODES, parseChart } from '@chord-scale-maker/engine'
+import { chartMeta, LIMITS, parseChart } from '@chord-scale-maker/engine'
 import { ref } from 'vue'
 import { LEGACY_STARTER_CHART } from '~/utils/starterChart'
-import { practiceKey } from '~/utils/practiceKey'
 
 /**
  * My charts: charts saved in this browser's localStorage, with no account and nothing sent anywhere. An index of
@@ -88,12 +87,35 @@ export function saveChart(input: Readonly<{ id: string; text: string; kind: Save
   return { ok: true, meta }
 }
 
-/** remove a chart, with its practice picks */
+/** what a chart's view keeps per chart, under `<prefix>:<key>` (practice adds `:<mode>`): one list for delete, the sweep and a backup (#466) */
+export const PER_CHART_PREFIXES = ['csm-practice', 'csm-level', 'csm-pent-path', 'csm-pent-picks', 'csm-undo'] as const
+const MINE_KEY = new RegExp(`^(?:${PER_CHART_PREFIXES.join('|')}):mine:([A-Za-z0-9_-]+)(?::[a-z]+)?$`)
+
+/** the saved chart id a per-chart key belongs to, if it's one of yours */
+const mineIdOf = (key: string): string | null => MINE_KEY.exec(key)?.[1] ?? null
+
+/** remove a chart, with everything kept for it */
 export function deleteChart(id: string): void {
   writeStored(INDEX, JSON.stringify(readIndex().filter((m) => m.id !== id)))
   removeStored(textKey(id))
-  for (const mode of MODES) removeStored(practiceKey(`mine:${id}`, mode))
+  for (const key of storedKeys()) if (mineIdOf(key) === id) removeStored(key)
   savedRevision.value++
+}
+
+/** drop what charts deleted before #467 left behind; nothing when the index can't be read, so a broken one never costs your picks */
+export function sweepOrphans(): void {
+  let ids: Set<string>
+  try {
+    const v: unknown = JSON.parse(readStored(INDEX) ?? '[]')
+    if (!Array.isArray(v)) return
+    ids = new Set(v.map(metaFrom).flatMap((m) => (m ? [m.id] : [])))
+  } catch {
+    return
+  }
+  for (const key of storedKeys()) {
+    const id = mineIdOf(key)
+    if (id !== null && !ids.has(id)) removeStored(key)
+  }
 }
 
 /** the old single draft (the hidden New chart's), moved into My charts once; one still holding a starter is left behind */

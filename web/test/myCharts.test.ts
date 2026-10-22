@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { chartText, deleteChart, filenameFor, listCharts, loadChart, migrateChartNames, migrateDraft, MY_CHARTS_MAX, newChartId, saveChart, savedRevision, versionOf } from '~/utils/myCharts'
+import { chartText, deleteChart, filenameFor, listCharts, loadChart, migrateChartNames, migrateDraft, MY_CHARTS_MAX, newChartId, saveChart, savedRevision, sweepOrphans, versionOf } from '~/utils/myCharts'
 
 const chart = (title: string, chord = 'Cm7'): string => `title: ${title}\nsection: A\n1 | ${chord}\n`
 
@@ -18,6 +18,23 @@ describe('My charts', () => {
     deleteChart('aaaaaa1')
     expect(loadChart('aaaaaa1')).toBeNull()
     expect(localStorage.getItem('csm-chart:aaaaaa1')).toBeNull()
+  })
+
+  it('deletes everything kept for the chart, and nothing kept for another', () => {
+    saveChart({ id: 'aaaaaa1', text: chart('Alpha'), kind: 'new' }, 1)
+    saveChart({ id: 'aaaaaa12', text: chart('Beta'), kind: 'new' }, 2)
+    const kept = (id: string): string[] => [
+      `csm-practice:mine:${id}:root`,
+      `csm-practice:mine:${id}:from`,
+      `csm-level:mine:${id}`,
+      `csm-pent-path:mine:${id}`,
+      `csm-pent-picks:mine:${id}`,
+      `csm-undo:mine:${id}`,
+    ]
+    for (const k of [...kept('aaaaaa1'), ...kept('aaaaaa12')]) localStorage.setItem(k, 'x')
+    deleteChart('aaaaaa1')
+    expect(kept('aaaaaa1').filter((k) => localStorage.getItem(k) !== null)).toEqual([])
+    expect(kept('aaaaaa12').filter((k) => localStorage.getItem(k) === null)).toEqual([])
   })
 
   it('counts each save and delete, so a view of your charts can follow them, and reads a chart\'s text alone', () => {
@@ -88,6 +105,27 @@ describe('My charts', () => {
       'Cafe Re mi.txt',
       'etc.txt',
     ])
+  })
+})
+
+describe('sweepOrphans', () => {
+  afterEach(() => localStorage.clear())
+
+  it('drops what a chart no longer in My charts left behind, and keeps the rest', () => {
+    saveChart({ id: 'aaaaaa1', text: chart('Alpha'), kind: 'new' }, 1)
+    const keep = ['csm-level:mine:aaaaaa1', 'csm-undo:mine:aaaaaa1', 'csm-practice:mine:aaaaaa1:root', 'csm-level:autumn-leaves', 'csm-prefs']
+    const gone = ['csm-level:mine:zzzzzz9', 'csm-pent-path:mine:zzzzzz9', 'csm-pent-picks:mine:zzzzzz9', 'csm-undo:mine:zzzzzz9', 'csm-practice:mine:zzzzzz9:from']
+    for (const k of [...keep, ...gone]) localStorage.setItem(k, 'x')
+    sweepOrphans()
+    expect(gone.filter((k) => localStorage.getItem(k) !== null)).toEqual([])
+    expect(keep.filter((k) => localStorage.getItem(k) === null)).toEqual([])
+  })
+
+  it('touches nothing when the index can’t be read', () => {
+    localStorage.setItem('csm-charts', '{broken')
+    localStorage.setItem('csm-level:mine:aaaaaa1', 'x')
+    sweepOrphans()
+    expect(localStorage.getItem('csm-level:mine:aaaaaa1')).toBe('x')
   })
 })
 
