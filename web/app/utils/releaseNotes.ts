@@ -10,6 +10,7 @@ export const RELEASE_NOTES: readonly ReleaseNote[] = [
   {
     date: '2026-10-22',
     items: [
+      { text: 'A rhythm for the Changes sheet: in the Line’s options (Intermediate interface), Rhythm draws slashes with stems, beams, rests, ties and accents in place of the beat slashes, while Line is Off. Choose a unit (8ths in 5, after Saindon), a run of 8ths from a beat (after Bergonzi), a card, or type your own; the caption says when it is back on one. Target beats puts a dot over each strong beat, after Galper.' },
       { text: 'Charts can now be in 7/4: write time: 7/4 in the heading, or choose Bar in 7/4 from the bar menu for a single bar.', pr: 487 },
       { text: 'A click to practise with: Click (the note icon, beside Print) puts a metronome at the foot of a song’s page, at a tempo and feel from the chart’s style. Feel plays Swing (the skip note), Straight (even eighths) or Quarters. Tap sets the tempo, Space starts and stops it, and its settings add a count-in, a hat on 2 and 4, and a wood or beep sound. Its chevron folds it to one row while it plays, and it comes into focus mode, still playing.', pr: 497 },
       { text: 'Edit alternate changes on the sheet: while editing, a small line above the bars takes each bar’s alternate (+ alt, then type; Tab for the next bar), and with Changes set to Alternate the big chords are the alternate set. A chart with alternates no longer forces its Source open.', pr: 490 },

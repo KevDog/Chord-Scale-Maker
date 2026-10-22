@@ -1,5 +1,5 @@
 import type { Locator, Page } from '@playwright/test'
-import { chooseSheet, closePanel, closePentatonicOptions, expect, openPanel, pentatonicPreset, pickOption, showApproach, showCell, showPentatonics, staves, test } from '../fixtures'
+import { chooseRhythm, chooseSheet, closePanel, closePentatonicOptions, expect, openPanel, pentatonicPreset, pickOption, rhythmDrawn, showApproach, showCell, showPentatonics, showTargets, staves, test } from '../fixtures'
 import { expectAccessible } from './axe'
 
 const SONG = '/song/autumn-leaves'
@@ -119,6 +119,16 @@ for (const theme of ['light', 'dark'] as const) {
       await showPentatonics(page)
       await closePentatonicOptions(page) // its panel would cover the actions
       await opens(page, page.locator('[data-slot="pentatonic"] button').first(), page.getByRole('dialog', { name: / bar \d+$/ }))
+      await expectAccessible(page)
+    })
+
+    test('the Changes with a rhythm and target beats', async ({ page }) => {
+      await page.goto(SONG)
+      if (theme === 'dark') await darkMode(page)
+      await expect(staves(page).first()).toBeVisible()
+      await chooseRhythm(page, '8ths', { In: 'In 5', Variation: 'with accents' })
+      await rhythmDrawn(page)
+      await showTargets(page)
       await expectAccessible(page)
     })
 

@@ -241,6 +241,64 @@
           </UiText>
         </div>
 
+        <div v-if="rhythmOn" class="space-y-3" data-controls-group>
+          <UiSubheading id="rhythm" :level="3" class="scroll-mt-6">Rhythm</UiSubheading>
+          <UiText>
+            The sheets say which notes to play. A rhythm says when. On the Changes sheet it draws slashes with stems, beams, rests, ties
+            and accents in place of the beat slashes, over the chart's own bars. It's a view setting, like the level: it isn't saved into
+            the chart. It shows from the Intermediate interface up.
+          </UiText>
+          <dl class="space-y-4 text-base/6 sm:text-sm/6">
+            <div>
+              <dt class="font-semibold text-zinc-950 dark:text-white">Rhythm</dt>
+              <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
+                In the Line's options, <strong class="font-semibold">Rhythm</strong> is Off or a rhythm from one of three families. A rhythm
+                draws only while the Line is Off; with a Line on, the control says <UiCode>Turn Line off to see the rhythm.</UiCode>
+                The pulse is quarters, 8ths, triplets or 16ths.
+              </dd>
+            </div>
+            <div>
+              <dt id="rhythm-cycle" class="scroll-mt-6 font-semibold text-zinc-950 dark:text-white">Units</dt>
+              <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
+                After Ed Saindon's <em>Exploration in Rhythm, Vol. 1: Rhythmic Phrasing in Improvisation</em> (pp. 7–8). A unit is a group of 2 to 7 pulses, repeated from the first beat and ignoring
+                barlines. <strong class="font-semibold">In</strong> sets the group, and <strong class="font-semibold">Variation</strong>
+                shapes it: with accents, with rests, rest last, syncopated or tied. Saindon's bracket under the staff marks each
+                statement of the unit where it starts again. The caption names the cycle, for example <UiCode>back on one every 5 bars</UiCode>.
+                That counts the unit and the bar in pulses: 8ths in 5 over 4/4 is back on one every 5 bars, 8ths in 4 over 3/4 every 2.
+                Where the time signature changes, the caption lists the bars.
+              </dd>
+            </div>
+            <div>
+              <dt class="font-semibold text-zinc-950 dark:text-white">Runs</dt>
+              <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
+                After Jerry Bergonzi's <em>Inside Improvisation, Vol. 4: Melodic Rhythms</em> (consecutive 8ths, pp. 29–50). A run is a few attacks in a row,
+                the same in every bar. <strong class="font-semibold">Attacks</strong> says how many (2 to 7) and
+                <strong class="font-semibold">From</strong> where in the bar the first one lands, by the count: 1, the and of 1, 2, and so
+                on. A run that reaches past the barline finishes in the next bar. <strong class="font-semibold">Cards</strong> are the
+                simplest per-bar rhythms: Downbeats, Upbeats and Half notes.
+              </dd>
+            </div>
+            <div>
+              <dt class="font-semibold text-zinc-950 dark:text-white">Your rhythm…</dt>
+              <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
+                Type your own. Start with the pulse, <UiCode>4:</UiCode>, <UiCode>8:</UiCode>, <UiCode>8t:</UiCode> or <UiCode>16:</UiCode>,
+                then one character for each pulse: <UiCode>x</UiCode> plays, <UiCode>.</UiCode> rests, <UiCode>_</UiCode> holds the note
+                before it, and <UiCode>&gt;</UiCode> before an <UiCode>x</UiCode> accents it. Spaces and <UiCode>|</UiCode> are ignored.
+                <UiCode>8: &gt;xx.x_</UiCode> is an accented attack, one more, a rest, an attack held a pulse more. It repeats like a unit.
+                If it doesn't fit these rules the control says so and plays Off.
+              </dd>
+            </div>
+            <div>
+              <dt id="rhythm-targets" class="scroll-mt-6 font-semibold text-zinc-950 dark:text-white">Target beats</dt>
+              <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
+                In the Changes sheet's Analysis group, a toggle that puts a dot over each strong beat of a bar: the first beat, and the third in
+                4/4 (1 in 2/4 and 3/4; 1 and 3 in 4/4; 1 and 4 in 5/4 and 6/4; 1 and 5 in 7/4). It follows Hal Galper's <em>Forward Motion: From Bach to Bebop</em> (pp. 47–49, 67): the on-beats are where a line releases, the off-beats where it builds tension, and chord tones belong on the dots. Aim a chord tone at each dot. The dots show on the
+                slashes and on a rhythm alike.
+              </dd>
+            </div>
+          </dl>
+        </div>
+
         <div class="space-y-3" data-controls-group>
           <UiSubheading :level="3">How much shows</UiSubheading>
           <dl class="space-y-4 text-base/6 sm:text-sm/6">
@@ -550,6 +608,7 @@ const approachesOn = useFeature('approaches')
 const ireal = useFeature('ireal')
 const backupOn = useFeature('backup')
 const metronomeOn = useFeature('metronome')
+const rhythmOn = useFeature('rhythm')
 const SECTIONS = [
   { id: 'quick', title: 'The short version' },
   { id: 'sheets', title: 'The sheets' },

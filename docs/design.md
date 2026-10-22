@@ -705,6 +705,31 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   Share links carry `approach` (only with a guide line, absent: None; dropped if unknown). Away from None it raises the
   hidden-settings notice below Intermediate (`setAway`, `approaches`).
 
+### The rhythm line on Changes (flag `rhythm`, off; [spec](superpowers/specs/2026-10-22-rhythm-line-design.md))
+
+- **What:** a pitch-free rhythm drawn on the Changes sheet in place of the beat slashes, laid over the chart's own bars. A view
+  preference like the level, never written into chart rows. Drawn only while the Line is Off (a Line on shows
+  "Turn Line off to see the rhythm." in the control).
+- **Engine** (`engine/src/rhythm/`, pure): the text form (`parseRhythm`, `formatRhythm`: `8: >xx.x_`, pulses `4`, `8`, `8t`,
+  `16`), the library of ids generated from formulas (`unit:<pulse>:<g>:<variation>` after Saindon, `run:<pulse>:<n>:<k>`
+  after Bergonzi, `card:*`, `custom:*`; `isRhythmId`, `rhythmLabel`), `layRhythm(id, bars)` (events per bar, ties split at
+  barlines, and for a repeating rhythm the landing bars and the cycle caption: `DECISIONS` `rhythm.cycle`), `rhythmNotes`
+  (events to `RhythmNote`s: values, tuplets, beams, Saindon's brackets) and `targetBeats` (Galper's strong beats by metre:
+  `rhythm.targets`). Nothing from the three books' printed examples is reproduced; they are cited.
+- **buildChanges:** options `rhythm` and `targets`; `ChangesBar.rhythm` and `.targets`, `ChangesSheet.rhythmCaption`.
+- **Drawing** (`changesDrawing.ts`, `drawRhythmLine`): slash noteheads on the middle line with stems, rests, `a>` accents,
+  `Tuplet` and `Beam` groups, the guide line's tie chain (half-ties at a line's ends), and the bracket as an SVG path under the
+  staff (`data-rhythm-bracket`). The volta shift and the crop include the stem tips. Target dots are HTML spans
+  (`data-target-beat`) placed over the drawing at `ChangesLayout.xs` in a top row (`ChangesLayout.dots`), on slashes, lines and
+  rhythm alike. The aria-label adds "; rhythm: <caption>". A rhythm counts as a voiced line in `changesLinesPerPage`.
+- **UI:** the Rhythm controls are inside the Line's options (`PreviewControls.vue`): a listbox reading "Rhythm: <family>"
+  (Off, Units by pulse, Runs, Cards, "Your rhythm…"), then In and Variation for a unit, Attacks and From for a run, or a text
+  field for a custom rhythm. Target beats is a toggle in the Changes sheet's Analysis group. `CONTROL_TIERS.rhythm` is
+  `intermediate` for both.
+- **Preferences:** `csm-rhythm` (a RhythmId; anything else reads Off, and with the flag off a stored one stays stored) and
+  `csm-targets`. Share links carry `rhythm` (not when Off) and `targets`; invalid values are dropped. Either on below
+  Intermediate raises the hidden-settings notice (`rhythm`).
+
 ### Pentatonics on Changes ([spec](superpowers/specs/2026-10-13-pentatonic-ladders-design.md))
 
 - **Ladder** (`engine/src/pentatonics.ts`): a key area's 12 minor pentatonics round the circle of fifths from home
