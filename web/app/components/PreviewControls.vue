@@ -1,7 +1,7 @@
 <template>
   <!-- display: contents, so the rail's sticky box is the whole Preview section -->
   <div id="preview-toolbar" class="contents space-y-4">
-    <!-- the rail: labelled groups wrap on the left (Work on · Instrument · Level · Show (on the Changes: Analysis · Line) · Spell Scale), the actions pinned right (on their own line, still right, once the row is too narrow); top-aligned so every label sits on one line -->
+    <!-- the rail: labeled groups wrap on the left (Work on · Instrument · Level · Show (on the Changes: Analysis · Line) · Spell Scale), the actions pinned right (on their own line, still right, once the row is too narrow); top-aligned so every label sits on one line -->
     <SheetRail :sticky="stickyRail">
       <template #left>
         <UiField class="w-36">
@@ -46,6 +46,11 @@
               <div class="flex items-center gap-2"><slot name="level" /></div>
             </UiField>
           </Transition>
+          <!-- a chart with alternate changes (#215): which set plays, and whether the other shows -->
+          <UiField v-if="$slots.changes">
+            <UiLabel class="pl-3">Changes</UiLabel>
+            <div class="flex flex-wrap items-center gap-2 *:whitespace-nowrap"><slot name="changes" /></div>
+          </UiField>
           <UiField v-if="sheet !== 'changes'">
             <UiLabel class="pl-3">Show</UiLabel>
             <div class="flex flex-wrap gap-2 *:whitespace-nowrap">
@@ -179,7 +184,7 @@
                               <template #selected="{ value }"><UiListboxLabel>{{ orderLabel(value) }}</UiListboxLabel></template>
                               <UiListboxOption v-for="o in CELL_ORDERS" :key="o" :value="o"><UiListboxLabel>{{ CELL_ORDER_LABELS[o] }}</UiListboxLabel></UiListboxOption>
                             </UiListbox>
-                            <ToggleButton v-if="cells in CELL_SYSTEMS" v-model="cellsPhrase" title="Aim each cell at the next chord, and colour long dominants">Phrase</ToggleButton>
+                            <ToggleButton v-if="cells in CELL_SYSTEMS" v-model="cellsPhrase" title="Aim each cell at the next chord, and color long dominants">Phrase</ToggleButton>
                           </EaseReveal>
                           </div>
                         </RailPopover>
@@ -265,7 +270,7 @@
     import ControlsDialog from './ControlsDialog.vue'
     import RailPopover from './RailPopover.vue'
 
-    /** the preview toolbar, in labelled groups: Work on (sheet), Instrument, #version, #level, Show (on the Changes: Analysis, Guide Tones), in the rail, with #actions at its right */
+    /** the preview toolbar, in labeled groups: Work on (sheet), Instrument, #version, #level, Show (on the Changes: Analysis, Guide Tones), in the rail, with #actions at its right */
     const sheet = defineModel<SheetKind>('sheet', { required: true })
     const instrument = defineModel<InstrumentName>('instrument', { required: true })
     /** instrumentChosen: picked from the instrument listbox, not as a pitch's first (InstrumentPicker) */
@@ -324,7 +329,7 @@
     /** compact: a phone with compactRail on: the rail keeps Work on, Instrument and the slot's rail actions; Controls opens the rest */
     /** stickyRail: the rail sticks over the sheet (lg up): while editing */
     const props = defineProps<{ lockLabels?: boolean; keyStart: string; compact?: boolean; stickyRail?: boolean }>()
-    defineSlots<{ version?: () => unknown; level?: () => unknown; actions?: (p: { place: 'rail' | 'dialog'; after: (run: () => void) => void }) => unknown }>()
+    defineSlots<{ version?: () => unknown; level?: () => unknown; changes?: () => unknown; actions?: (p: { place: 'rail' | 'dialog'; after: (run: () => void) => void }) => unknown }>()
     const controlsOpen = ref(false)
     watch(() => props.compact, () => (controlsOpen.value = false))
     /** an action chosen in the dialog runs once it has closed (Headless UI then returns focus to Controls first); in the rail, now */

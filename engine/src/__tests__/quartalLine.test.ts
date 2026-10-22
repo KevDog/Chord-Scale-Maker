@@ -27,7 +27,7 @@ const voice = (cs: readonly GuideInput[], stacks: ReadonlyMap<number, readonly Q
   quartalVoices(cs, part, 4, null, line(over), stacks)
 
 describe('the Quartal line (#432)', () => {
-  it("plays each chord's labelled stack whole, Up & down, each placed nearest the last note; a stack out of range gives way to the next", () => {
+  it("plays each chord's labeled stack whole, Up & down, each placed nearest the last note; a stack out of range gives way to the next", () => {
     const v = voice(seq(['Dm7', 4], ['G7', 4], ['Cmaj7', 4]), byRow(...II_V_I()))
     expect(pitches(v.bars.get(0))).toEqual(['d/4', 'g/4', 'c/5', 'f/5']) // the run's start nearest the centre
     expect(pitches(v.bars.get(1))).toEqual(['a/5', 'e/5', 'b/4', 'f/4']) // F B E A down, its top nearest F5

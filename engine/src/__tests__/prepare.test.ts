@@ -41,4 +41,11 @@ describe('--context', () => {
     expect(prepareChart(blues, { context: 'auto' }, '2026-10-18').chart).not.toMatch(/^context:/m)
     expect(prepareChart(chart, { context: 'modal' }, '2026-10-18').chart).toMatch(/^context: modal$/m)
   })
+
+  it('saves a reason on an alt row', () => {
+    const withAlt = chart.replace('3 | CMaj7', '3 | CMaj7\nalt 3 | Dm7').replace('section: A\n', 'section: A\nbars: 3\n')
+    const p = prepareChart(withAlt, {}, '2026-10-18')
+    const alt = p.chart.split('\n').find((l) => l.startsWith('alt 3 | Dm7')) ?? ''
+    expect(alt).toMatch(/#/)
+  })
 })

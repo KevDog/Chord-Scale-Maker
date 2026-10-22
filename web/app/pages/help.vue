@@ -18,7 +18,7 @@
         <ol class="list-decimal space-y-2 pl-5 text-base/6 text-zinc-600 sm:text-sm/6 dark:text-zinc-400">
           <li>Pick a tune from the <UiTextLink href="/library">library</UiTextLink>.</li>
           <li>Choose your instrument from the <strong class="font-semibold text-zinc-950 dark:text-white">Instrument</strong> menu in the toolbar. The sheet is rewritten for it.</li>
-          <li>Practise from the screen, hit <strong class="font-semibold text-zinc-950 dark:text-white">Focus</strong> to get rid of everything but the music, or print it.</li>
+          <li>Practice from the screen, hit <strong class="font-semibold text-zinc-950 dark:text-white">Focus</strong> to get rid of everything but the music, or print it.</li>
         </ol>
         <UiText>That's genuinely it. Everything below is for when you want more.</UiText>
       </section>
@@ -41,7 +41,7 @@
         </UiText>
         <UiText>
           <strong class="font-semibold text-zinc-950 dark:text-white">Scales</strong> is one staff per
-          chord, with the scale that goes with it, in the order the tune runs. Each staff is labelled with where it is in
+          chord, with the scale that goes with it, in the order the tune runs. Each staff is labeled with where it is in
           the form, the chord and the scale. Practice works on this sheet.
         </UiText>
         <UiText>
@@ -154,12 +154,12 @@
               <dt class="font-semibold text-zinc-950 dark:text-white">Pentatonic, Triad pair and Quartal lines</dt>
               <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
                 While Superimpose is Pentatonic, the Line's <strong class="font-semibold">7th Chords</strong> becomes
-                <strong class="font-semibold">Pentatonic</strong>: each chord's labelled pentatonic in four-note cells;
+                <strong class="font-semibold">Pentatonic</strong>: each chord's labeled pentatonic in four-note cells;
                 <strong class="font-semibold">Leave out</strong> picks the note each cell drops. While it's Hexatonic, it
-                becomes <strong class="font-semibold">Triad pair</strong>: each chord's labelled pair a triad at a time,
+                becomes <strong class="font-semibold">Triad pair</strong>: each chord's labeled pair a triad at a time,
                 from the note nearest the last, or in Walt Weiskopf's <strong class="font-semibold">Climb</strong> or
                 <strong class="font-semibold">Arpeggios 1 3 5 8</strong> shape (<DecisionLink id="hex.line">how</DecisionLink>).
-                While it's Quartal, it becomes <strong class="font-semibold">Quartal</strong>: each chord's labelled stack
+                While it's Quartal, it becomes <strong class="font-semibold">Quartal</strong>: each chord's labeled stack
                 of fourths, whole, then its next stacks (<DecisionLink id="quartal.line">how</DecisionLink>). Each goes up,
                 down or both by turns.
                 <template v-if="cellsOn">
@@ -188,7 +188,7 @@
               <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
                 How fancy the scales get. <strong class="font-semibold">Basic</strong> leans on pentatonics,
                 <strong class="font-semibold">Standard</strong> is the usual chord-scale for each chord,
-                <strong class="font-semibold">Advanced</strong> reaches for bebop, Lydian and altered colours, and
+                <strong class="font-semibold">Advanced</strong> reaches for bebop, Lydian and altered colors, and
                 <strong class="font-semibold">Random</strong> deals every chord its own inside scale;
                 <strong class="font-semibold">Shuffle</strong> deals a new hand. It's a view setting, like the instrument:
                 it isn't saved into the chart, and a scale you picked yourself plays at every level.
@@ -196,6 +196,49 @@
             </div>
           </dl>
           <UiText>What each level reaches for: <DecisionLink id="scale.level">Scale levels</DecisionLink>.</UiText>
+        </div>
+
+        <div v-if="alternatesOn" class="space-y-3" data-controls-group>
+          <UiSubheading id="alternates" :level="3" class="scroll-mt-6">Alternate changes</UiSubheading>
+          <UiText>
+            Some library charts carry a second set of changes for the bars where a common substitution is played (passing diminished
+            chords, a bebop bridge's ii–Vs). The other bars are shared. A chart that has them shows <strong class="font-semibold text-zinc-950 dark:text-white">Changes</strong>
+            in the toolbar above the sheet; a chart without them looks as it always did.
+          </UiText>
+          <dl class="space-y-4 text-base/6 sm:text-sm/6">
+            <div>
+              <dt class="font-semibold text-zinc-950 dark:text-white">Standard · Alternate</dt>
+              <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
+                Which set is the main one. Every sheet plays it: the Changes, the Scales, the arpeggios and patterns, the guide tones, your
+                picks and Practice. Each set keeps its own picks and Practice choices, so flipping back finds them as you left them. A sheet
+                playing the alternates says <UiCode>Alternate changes</UiCode> under its title, printed too.
+              </dd>
+            </div>
+            <div>
+              <dt class="font-semibold text-zinc-950 dark:text-white">Other changes</dt>
+              <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
+                On the Changes sheet, shows the other set's chords small above their bars, as a Real Book prints them. Flip the main set and the
+                two swap places. Off hides them.
+              </dd>
+            </div>
+          </dl>
+          <UiText>
+            Both settings are remembered per chart in this browser and travel in a share link.
+          </UiText>
+          <UiText>
+            <strong class="font-semibold text-zinc-950 dark:text-white">Editing alternates.</strong> While you edit on a wide screen with
+            Standard playing, a small line above the bars takes each bar's alternate. Click <UiCode>+ alt</UiCode> (or a bar's alternate)
+            and type its chords: Tab moves to the next bar, Shift+Tab to the one before, Enter keeps it, Esc cancels. Leave it empty to
+            remove the bar's alternate. A bar that goes on holding an earlier alternate shows that chord in italics. Chords the
+            alternate set already plays there (the standard changes, or a chord held from before) aren't kept.
+          </UiText>
+          <UiText>
+            With Changes set to Alternate, the big chords are the alternate set. Retype a bar both sets share and it becomes an alternate;
+            retype it back and the alternate goes. Tapping a chord sets its scale and function as usual: on an alternate bar it sets the
+            alternate's, on a shared bar the shared chord's. An alternate can't be held. Adding, deleting or splitting bars, pasting and
+            new sections act on both sets. On a phone, switch to Alternate and tap a chord. A repeated section shows its alternates but
+            can't be given new ones on the line: write the section out first.
+          </UiText>
         </div>
 
         <div class="space-y-3" data-controls-group>
@@ -210,6 +253,30 @@
                 the analysis rows, lines, scale spelling, Practice, repeats and endings, and choosing a chord's scale.
                 <strong class="font-semibold">Everything</strong> adds pentatonics, chord picks, functions and key changes, and the
                 chart's source. A sheet set up with controls you can't see says so above it, with Show controls and Reset.
+              </dd>
+            </div>
+          </dl>
+        </div>
+
+        <div v-if="metronomeOn" class="space-y-3" data-controls-group>
+          <UiSubheading :level="3">Practicing with a click</UiSubheading>
+          <dl class="space-y-4 text-base/6 sm:text-sm/6">
+            <div>
+              <dt class="font-semibold text-zinc-950 dark:text-white">Click</dt>
+              <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
+                The note icon beside Print shows a metronome along the bottom of the window (in focus mode, in the bar at the top), so you can play the
+                tune from the sheet without another app. It's set to the chart's time signature, with a tempo and a feel read
+                from its style (<DecisionLink id="click.tempo">how</DecisionLink>). <strong class="font-semibold">Start</strong>
+                plays it, and <kbd>Space</kbd> starts and stops it from anywhere on the page.
+                <strong class="font-semibold">−</strong> and <strong class="font-semibold">+</strong> change the tempo by one
+                (with Shift, by five), as do the arrow keys in the tempo, or type it, 40 to 300; <strong class="font-semibold">Tap</strong> takes it from a few
+                taps of the beat. The feel is what plays between the beats: <strong class="font-semibold">Quarters</strong>, the
+                beats alone; <strong class="font-semibold">Swing</strong>, the skip note of swung eighths; or
+                <strong class="font-semibold">Straight</strong>, even eighths. Under <strong class="font-semibold">⋯</strong>: a
+                count-in of one or two bars, a hat on 2 and 4 in 4/4, and the sound, Wood or Beep. The chevron folds it to
+                Start, the tempo and the beat, playing on, to leave a phone's screen to the music. The
+                chart remembers its tempo and feel. A chart that changes time signature partway plays the one it starts in.
+                On an iPhone or iPad the sound stops when the screen locks.
               </dd>
             </div>
           </dl>
@@ -240,7 +307,7 @@
           </li>
           <li>
             <strong class="font-semibold text-zinc-950 dark:text-white">Pentatonic</strong> lights a minor pentatonic over
-            each scale: the notes they share, and the pentatonic's others added to the staff in a second colour. <strong class="font-semibold">Built on</strong> picks the degree of each chord
+            each scale: the notes they share, and the pentatonic's others added to the staff in a second color. <strong class="font-semibold">Built on</strong> picks the degree of each chord
             it starts from: on 2 over Cmaj7 is Dm pentatonic, and over G7 it's Am. <strong class="font-semibold">Auto</strong>
             picks the one that shares the most, nearest the chord's root (<DecisionLink id="pent.auto">how</DecisionLink>). The caption under each chord names it and
             counts the notes it shares (<UiCode>Dm pent · 5 shared</UiCode>). {{ PENT_INSIDE_HELP }}
@@ -253,7 +320,7 @@
             picks the pair that covers the most chord tones (<DecisionLink id="hex.auto">how</DecisionLink>); ranked against
             <strong class="font-semibold">Key</strong>, each staff takes its key area's IV and V triads where its scale holds
             them, and the caption says <em>off key</em> where it doesn't. The grouping splits the six notes in two (the two triads,
-            chord tones and colour, a pentatonic and one more, or the lowest three and highest three), tinted apart; the
+            chord tones and color, a pentatonic and one more, or the lowest three and highest three), tinted apart; the
             caption under each chord names the pair.
           </li>
           <li>
@@ -278,7 +345,7 @@
       <section class="scroll-mt-6 space-y-4" aria-labelledby="editing">
         <UiSubheading id="editing" class="scroll-mt-6">Editing a chart</UiSubheading>
         <UiText>
-          You can change anything in a chart: a reharmonisation, a different scale choice, a bridge you play differently.
+          You can change anything in a chart: a reharmonization, a different scale choice, a bridge you play differently.
           Press <strong class="font-semibold text-zinc-950 dark:text-white">Edit</strong>, next to the title, and the chart opens as bars, four to a line, always in
           concert pitch; <strong class="font-semibold text-zinc-950 dark:text-white">Done</strong> puts it away. The sheet keeps up as you go, and ⌘Z (Ctrl+Z off a Mac)
           undoes.
@@ -296,7 +363,7 @@
           </li>
           <li>The bar's own buttons add a bar before or after, delete it, start a new section or a key change there, and add endings, a segno, a coda or a jump.</li>
           <li>Under the bars: <strong class="font-semibold text-zinc-950 dark:text-white">+ Bar</strong>, <strong class="font-semibold text-zinc-950 dark:text-white">+ Section…</strong>, <strong class="font-semibold text-zinc-950 dark:text-white">Repeat a section…</strong> and <strong class="font-semibold text-zinc-950 dark:text-white">Paste bars…</strong>. <strong class="font-semibold text-zinc-950 dark:text-white">Numerals &amp; scales</strong> shows each chord's numeral and scale under it.</li>
-          <li>If a chord comes up amber, I don't recognise it. Pick a scale for it and it'll draw (<DecisionLink id="scale.unknown">what happens to it until then</DecisionLink>).</li>
+          <li>If a chord comes up amber, I don't recognize it. Pick a scale for it and it'll draw (<DecisionLink id="scale.unknown">what happens to it until then</DecisionLink>).</li>
           <li>With the editor open, you can also tap a chord on the Changes sheet to change it there. On a phone that's the way to edit: the bars need a bigger screen.</li>
         </ul>
 
@@ -328,11 +395,11 @@
             not to the intro. <UiCode>outside: yes</UiCode> does the same for a section of any name.
           </li>
           <li>
-            <UiCode>time: 3/4</UiCode> makes it a waltz (<UiCode>2/4</UiCode>, <UiCode>4/4</UiCode>, <UiCode>5/4</UiCode>
-            and <UiCode>6/4</UiCode> work too; 4/4 is what you get without it). With a guide tone line on, the Changes
+            <UiCode>time: 3/4</UiCode> makes it a waltz (<UiCode>2/4</UiCode>, <UiCode>4/4</UiCode>, <UiCode>5/4</UiCode>,
+            <UiCode>6/4</UiCode> and <UiCode>7/4</UiCode> work too; 4/4 is what you get without it). With a guide tone line on, the Changes
             sheet writes its guide tones in it. Under a <UiCode>section:</UiCode> line, <UiCode>time:</UiCode> sets that
-            section's metre, and <UiCode>@time 11 2/4</UiCode> changes it from bar 11 to the section's end (follow it with
-            <UiCode>@time 12 4/4</UiCode> for a single 2/4 bar). The bar menu's Bar in 2/4 … 6/4 does it for you.
+            section's meter, and <UiCode>@time 11 2/4</UiCode> changes it from bar 11 to the section's end (follow it with
+            <UiCode>@time 12 4/4</UiCode> for a single 2/4 bar). The bar menu's Bar in 2/4 … 7/4 does it for you.
           </li>
           <li><UiCode>title:</UiCode> and <UiCode>subtitle:</UiCode> set the heading. <UiCode>composer:</UiCode>, <UiCode>style:</UiCode>, <UiCode>key:</UiCode> and <UiCode>form:</UiCode> fill in the line under it (the subtitle, if there is one, takes the style's place), <UiCode>aka:</UiCode> gives the tune's other titles (a <UiCode>;</UiCode> between them; the library search finds them too), <UiCode>kind:</UiCode> says whether the chart is a <UiCode>tune</UiCode> (without one), a <UiCode>form</UiCode> with no composer (F Blues, Rhythm Changes) or an <UiCode>exercise</UiCode>, <UiCode>context:</UiCode> how the analysis reads it (<UiCode>functional</UiCode>, <UiCode>modal</UiCode> or <UiCode>blues</UiCode>; <strong class="font-semibold">Read as</strong> in the heading sets it, and blues reads it as a blues whatever its form: <DecisionLink id="scale.blues">how</DecisionLink>), and lines starting with <UiCode>#</UiCode> are notes to yourself. A row can end in a note too, after a space and a <UiCode>#</UiCode>: the library's say why each scale was chosen.</li>
           <li>Anything I can't make sense of is listed under the source, with the line number.</li>
@@ -390,8 +457,8 @@
           <UiSubheading id="backup" :level="3" class="scroll-mt-6 pt-2">Back up and restore</UiSubheading>
           <UiText>
             <strong class="font-semibold">Backup → Back up…</strong> in the library saves everything this browser keeps
-            in one file: My charts, each chart's practice picks, level and chord picks, the same for library tunes, and
-            your preferences (instrument, range, theme, how the sheets look). Undo history stays behind.
+            in one file: My charts, each chart's practice picks, level and chord picks (the alternate changes' too, and which set you play), the same for library tunes, and
+            your preferences (instrument, range, theme, how the sheets look). Undo history stays behind<template v-if="metronomeOn">, and so does each chart's click tempo</template>.
             <strong class="font-semibold">Restore from backup…</strong> (or <strong class="font-semibold">Open chart…</strong>,
             or dropping the file on the library) brings it into another browser. It shows what's new, what's already
             there and what differs before anything changes; nothing of yours is replaced unless you choose it.
@@ -431,7 +498,7 @@
           </li>
           <li>
             <strong class="font-semibold text-zinc-950 dark:text-white">Focus</strong> hides everything but the sheet
-            music, for practising from a tablet or laptop on the stand. Press <kbd class="font-sans font-semibold">Esc</kbd>
+            music, for practicing from a tablet or laptop on the stand. Press <kbd class="font-sans font-semibold">Esc</kbd>
             or <strong class="font-semibold">Exit focus</strong> to come back.
           </li>
         </ul>
@@ -477,10 +544,12 @@ import { PENT_INSIDE_HELP } from '~/utils/pentatonics'
 const offline = useFeature('offline')
 const patternsOn = useFeature('patterns')
 const cellsOn = useFeature('cells')
+const alternatesOn = useFeature('alternates')
 const phraseCellsOn = useFeature('phraseCells')
 const approachesOn = useFeature('approaches')
 const ireal = useFeature('ireal')
 const backupOn = useFeature('backup')
+const metronomeOn = useFeature('metronome')
 const SECTIONS = [
   { id: 'quick', title: 'The short version' },
   { id: 'sheets', title: 'The sheets' },

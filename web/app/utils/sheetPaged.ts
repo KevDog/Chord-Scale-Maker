@@ -3,6 +3,9 @@ import type { InjectionKey, Ref } from 'vue'
 /** focus mode: the sheet as separate pages fitted to the window (EditorView provides it; SheetPages reads it) */
 export const SHEET_PAGED: InjectionKey<Readonly<Ref<boolean>>> = Symbol('sheetPaged')
 
+/** focus mode's top bar's height in px (EditorView measures it; SheetPages fits pages under it) */
+export const FOCUS_BAR_HEIGHT: InjectionKey<Readonly<Ref<number>>> = Symbol('focusBarHeight')
+
 /** the zoom of the page a sheet's popovers sit in (1 off focus mode): they undo it, to read at full size */
 export const PAGE_ZOOM: InjectionKey<Readonly<Ref<number>>> = Symbol('pageZoom')
 

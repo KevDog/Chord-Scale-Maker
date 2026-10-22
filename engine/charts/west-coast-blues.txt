@@ -9,7 +9,7 @@ context: blues
 source: The New Real Book, Vol. 1
 recording: Wes Montgomery; The Incredible Jazz Guitar of Wes Montgomery; Riverside; 1960
 youtube: VSkVxeJTiX8
-# analysis: 2026-10-19, rules v2; Bb, blues
+# analysis: 2026-10-22, rules v2; Bb, blues
 # book: Medium Jazz Waltz, quarter = 152. A is the head (a 24-bar blues in 3/4, guitar), B the solo changes;
 # repeat signs around each. After solos, D.C. al Coda (coda sign at the end of bar 24). Bass walks for solos, not head.
 # Coda: the B7sus is pushed an eighth ahead of bars 4 and 8 (written in those bars).
@@ -17,16 +17,16 @@ youtube: VSkVxeJTiX8
 # bar | chord
 
 section: A
-1  | Bb7        # I7 of the blues: a tonic with dominant colour, Mixolydian
+1  | Bb7        # I7 of the blues: a tonic with dominant color, Mixolydian
 3  | Ab7        # ♭VII7 from the parallel minor: Lydian Dominant
-5  | Bb7        # I7 of the blues: a tonic with dominant colour, Mixolydian
+5  | Bb7        # I7 of the blues: a tonic with dominant color, Mixolydian
 7  | Bm7        # ii of E7: Dorian
 8  | E7         # tritone substitute: resolves down a half step to Eb7
-9  | Eb7        # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-13 | Bb7        # I7 of the blues: a tonic with dominant colour, Mixolydian
+9  | Eb7        # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+13 | Bb7        # I7 of the blues: a tonic with dominant color, Mixolydian
 17 | F7         # V7 of the blues: a dominant that needn’t resolve, Mixolydian
-19 | Eb7        # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-21 | Bb7        # I7 of the blues: a tonic with dominant colour, Mixolydian
+19 | Eb7        # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+21 | Bb7        # I7 of the blues: a tonic with dominant color, Mixolydian
 # bar 24: Bb7 held from bar 21, repeated for the coda sign
 24 | Bb7
 @coda 24
@@ -34,10 +34,10 @@ section: A
 section: B
 1  | Bb7
 3  | Ab7        # ♭VII7 from the parallel minor: Lydian Dominant
-5  | Bb7        # I7 of the blues: a tonic with dominant colour, Mixolydian
+5  | Bb7        # I7 of the blues: a tonic with dominant color, Mixolydian
 7  | Bm7        # ii of E7: Dorian
 8  | E7         # tritone substitute: resolves down a half step to Eb7
-9  | Eb7        # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+9  | Eb7        # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 11 | Ebm7       # ii of Ab7: Dorian
 12 | Ab7        # extended ii–V: a side-step, its own key
 13 | Dm7        # iii: Phrygian, the key's own notes (the ♭2 is a passing note)

@@ -6,7 +6,7 @@ form: Blues, 12 bars
 source: The New Real Book, Vol. 1
 recording: McCoy Tyner; The Real McCoy; Blue Note; 1967
 youtube: aQFZNm7JGqg
-# analysis: 2026-10-19, rules v2; Bb, blues
+# analysis: 2026-10-22, rules v2; Bb, blues
 # recording: recorded 1967-04-21, take 7, Blue Note BLP 4264, with Joe Henderson, Ron Carter, Elvin Jones (jazzdisco.org, MusicBrainz release group)
 # the pickup is a melodic figure with no chords
 # head played twice before and after solos; solo on Bb blues; last time to the Coda from bar 12
@@ -14,17 +14,17 @@ youtube: aQFZNm7JGqg
 # bar | chord
 
 section: A
-1  | Bb7      # I7 of the blues: a tonic with dominant colour, Mixolydian
+1  | Bb7      # I7 of the blues: a tonic with dominant color, Mixolydian
 # alt: bar 2 beat 3 (Edim7)
-2  | Eb7      # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-3  | Bb7      # I7 of the blues: a tonic with dominant colour, Mixolydian
+2  | Eb7      # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+3  | Bb7      # I7 of the blues: a tonic with dominant color, Mixolydian
 3  | Bb7sus4  # I7sus of the blues: Mixolydian
 3  | Ab7sus4  # static sus: Mixolydian
 4  | F#7sus4  # static sus: Mixolydian
 4  | E7sus4   # static sus: Mixolydian
 4  | D7sus4   # static sus: Mixolydian
-5  | Eb7      # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-6  | Bb7#5#9  # I7 of the blues: a tonic with dominant colour; b9, #9, #11 and b13 from the symbol
+5  | Eb7      # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+6  | Bb7#5#9  # I7 of the blues: a tonic with dominant color; b9, #9, #11 and b13 from the symbol
 # bar 6: printed Bb7(#9 #5), entering after beat 1
 7  | Eb7sus4  # IV7sus of the blues: Mixolydian
 # alt: bar 7 beat 1 (Bb7)
@@ -33,7 +33,7 @@ section: A
 8  | G7alt    # from the symbol: altered
 9  | Cm7      # ii of F7sus4: Dorian
 10 | F7sus4   # V7sus of the blues: Mixolydian
-11 | Bb7      # I7 of the blues: a tonic with dominant colour, Mixolydian
+11 | Bb7      # I7 of the blues: a tonic with dominant color, Mixolydian
 11 | G7#5#9   # extended dominant: each one falls a fifth into the next: b9, #9, #11 and b13 from the symbol
 12 | C7alt    # from the symbol: altered
 12 | F7alt    # from the symbol: altered
@@ -44,7 +44,7 @@ bars: 4
 @coda 1
 1  | C7alt    # from the symbol: altered
 1  | F7alt    # from the symbol: altered
-1  | Bb7#11   # I7 of the blues: a tonic with dominant colour; #11 from the symbol
+1  | Bb7#11   # I7 of the blues: a tonic with dominant color; #11 from the symbol
 # Coda bar 1: Bb7#11 on beat 4
 # bar 2: N.C. (drum fill)
 3  | E7#9     # a chromatic dominant with nowhere to go: Lydian Dominant, its own key; b9 and #9 from the symbol

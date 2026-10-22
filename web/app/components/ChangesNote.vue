@@ -1,6 +1,6 @@
 <template>
   <!-- a numeral or scale on the Changes sheet; a click or tap opens why the analysis chose it, with the rule behind it.
-       A dotted underline in the accent colour says it opens (not printed) -->
+       A dotted underline in the accent color says it opens (not printed) -->
   <HPopover class="relative inline-block max-w-full">
     <HPopoverButton
       :class="wrap ? 'whitespace-normal' : 'truncate'"

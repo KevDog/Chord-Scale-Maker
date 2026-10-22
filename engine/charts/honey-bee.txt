@@ -7,21 +7,21 @@ form: AA, 24 bars
 source: iReal Pro
 recording: Muddy Waters; The Best of Muddy Waters; Chess; 1958
 youtube: LATeZ5VKjc8
-# analysis: 2026-10-19, rules v2; F, blues
+# analysis: 2026-10-22, rules v2; F, blues
 # recording: recorded 1951-01-23, Chicago, with Little Walter (g), Big Crawford (b); first issued on 78 (Chess 1468, 1951); first LP LP-1427 (1958) (Wikipedia, Discogs); video: "Provided to YouTube by Universal Music Group", The Best of Muddy Waters, the same take
 
 section: A1
-1  | F7   # I7 of the blues: a tonic with dominant colour, Mixolydian
+1  | F7   # I7 of the blues: a tonic with dominant color, Mixolydian
 2  | F7
 3  | F7
 4  | F7
-5  | Bb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+5  | Bb7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 6  | Bb7
-7  | F7   # I7 of the blues: a tonic with dominant colour, Mixolydian
+7  | F7   # I7 of the blues: a tonic with dominant color, Mixolydian
 8  | F7
 9  | C7   # V7 of the blues: a dominant that needn’t resolve, Mixolydian
-10 | Bb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-11 | F7   # I7 of the blues: a tonic with dominant colour, Mixolydian
+10 | Bb7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+11 | F7   # I7 of the blues: a tonic with dominant color, Mixolydian
 12 | C7   # V7 of the blues: a dominant that needn’t resolve, Mixolydian
 @coda 11
 
@@ -30,6 +30,6 @@ copy: A1
 
 section: Coda
 1  | F6   # I of the blues: a triad here implies its ♭7, Mixolydian
-1  | F9   # I7 of the blues: a tonic with dominant colour, Mixolydian
+1  | F9   # I7 of the blues: a tonic with dominant color, Mixolydian
 2  | F9
 @coda 1

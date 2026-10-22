@@ -4,49 +4,70 @@ subtitle: Standard Changes
 style: Medium up
 form: AABA, 32 bars
 key: Bb
-# analysis: 2026-10-19, rules v2; Bb
+# analysis: 2026-10-22, rules v2; Bb
+# alternates: diminished passing chords (A) and the bebop bridge's ii–Vs; Mark Levine, The Jazz Theory Book
 
 # bar | chord | scale
 
 section: A1
-1 | Bb6    # tonic: the 4th is in the key
-1 | G7b9   # V7/ii in Bb: the b13 is in the key, the b9 from the symbol
-2 | Cm7    # ii of the ii–V to Bb
-2 | F7     # V7 of Bb: natural tensions
-3 | Bb6    # tonic: the 4th is in the key
-3 | G7b9   # V7/ii in Bb: the b13 is in the key, the b9 from the symbol
-4 | Cm7    # ii of F7: Dorian
-4 | F7     # extended dominant: V7 of Bb7
-5 | Bb7    # extended dominant: V7 of Eb7
-6 | Eb7    # IV7 in Bb, not resolving: the #11 is in the key
-6 | Edim7  # ♯IV°7 to I: A7♭9 without its root, the ♯II°7's notes
-7 | Bb6    # tonic: the 4th is in the key
-7 | G7b9   # V7/ii in Bb: the b13 is in the key, the b9 from the symbol
-8 | Cm7    # ii of the ii–V to Bb
-8 | F7     # V7 of Bb: natural tensions
+1 | Bb6     # tonic: the 4th is in the key
+1 | G7b9    # V7/ii in Bb: the b13 is in the key, the b9 from the symbol
+alt 1 | Bb6     # tonic: the 4th is in the key
+alt 1 | Bdim7   # vii°7 of Cm7: G7♭9 without its root
+2 | Cm7     # ii of the ii–V to Bb
+2 | F7      # V7 of Bb: natural tensions
+alt 2 | Cm7     # ii: Dorian, the key’s own notes
+alt 2 | C#dim7  # passing diminished: a rootless dominant ♭9
+3 | Bb6     # tonic: the 4th is in the key
+3 | G7b9    # V7/ii in Bb: the b13 is in the key, the b9 from the symbol
+4 | Cm7     # ii of F7: Dorian
+4 | F7      # extended dominant: V7 of Bb7
+5 | Bb7     # extended dominant: V7 of Eb7
+6 | Eb7     # IV7 in Bb, not resolving: the #11 is in the key
+6 | Edim7   # ♯IV°7 to I: A7♭9 without its root, the ♯II°7's notes
+7 | Bb6     # tonic: the 4th is in the key
+7 | G7b9    # V7/ii in Bb: the b13 is in the key, the b9 from the symbol
+8 | Cm7     # ii of the ii–V to Bb
+8 | F7      # V7 of Bb: natural tensions
 
 section: A2
-1 | Bb6    # tonic: the 4th is in the key
-1 | G7b9   # V7/ii in Bb: the b13 is in the key, the b9 from the symbol
-2 | Cm7    # ii of the ii–V to Bb
-2 | F7     # V7 of Bb: natural tensions
-3 | Bb6    # tonic: the 4th is in the key
-3 | G7b9   # V7/ii in Bb: the b13 is in the key, the b9 from the symbol
-4 | Cm7    # ii of F7: Dorian
-4 | F7     # extended dominant: V7 of Bb7
-5 | Bb7    # extended dominant: V7 of Eb7
-6 | Eb7    # IV7 in Bb, not resolving: the #11 is in the key
-6 | Edim7  # passing diminished: C7♭9 without its C, the F7's dominant; not functioning diatonically: the symmetric scale
-7 | Cm7    # ii of the ii–V to Bb
-7 | F7     # V7 of Bb: natural tensions
-8 | Bb6    # tonic: the 4th is in the key
+1 | Bb6     # tonic: the 4th is in the key
+1 | G7b9    # V7/ii in Bb: the b13 is in the key, the b9 from the symbol
+alt 1 | Bb6     # tonic: the 4th is in the key
+alt 1 | Bdim7   # vii°7 of Cm7: G7♭9 without its root
+2 | Cm7     # ii of the ii–V to Bb
+2 | F7      # V7 of Bb: natural tensions
+alt 2 | Cm7     # ii: Dorian, the key’s own notes
+alt 2 | C#dim7  # passing diminished: a rootless dominant ♭9
+3 | Bb6     # tonic: the 4th is in the key
+3 | G7b9    # V7/ii in Bb: the b13 is in the key, the b9 from the symbol
+4 | Cm7     # ii of F7: Dorian
+4 | F7      # extended dominant: V7 of Bb7
+5 | Bb7     # extended dominant: V7 of Eb7
+6 | Eb7     # IV7 in Bb, not resolving: the #11 is in the key
+6 | Edim7   # passing diminished: C7♭9 without its C, the F7's dominant; not functioning diatonically: the symmetric scale
+7 | Cm7     # ii of the ii–V to Bb
+7 | F7      # V7 of Bb: natural tensions
+8 | Bb6     # tonic: the 4th is in the key
 
 section: B
 bars: 8
-1 | D7     # extended dominant: each one falls a fifth into the next: natural tensions
-3 | G7     # extended dominant: each one falls a fifth into the next: natural tensions
-5 | C7     # V7 of V7: the dominant of the dominant: natural tensions
-7 | F7     # V7 of Bb: natural tensions
+1 | D7      # extended dominant: each one falls a fifth into the next: natural tensions
+alt 1 | Am7     # ii of D7: Dorian
+alt 1 | D7      # extended ii–V: a side-step, its own key
+alt 2 | D7
+3 | G7      # extended dominant: each one falls a fifth into the next: natural tensions
+alt 3 | Dm7    |  | C: ii7  # * ii of the ii–V to C
+alt 3 | G7      # extended ii–V: a side-step, its own key
+alt 4 | G7
+5 | C7      # V7 of V7: the dominant of the dominant: natural tensions
+alt 5 | Gm7     # ii of C7: Dorian
+alt 5 | C7      # V7/V in Bb: natural tensions
+alt 6 | C7
+7 | F7      # V7 of Bb: natural tensions
+alt 7 | Cm7     # ii of the ii–V to Bb
+alt 7 | F7      # V7 of Bb: natural tensions
+alt 8 | F7
 
 section: A3
 copy: A2

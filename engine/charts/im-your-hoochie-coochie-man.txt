@@ -8,7 +8,7 @@ source: iReal Pro
 aka: Hoochie Coochie Man
 recording: Muddy Waters; The Best of Muddy Waters; Chess; 1958
 youtube: sSnxwnPkgas
-# analysis: 2026-10-19, rules v2; A, blues
+# analysis: 2026-10-22, rules v2; A, blues
 # recording: recorded 1954-01-07, Chicago, with Little Walter, Jimmy Rogers, Otis Spann, Willie Dixon, Elgin Evans; matrix U7589, first issued on 78 (Chess 1560, 1954), first LP Chess LP 1427 (1958); sources: Wikipedia, DAHR, MusicBrainz; video: "Provided to YouTube by Universal Music Group", His Best 1947 To 1956, the 1954 master, the same take
 
 section: A
@@ -22,11 +22,11 @@ section: A
 8 | A
 
 section: B
-1 | D7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+1 | D7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 2 | D7
-3 | A7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+3 | A7  # I7 of the blues: a tonic with dominant color, Mixolydian
 4 | A7
 5 | E7  # V7 of the blues: a dominant that needn’t resolve, Mixolydian
-6 | D7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-7 | A7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+6 | D7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+7 | A7  # I7 of the blues: a tonic with dominant color, Mixolydian
 8 | A7

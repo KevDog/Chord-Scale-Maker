@@ -1,4 +1,5 @@
-import { type ChartContext, type ChartDoc, type ChartLine, expandRowLines, formPart, lineSections, type LinedRow, parseContext } from '../chart'
+import { changesFor } from '../alternates'
+import { type ChartContext, type ChartDoc, type ChartLine, expandRowLines, formPart, hasAlternates, lineSections, type LinedRow, parseContext } from '../chart'
 import { type Layout, sectionLayout, statedKeyAt } from '../layout'
 import { LIMITS } from '../limits'
 import { pcOf, rootName, shiftBy, type Spelled } from '../pitch'
@@ -260,7 +261,7 @@ function analyseNow(doc: ChartDoc): Analysis {
   return { key: p.global, keyFrom: p.keyFrom, context: p.context, contextSource: p.contextSource, detection: p.detection, areas, rows: out, problems: p.problems }
 }
 
-/** one option of the grid's Function dropdown: value '' is Auto (the analyser's own reading, labelled with
+/** one option of the grid's Function dropdown: value '' is Auto (the analyzer's own reading, labeled with
  * its numeral; "Auto" when it has none, "Auto (extended dominant)" for a chain link the sheet marks →).
  * accept (on Auto, where the rules could only guess and the row states nothing): the function that reads and
  * sounds just like Auto, so stating it settles the guess
@@ -324,23 +325,33 @@ export type Override = Readonly<{ line: number; bar: string; chord: string; scal
 export type Conflict = Readonly<{ line: number; section: string; bar: string; chord: string; source: string; copy: string }>
 
 const isAnalysisComment = (l: ChartLine): boolean => l.kind === 'comment' && /^#\s*(analysis|area):/.test(l.text)
-const isKept = (l: ChartLine): boolean => l.kind === 'row' && /^keep:/.test(l.comment ?? '')
+const isKept = (l: ChartLine): boolean => (l.kind === 'row' || l.kind === 'altRow') && /^keep:/.test(l.comment ?? '')
 
 export function applyAnalysis(
   doc: ChartDoc,
   analysis: Analysis,
   options: ApplyOptions,
+  alternate?: Analysis,
 ): Readonly<{ doc: ChartDoc; changes: readonly Change[]; conflicts: readonly Conflict[]; overrides: readonly Override[] }> {
   // each written line takes its first occurrence's verdict; a repeat that disagrees is reported
+  // (with alternates, `analysis` is the standard set's and `alternate` the alternate set's, over the same line indices:
+  // alt rows are only in the latter; a shared row keeps the standard verdict and reason, the alternate's only veto a strip)
   const byLine = new Map<number, RowAnalysis>()
   const conflicts: Conflict[] = []
-  const played = expandRowLines(doc).value
-  for (const r of analysis.rows) {
-    const first = byLine.get(r.line)
-    if (!first) byLine.set(r.line, r)
-    else if (first.scale !== r.scale && !conflicts.some((c) => c.line === r.line))
-      conflicts.push({ line: r.line, section: played[r.row]?.section ?? '', bar: r.bar, chord: r.chord, source: first.scale ?? '?', copy: r.scale ?? '?' })
+  const collect = (a: Analysis, lined: readonly { section: string }[]): void => {
+    const seen = new Map<number, RowAnalysis>()
+    for (const r of a.rows) {
+      const first = seen.get(r.line)
+      if (!first) {
+        seen.set(r.line, r)
+        if (!byLine.has(r.line)) byLine.set(r.line, r)
+      } else if (first.scale !== r.scale && !conflicts.some((c) => c.line === r.line))
+        conflicts.push({ line: r.line, section: lined[r.row]?.section ?? '', bar: r.bar, chord: r.chord, source: first.scale ?? '?', copy: r.scale ?? '?' })
+    }
   }
+  collect(analysis, expandRowLines(doc).value)
+  if (alternate) collect(alternate, expandRowLines(changesFor(doc, 'alternate')).value)
+  const occurrences = [...analysis.rows, ...(alternate?.rows ?? [])]
   const changes: Change[] = []
   const overrides: Override[] = []
   const areaAt = new Map<number, string>()
@@ -353,12 +364,12 @@ export function applyAnalysis(
   const out: ChartLine[] = []
   doc.lines.forEach((l, i) => {
     if (options.save && isAnalysisComment(l)) return // rewritten below
-    if (l.kind !== 'row') return void out.push(l)
+    if (l.kind !== 'row' && l.kind !== 'altRow') return void out.push(l)
     const r = byLine.get(i)
     if (!r) return void out.push(l)
     let row = l
     if (l.scale && !isKept(l)) {
-      const differs = analysis.rows.find((x) => x.line === i && !sameScale(l.scale, x.scale))
+      const differs = occurrences.find((x) => x.line === i && !sameScale(l.scale, x.scale))
       if (differs) overrides.push({ line: i, bar: differs.bar, chord: differs.chord, scale: l.scale, rules: differs.scale ?? '?' })
       else if (options.scales === 'strip') {
         changes.push({ line: i, bar: r.bar, chord: r.chord, from: l.scale, to: '' })
@@ -392,6 +403,14 @@ export function applyAnalysis(
   return { doc: { lines: out }, changes, conflicts, overrides }
 }
 
+/** a chart's analysis, and with alternates (#215) its alternate set's too, over the same line indices (its alt rows are the ones it adds) */
+export function analyseBoth(doc: ChartDoc): Readonly<{ standard: Analysis; alternate: Analysis | undefined }> {
+  return { standard: analyse(doc), alternate: hasAlternates(doc) ? analyse(changesFor(doc, 'alternate')) : undefined }
+}
+
+/** a line of a report about the alternate set (its ambiguities, its problems) */
+export const onAlternate = (line: string): string => `alternate: ${line}`
+
 /**
  * a chart's saved analysis rewritten for the chart as it now stands (after Transpose…, its key and reasons name the
  * new key), keeping the header's date: the rules didn't change. A chart without an `# analysis:` header comes back
@@ -401,7 +420,8 @@ export function refreshAnalysis(doc: ChartDoc): ChartDoc {
   const header = doc.lines.find((l) => l.kind === 'comment' && /^#\s*analysis:/.test(l.text))
   if (header?.kind !== 'comment') return doc
   const date = /analysis:\s*([^,]*),/.exec(header.text)?.[1]?.trim() ?? ''
-  return applyAnalysis(doc, analyse(doc), { scales: 'none', save: true, date }).doc
+  const { standard, alternate } = analyseBoth(doc)
+  return applyAnalysis(doc, standard, { scales: 'none', save: true, date }, alternate).doc
 }
 
 /**
