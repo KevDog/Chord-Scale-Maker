@@ -6,7 +6,10 @@ style: Latin
 key: Bb
 form: A, 16 bars
 source: Colorado Cookbook, p. 120
+recording: João Gilberto; João Gilberto; Odeon; 1961
+youtube: oZqKyvdJge8
 # analysis: 2026-10-19, rules v2; Bb
+# recording: recorded 1961, Rio de Janeiro, João Gilberto (voice, guitar), as "O Barquinho", Gilberto's third Odeon album (issued in the US by Atlantic); bossa nova song (Menescal–Bôscoli, 1961) → Gilberto's reading as the reference, over Maysa's first recording (Barquinho, 1961); sources: MusicBrainz, Wikipedia; video: "Provided to YouTube by Rhino Atlantic", Recorded in Rio de Janeiro, the same take
 
 # bar | chord | scale
 

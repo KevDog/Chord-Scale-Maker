@@ -4,7 +4,10 @@ style: Up
 key: Dm
 form: AABC head + DDEEEF solos, 104 bars
 source: The New Real Book, Vol. 1
+recording: Miles Davis; Seven Steps to Heaven; Columbia; 1963
+youtube: xXONYUnppLs
 # analysis: 2026-10-19, rules v2; D minor
+# recording: recorded 1963-05-14, Columbia 30th Street Studio, NYC, with George Coleman, Herbie Hancock, Ron Carter, Tony Williams, take CO78344-3, Columbia CL 2051/CS 8851, released 1963-07-15; the first issued recording of it; the April 16 Los Angeles take with Feldman himself on piano was not issued until 2004 (jazzdisco, Wikipedia); video: "Provided to YouTube by Columbia/Legacy", Seven Steps To Heaven, the same take (not the Los Angeles take or the live versions)
 
 # the intro is a bass figure with no chords (the bass vamp continues under A and C)
 # bar | chord

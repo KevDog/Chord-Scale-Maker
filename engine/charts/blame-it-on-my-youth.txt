@@ -4,7 +4,10 @@ style: Ballad
 key: Eb
 form: AB, 32 bars
 source: The New Real Book, Vol. 1
+recording: Keith Jarrett Trio; The Cure; ECM; 1991
+youtube: pMXCs4Q_EfU
 # analysis: 2026-10-19, rules v2; Eb
+# recording: recorded live 1990-04-21, Town Hall, NYC, Keith Jarrett with Gary Peacock and Jack DeJohnette, ECM 1440; songbook standard (1934) with no single reference → the trio reading jazz players know best, over Sinatra's Close to You (1957) and Jarrett's own solo version (The Melody at Night, With You, 1999) (Wikipedia); video: "Provided to YouTube by Universal Music Group", The Cure, the same performance
 
 # bar | chord
 

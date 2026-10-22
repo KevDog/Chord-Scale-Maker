@@ -4,7 +4,10 @@ style: Ballad
 key: C
 form: ABB, 40 bars
 source: The New Real Book, Vol. 1
+recording: Irene Kral; Where Is Love?; Choice; 1975
+youtube: kOmBJ4KBr3Y
 # analysis: 2026-10-19, rules v2; C
+# recording: recorded December 1974, Wally Heider Studios, Los Angeles, Irene Kral with Alan Broadbent (piano), Choice CRS 1012, the title track; a show song from Oliver! (1960) → the jazz reading players know, a duo album often called one of the finest ballad sets on record (Wikipedia, AllMusic); video: "Provided to YouTube by Redeye Worldwide", Where Is Love? (Candid reissue), the same take
 # style: the book says Medium Ballad
 # B is repeated (a second verse of lyrics): written out as B1 and B2
 

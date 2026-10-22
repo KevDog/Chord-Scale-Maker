@@ -4,7 +4,9 @@ style: Medium up
 key: Bb
 form: AABCD + Interlude, 98 bars
 source: The New Real Book, Vol. 1
+recording: Bobby Shew Quartet; Breakfast Wine; Pausa; 1985
 # analysis: 2026-10-19, rules v2; Bb
+# recording: recorded September 1983, Los Angeles, Bobby Shew (trumpet, flugelhorn) with Makoto Ozone, John Patitucci, Sherman Ferguson, Pausa PR 7171, the title track; the chart follows Shew's version (Randy Aldcroft's tune); sources: Discogs, All About Jazz; no video: no official upload
 # as played by Bobby Shew
 # the Bb and Eb chords falling on beat 3 in the head are played on beat 1 for solos (the book's (Bb) on beat 1);
 # in the head the slash chord comes on the and of 3 and is tied into the next bar

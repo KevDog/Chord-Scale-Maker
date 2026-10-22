@@ -5,7 +5,10 @@ key: Fm
 form: AB, 20 bars
 context: modal
 source: The New Real Book, Vol. 1
+recording: Freddie Hubbard; Straight Life; CTI; 1971
+youtube: 5BbC0opSzus
 # analysis: 2026-10-19, rules v2; F minor, modal
+# recording: recorded 1970-11-16, Van Gelder Studio, Englewood Cliffs, with Joe Henderson, Herbie Hancock, George Benson, Ron Carter, Jack DeJohnette, Weldon Irvine (tambourine), Richie "Pablo" Landrum, CTI 6007, released January 1971; the version the chart follows ("as played by Freddie Hubbard") (jazzdisco, Wikipedia); video: "Provided to YouTube by Masterworks Jazz", Straight Life (CTI 40th Anniversary Edition), the same take
 # book: Half-Time Funk/Rock, half note = 82; as played by Freddie Hubbard
 # book: head A (repeated, segno at A); B is the solo vamp (vamp & solo till cue), then an "On Cue" horn figure,
 # book: N.C. for 4 bars: to B for the next solo; after solos, D.S. al Fine (Fine at A bar 15, last time)

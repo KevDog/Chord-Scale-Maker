@@ -6,7 +6,10 @@ style: Blues
 key: Db
 form: A, 12 bars
 source: Colorado Cookbook, p. 235
+recording: Johnny Hodges and His Orchestra; Johnny Hodges and His Alto Sax; RCA Victor; 1952
+youtube: e9zIftGZ5lc
 # analysis: 2026-10-22, rules v2; Db, blues
+# recording: recorded 1941-07-03, Hollywood, Ray Nance, Lawrence Brown, Johnny Hodges, Harry Carney, Duke Ellington, Jimmy Blanton, Sonny Greer, matrix PBS-061348, the first recording of it; first issued on 78 (Bluebird B-11447, 1942, with Squatty Roo), first LP 10" LPT-3000 (DAHR 1952; bsnpubs gives 1953); Mercer Ellington never recorded it first himself (DAHR, Wikipedia); video: "Provided to YouTube by RCA Bluebird", The Great Ellington Units, the 1941 take
 
 # bar | chord | scale
 

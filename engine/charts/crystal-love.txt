@@ -4,7 +4,10 @@ style: Medium straight eighths
 key: G
 form: ABCD, 62 bars
 source: The New Real Book, Vol. 1
+recording: Makoto Ozone; Makoto Ozone; Columbia; 1984
+youtube: bZ2yGUZ7hEo
 # analysis: 2026-10-19, rules v2; G
+# recording: recorded 1984-06-23/24, Mad Hatter Studio, Los Angeles, Makoto Ozone with Gary Burton (vibes, producer) and Eddie Gómez, the opening track of his debut album; the composer's own first recording, with the vibes the chart's fills come from (Wikipedia, Jazz Music Archives); video: "Provided to YouTube by Columbia/Legacy", Makoto Ozone, the same take
 # A–B is the head; C–D are the solo changes ("Solo on CD; after solos D.C. al Coda")
 # the head's A is engraved two bars to a measure in places; the bars here follow the solo section's barring
 

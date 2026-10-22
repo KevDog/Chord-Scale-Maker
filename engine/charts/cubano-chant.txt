@@ -4,7 +4,9 @@ style: Medium up Latin
 key: Ebm
 form: ABCDEF, 64 bars
 source: The New Real Book, Vol. 1
+recording: Ray Bryant; Ray Bryant Trio; Epic; 1956
 # analysis: 2026-10-19, rules v2; Eb minor
+# recording: recorded 1956-05-03, New York, Ray Bryant with Wyatt Ruther, Jo Jones and Candido (congas), Epic LN 3279, the album's opener; Bryant's own first recording (Cal Tjader recorded it first, 1955-11-11), over his trio remake on Con Alma (Columbia, 1961); sources: jazzdisco, Wikipedia; no video: the only uploads of this take are unofficial or from a budget reissue label
 # head ABC; solos on D D E F (D has 1st/2nd endings); after solos, D.S. al Coda
 # chords pushed an eighth early are written on the bar they land in
 

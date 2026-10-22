@@ -4,7 +4,10 @@ style: Medium swing
 key: F
 form: AB, 20 bars
 source: The New Real Book, Vol. 1
+recording: Bill Evans Trio; Sunday at the Village Vanguard; Riverside; 1961
+youtube: OVEOf7VCNgs
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded live 1961-06-25, Village Vanguard, New York, Bill Evans with Scott LaFaro and Paul Motian, take 2 (the LP's), Riverside RLP 376; the chart follows Evans's version; sources: jazzdisco, Wikipedia; video: "Provided to YouTube by Universal Music Group", Sunday At The Village Vanguard [Keepnews Collection], the same take (take 2, not takes 1 or 3)
 # book: as played by Bill Evans
 # the whole form repeats; last time, to the Coda from B bar 7
 

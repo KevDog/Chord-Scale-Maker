@@ -4,7 +4,10 @@ style: Blues
 key: F
 form: A, 12 bars
 source: Colorado Cookbook, p. 40
+recording: Bud Powell; Blues in the Closet; Verve; 1958
+youtube: k_y1RZDdGWU
 # analysis: 2026-10-22, rules v2; F, blues
+# recording: recorded 1956-09-23, Fine Sound Studios, NYC, Bud Powell with Ray Brown, Osie Johnson, Verve MGV 8218, the title track; the composers' own first recording (Oscar Pettiford and Harry Babasin, cellos, 1953-05-14, Hollywood) was issued only on a 7" EP (Imperial IMP 122), with no LP issue confirmed and no official upload → Powell's reading as the LP-era reference (Wikipedia, jazzdisco, Fresh Sound); video: "Provided to YouTube by Universal Music Group", Blues In The Closet, the same take
 
 # bar | chord | scale
 

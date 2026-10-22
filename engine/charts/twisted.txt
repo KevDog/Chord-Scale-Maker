@@ -4,7 +4,10 @@ style: Medium swing
 key: C
 form: AABCD, 62 bars
 source: The New Real Book, Vol. 1
+recording: Wardell Gray; Wardell Gray Tenor Sax Favorites; Prestige; 1951
+youtube: jIyNDYEIseY
 # analysis: 2026-10-19, rules v2; C
+# recording: recorded 1949-11-11, NYC, the Wardell Gray Quartet (Al Haig, Tommy Potter, Roy Haynes), take JRC46E; the 78 (New Jazz 817, with Easy Living, 1950) used take D, and take E was first issued on the 10-inch PRLP 115 (1951), then on Memorial Volume One (PRLP 7008, 1955); the first recording of it, the composer leading (jazzdisco, Discogs); video: "Provided to YouTube by Universal Music Group", Wardell Gray Memorial, Vol. 1 (OJC), the master take E, the same take (not "Alternate 1")
 # form: four 12-bar blues choruses (A repeated with 1st/2nd endings), D extended to 14 bars;
 # D.S. al Coda: play A twice, take the coda from bar 9 the 2nd time
 

@@ -4,7 +4,10 @@ style: Up
 key: F
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 25
+recording: Benny Goodman; The Famous 1938 Carnegie Hall Jazz Concert; Columbia; 1950
+youtube: qX5oaNhXjmk
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded live 1938-01-16, Carnegie Hall, NYC, by the Benny Goodman Quartet (Goodman, Lionel Hampton, Teddy Wilson, Gene Krupa), Columbia SL-160; songbook standard (1920) → the best-known jazz reading, chosen over the Quartet's 1937 Victor studio 78, whose first LP could not be confirmed (Wikipedia); video: "Provided to YouTube by Columbia/Legacy", Live At Carnegie Hall-1938 Complete, the same performance
 
 # bar | chord | scale
 

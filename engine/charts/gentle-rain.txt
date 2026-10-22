@@ -4,7 +4,10 @@ style: Latin
 key: Am
 form: ABABC, 38 bars
 source: Colorado Cookbook, p. 76
+recording: Luiz Bonfá; The Gentle Rain (Original Soundtrack); Mercury; 1966
+youtube: l_SKo1wtk6w
 # analysis: 2026-10-19, rules v2; A minor
+# recording: recorded 1965, Luiz Bonfá with an orchestra arranged and conducted by Eumir Deodato, the title theme of the 1966 film; the composer's own first recording, the song's first release (Wikipedia, soundtrackcollector); video: "Provided to YouTube by Universal Music Group", The Gentle Rain, Bonfá and Deodato, the same take
 
 # bar | chord | scale
 

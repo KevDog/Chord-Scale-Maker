@@ -6,7 +6,10 @@ key: D
 form: AABC, 78 bars
 time: 3/4
 source: The New Real Book, Vol. 1
+recording: Bill Evans; From Left to Right; MGM; 1971
+youtube: kvpJOf1eEtI
 # analysis: 2026-10-19, rules v2; D
+# recording: recorded 1969–70, San Francisco, Bill Evans (piano, Fender Rhodes) with Eddie Gómez, Marty Morell, Sam Brown and an orchestra arranged and conducted by Michael Leonard, the song's composer; show song from The Yearling (1965) → Evans's reading, in the composer's own arrangement, over Hampton Hawes's live trio (recorded 1966, issued 1973) (Wikipedia, MusicBrainz); video: "Provided to YouTube by Universal Music Group", The Complete Bill Evans On Verve, the same take (Leonard credited)
 
 # the C section is 30 bars, as printed
 # bar | chord

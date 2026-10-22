@@ -4,7 +4,10 @@ style: Ballad
 key: Fm
 form: AABC, 33 bars
 source: Colorado Cookbook, p. 237
+recording: Stefan Karlsson; Below Zero; Justice; 1993
+youtube: S5C6TipumU8
 # analysis: 2026-10-19, rules v2; F minor
+# recording: Stefan Karlsson with Rufus Reid, Marvin "Smitty" Smith, Rich Perry (tenor sax on some tracks), Justice JR 0703-2 (Discogs ℗ 1993; Karlsson's own site gives 1994); the first recording of it, the composer leading: it is not on his two earlier Justice albums (Discogs, stefankarlssonjazz.com); video: "Provided to YouTube by Virgin Music Group", Below Zero, the same take
 
 # bar | chord | scale
 

@@ -5,7 +5,10 @@ style: Medium
 key: Bb
 form: BC
 source: Colorado Cookbook, p. 27
+recording: Louis Armstrong; The Louis Armstrong Story, Volume III: Louis Armstrong and Earl Hines; Columbia; 1951
+youtube: Yy2zkftILrI
 # analysis: 2026-10-19, rules v2; Bb
+# recording: recorded 1928-12-04, Chicago, with Fred Robinson, Jimmy Strong, Earl Hines (piano, celeste), Mancy Carr, Zutty Singleton; first issued on 78 (OKeh 8690); first LP Columbia ML 4385 (1951, later CL 853), its opening track; the recording that made the song a standard, over Miles Davis's on Seven Steps to Heaven (Columbia, 1963) (Discogs, Wikipedia, Phil Schaap); video: "Provided to YouTube by Columbia/Legacy", Portrait Of The Artist As A Young Man 1923-1934, the same take
 
 # bar | chord | scale
 # the head's call-and-response A section is left out; solos are on B and C

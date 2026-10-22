@@ -4,7 +4,10 @@ style: Up
 key: Bb
 form: A, 12 bars
 source: The New Real Book, Vol. 1
+recording: Ornette Coleman; This Is Our Music; Atlantic; 1961
+youtube: NwEoe84X99c
 # analysis: 2026-10-22, rules v2; Bb, blues
+# recording: recorded 1960-07-19, NYC, Don Cherry, Ornette Coleman, Charlie Haden, Ed Blackwell, matrix 4727 (as Untitled No. 5), Atlantic LP 1353; the composer's own first recording (not "P.S. Unless One Has (Blues Connotation No. 2)", a different piece) (jazzdisco); video: "Provided to YouTube by Rhino Atlantic", The Atlantic Years, the same take
 # chords suggested only (no chordal instrument on the recording)
 # the pickup bar is a melodic figure with no chords
 # solos in Bb, disregarding the form; after solos the head, then from bar 11 to the Coda

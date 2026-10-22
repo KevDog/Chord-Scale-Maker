@@ -5,7 +5,10 @@ key: Eb
 form: ABC, 40 bars
 context: blues
 source: The New Real Book, Vol. 1
+recording: Mose Allison; I Don't Worry About a Thing; Atlantic; 1962
+youtube: DLWCXTzZ87Q
 # analysis: 2026-10-22, rules v2; Eb, blues
+# recording: recorded 1962-03-15, NYC, Mose Allison with Addison Farmer, Osie Johnson, matrix 6035, Atlantic LP 1389 (also a single, 45-5021); the composer's own first recording; his 1976 remake (Your Mind Is on Vacation, Atlantic) has horns (jazzdisco); video: "Provided to YouTube by Rhino Atlantic", Hommage à Nesuhi, ℗ 1962, the 1962 take (Farmer and Johnson credited)
 # Med. swing (blues); A is a 12-bar blues verse, B a 16-bar verse (segno), C the 12-bar solo blues (repeated)
 # after solos, D.S. (3rd verse) al Coda
 # the pickup bar is a piano Db figure, not a bar of the form

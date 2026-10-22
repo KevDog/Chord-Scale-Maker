@@ -4,7 +4,10 @@ style: Latin
 key: Eb
 form: AABBC, 64 bars
 source: The New Real Book, Vol. 1
+recording: Oscar Peterson Trio; Nigerian Marketplace; Pablo; 1982
+youtube: aT22bCkKmTk
 # analysis: 2026-10-19, rules v2; Eb
+# recording: recorded live July 1981, Montreux Jazz Festival, Oscar Peterson with Niels-Henning Ørsted Pedersen and Terry Clarke, Pablo Live 2308-231 (Wikipedia gives 1981); the composer's own first recording, the title track (Wikipedia); video: "Provided to YouTube by Universal Music Group", Nigerian Marketplace, the same performance
 # book: Medium Latin, half note = 114. Head: Intro, A A, B B (segno at B), C (Fine).
 # book: solo on form (AABBC); after solos, D.S. al Fine. Solos evolve into a funky boogaloo feel.
 # key: no key signature; the A and C sections step down Am9 Gm9 Fm9 to Eb, and B cadences in Eb
