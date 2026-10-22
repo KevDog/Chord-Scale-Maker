@@ -8,6 +8,7 @@ import { rootName } from './pitch'
 import { parseScale, samePitchScale, SCALES } from './scales'
 
 export type RowLine = Extract<ChartLine, { kind: 'row' }>
+export type AltRowLine = Extract<ChartLine, { kind: 'altRow' }>
 export type RowField = 'bar' | 'chord' | 'scale' | 'function'
 
 /**
@@ -27,10 +28,10 @@ export function cellError(value: string, maxLength: number = LIMITS.maxCell, met
 
 const replaceAt = <T>(xs: readonly T[], i: number, x: T): T[] => [...xs.slice(0, i), x, ...xs.slice(i + 1)]
 
-/** set one field of the row at line index i (a no-op if that line is not a row); an empty function removes it */
+/** set one field of the row (or alt row) at line index i (a no-op if that line is neither); an empty function removes it */
 export function setRowField(doc: ChartDoc, i: number, field: RowField, value: string): ChartDoc {
   const line = doc.lines[i]
-  if (line?.kind !== 'row') return doc
+  if (line?.kind !== 'row' && line?.kind !== 'altRow') return doc
   if (field === 'function' && !value) {
     const { function: _, ...rest } = line
     return { lines: replaceAt(doc.lines, i, rest) }
@@ -65,8 +66,8 @@ export function insertKeyBefore(doc: ChartDoc, i: number, key: string): ChartDoc
  */
 export function setRowChord(doc: ChartDoc, i: number, chord: string): ChartDoc {
   const line = doc.lines[i]
-  if (line?.kind !== 'row') return doc
-  const next = defaultScaleOrNull(chord)
+  if (line?.kind !== 'row' && line?.kind !== 'altRow') return doc
+  const next =defaultScaleOrNull(chord)
   const follows = line.scale !== '' && next !== null && samePitchScale(line.scale, defaultScaleOrNull(line.chord)) // by pitch (R18)
   return { lines: replaceAt(doc.lines, i, { ...line, chord, scale: follows ? next : line.scale }) }
 }
@@ -83,7 +84,7 @@ function canonicalScale(text: string): string {
 
 /** each written scale in one written form; an empty cell stays empty (it plays the analysis, a written one pins) */
 function withCanonicalScales(doc: ChartDoc): ChartDoc {
-  return { lines: doc.lines.map((l) => (l.kind === 'row' && l.scale ? { ...l, scale: canonicalScale(l.scale) } : l)) }
+  return { lines: doc.lines.map((l) => ((l.kind === 'row' || l.kind === 'altRow') && l.scale ? { ...l, scale: canonicalScale(l.scale) } : l)) }
 }
 
 /** two chart texts that say the same thing: the same lines, ignoring spacing and how a written scale is named */
@@ -195,7 +196,8 @@ function shiftBars(doc: ChartDoc, view: BarView, section: string, at: number, de
     const s = sections[i]
     if (!s || !moved.has(s)) return [l]
     switch (l.kind) {
-      case 'row': {
+      case 'row':
+      case 'altRow': {
         if (s !== section || !WHOLE.test(l.bar)) return [l]
         const n = map(Number(l.bar))
         return n === null ? [] : n === Number(l.bar) ? [l] : [{ ...l, bar: String(n) }]
@@ -400,7 +402,15 @@ export function writeOutCopy(doc: ChartDoc, section: string): ChartDoc {
   const carried = layout.directives
     .filter((d) => d.section === section && (d.kind === 'key' || d.kind === 'time' || d.kind === 'context') && sections[d.line] !== section)
     .map(({ section: _s, line: _l, ...d }) => d as ChartLine)
-  let next: ChartDoc = { lines: [...doc.lines.slice(0, i), ...rows, ...carried, ...doc.lines.slice(i + 1)] }
+  // the source's alt rows go with them (same bars; the alternate changes' analysis comments are not carried)
+  const source = doc.lines[i]?.kind === 'sectionMeta' ? doc.lines[i].value : ''
+  const alts = doc.lines.flatMap((l, j): AltRowLine[] => (l.kind === 'altRow' && sections[j] === source ? [{ kind: 'altRow', bar: l.bar, chord: l.chord, scale: l.scale, ...(l.function ? { function: l.function } : {}) }] : []))
+  // in bar order, after the main rows of the same bar
+  const merged = alts.reduce<ChartLine[]>((acc, a) => {
+    const after = acc.findLastIndex((r) => (r.kind === 'row' || r.kind === 'altRow') && Number(r.bar) <= Number(a.bar))
+    return [...acc.slice(0, after + 1), a, ...acc.slice(after + 1)]
+  }, rows)
+  let next: ChartDoc = { lines: [...doc.lines.slice(0, i), ...merged, ...carried, ...doc.lines.slice(i + 1)] }
   if (s.key && fieldIndex(next, section, 'key') < 0) next = setSectionField(next, section, 'key', s.key)
   if (s.beats !== chartBeats(doc) && fieldIndex(next, section, 'time') < 0) next = setSectionField(next, section, 'time', `${s.beats}/4`)
   if (s.context && fieldIndex(next, section, 'context') < 0) next = setSectionField(next, section, 'context', s.context)
@@ -426,11 +436,11 @@ export function splitSection(doc: ChartDoc, section: string, bar: number, name: 
   if (!r) return doc
   const moves = (l: ChartLine, i: number): boolean =>
     mine(i) &&
-    ((l.kind === 'row' && WHOLE.test(l.bar) && Number(l.bar) >= bar) ||
+    (((l.kind === 'row' || l.kind === 'altRow') && WHOLE.test(l.bar) && Number(l.bar) >= bar) ||
       (l.kind === 'ending' && l.from >= bar) ||
       ((l.kind === 'key' || l.kind === 'time' || l.kind === 'context' || l.kind === 'mark' || l.kind === 'nav') && l.bar >= bar))
   const renumber = (l: ChartLine): ChartLine => {
-    if (l.kind === 'row') return { ...l, bar: String(Number(l.bar) - bar + 1) }
+    if (l.kind === 'row' || l.kind === 'altRow') return { ...l, bar: String(Number(l.bar) - bar + 1) }
     if (l.kind === 'ending') return { ...l, from: l.from - bar + 1, to: l.to - bar + 1 }
     if (l.kind === 'key' || l.kind === 'time' || l.kind === 'context' || l.kind === 'mark' || l.kind === 'nav') return { ...l, bar: l.bar - bar + 1 }
     return l

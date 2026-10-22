@@ -1,5 +1,6 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
+import { changesFor } from '../alternates'
 import { barView } from '../bars'
 import { type ChartDoc, parseChart, serializeChart } from '../chart'
 import { parseBarLine } from '../barLine'
@@ -506,5 +507,48 @@ describe('setLineChord', () => {
     expect(setLineChord(doc, 2, 'F7 | x')).toBe(doc)
     expect(setLineChord(doc, 6, 'C7')).toBe(doc) // the copy:
     expect(setLineChord(doc, 2, 'F7')).toBe(doc) // unchanged
+  })
+})
+
+describe('alternate changes (alt rows)', () => {
+  const alt = 'section: A\n1 | C\n2 | Dm7\n2 | G7\nalt 2 | Abm7\nalt 2 | Db7\n3 | C\n4 | F\n'
+  const d = (extra = ''): ChartDoc => parseChart(alt + extra).value
+
+  it('setBarChords keeps alt rows', () => {
+    const t = out(setBarChords(d(), 'A', 2, ['Dm9']))
+    expect(t).toContain('2 | Dm9')
+    expect(t).not.toContain('2 | G7')
+    expect(t).toContain('alt 2 | Abm7')
+    expect(t).toContain('alt 2 | Db7')
+  })
+
+  it('insertBar moves alt rows', () => {
+    const t = out(insertHeldBar(d(), 'A', 2)) // a held bar can't go first
+    expect(t).toContain('alt 3 | Abm7')
+    expect(t).toContain('alt 3 | Db7')
+  })
+
+  it('deleteBar moves alt rows, and drops those on the deleted bar', () => {
+    expect(out(deleteBar(d(), 'A', 1))).toContain('alt 1 | Abm7')
+    expect(out(deleteBar(d(), 'A', 2)).some((l) => l.startsWith('alt'))).toBe(false)
+  })
+
+  it('splitSection carries alt rows', () => {
+    const t = out(splitSection(d(), 'A', 2, 'B'))
+    const at = t.indexOf('section: B')
+    expect(t.slice(at)).toContain('alt 1 | Abm7')
+    expect(t.slice(at)).toContain('alt 1 | Db7')
+    expect(t.slice(0, at).some((l) => l.startsWith('alt'))).toBe(false)
+  })
+
+  it('writeOutCopy writes alt rows', () => {
+    const doc = d('\nsection: A2\ncopy: A\n')
+    const w = writeOutCopy(doc, 'A2')
+    const t = out(w)
+    const a2 = t.slice(t.indexOf('section: A2'))
+    expect(a2).toContain('alt 2 | Abm7')
+    expect(a2).toContain('alt 2 | Db7')
+    const chords = (x: ChartDoc) => changesFor(x, 'alternate').lines.flatMap((l) => (l.kind === 'row' ? [l.chord] : []))
+    expect(chords(w)).toEqual([...chords(doc), ...chords(doc)]) // A2 now plays what A plays
   })
 })
