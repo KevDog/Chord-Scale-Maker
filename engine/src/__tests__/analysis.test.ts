@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { changesFor } from '../alternates'
-import { analyse, applyAnalysis, parseKey, pins, refreshAnalysis } from '../analysis'
+import { analyse, analyseBoth, applyAnalysis, onAlternate, parseKey, pins, refreshAnalysis } from '../analysis'
 import { keyText, makeKey, tonicName } from '../analysis/keys'
 import { hiddenDominant, passingReason } from '../analysis/rules'
 import { familyOf } from '../analysis/stream'
@@ -840,6 +840,17 @@ describe('analysis over both sets of a chart with alternates (#215)', () => {
   it('strip never blanks an alt row’s # keep:', () => {
     const written = 'key: C\n\nsection: A\nbars: 4\n1 | Cm7\n2 | F7\nalt 2 | Db7 | Db Lydian Dominant  # keep: the line\n3 | Bb\n4 | C\n'
     expect(rowOf(apply(written, 'strip', false).doc, 'Db7')).toMatchObject({ scale: 'Db Lydian Dominant', comment: 'keep: the line' })
+  })
+
+  it('analyseBoth: the standard set, and the alternate set only when the chart has alternates (#475)', () => {
+    const { doc, std, alt } = both(base)
+    expect(analyseBoth(doc)).toEqual({ standard: std, alternate: alt })
+    const plain = parseChart('key: C\n\nsection: A\n1 | Cm7\n2 | F7\n').value
+    expect(analyseBoth(plain)).toEqual({ standard: analyse(plain), alternate: undefined })
+  })
+
+  it('onAlternate marks a line of the alternate set’s report', () => {
+    expect(onAlternate('bar 2: Db7')).toBe('alternate: bar 2: Db7')
   })
 
   it('refreshAnalysis rewrites alt rows’ reasons too', () => {

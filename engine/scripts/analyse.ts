@@ -11,8 +11,8 @@
  */
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { basename, join, resolve } from 'node:path'
-import { ambiguities, analyse, applyAnalysis, type Analysis, contextLine } from '../src/analysis'
-import { type ChartDoc, changesFor, composerIndex, hasAlternates, isSyncCopy, nearDuplicateComposers, parseChart, sameScale, serializeChart, tuneAdvice, tuneDescription, tuneGaps, tuneSummary } from '../src'
+import { ambiguities, analyseBoth, applyAnalysis, type Analysis, contextLine, onAlternate } from '../src/analysis'
+import { type ChartDoc, composerIndex, isSyncCopy, nearDuplicateComposers, parseChart, sameScale, serializeChart, tuneAdvice, tuneDescription, tuneGaps, tuneSummary } from '../src'
 
 const args = process.argv.slice(2)
 const flag = (f: string): boolean => args.includes(f)
@@ -63,13 +63,12 @@ const gaps: string[] = []
 for (const file of files) {
   const text = readFileSync(file, 'utf8')
   const doc = parseChart(text).value
-  const a = analyse(doc)
   // a chart with alternates: the alternate set read too, over the same line indices (its alt rows are the ones it adds)
-  const alt = hasAlternates(doc) ? analyse(changesFor(doc, 'alternate')) : undefined
+  const { standard: a, alternate: alt } = analyseBoth(doc)
   const name = basename(file, '.txt')
   const lines = report(name, a)
   if (ambiguous) {
-    const found = [...ambiguities(a), ...(alt ? ambiguities(alt).map((l) => `alternate: ${l}`) : [])]
+    const found = [...ambiguities(a), ...(alt ? ambiguities(alt).map(onAlternate) : [])]
     if (found.length) console.log([`${name}:`, ...found.map((l) => `  ${l}`)].join('\n') + '\n')
     continue
   }
@@ -87,7 +86,7 @@ for (const file of files) {
     lines.push(`  ${mark} ${r.bar.padStart(3)} ${r.chord.padEnd(10)} ${(r.scale ?? '—').padEnd(26)} ${r.rule.padEnd(7)} ${r.reason}${mark === '≠' ? `   [chart: ${current}]` : ''}`)
   }
   for (const p of a.problems) lines.push(`  ! line ${p.line + 1}: ${p.message}`)
-  for (const p of alt?.problems ?? []) lines.push(`  ! alternate: line ${p.line + 1}: ${p.message}`)
+  for (const p of alt?.problems ?? []) lines.push(`  ! ${onAlternate(`line ${p.line + 1}: ${p.message}`)}`)
   if (scales !== 'none' || save) {
     const { doc: next, changes, conflicts, overrides } = applyAnalysis(doc, a, { scales, save, date }, alt)
     const out = serializeChart(next)

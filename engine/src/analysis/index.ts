@@ -403,6 +403,14 @@ export function applyAnalysis(
   return { doc: { lines: out }, changes, conflicts, overrides }
 }
 
+/** a chart's analysis, and with alternates (#215) its alternate set's too, over the same line indices (its alt rows are the ones it adds) */
+export function analyseBoth(doc: ChartDoc): Readonly<{ standard: Analysis; alternate: Analysis | undefined }> {
+  return { standard: analyse(doc), alternate: hasAlternates(doc) ? analyse(changesFor(doc, 'alternate')) : undefined }
+}
+
+/** a line of a report about the alternate set (its ambiguities, its problems) */
+export const onAlternate = (line: string): string => `alternate: ${line}`
+
 /**
  * a chart's saved analysis rewritten for the chart as it now stands (after Transpose…, its key and reasons name the
  * new key), keeping the header's date: the rules didn't change. A chart without an `# analysis:` header comes back
@@ -412,8 +420,8 @@ export function refreshAnalysis(doc: ChartDoc): ChartDoc {
   const header = doc.lines.find((l) => l.kind === 'comment' && /^#\s*analysis:/.test(l.text))
   if (header?.kind !== 'comment') return doc
   const date = /analysis:\s*([^,]*),/.exec(header.text)?.[1]?.trim() ?? ''
-  const alternate = hasAlternates(doc) ? analyse(changesFor(doc, 'alternate')) : undefined
-  return applyAnalysis(doc, analyse(doc), { scales: 'none', save: true, date }, alternate).doc
+  const { standard, alternate } = analyseBoth(doc)
+  return applyAnalysis(doc, standard, { scales: 'none', save: true, date }, alternate).doc
 }
 
 /**

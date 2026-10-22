@@ -1,7 +1,6 @@
 import { ambiguities } from './analysis/ambiguity'
-import { analyse, applyAnalysis } from './analysis'
-import { changesFor } from './alternates'
-import { type MetaKey, hasAlternates, parseChart, serializeChart } from './chart'
+import { analyseBoth, applyAnalysis, onAlternate } from './analysis'
+import { type MetaKey, parseChart, serializeChart } from './chart'
 import { clearMeta, setMeta } from './edit'
 import { tuneAdvice, tuneGaps } from './tune'
 
@@ -11,9 +10,8 @@ export type PreparedChart = Readonly<{ chart: string; gaps: readonly string[]; a
 export function prepareChart(text: string, overrides: Readonly<Partial<Record<MetaKey, string>>>, date: string): PreparedChart {
   // context: auto leaves the context to the detection: no line
   const doc = Object.entries(overrides).reduce((d, [k, v]) => (!v ? d : k === 'context' && v === 'auto' ? clearMeta(d, 'context') : setMeta(d, k as MetaKey, v)), parseChart(text).value)
-  const analysis = analyse(doc)
-  const alternate = hasAlternates(doc) ? analyse(changesFor(doc, 'alternate')) : undefined
+  const { standard: analysis, alternate } = analyseBoth(doc)
   const saved = applyAnalysis(doc, analysis, { scales: 'none', save: true, date }, alternate).doc
-  const found = [...ambiguities(analysis), ...(alternate ? ambiguities(alternate).map((l) => `alternate: ${l}`) : [])]
+  const found = [...ambiguities(analysis), ...(alternate ? ambiguities(alternate).map(onAlternate) : [])]
   return { chart: serializeChart(saved), gaps: tuneGaps(saved), advice: tuneAdvice(saved), ambiguities: found }
 }
