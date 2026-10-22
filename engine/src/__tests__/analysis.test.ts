@@ -1,5 +1,6 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
+import { changesFor } from '../alternates'
 import { analyse, applyAnalysis, parseKey, pins, refreshAnalysis } from '../analysis'
 import { keyText, makeKey, tonicName } from '../analysis/keys'
 import { hiddenDominant, passingReason } from '../analysis/rules'
@@ -793,5 +794,58 @@ describe('N.C. in the analysis', () => {
     expect(a.rows.map((r) => r.chord)).toEqual(['C7', 'FMaj7'])
     expect(a.rows[0]).toMatchObject({ rule: 'D4', reason: 'V7 of F: natural tensions' })
     expect(a.problems).toEqual([])
+  })
+})
+
+describe('analysis over both sets of a chart with alternates (#215)', () => {
+  // the alternate Db7 makes the Bb after it read as IV (Lydian) and the C as I (Ionian); the standard set reads them the other way
+  const base = 'key: C\n\nsection: A\nbars: 4\n1 | Cm7\n2 | F7\nalt 2 | Db7\n3 | Bb\n4 | C\n'
+  const both = (t: string) => {
+    const doc = parseChart(t).value
+    return { doc, std: analyse(changesFor(doc, 'standard')), alt: analyse(changesFor(doc, 'alternate')) }
+  }
+  const apply = (t: string, scales: 'strip' | 'none', save: boolean) => {
+    const { doc, std, alt } = both(t)
+    return applyAnalysis(doc, std, { scales, save, date: '2026-10-10' }, alt)
+  }
+  const rowOf = (d: ChartDoc, chord: string) => d.lines.find((l) => (l.kind === 'row' || l.kind === 'altRow') && l.chord === chord)
+
+  it('save: an alt row takes the alternate analysis’s reason, a row the standard’s', () => {
+    const { doc } = apply(base, 'none', true)
+    const { alt, std } = both(base)
+    expect(rowOf(doc, 'Db7')?.kind).toBe('altRow')
+    expect(rowOf(doc, 'Db7')).toMatchObject({ comment: alt.rows.find((r) => r.chord === 'Db7')?.reason })
+    expect(rowOf(doc, 'F7')).toMatchObject({ comment: std.rows.find((r) => r.chord === 'F7')?.reason })
+    expect(doc.lines.filter((l) => l.kind === 'comment' && /^#\s*analysis:/.test(l.text))).toHaveLength(1)
+  })
+
+  it('save is a no-op on its own output, and keeps the header date', () => {
+    const first = serializeChart(apply(base, 'none', true).doc)
+    const doc = parseChart(first).value
+    const again = applyAnalysis(doc, analyse(changesFor(doc, 'standard')), { scales: 'none', save: true, date: '2030-01-01' }, analyse(changesFor(doc, 'alternate')))
+    expect(serializeChart(again.doc)).toBe(first)
+  })
+
+  it('strip: a shared row goes blank only when both sets give its scale; an alt row when the alternate gives it', () => {
+    const written = 'key: C\n\nsection: A\nbars: 4\n1 | Cm7 | C Dorian\n2 | F7 | F Mixolydian\nalt 2 | Db7 | Db Lydian Dominant\n3 | Bb | Bb Ionian\n4 | C | C Lydian\n'
+    const out = apply(written, 'strip', false)
+    expect(rowOf(out.doc, 'Cm7')).toMatchObject({ scale: '' }) // both sets: Dorian
+    expect(rowOf(out.doc, 'F7')).toMatchObject({ scale: '' }) // standard bar only
+    expect(rowOf(out.doc, 'Db7')).toMatchObject({ kind: 'altRow', scale: '' })
+    expect(rowOf(out.doc, 'Bb')).toMatchObject({ scale: 'Bb Ionian' }) // the alternate reads it Lydian
+    expect(rowOf(out.doc, 'C')).toMatchObject({ scale: 'C Lydian' })
+    expect(out.overrides.map((o) => `${o.chord}: ${o.scale} / ${o.rules}`)).toEqual(['Bb: Bb Ionian / Bb Lydian', 'C: C Lydian / C Ionian'])
+  })
+
+  it('strip never blanks an alt row’s # keep:', () => {
+    const written = 'key: C\n\nsection: A\nbars: 4\n1 | Cm7\n2 | F7\nalt 2 | Db7 | Db Lydian Dominant  # keep: the line\n3 | Bb\n4 | C\n'
+    expect(rowOf(apply(written, 'strip', false).doc, 'Db7')).toMatchObject({ scale: 'Db Lydian Dominant', comment: 'keep: the line' })
+  })
+
+  it('refreshAnalysis rewrites alt rows’ reasons too', () => {
+    const saved = serializeChart(apply(base, 'none', true).doc)
+    const stale = parseChart(saved.replace(/(alt 2 \| Db7[^\n]*?)#[^\n]*\n/, '$1# stale\n')).value
+    expect(rowOf(stale, 'Db7')).toMatchObject({ comment: 'stale' })
+    expect(serializeChart(refreshAnalysis(stale))).toBe(saved)
   })
 })

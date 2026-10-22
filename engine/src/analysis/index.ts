@@ -1,4 +1,5 @@
-import { type ChartContext, type ChartDoc, type ChartLine, expandRowLines, formPart, lineSections, type LinedRow, parseContext } from '../chart'
+import { changesFor } from '../alternates'
+import { type ChartContext, type ChartDoc, type ChartLine, expandRowLines, formPart, hasAlternates, lineSections, type LinedRow, parseContext } from '../chart'
 import { type Layout, sectionLayout, statedKeyAt } from '../layout'
 import { LIMITS } from '../limits'
 import { pcOf, rootName, shiftBy, type Spelled } from '../pitch'
@@ -324,23 +325,33 @@ export type Override = Readonly<{ line: number; bar: string; chord: string; scal
 export type Conflict = Readonly<{ line: number; section: string; bar: string; chord: string; source: string; copy: string }>
 
 const isAnalysisComment = (l: ChartLine): boolean => l.kind === 'comment' && /^#\s*(analysis|area):/.test(l.text)
-const isKept = (l: ChartLine): boolean => l.kind === 'row' && /^keep:/.test(l.comment ?? '')
+const isKept = (l: ChartLine): boolean => (l.kind === 'row' || l.kind === 'altRow') && /^keep:/.test(l.comment ?? '')
 
 export function applyAnalysis(
   doc: ChartDoc,
   analysis: Analysis,
   options: ApplyOptions,
+  alternate?: Analysis,
 ): Readonly<{ doc: ChartDoc; changes: readonly Change[]; conflicts: readonly Conflict[]; overrides: readonly Override[] }> {
   // each written line takes its first occurrence's verdict; a repeat that disagrees is reported
+  // (with alternates, `analysis` is the standard set's and `alternate` the alternate set's, over the same line indices:
+  // alt rows are only in the latter; a shared row keeps the standard verdict and reason, the alternate's only veto a strip)
   const byLine = new Map<number, RowAnalysis>()
   const conflicts: Conflict[] = []
-  const played = expandRowLines(doc).value
-  for (const r of analysis.rows) {
-    const first = byLine.get(r.line)
-    if (!first) byLine.set(r.line, r)
-    else if (first.scale !== r.scale && !conflicts.some((c) => c.line === r.line))
-      conflicts.push({ line: r.line, section: played[r.row]?.section ?? '', bar: r.bar, chord: r.chord, source: first.scale ?? '?', copy: r.scale ?? '?' })
+  const collect = (a: Analysis, lined: readonly { section: string }[]): void => {
+    const seen = new Map<number, RowAnalysis>()
+    for (const r of a.rows) {
+      const first = seen.get(r.line)
+      if (!first) {
+        seen.set(r.line, r)
+        if (!byLine.has(r.line)) byLine.set(r.line, r)
+      } else if (first.scale !== r.scale && !conflicts.some((c) => c.line === r.line))
+        conflicts.push({ line: r.line, section: lined[r.row]?.section ?? '', bar: r.bar, chord: r.chord, source: first.scale ?? '?', copy: r.scale ?? '?' })
+    }
   }
+  collect(analysis, expandRowLines(doc).value)
+  if (alternate) collect(alternate, expandRowLines(changesFor(doc, 'alternate')).value)
+  const occurrences = [...analysis.rows, ...(alternate?.rows ?? [])]
   const changes: Change[] = []
   const overrides: Override[] = []
   const areaAt = new Map<number, string>()
@@ -353,12 +364,12 @@ export function applyAnalysis(
   const out: ChartLine[] = []
   doc.lines.forEach((l, i) => {
     if (options.save && isAnalysisComment(l)) return // rewritten below
-    if (l.kind !== 'row') return void out.push(l)
+    if (l.kind !== 'row' && l.kind !== 'altRow') return void out.push(l)
     const r = byLine.get(i)
     if (!r) return void out.push(l)
     let row = l
     if (l.scale && !isKept(l)) {
-      const differs = analysis.rows.find((x) => x.line === i && !sameScale(l.scale, x.scale))
+      const differs = occurrences.find((x) => x.line === i && !sameScale(l.scale, x.scale))
       if (differs) overrides.push({ line: i, bar: differs.bar, chord: differs.chord, scale: l.scale, rules: differs.scale ?? '?' })
       else if (options.scales === 'strip') {
         changes.push({ line: i, bar: r.bar, chord: r.chord, from: l.scale, to: '' })
@@ -401,7 +412,8 @@ export function refreshAnalysis(doc: ChartDoc): ChartDoc {
   const header = doc.lines.find((l) => l.kind === 'comment' && /^#\s*analysis:/.test(l.text))
   if (header?.kind !== 'comment') return doc
   const date = /analysis:\s*([^,]*),/.exec(header.text)?.[1]?.trim() ?? ''
-  return applyAnalysis(doc, analyse(doc), { scales: 'none', save: true, date }).doc
+  const alternate = hasAlternates(doc) ? analyse(changesFor(doc, 'alternate')) : undefined
+  return applyAnalysis(doc, analyse(doc), { scales: 'none', save: true, date }, alternate).doc
 }
 
 /**
