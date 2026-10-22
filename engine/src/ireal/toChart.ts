@@ -64,7 +64,7 @@ type Played = Readonly<{
 }>
 
 /** the bars as played: chords mapped, x/r filled from the bars before; reports what's left out; a bar's alternate chords alongside */
-function play(bars: readonly IRealBar[], at: readonly string[]): Parsed<readonly Played[]> {
+function play(bars: readonly IRealBar[], at: readonly string[], alternates: boolean): Parsed<readonly Played[]> {
   const out: Played[] = []
   const diagnostics: Diagnostic[] = []
   let pending: Played | null = null // the second bar of an r
@@ -94,17 +94,19 @@ function play(bars: readonly IRealBar[], at: readonly string[]): Parsed<readonly
       else {
         // a chord's ( ) stands in its place in the alternate; one on its own has no main chord
         let main: string | null = null
+        if (!alternates && item.alt) report(`the alternate chord ${item.alt} is left out`)
         if (item.kind === 'chord') {
           const m = irealChord(item.text)
           if (m.note) report(m.note)
           main = m.chord
           if (main !== null) chords.push(main)
         }
-        if (item.alt) {
+        if (item.alt && alternates) {
           hasAlt = true
           const m = irealChord(item.alt)
           if (m.note) report(m.note)
-          if (m.chord !== null) alts.push(m.chord)
+          const alt = m.chord ?? main // an alternate it can't map keeps the main chord in its place, the bar's rhythm
+          if (alt !== null) alts.push(alt)
         } else if (main !== null) alts.push(main)
       }
     }
@@ -312,10 +314,11 @@ function formOf(blocks: readonly Block[]): string | undefined {
   return `${letters}, ${bars} ${bars === 1 ? 'bar' : 'bars'}`
 }
 
-export function irealToChart(song: IRealSong): Parsed<string> {
+/** alternates: write a chord's ( ) as alt rows; off (the app's import, until the editor holds them, #469), each is reported as left out */
+export function irealToChart(song: IRealSong, { alternates = false }: Readonly<{ alternates?: boolean }> = {}): Parsed<string> {
   const read = readMusic(song.music)
   const at = labels(read.value)
-  const played = play(read.value, at)
+  const played = play(read.value, at, alternates)
   const secs = sections(played.value)
   const blocked = blocksAll(secs, at)
   const blocks = blocked.value
@@ -353,13 +356,6 @@ export function irealToChart(song: IRealSong): Parsed<string> {
 export function irealBars(song: IRealSong): Parsed<readonly (readonly string[])[]> {
   const read = readMusic(song.music)
   const at = labels(read.value)
-  const played = play(read.value, at)
-  // the editor holds no alternates (#469): each one is reported as left out
-  const dropped = read.value.flatMap((bar, i) =>
-    bar.items.flatMap((item) => {
-      const alt = item.kind === 'alt' || item.kind === 'chord' ? item.alt : undefined
-      return alt ? [diag(i + 1, `${at[i]}: the alternate chord ${alt} is left out`)] : []
-    }),
-  )
-  return { value: played.value.map((p) => p.chords), diagnostics: [...read.diagnostics.map((d) => relabel(d, at)), ...played.diagnostics, ...dropped].sort((a, b) => a.line - b.line) }
+  const played = play(read.value, at, false) // the editor holds no alternates (#469): each is reported as left out
+  return { value: played.value.map((p) => p.chords), diagnostics: [...read.diagnostics.map((d) => relabel(d, at)), ...played.diagnostics].sort((a, b) => a.line - b.line) }
 }

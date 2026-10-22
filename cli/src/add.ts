@@ -48,7 +48,7 @@ export function add(args: AddArgs, fx: Effects): number {
     return 1
   }
   const song = playlist.songs[pick]!
-  const imported = irealToChart(song)
+  const imported = irealToChart(song, { alternates: true })
   for (const d of imported.diagnostics) fx.err(`⚠️ ${d.message}`)
   const p = prepareChart(imported.value, args.overrides, fx.date)
   const report = (): void => {

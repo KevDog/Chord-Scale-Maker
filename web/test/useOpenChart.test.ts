@@ -37,12 +37,12 @@ describe('useOpenChart with iReal', () => {
 
   it('a song with a report waits for Open anyway; cancel leaves nothing behind', async () => {
     const o = useOpenChart()
-    await o.openIReal(irealLink([{ title: 'Odd', music: '[*AC7 W/E |F7 Z' }]))
-    expect(o.report.value.map((d) => d.message)).toEqual(['A bar 1: a bass note with no chord (W/E) is left out'])
+    await o.openIReal(irealLink([{ title: 'Odd', music: '[*AC7(Db7) |F7 Z' }]))
+    expect(o.report.value.map((d) => d.message)).toEqual(['A bar 1: the alternate chord Db7 is left out'])
     expect(navigateTo).not.toHaveBeenCalled()
     o.cancel()
     expect(o.report.value).toEqual([])
-    await o.openIReal(irealLink([{ title: 'Odd', music: '[*AC7 W/E |F7 Z' }]))
+    await o.openIReal(irealLink([{ title: 'Odd', music: '[*AC7(Db7) |F7 Z' }]))
     await o.confirm()
     expect(loadChart(mineId())?.text).toMatch(/^title: Odd\n/)
   })

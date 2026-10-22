@@ -4,7 +4,7 @@ import { irealLink } from '../../engine/src/ireal/__tests__/link'
 const BLUES = '[*AT44C7 |F7 |C7 |C7 |F7 |F7 |C7 |A7 |D-7 |G7 |C7 A7 |D-7 G7 Z'
 const one = irealLink([{ title: 'Blues for Test', composer: 'Doe Jane', music: BLUES }], undefined, true)
 const two = irealLink([{ title: 'First', music: BLUES }, { title: 'Second', music: '[*AF^7 |x Z' }], 'Set', true)
-const odd = irealLink([{ title: 'Odd One', music: '[*AC7(Db7) |F7 <play softly>|C7 Z' }], undefined, true)
+const odd = irealLink([{ title: 'Odd One', music: '[*AC7(Db7) |F7 Z' }], undefined, true)
 
 test('an iReal export opens from Open chart… as a new chart', async ({ page }) => {
   await page.goto('/library')
@@ -15,7 +15,7 @@ test('an iReal export opens from Open chart… as a new chart', async ({ page })
   await expect(page.getByRole('heading', { name: 'Blues for Test', level: 1 })).toBeVisible()
 })
 
-test('a pasted playlist link asks which song, and a report waits for Open anyway; an alternate chord comes in as an alt row (#215)', async ({ page }) => {
+test('a pasted playlist link asks which song, and a report waits for Open anyway', async ({ page }) => {
   await page.goto('/library')
   await page.getByRole('button', { name: 'Import iReal link…' }).click()
   const dialog = page.getByRole('dialog')
@@ -30,13 +30,9 @@ test('a pasted playlist link asks which song, and a report waits for Open anyway
   await page.getByRole('button', { name: 'Import iReal link…' }).click()
   await page.getByRole('dialog').getByLabel('Link').fill(odd)
   await page.getByRole('dialog').getByRole('button', { name: 'Import' }).click()
-  await expect(page.getByRole('dialog').getByText('the comment "play softly" is left out')).toBeVisible()
-  await expect(page.getByRole('dialog').getByText(/alternate chord/)).toHaveCount(0)
+  await expect(page.getByRole('dialog').getByText('the alternate chord Db7 is left out')).toBeVisible()
   await page.getByRole('dialog').getByRole('button', { name: 'Open anyway' }).click()
   await expect(page.getByRole('heading', { name: 'Odd One', level: 1 })).toBeVisible()
-  await expect(page.getByRole('group', { name: 'Changes', exact: true })).toBeVisible() // a chart with alternates
-  await openEditor(page)
-  await expect(page.getByLabel('Chart text')).toHaveValue(/^1 \| C7\nalt 1 \| Db7\n/m)
 })
 
 test('a damaged link says so in the dialog', async ({ page }) => {

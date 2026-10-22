@@ -536,8 +536,8 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   print too. The sheets' subtitle gains "Alternate changes" while that set plays.
 - **Flag off:** the app reads the doc itself, so a chart with `alt` rows plays standard only, with no toggle or small
   line. The engine always treats `alt` rows as real.
-- **Sheet editing is off** for a chart with alternates until #469 (it would write the played set over both); the
-  source stays editable, so the Source is offered at every Interface level.
+- **Sheet editing is off** for a chart with alternates until #469 (it would write the played set over both; edit.ts knows
+  only `row`), flag on or off; the source stays editable, so the Source is offered at every Interface level.
 
 ### Guide tones on Changes ([spec](superpowers/specs/2026-10-10-guide-tone-lines-design.md), amended by [independent lines](superpowers/specs/2026-10-10-independent-guide-tone-lines-design.md) and [the diverge note](superpowers/specs/2026-10-11-guide-lines-diverge-note.md); first built as [guide tones on Changes](superpowers/specs/2026-10-10-guide-tones-on-changes-design.md))
 

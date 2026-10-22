@@ -965,6 +965,23 @@ describe('EditorView interface fixes', () => {
     expect(w.find('textarea[aria-label="Chart text"]').exists()).toBe(true)
   })
 
+  it('a chart with alternates is not sheet-editable and offers its Source, with the alternates flag off (#469)', async () => {
+    useInterface().level.value = 'essentials'
+    const text = 'title: T\n\nsection: A\nbars: 2\n1 | Cm7\nalt 1 | Dm7\n2 | G7\n'
+    const w = await mountSuspended(EditorView, { props: { initialText: text }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } }, attachTo: document.body })
+    await buttonCalled(w, 'Edit')?.trigger('click')
+    await nextTick()
+    expect(changesSheet(w).props('editable')).toBe(false)
+    expect(w.find('button[aria-label="More editing options"]').exists()).toBe(true) // the Source, offered at Essentials
+    w.unmount()
+    const plain = await mount()
+    await buttonCalled(plain, 'Edit')?.trigger('click')
+    await nextTick()
+    expect(changesSheet(plain).props('editable')).toBe(true)
+    expect(plain.find('button[aria-label="More editing options"]').exists()).toBe(false)
+    plain.unmount()
+  })
+
   it('Reset clears the practice selection in force, not another mode’s', async () => {
     useInterface().level.value = 'essentials'
     localStorage.setItem('csm-spell', 'root')

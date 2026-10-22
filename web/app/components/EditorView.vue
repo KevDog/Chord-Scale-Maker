@@ -200,7 +200,7 @@
             <UiText class="text-red-600! dark:text-red-400!">Preview paused: the chart is over a size limit.</UiText>
           </template>
           <!-- the played set's doc: on a chart with alternates its other set's rows are blank, so an update:doc from it would
-               drop them. Such a chart isn't sheet-editable (sheetEditing); before #469 enables it, sheet edits must merge
+               drop them. Such a chart isn't sheet-editable (sheetEditing, flag or not); before #469 enables it, sheet edits must merge
                back into editor.doc -->
           <ChangesSheet
             v-else-if="sheet === 'changes'"
@@ -510,9 +510,9 @@ const sheetLine = computed(() => shareLineOf(prefs.lineMode.value, prefs.guideLi
 const changesLine = computed(() => changesLineOf({ mode: prefs.lineMode.value, guide: prefs.guideLine.value, arpeggio: prefs.arpeggio.value, overlay: prefs.overlay.value, leave: prefs.pentLeave.value, dir: prefs.arpDir.value, cells: prefs.cells.value, shape: prefs.pairLine.value, order: phraseOn ? prefs.cellsOrder.value : 'as-written', phrase: phraseOn && prefs.cellsPhrase.value }))
 /**
  * chords on the Changes sheet open the chord editor while the editor is shown (on a phone, the whole editor); not on a
- * chart playing alternates (#469): its Source edits it
+ * chart with alternates, whatever the flag (#469; edit.ts knows only `row`): its Source edits it
  */
-const sheetEditing = computed(() => editorShown.value && !editor.fatal.value && !alternatesOn.value)
+const sheetEditing = computed(() => editorShown.value && !editor.fatal.value && !hasAlternates(editor.doc.value))
 const sheetChord = ref<SheetChordEdit | null>(null)
 const selectedLine = ref<number | null>(null)
 const said = ref('')
@@ -523,10 +523,10 @@ function editSheetChord(chord: SheetChordEdit): void {
 }
 /** the Source: in the banner, or under ⋯ below md, remembered; always shown for a chart over a size limit (only the text can fix it) */
 /**
- * the Source is offered from Everything, and at any level while the text has a problem or the chart plays alternates
- * (only the text can fix or edit those: #469)
+ * the Source is offered from Everything, and at any level while the text has a problem or the chart has alternates, flag
+ * on or off (only the text can fix or edit those: #469)
  */
-const sourceOffered = computed(() => ui.shows('source') || editor.diagnostics.value.length > 0 || alternatesOn.value)
+const sourceOffered = computed(() => ui.shows('source') || editor.diagnostics.value.length > 0 || hasAlternates(editor.doc.value))
 const sourceShown = computed(() => (sourceOffered.value && prefs.source.value) || editor.fatal.value)
 /** the chart's key, for the sheets' key signature, drawn once at the start */
 const homeKey = computed(() => chartKeyOf(editor.doc.value))

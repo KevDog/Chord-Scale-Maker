@@ -87,6 +87,7 @@ for (const file of files) {
     lines.push(`  ${mark} ${r.bar.padStart(3)} ${r.chord.padEnd(10)} ${(r.scale ?? '—').padEnd(26)} ${r.rule.padEnd(7)} ${r.reason}${mark === '≠' ? `   [chart: ${current}]` : ''}`)
   }
   for (const p of a.problems) lines.push(`  ! line ${p.line + 1}: ${p.message}`)
+  for (const p of alt?.problems ?? []) lines.push(`  ! alternate: line ${p.line + 1}: ${p.message}`)
   if (scales !== 'none' || save) {
     const { doc: next, changes, conflicts, overrides } = applyAnalysis(doc, a, { scales, save, date }, alt)
     const out = serializeChart(next)
