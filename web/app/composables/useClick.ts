@@ -1,4 +1,4 @@
-import type { Ref } from 'vue'
+import type { InjectionKey, Ref } from 'vue'
 import { type Beats, type ClickFeel, type ClickPlan, type ClickState, type TimedClick, clampTempo, defaultFeel, defaultTempo, scheduleClicks, tapTempo } from '@chord-scale-maker/engine'
 import { type ClickAudio, type ClickSound, CLICK_SOUNDS, webAudio } from '~/utils/clickSounds'
 import { readStored, writeStored } from '~/utils/storage'
@@ -182,3 +182,6 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
 }
 
 export type Click = ReturnType<typeof useClick>
+
+/** the song page's click, for its bars (ClickBar) */
+export const CLICK: InjectionKey<Click> = Symbol('click')
