@@ -66,7 +66,7 @@
 import { barView, cellError, type ChartDoc, chordCompletions, chordPreview, type ChordPreview, type ChangesSet, chordsAfterTyping, type ChordToken, chordTokens, CONCERT, type GridPos, lineSections, posOfLine, setBarChordsIn, sheetScale } from '@chord-scale-maker/engine'
 import type { SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
 import { DEFAULT_VIEW, SCALE_VIEW } from '~/utils/scaleView'
-import { barFull, NO_FIRST_CHORD, notAChord } from '~/utils/refusals'
+import { barFull, noChords, notAChord } from '~/utils/refusals'
 
 /**
  * A chord on the Changes sheet while the editor is shown (docs/superpowers/specs/2026-10-11-lead-sheet-editor-design.md
@@ -207,7 +207,7 @@ function commit(text = draft.value): boolean {
   const source = props.source ?? props.doc
   const next = setBarChordsIn(source, props.set ?? 'standard', p.section, p.bar, chords)
   if (next === source) {
-    refused.value = chords.length ? notAChord(t, 'it’s not a chord') : NO_FIRST_CHORD
+    refused.value = chords.length ? notAChord(t, 'it’s not a chord') : noChords(props.set)
     return refuse(refused.value)
   }
   if (chords.length < barChords.value.length) taken = p

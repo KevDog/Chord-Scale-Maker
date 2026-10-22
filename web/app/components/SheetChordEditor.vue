@@ -31,7 +31,7 @@
 import { Dialog as HDialog, DialogPanel as HDialogPanel, DialogTitle as HDialogTitle } from '@headlessui/vue'
 import { cellError, type ChangesSet, type ChartDoc, lineSections, type RowLine, setLineChordIn } from '@chord-scale-maker/engine'
 import ChordChoices from './ChordChoices.vue'
-import { CANT_TAKE, NO_FIRST_CHORD, notAChord } from '~/utils/refusals'
+import { CANT_TAKE, noChords, notAChord } from '~/utils/refusals'
 import type { SheetChordEdit } from '~/utils/sheetChordEdit'
 
 /**
@@ -78,7 +78,7 @@ function apply(): void {
   const source = props.source ?? props.doc
   const next = setLineChordIn(source, props.set ?? 'standard', t.line, text)
   if (next === source) {
-    refused.value = text ? CANT_TAKE : NO_FIRST_CHORD
+    refused.value = text ? CANT_TAKE : noChords(props.set)
     return void emit('said', refused.value)
   }
   written = text

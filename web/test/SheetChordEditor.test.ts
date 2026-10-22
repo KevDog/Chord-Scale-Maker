@@ -110,4 +110,14 @@ describe('SheetChordEditor on a set of a chart with alternates (#469)', () => {
     expect(next).toMatch(/\n3 \| CMaj7\nalt 3 \| Em7\n/)
     expect(next).toMatch(/\nalt 2 \| Db7\n/)
   })
+
+  it('refuses blanking a shared bar in Alternate, saying an alternate can’t be held', async () => {
+    const w = await mountSuspended(SheetChordEditor, { props: { doc: changesFor(real, 'alternate'), source: real, set: 'alternate', target: { line: 8, section: 'A', bar: '3' } }, attachTo: document.body })
+    await settle()
+    await type('')
+    const why = 'An alternate can’t be held: type its chords, or switch to Standard to edit the bar.'
+    expect(w.emitted('update:doc')).toBeUndefined()
+    expect(dialog()?.textContent).toContain(why)
+    expect(w.emitted('said')?.at(-1)).toEqual([why])
+  })
 })

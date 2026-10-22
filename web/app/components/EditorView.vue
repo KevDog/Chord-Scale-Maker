@@ -520,14 +520,23 @@ const sheetEditing = computed(() => editorShown.value && !editor.fatal.value)
 const sheetChord = ref<SheetChordEdit | null>(null)
 const selectedLine = ref<number | null>(null)
 const said = ref('')
+/**
+ * a chord's place in its bar, to find it again by: in Alternate a change can add or drop alt rows, moving its line (#469).
+ * chordIndexIn: the index of the chord on a line; chordLineAt: the line of the bar's chord at that index, or its last
+ */
+const chordIndexIn = (doc: ChartDoc, line: number): number => posOfLine(barView(doc), line)?.chord ?? 0
+function chordLineAt(doc: ChartDoc, at: SheetPlace, k: number): number | null {
+  const chords = barView(doc).sections.find((s) => s.name === at.section)?.bars.find((b) => String(b.bar) === at.bar)?.chords ?? []
+  return chords[Math.min(k, chords.length - 1)]?.line ?? null
+}
+/** the tapped chord's index in its bar (the bottom sheet) */
+let sheetChordAt = 0
 /** a chord tapped on the sheet below md: edit it in the chord editor's bottom sheet */
 function editSheetChord(chord: SheetChordEdit): void {
   editor.flush()
   sheetChord.value = chord
-  sheetChordAt = posOfLine(barView(playedDoc.value), chord.line)?.chord ?? 0
+  sheetChordAt = chordIndexIn(playedDoc.value, chord.line)
 }
-/** the tapped chord's index in its bar: in Alternate a change can add or drop alt rows, moving its line (#469) */
-let sheetChordAt = 0
 watch(playedDoc, (doc) => {
   const c = sheetChord.value
   const line = c && mainSet.value === 'alternate' ? chordLineAt(doc, c, sheetChordAt) : null
@@ -668,16 +677,11 @@ function openSheetEdit(e: SheetEdit): void {
   sheetEdit.value = e
   if (e.kind === 'chord') selectedLine.value = e.line
 }
-/** the open chord's index in its bar: in Alternate a commit can add or drop alt rows, moving the lines after it (#469) */
+/** the open field's chord's index in its bar (the sheet editor) */
 let sheetChordIndex = 0
 watch(sheetEdit, (e) => {
-  if (e?.kind === 'chord') sheetChordIndex = posOfLine(barView(sheetDoc.value), e.line)?.chord ?? 0
+  if (e?.kind === 'chord') sheetChordIndex = chordIndexIn(sheetDoc.value, e.line)
 }, { flush: 'sync' })
-/** the line of the chord at a place in the sheet's doc: the bar's chord at that index, or its last */
-function chordLineAt(doc: ChartDoc, at: SheetPlace, k: number): number | null {
-  const chords = barView(doc).sections.find((s) => s.name === at.section)?.bars.find((b) => String(b.bar) === at.bar)?.chords ?? []
-  return chords[Math.min(k, chords.length - 1)]?.line ?? null
-}
 /**
  * the field closed: stay on the chord, move to the next (previous) bar's or chord, open the new chord slot, or nothing.
  * A chord taken out (blank) comes with its place: its line is gone, or names the chord after it, so moves go from there.
