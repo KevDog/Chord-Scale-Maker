@@ -6,16 +6,16 @@ form: A, 12 bars
 source: Colorado Cookbook, p. 39
 recording: Clifford Brown & Max Roach; Clifford Brown & Max Roach; EmArcy; 1955
 youtube: stIhCBmhOXI
-# analysis: 2026-10-19, rules v2; Bb, blues
+# analysis: 2026-10-22, rules v2; Bb, blues
 # recording: recorded 1955-02-24 at Capitol Studios, NYC (master 11364-8), the first recording of it; issued as "The Blues Walk" on the 12" MG 36036, which added it to the 1954 10" album (jazzdisco.org, MusicBrainz release group, Wikipedia); video: Brownie: The Complete EmArcy Recordings of Clifford Brown, the same take (master, not the alternate)
 
 # bar | chord | scale
 
 section: A
 bars: 12
-1  | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
-5  | Eb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-7  | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+1  | Bb7  # I7 of the blues: a tonic with dominant color, Mixolydian
+5  | Eb7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+7  | Bb7  # I7 of the blues: a tonic with dominant color, Mixolydian
 9  | Cm7  # ii of F7: Dorian
 10 | F7   # extended dominant: V7 of Bb7
-11 | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+11 | Bb7  # I7 of the blues: a tonic with dominant color, Mixolydian

@@ -111,7 +111,7 @@ function play(bars: readonly IRealBar[], at: readonly string[], alternates: bool
       }
     }
     const supported = bar.time === undefined || METRES.has(bar.time)
-    if (!supported) report(`${bar.time} is not a metre the sheets have; read as 4/4`)
+    if (!supported) report(`${bar.time} is not a meter the sheets have; read as 4/4`)
     const time = bar.time === undefined ? undefined : supported ? bar.time : '4/4'
     const navs = bar.comments.flatMap((c) => {
       const nav = navOf(c)

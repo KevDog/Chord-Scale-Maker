@@ -794,7 +794,7 @@ describe('buildChanges with a Pentatonic line (#284)', () => {
   const keys = (sheet: ChangesSheet) => sheet.lines.flatMap((l) => l.bars.map((b) => b.voice.map((n) => (n.pitch ? toVexKey(n.pitch) : 'r'))))
   const flatChords = (sheet: ChangesSheet) => sheet.lines.flatMap((l) => l.bars.flatMap((b) => b.chords))
   const pcSet = (root: Spelled) => new Set([0, 3, 5, 7, 10].map((d) => (pcOf(root) + d) % 12))
-  it("plays each chord's labelled pentatonic as cells, in the arpeggio's rhythm, each from the note nearest the last", () => {
+  it("plays each chord's labeled pentatonic as cells, in the arpeggio's rhythm, each from the note nearest the last", () => {
     const sheet = buildChanges(doc, CONCERT, 4, false, PENT, undefined, one(0, 'flat')) // C major: Am everywhere
     expect(keys(sheet).slice(0, 2)).toEqual([
       ['c/4', 'd/4', 'e/4', 'g/4', 'e/4', 'g/4', 'c/5', 'd/5'],
@@ -825,7 +825,7 @@ describe('buildChanges with a Pentatonic line (#284)', () => {
     const sheet = buildChanges(doc, CONCERT, 4, false, PENT, undefined, one(1, 'flat')) // Dm
     expect(keys(sheet)[0]?.slice(0, 4)).toEqual(['f/4', 'g/4', 'a/4', 'c/5'])
   })
-  it('honours a chord pick', () => {
+  it('honors a chord pick', () => {
     const targets = pickTargets(doc, resolveScales(doc, { level: 'standard', seed: 0 }))
     const picks = withPick(NO_PICKS, 'pentatonic', ['A:1:1'], 4, targets).pentatonic // G7: Em
     const sheet = buildChanges(doc, CONCERT, 4, false, PENT, undefined, { ...one(0, 'flat'), picks })
@@ -865,7 +865,7 @@ describe('buildChanges with a Quartal line (#432)', () => {
   const Q = { kind: 'quartal' } as const
   const LINE: QuartalLine = { kind: 'quartal', dir: 'up-down', arpeggio: 'up-root' }
   const keys = (sheet: ChangesSheet) => sheet.lines.flatMap((l) => l.bars.map((b) => b.voice.map((n) => (n.pitch ? toVexKey(n.pitch) : 'r'))))
-  it("plays each chord's labelled stack, whole; a chord with none its 7th chord arpeggio", () => {
+  it("plays each chord's labeled stack, whole; a chord with none its 7th chord arpeggio", () => {
     const bars = keys(buildChanges(doc, CONCERT, 4, false, LINE, undefined, Q))
     expect(bars.slice(0, 3)).toEqual([['d/4', 'g/4', 'c/5', 'f/5'], ['a/5', 'e/5', 'b/4', 'f/4'], ['e/4', 'a/4', 'd/5', 'g/5']])
     expect(bars[3]!.map((k) => k.replace(/\/\d/, ''))).toEqual(['c', 'e', 'g', 'bb']) // half-whole: no stack
@@ -884,7 +884,7 @@ describe('buildChanges with a Triad pair line (#325)', () => {
   const HEX = { kind: 'hexatonic' } as const
   const PAIR: TriadPairLine = { kind: 'triad-pair', dir: 'up', arpeggio: 'up-root' }
   const keys = (sheet: ChangesSheet) => sheet.lines.flatMap((l) => l.bars.map((b) => b.voice.map((n) => (n.pitch ? toVexKey(n.pitch) : 'r'))))
-  it("plays each chord's labelled pair: its lower triad, then its upper from the note nearest the last", () => {
+  it("plays each chord's labeled pair: its lower triad, then its upper from the note nearest the last", () => {
     const sheet = buildChanges(doc, CONCERT, 4, false, PAIR, undefined, HEX) // G/Am, C/Dm, …
     expect(keys(sheet)[0]).toEqual(['g/4', 'b/4', 'd/5', 'c/5'])
     expect(sheet.lines.flatMap((l) => l.bars.flatMap((b) => b.chords)).map((c) => c.guide)).toEqual(['', '', '', ''])

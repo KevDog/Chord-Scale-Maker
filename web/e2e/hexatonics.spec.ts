@@ -74,7 +74,7 @@ test('the Changes sheet’s Superimpose: Hexatonic shows each chord’s pair and
   await expect(page.locator('[data-slot="pentatonic"], [data-slot="hexatonic"]')).toHaveCount(0)
 })
 
-test('the Line plays each chord’s labelled triad pair under the Hexatonic overlay, and 7th Chords again without it (#325)', async ({ page }) => {
+test('the Line plays each chord’s labeled triad pair under the Hexatonic overlay, and 7th Chords again without it (#325)', async ({ page }) => {
   await writeChart(page, 'title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Cmaj7\n2 | Dm7\n')
   const line = page.locator('svg[aria-label^="Bars:"]').first()
   await showArpeggios(page, 'Up · root')

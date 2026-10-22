@@ -64,7 +64,7 @@ describe('versionProblems', () => {
 
   it('names two mains, a repeated label, and a version titled unlike its main', () => {
     expect(versionProblems([main, chart('summertime-2', 'title: Summertime')])).toEqual(['summertime, summertime-2: two charts of "Summertime" without version: (give all but one a version:)'])
-    expect(versionProblems([main, jla, chart('summertime-jla', 'title: Summertime\nversion: Jazz Mind Accelerator')])).toEqual(['summertime-jazz-mind-accelerator, summertime-jla: two versions of "Summertime" labelled "Jazz Mind Accelerator"'])
+    expect(versionProblems([main, jla, chart('summertime-jla', 'title: Summertime\nversion: Jazz Mind Accelerator')])).toEqual(['summertime-jazz-mind-accelerator, summertime-jla: two versions of "Summertime" labeled "Jazz Mind Accelerator"'])
     expect(versionProblems([main, chart('summertime-x', 'title: Summertime!\nversion: X')])).toEqual(['summertime-x: title "Summertime!" differs from its main chart\'s "Summertime"'])
   })
 })

@@ -13,7 +13,7 @@
         instrument, and print.
       </UiText>
       <UiText>
-        It's built for practising improvisation. Spell every scale from the same note to see exactly where the
+        It's built for practicing improvisation. Spell every scale from the same note to see exactly where the
         harmony moves. Put guide tone lines, from the 3rd and from the 7th, over the changes and follow them through a tune,
         or run a 7th chord arpeggio through every change. Play each chord's arpeggio on its own staff, from its four
         chord tones up through the 9th, 11th and 13th. Or pick a few notes from each scale and improvise with just those.
@@ -60,7 +60,7 @@
       <UiText>Chord Scale Maker is built with open-source software, with thanks to its authors.</UiText>
       <ul class="space-y-1 text-sm/6 text-zinc-600 dark:text-zinc-400">
         <li v-for="c in CREDITS" :key="c.name">
-          <UiTextLink :href="c.url" external>{{ c.name }}</UiTextLink>, {{ c.what }} ({{ c.licence }})
+          <UiTextLink :href="c.url" external>{{ c.name }}</UiTextLink>, {{ c.what }} ({{ c.license }})
         </li>
       </ul>
       <UiText>
@@ -74,15 +74,15 @@
 <script setup lang="ts">
 import { PAGE_HEAD, seoMeta } from '~/utils/site'
 const CREDITS = [
-  { name: 'VexFlow', what: 'music notation', licence: 'MIT', url: 'https://www.vexflow.com/' },
-  { name: 'Bravura', what: 'the music font, by Steinberg', licence: 'SIL Open Font License', url: 'https://github.com/steinbergmedia/bravura' },
-  { name: 'Jost', what: 'the heading font, by indestructible type*', licence: 'SIL Open Font License', url: 'https://indestructibletype.com/Jost.html' },
-  { name: 'Vue', what: 'the interface framework', licence: 'MIT', url: 'https://vuejs.org/' },
-  { name: 'Nuxt', what: 'the site framework', licence: 'MIT', url: 'https://nuxt.com/' },
-  { name: 'Headless UI', what: 'accessible components, by Tailwind Labs', licence: 'MIT', url: 'https://headlessui.com/' },
-  { name: 'Heroicons', what: 'icons, by Tailwind Labs', licence: 'MIT', url: 'https://heroicons.com/' },
-  { name: 'Tailwind CSS', what: 'styling', licence: 'MIT', url: 'https://tailwindcss.com/' },
-  { name: 'Catalyst', what: 'the interface kit, by Tailwind Labs', licence: 'used under the Tailwind Plus licence', url: 'https://tailwindcss.com/plus' },
+  { name: 'VexFlow', what: 'music notation', license: 'MIT', url: 'https://www.vexflow.com/' },
+  { name: 'Bravura', what: 'the music font, by Steinberg', license: 'SIL Open Font License', url: 'https://github.com/steinbergmedia/bravura' },
+  { name: 'Jost', what: 'the heading font, by indestructible type*', license: 'SIL Open Font License', url: 'https://indestructibletype.com/Jost.html' },
+  { name: 'Vue', what: 'the interface framework', license: 'MIT', url: 'https://vuejs.org/' },
+  { name: 'Nuxt', what: 'the site framework', license: 'MIT', url: 'https://nuxt.com/' },
+  { name: 'Headless UI', what: 'accessible components, by Tailwind Labs', license: 'MIT', url: 'https://headlessui.com/' },
+  { name: 'Heroicons', what: 'icons, by Tailwind Labs', license: 'MIT', url: 'https://heroicons.com/' },
+  { name: 'Tailwind CSS', what: 'styling', license: 'MIT', url: 'https://tailwindcss.com/' },
+  { name: 'Catalyst', what: 'the interface kit, by Tailwind Labs', license: 'used under the Tailwind Plus license', url: 'https://tailwindcss.com/plus' },
 ] as const
 
 useSeoMeta(seoMeta(PAGE_HEAD.about))

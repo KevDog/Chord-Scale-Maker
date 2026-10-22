@@ -6,32 +6,32 @@ key: Bb
 context: blues
 form: AABC, 44 bars
 source: Colorado Cookbook, p. 234
-# analysis: 2026-10-19, rules v2; Bb, blues
+# analysis: 2026-10-22, rules v2; Bb, blues
 
 # bar | chord | scale
 
 section: A1
-1  | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
-2  | Eb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-3  | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
-5  | Eb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-7  | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+1  | Bb7  # I7 of the blues: a tonic with dominant color, Mixolydian
+2  | Eb7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+3  | Bb7  # I7 of the blues: a tonic with dominant color, Mixolydian
+5  | Eb7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+7  | Bb7  # I7 of the blues: a tonic with dominant color, Mixolydian
 9  | Cm7  # ii of F7: Dorian
 10 | F7   # extended dominant: V7 of Bb7
-11 | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+11 | Bb7  # I7 of the blues: a tonic with dominant color, Mixolydian
 12 | Cm7  # ii of F7: Dorian
 12 | F7   # extended dominant: V7 of Bb7
 
 section: A2
 bars: 12
-1  | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
-2  | Eb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-3  | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
-5  | Eb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-7  | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+1  | Bb7  # I7 of the blues: a tonic with dominant color, Mixolydian
+2  | Eb7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+3  | Bb7  # I7 of the blues: a tonic with dominant color, Mixolydian
+5  | Eb7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+7  | Bb7  # I7 of the blues: a tonic with dominant color, Mixolydian
 9  | Cm7  # ii of F7: Dorian
 10 | F7   # extended dominant: V7 of Bb7
-11 | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+11 | Bb7  # I7 of the blues: a tonic with dominant color, Mixolydian
 
 section: B
 bars: 8

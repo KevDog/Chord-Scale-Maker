@@ -1,5 +1,5 @@
 /**
- * fixtures/golden.json: the engine's answers over a wide fixed set of inputs, frozen so any change in behaviour shows
+ * fixtures/golden.json: the engine's answers over a wide fixed set of inputs, frozen so any change in behavior shows
  * up in review. It began as jazz_scales.py's answers (the Python CLI this engine was ported from, retired after
  * v1-launch); the engine is now its own reference. After an intended change, or new charts or scales:
  *   npm run golden    (rewrites the file; review the diff)

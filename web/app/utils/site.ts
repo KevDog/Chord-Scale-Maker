@@ -49,11 +49,11 @@ export const PAGE_HEAD = {
   },
   composers: {
     title: 'Composers',
-    description: 'The composers of the jazz standards in the library, by surname: each with their tunes, to practise with the scales, guide tones and arpeggios.',
+    description: 'The composers of the jazz standards in the library, by surname: each with their tunes, to practice with the scales, guide tones and arpeggios.',
   },
   about: {
     title: 'About',
-    description: 'What Chord Scale Maker is, how its sheets help you practise jazz improvisation, and the Jazz Lab video it started with.',
+    description: 'What Chord Scale Maker is, how its sheets help you practice jazz improvisation, and the Jazz Lab video it started with.',
   },
   contact: {
     title: 'Contact',

@@ -336,7 +336,7 @@ test('the preview toolbar stays tidy (at most two rows), in every sheet', async 
   await page.goto('/song/autumn-leaves')
   await chooseSheet(page, 'Scales')
   await pickOption(page, 'Where each scale starts', 'From C') // Scales, spelled from a note: the most controls
-  // how many rows the toolbar's labelled groups fall on (the content is capped at 72rem, so six groups can take two)
+  // how many rows the toolbar's labeled groups fall on (the content is capped at 72rem, so six groups can take two)
   const layout = () =>
     page.locator('#preview-toolbar').evaluate((el) => {
       const row = el.querySelector('[aria-label="Sheet controls"]')?.firstElementChild as HTMLElement // the rail's wrapping left groups (the actions pinned right beside them)
@@ -455,7 +455,7 @@ test('choosing a Superimpose option leaves the Superimpose in its place (#387)',
 })
 
 
-test('practising, the rail scrolls away with the page: the notes are what matter', async ({ page }) => {
+test('practicing, the rail scrolls away with the page: the notes are what matter', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 })
   await page.goto('/song/autumn-leaves')
   const rail = page.getByRole('group', { name: 'Sheet controls' })

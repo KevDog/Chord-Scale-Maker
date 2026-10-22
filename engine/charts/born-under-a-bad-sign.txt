@@ -5,22 +5,22 @@ context: blues
 key: Db
 form: AABA, 46 bars
 source: iReal Pro
-# analysis: 2026-10-19, rules v2; Db, blues
+# analysis: 2026-10-22, rules v2; Db, blues
 
 section: Intro
-1  | Db7   # I7 of the blues: a tonic with dominant colour, Mixolydian
+1  | Db7   # I7 of the blues: a tonic with dominant color, Mixolydian
 2  | Db7
 3  | Db7
 4  | Db7
 5  | Db7
 6  | Db7
 7  | Ab7   # V7 of the blues: a dominant that needn’t resolve, Mixolydian
-8  | Gb7   # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-9  | Db7   # I7 of the blues: a tonic with dominant colour, Mixolydian
+8  | Gb7   # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+9  | Db7   # I7 of the blues: a tonic with dominant color, Mixolydian
 10 | Db7
 
 section: A1
-1  | Db7   # I7 of the blues: a tonic with dominant colour, Mixolydian
+1  | Db7   # I7 of the blues: a tonic with dominant color, Mixolydian
 2  | Db7
 3  | Db7
 4  | Db7
@@ -29,7 +29,7 @@ section: A1
 7  | Db7
 8  | Db7
 9  | Ab7   # V7 of the blues: a dominant that needn’t resolve, Mixolydian
-10 | Gb7   # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+10 | Gb7   # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 11 | Db    # I of the blues: a triad here implies its ♭7, Mixolydian
 12 | Db
 
@@ -37,20 +37,20 @@ section: A2
 copy: A1
 
 section: B
-1  | Db7   # I7 of the blues: a tonic with dominant colour, Mixolydian
+1  | Db7   # I7 of the blues: a tonic with dominant color, Mixolydian
 2  | Db7
 3  | Db7
 4  | Db7
 5  | Ab7   # V7 of the blues: a dominant that needn’t resolve, Mixolydian
-6  | Gb7   # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+6  | Gb7   # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 7  | Ab7   # V7 of the blues: a dominant that needn’t resolve, Mixolydian
-8  | Gb7   # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+8  | Gb7   # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 8  | N.C.
 9  | Db    # I of the blues: a triad here implies its ♭7, Mixolydian
 10 | Db
 
 section: A3
-1  | Db7   # I7 of the blues: a tonic with dominant colour, Mixolydian
+1  | Db7   # I7 of the blues: a tonic with dominant color, Mixolydian
 2  | Db7
 3  | Db7
 4  | Db7
@@ -59,6 +59,6 @@ section: A3
 7  | Db7
 8  | Db7
 9  | Ab7   # V7 of the blues: a dominant that needn’t resolve, Mixolydian
-10 | Gb7   # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+10 | Gb7   # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 11 | Db    # I of the blues: a triad here implies its ♭7, Mixolydian
 12 | Db

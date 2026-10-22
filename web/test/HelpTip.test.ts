@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import HelpTip from '~/components/HelpTip.vue'
 
 describe('HelpTip', () => {
-  it('is a labelled button described by its tooltip', async () => {
+  it('is a labeled button described by its tooltip', async () => {
     const w = await mountSuspended(HelpTip, { props: { label: 'How it works' }, slots: { default: 'Explanation' } })
     const button = w.find('button')
     const tip = w.find('[role=tooltip]')

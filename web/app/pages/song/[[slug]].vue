@@ -45,11 +45,6 @@
         <p v-else class="text-zinc-600 dark:text-zinc-400">Loading editor…</p>
       </template>
     </ClientOnly>
-    <!-- a library tune says what its sheet is, in the prerendered page too: the changes, not the melody -->
-    <section v-if="song" aria-labelledby="lead-sheet-heading" class="mt-10 max-w-2xl print:hidden">
-      <UiSubheading id="lead-sheet-heading" :level="2">Chord changes (lead-sheet style)</UiSubheading>
-      <UiText class="mt-2">{{ song.leadSheet }}</UiText>
-    </section>
     <SongRecording v-if="song?.recording" :recording="song.recording" :youtube="song.youtube" :embeddable="song.embeddable" :title="song.title" />
     <UiText v-if="song?.contributor" class="mt-6 text-sm/6! print:hidden">Chart contributed by {{ song.contributor }}</UiText>
   </div>

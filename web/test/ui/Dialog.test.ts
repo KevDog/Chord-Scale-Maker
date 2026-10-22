@@ -7,7 +7,7 @@ import UiDialogTitle from '~/components/ui/DialogTitle.vue'
 const body = () => document.body.innerHTML
 
 describe('UiDialog', () => {
-  it('renders its content only while open, as a labelled dialog', async () => {
+  it('renders its content only while open, as a labeled dialog', async () => {
     const w = await mountSuspended(UiDialog, {
       props: { open: false },
       slots: { default: () => [h(UiDialogTitle, () => 'Choose a scale'), h('button', 'Set')] },

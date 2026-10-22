@@ -5,14 +5,14 @@ context: blues
 key: G
 form: AB, 26 bars
 source: iReal Pro
-# analysis: 2026-10-19, rules v2; G, blues
+# analysis: 2026-10-22, rules v2; G, blues
 
 section: A
-1  | G7      # I7 of the blues: a tonic with dominant colour, Mixolydian
-2  | C7      # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+1  | G7      # I7 of the blues: a tonic with dominant color, Mixolydian
+2  | C7      # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 3  | G       # I of the blues: a triad here implies its ♭7, Mixolydian
 4  | G
-5  | C7      # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+5  | C7      # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 6  | C7
 7  | G       # I of the blues: a triad here implies its ♭7, Mixolydian
 8  | G
@@ -23,11 +23,11 @@ section: A
 12 | D7      # V7 of the blues: a dominant that needn’t resolve, Mixolydian
 
 section: B
-1  | G7      # I7 of the blues: a tonic with dominant colour, Mixolydian
-2  | C7      # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+1  | G7      # I7 of the blues: a tonic with dominant color, Mixolydian
+2  | C7      # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 3  | G       # I of the blues: a triad here implies its ♭7, Mixolydian
 4  | G
-5  | C7      # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+5  | C7      # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 6  | C7
 7  | G       # I of the blues: a triad here implies its ♭7, Mixolydian
 8  | G
@@ -37,9 +37,9 @@ section: B
 11 | G       # I of the blues: a triad here implies its ♭7, Mixolydian
 12 | D7      # V7 of the blues: a dominant that needn’t resolve, Mixolydian
 13 | G       # I of the blues: a triad here implies its ♭7, Mixolydian
-13 | G7      # I7 of the blues: a tonic with dominant colour, Mixolydian
+13 | G7      # I7 of the blues: a tonic with dominant color, Mixolydian
 13 | C       # IV of the blues: a triad here implies its ♭7, Mixolydian
 13 | C#m7b5  # #ivø7 in G: Locrian, its own mode (the chord is outside the key)
 14 | G/D     # I of the blues: a triad here implies its ♭7, Mixolydian
 14 | Ab13    # tritone substitute: resolves down a half step to G7
-14 | G7      # I7 of the blues: a tonic with dominant colour, Mixolydian
+14 | G7      # I7 of the blues: a tonic with dominant color, Mixolydian

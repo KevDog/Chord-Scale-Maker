@@ -421,7 +421,7 @@ const altTargets = computed(() =>
 const altBars = computed(() => new Set(altTargets.value.map((t) => t.index)))
 /** the marks that print a pentatonic label (#255) */
 const pentatonicMarks = computed(() => marks.value.flatMap((m) => (m.pentatonic?.label ? [{ key: m.key, x: m.x, room: m.room, written: m.written, p: m.pentatonic }] : [])))
-/** ranked against the key, a pair that isn't the key's (#432): drawn greyed */
+/** ranked against the key, a pair that isn't the key's (#432): drawn grayed */
 const offKey = (h: ChangesHexatonic): boolean => h.offKey && !h.picked
 /** the marks that print a hexatonic label */
 const hexatonicMarks = computed(() => marks.value.flatMap((m) => (m.hexatonic?.label ? [{ key: m.key, x: m.x, room: m.room, h: m.hexatonic }] : [])))
@@ -486,7 +486,7 @@ const quartLabel = (q: ChangesQuartal): string => {
   const guides = quartRows(q).find((c) => c.name === q.name)?.guides
   return `Fourths: ${q.name}, built on ${q.degree}${guides === undefined ? '' : `, ${guides} guide tone${guides === 1 ? '' : 's'}`}`
 }
-/** the rung tints (#265, #277), spelled out so Tailwind sees them; the label's shared count says the same without colour */
+/** the rung tints (#265, #277), spelled out so Tailwind sees them; the label's shared count says the same without color */
 const RUNG_TINT = ['text-rung-0', 'text-rung-1', 'text-rung-2', 'text-rung-3', 'text-rung-4', 'text-rung-5', 'text-rung-6'] as const
 const tint = (rung: number): string => (props.counted ? (RUNG_TINT[rung] ?? '') : '')
 /** the bar's last chord, when the new chord slot follows it with no beat left in the bar: the slot goes after its name */

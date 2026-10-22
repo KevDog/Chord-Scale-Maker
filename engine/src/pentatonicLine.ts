@@ -9,7 +9,7 @@ import { SCALES, spellFrom } from './scales'
 
 /**
  * The Changes sheet's Pentatonic line (#284): under the Pentatonic overlay, the Line's 7th Chords slot plays each
- * chord's labelled minor pentatonic as four-note cells, the pentatonic less one note (Leave out), up, down or
+ * chord's labeled minor pentatonic as four-note cells, the pentatonic less one note (Leave out), up, down or
  * alternating, each cell from its note nearest the last; in the arpeggio line's rhythm and range. Pure; no DOM.
  */
 

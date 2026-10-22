@@ -63,7 +63,7 @@ describe('ChangesSystem guide tone labels', () => {
     await vi.waitFor(() => expect(parseFloat((row.element.children[1] as HTMLElement).style.left)).toBeCloseTo(48.8))
   })
 
-  it('leaves a chord without guide tones unlabelled, its rest drawn', async () => {
+  it('leaves a chord without guide tones unlabeled, its rest drawn', async () => {
     const rest: GuideNote = { pitch: null, beat: 2, beats: 2, tie: false, tiedIn: false, accidental: null }
     const w = await mount({ bars: [bar([chord(0, 'C7', '3'), chord(2, 'Cm7#5#9x', '')], [note(2, 64, 0), rest])] })
     expect(labelsOf(w.find('[data-slot="guides"]').element)).toEqual(['3', ''])
@@ -289,7 +289,7 @@ describe('ChangesSystem pentatonic ladders', () => {
   const slip: PentatonicPlan = { kind: 'pentatonic', bySection: { B: { rung: 5, side: 'flat' } }, fallback: { rung: 0, side: 'flat' }, counts: true }
   const AB = 'title: T\nkey: C\n\nsection: A\n1 | Cmaj7\n\nsection: B\nbars: 3\n1 | Dm7\n1 | G7\n2 | Cmaj7'
 
-  it('tints a label by its rung, its shared count and accessible name saying the same without colour (#277)', async () => {
+  it('tints a label by its rung, its shared count and accessible name saying the same without color (#277)', async () => {
     const w = await mountLine(AB, slip, 1)
     const label = w.find('[data-slot="pentatonic"] [data-section="B"]')
     expect(label.classes()).toContain('text-rung-5')
@@ -368,7 +368,7 @@ describe('ChangesSystem hexatonic row', () => {
     expect(w.find('[data-slot="hexatonic"]').html()).not.toMatch(/text-rung-/)
   })
 
-  it('greys a label ranked against the key that is not the key’s pair (#432)', async () => {
+  it('grays a label ranked against the key that is not the key’s pair (#432)', async () => {
     const KEY = { kind: 'hexatonic', basis: 'key' } as const
     const line = showHexatonics(buildChanges(parseChart('title: T\nkey: Dm\n\nsection: A\n1 | Em7b5\n2 | A7b9\n3 | Dm6\n4 | Dm6').value, CONCERT, 4, false, 'off', undefined, KEY).lines)[0]!
     const w = await mountSuspended(ChangesSystem, { props: { line, first: true, barsPerLine: 4, numerals: true, scales: true, clef: 'treble' as const, overlay: KEY } })

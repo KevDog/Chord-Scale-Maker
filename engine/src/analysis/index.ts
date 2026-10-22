@@ -261,7 +261,7 @@ function analyseNow(doc: ChartDoc): Analysis {
   return { key: p.global, keyFrom: p.keyFrom, context: p.context, contextSource: p.contextSource, detection: p.detection, areas, rows: out, problems: p.problems }
 }
 
-/** one option of the grid's Function dropdown: value '' is Auto (the analyser's own reading, labelled with
+/** one option of the grid's Function dropdown: value '' is Auto (the analyzer's own reading, labeled with
  * its numeral; "Auto" when it has none, "Auto (extended dominant)" for a chain link the sheet marks →).
  * accept (on Auto, where the rules could only guess and the row states nothing): the function that reads and
  * sounds just like Auto, so stating it settles the guess

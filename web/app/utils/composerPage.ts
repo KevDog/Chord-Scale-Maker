@@ -52,7 +52,7 @@ export function composerHead(slug: string): Readonly<{ head: PageHead; ld: strin
   const page = composerPage(slug)
   if (!page) return null
   const url = canonicalUrl(composerPath(slug))
-  const description = `${count(page.tunes.length)} by ${page.name} to practise: the chord changes with their scales, guide tones and arpeggios, for your instrument.`
+  const description = `${count(page.tunes.length)} by ${page.name} to practice: the chord changes with their scales, guide tones and arpeggios, for your instrument.`
   return {
     head: { title: `${page.name}: tunes, changes and chord scales`, description, robots: 'index, follow, max-image-preview:large' },
     ld: jsonLd([
