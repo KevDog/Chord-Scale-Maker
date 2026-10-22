@@ -10,6 +10,7 @@ export const RELEASE_NOTES: readonly ReleaseNote[] = [
   {
     date: '2026-10-22',
     items: [
+      { text: 'A click to practise with: Click (the note icon, beside Print) puts a metronome at the foot of a song’s page, at a tempo and feel from the chart’s style. Tap sets the tempo, Space starts and stops it, and its settings add a count-in, the skip note or eighths, a hat on 2 and 4, and a wood or beep sound. It comes into focus mode, still playing.' },
       { text: 'Edit alternate changes on the sheet: while editing, a small line above the bars takes each bar’s alternate (+ alt, then type; Tab for the next bar), and with Changes set to Alternate the big chords are the alternate set. A chart with alternates no longer forces its Source open.', pr: 490 },
       { text: 'The small line of other changes shows a chord held from an earlier bar (in italics), and an alternate typed the same as the chord already held there isn’t kept.', pr: 495 },
       { text: 'A simpler menu bar: Library, Scales, and a Help menu with How it works, How it decides, Functions, About and Contact.' },
