@@ -1218,6 +1218,14 @@ describe('otherChords', () => {
     expect(m.get('A 2')?.map((c) => c.written)).toEqual(sheet('standard').lines[0]?.bars[1]?.chords.map((c) => c.written))
   })
 
+  it('gives a held bar the other set holds a different chord through, marked held (#491)', () => {
+    const held = parseChart('title: T\nkey: C\n\nsection: A\nbars: 3\n1 | C\n2 | Dm7\nalt 2 | Abm7\n').value
+    const m = otherChords(buildChanges(changesFor(held, 'standard'), CONCERT), buildChanges(changesFor(held, 'alternate'), CONCERT))
+    expect([...m.keys()]).toEqual(['A 2', 'A 3'])
+    expect(m.get('A 2')).toEqual([{ beat: 0, written: 'Abm7', held: false }])
+    expect(m.get('A 3')).toEqual([{ beat: 0, written: 'Abm7', held: true }])
+  })
+
   it('is empty for identical sheets', () => {
     expect(otherChords(sheet('standard'), sheet('standard')).size).toBe(0)
   })

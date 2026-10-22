@@ -223,8 +223,21 @@
             </div>
           </dl>
           <UiText>
-            Both settings are remembered per chart in this browser and travel in a share link. A chart with alternates can't be edited bar by bar yet;
-            its source stays editable.
+            Both settings are remembered per chart in this browser and travel in a share link.
+          </UiText>
+          <UiText>
+            <strong class="font-semibold text-zinc-950 dark:text-white">Editing alternates.</strong> While you edit on a wide screen with
+            Standard playing, a small line above the bars takes each bar's alternate. Click <UiCode>+ alt</UiCode> (or a bar's alternate)
+            and type its chords: Tab moves to the next bar, Shift+Tab to the one before, Enter keeps it, Esc cancels. Leave it empty to
+            remove the bar's alternate. A bar that goes on holding an earlier alternate shows that chord in italics. Chords the
+            alternate set already plays there (the standard changes, or a chord held from before) aren't kept.
+          </UiText>
+          <UiText>
+            With Changes set to Alternate, the big chords are the alternate set. Retype a bar both sets share and it becomes an alternate;
+            retype it back and the alternate goes. Tapping a chord sets its scale and function as usual: on an alternate bar it sets the
+            alternate's, on a shared bar the shared chord's. An alternate can't be held. Adding, deleting or splitting bars, pasting and
+            new sections act on both sets. On a phone, switch to Alternate and tap a chord. A repeated section shows its alternates but
+            can't be given new ones on the line: write the section out first.
           </UiText>
         </div>
 
@@ -240,6 +253,30 @@
                 the analysis rows, lines, scale spelling, Practice, repeats and endings, and choosing a chord's scale.
                 <strong class="font-semibold">Everything</strong> adds pentatonics, chord picks, functions and key changes, and the
                 chart's source. A sheet set up with controls you can't see says so above it, with Show controls and Reset.
+              </dd>
+            </div>
+          </dl>
+        </div>
+
+        <div v-if="metronomeOn" class="space-y-3" data-controls-group>
+          <UiSubheading :level="3">Practising with a click</UiSubheading>
+          <dl class="space-y-4 text-base/6 sm:text-sm/6">
+            <div>
+              <dt class="font-semibold text-zinc-950 dark:text-white">Click</dt>
+              <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
+                The note icon beside Print shows a metronome along the bottom of the window (in focus mode, in the bar at the top), so you can play the
+                tune from the sheet without another app. It's set to the chart's time signature, with a tempo and a feel read
+                from its style (<DecisionLink id="click.tempo">how</DecisionLink>). <strong class="font-semibold">Start</strong>
+                plays it, and <kbd>Space</kbd> starts and stops it from anywhere on the page.
+                <strong class="font-semibold">−</strong> and <strong class="font-semibold">+</strong> change the tempo by one
+                (with Shift, by five), as do the arrow keys in the tempo, or type it, 40 to 300; <strong class="font-semibold">Tap</strong> takes it from a few
+                taps of the beat. The feel is what plays between the beats: <strong class="font-semibold">Quarters</strong>, the
+                beats alone; <strong class="font-semibold">Swing</strong>, the skip note of swung eighths; or
+                <strong class="font-semibold">Straight</strong>, even eighths. Under <strong class="font-semibold">⋯</strong>: a
+                count-in of one or two bars, a hat on 2 and 4 in 4/4, and the sound, Wood or Beep. The chevron folds it to
+                Start, the tempo and the beat, playing on, to leave a phone's screen to the music. The
+                chart remembers its tempo and feel. A chart that changes time signature partway plays the one it starts in.
+                On an iPhone or iPad the sound stops when the screen locks.
               </dd>
             </div>
           </dl>
@@ -421,7 +458,7 @@
           <UiText>
             <strong class="font-semibold">Backup → Back up…</strong> in the library saves everything this browser keeps
             in one file: My charts, each chart's practice picks, level and chord picks (the alternate changes' too, and which set you play), the same for library tunes, and
-            your preferences (instrument, range, theme, how the sheets look). Undo history stays behind.
+            your preferences (instrument, range, theme, how the sheets look). Undo history stays behind<template v-if="metronomeOn">, and so does each chart's click tempo</template>.
             <strong class="font-semibold">Restore from backup…</strong> (or <strong class="font-semibold">Open chart…</strong>,
             or dropping the file on the library) brings it into another browser. It shows what's new, what's already
             there and what differs before anything changes; nothing of yours is replaced unless you choose it.
@@ -512,6 +549,7 @@ const phraseCellsOn = useFeature('phraseCells')
 const approachesOn = useFeature('approaches')
 const ireal = useFeature('ireal')
 const backupOn = useFeature('backup')
+const metronomeOn = useFeature('metronome')
 const SECTIONS = [
   { id: 'quick', title: 'The short version' },
   { id: 'sheets', title: 'The sheets' },

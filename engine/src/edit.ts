@@ -1,5 +1,6 @@
 import { beatsPerBar, type ChartDoc, chartBeats, type ChartLine, formPart, type FormPart, isSectionName, lineSections, type MetaKey, parseChart, SECTION_FIELDS, type SectionField, serializeChart } from './chart'
 import { type BarSection, type BarView, barView, type ChartBar } from './bars'
+import { type ChangesSet, changesFor } from './alternates'
 import { chordsAfterTyping, posOfLine } from './barGrid'
 import { sectionLayout, statedKeyAt } from './layout'
 import { LIMITS } from './limits'
@@ -8,6 +9,7 @@ import { rootName } from './pitch'
 import { parseScale, samePitchScale, SCALES } from './scales'
 
 export type RowLine = Extract<ChartLine, { kind: 'row' }>
+export type AltRowLine = Extract<ChartLine, { kind: 'altRow' }>
 export type RowField = 'bar' | 'chord' | 'scale' | 'function'
 
 /**
@@ -27,10 +29,10 @@ export function cellError(value: string, maxLength: number = LIMITS.maxCell, met
 
 const replaceAt = <T>(xs: readonly T[], i: number, x: T): T[] => [...xs.slice(0, i), x, ...xs.slice(i + 1)]
 
-/** set one field of the row at line index i (a no-op if that line is not a row); an empty function removes it */
+/** set one field of the row (or alt row) at line index i (a no-op if that line is neither); an empty function removes it */
 export function setRowField(doc: ChartDoc, i: number, field: RowField, value: string): ChartDoc {
   const line = doc.lines[i]
-  if (line?.kind !== 'row') return doc
+  if (line?.kind !== 'row' && line?.kind !== 'altRow') return doc
   if (field === 'function' && !value) {
     const { function: _, ...rest } = line
     return { lines: replaceAt(doc.lines, i, rest) }
@@ -65,7 +67,7 @@ export function insertKeyBefore(doc: ChartDoc, i: number, key: string): ChartDoc
  */
 export function setRowChord(doc: ChartDoc, i: number, chord: string): ChartDoc {
   const line = doc.lines[i]
-  if (line?.kind !== 'row') return doc
+  if (line?.kind !== 'row' && line?.kind !== 'altRow') return doc
   const next = defaultScaleOrNull(chord)
   const follows = line.scale !== '' && next !== null && samePitchScale(line.scale, defaultScaleOrNull(line.chord)) // by pitch (R18)
   return { lines: replaceAt(doc.lines, i, { ...line, chord, scale: follows ? next : line.scale }) }
@@ -83,7 +85,7 @@ function canonicalScale(text: string): string {
 
 /** each written scale in one written form; an empty cell stays empty (it plays the analysis, a written one pins) */
 function withCanonicalScales(doc: ChartDoc): ChartDoc {
-  return { lines: doc.lines.map((l) => (l.kind === 'row' && l.scale ? { ...l, scale: canonicalScale(l.scale) } : l)) }
+  return { lines: doc.lines.map((l) => ((l.kind === 'row' || l.kind === 'altRow') && l.scale ? { ...l, scale: canonicalScale(l.scale) } : l)) }
 }
 
 /** two chart texts that say the same thing: the same lines, ignoring spacing and how a written scale is named */
@@ -195,7 +197,8 @@ function shiftBars(doc: ChartDoc, view: BarView, section: string, at: number, de
     const s = sections[i]
     if (!s || !moved.has(s)) return [l]
     switch (l.kind) {
-      case 'row': {
+      case 'row':
+      case 'altRow': {
         if (s !== section || !WHOLE.test(l.bar)) return [l]
         const n = map(Number(l.bar))
         return n === null ? [] : n === Number(l.bar) ? [l] : [{ ...l, bar: String(n) }]
@@ -235,9 +238,9 @@ function rowSlot(doc: ChartDoc, section: string, bar: number): number {
   const r = blockRange(doc, section)
   if (!r) return doc.lines.length
   const inBlock = (i: number): boolean => i > r.start && i < r.end
-  const later = doc.lines.findIndex((l, i) => inBlock(i) && l.kind === 'row' && WHOLE.test(l.bar) && Number(l.bar) > bar)
+  const later = doc.lines.findIndex((l, i) => inBlock(i) && (l.kind === 'row' || l.kind === 'altRow') && WHOLE.test(l.bar) && Number(l.bar) > bar)
   if (later >= 0) return later
-  const lastRow = doc.lines.findLastIndex((l, i) => inBlock(i) && l.kind === 'row')
+  const lastRow = doc.lines.findLastIndex((l, i) => inBlock(i) && (l.kind === 'row' || l.kind === 'altRow'))
   if (lastRow >= 0) return lastRow + 1
   const lastField = doc.lines.findLastIndex((l, i) => inBlock(i) && l.kind === 'sectionMeta')
   return (lastField >= 0 ? lastField : r.start) + 1
@@ -315,6 +318,88 @@ export function setLineChord(doc: ChartDoc, i: number, text: string): ChartDoc {
   const view = barView(doc)
   const pos = posOfLine(view, i)
   return pos ? setBarChords(doc, pos.section, pos.bar, chordsAfterTyping(view, pos, text, false)) : doc
+}
+
+/** the chords of a bar's alt rows, in order; none when it has none (or isn't in a written section) */
+export function altBarChords(doc: ChartDoc, section: string, bar: number): readonly string[] {
+  return altLines(doc, section, bar).map((i) => (doc.lines[i] as AltRowLine).chord)
+}
+
+/** line indices of a section's alt rows on a bar */
+function altLines(doc: ChartDoc, section: string, bar: number): number[] {
+  const r = blockRange(doc, section)
+  if (!r) return []
+  return doc.lines.flatMap((l, i) => (i > r.start && i < r.end && l.kind === 'altRow' && WHOLE.test(l.bar) && Number(l.bar) === bar ? [i] : []))
+}
+
+/** the Alternate set's chords playing in a bar, by line: its own, or the one held into it (#491) */
+function altSetChords(alt: ChartDoc, section: string, bar: number): readonly Readonly<{ line: number }>[] {
+  const bars = barView(alt).sections.find((s) => s.name === section && !s.copy)?.bars ?? []
+  const found = bars.findLast((b) => b.bar <= bar && b.chords.length)
+  if (!found) return []
+  return found.bar === bar ? found.chords : found.chords.slice(-1)
+}
+
+/** a bar's chords in the Alternate set, held ones too: chord, scale and function of each */
+function altSetBar(doc: ChartDoc, section: string, bar: number): readonly string[] {
+  const alt = changesFor(doc, 'alternate')
+  return altSetChords(alt, section, bar).map((c) => {
+    const l = alt.lines[c.line] as RowLine
+    return `${l.chord}\u0000${l.scale}\u0000${l.function ?? ''}`
+  })
+}
+
+/**
+ * set a bar's alternate changes: its alt rows become `chords` (none removes them). Each takes the place of the
+ * Alternate set's chord there, scale and function following as setRowChord's do. Alt rows that play the same as the
+ * standard bar are dropped. The same doc for a bar that isn't in a written section, or a chord that fails cellError.
+ */
+export function setAltBarChords(doc: ChartDoc, section: string, bar: number, chords: readonly string[]): ChartDoc {
+  const found = writtenBar(barView(doc), section, bar)
+  if (!found || chordsError(chords)) return doc
+  const old = altLines(doc, section, bar)
+  const length = found.section.bars.length
+  const without: ChartDoc = old.length ? { lines: doc.lines.filter((_, i) => !old.includes(i)) } : doc
+  if (!chords.length) return old.length ? tidyBars(without, section, length) : doc
+  // the Alternate set's chords at this bar (or held into it), by position: what each new chord replaces
+  const source = altSetChords(changesFor(doc, 'alternate'), section, bar)
+  const rows: AltRowLine[] = chords.map((_, k) => {
+    const src = source[k] ? (doc.lines[source[k].line] as RowLine | AltRowLine) : null
+    return { kind: 'altRow', bar: String(bar), chord: src?.chord ?? '', scale: src?.scale ?? '', ...(src?.function ? { function: src.function } : {}) }
+  })
+  // in place of the old alt rows, else after the bar's last row, else where its rows would go
+  const r = blockRange(doc, section)!
+  const last = doc.lines.findLastIndex((l, i) => i > r.start && i < r.end && (l.kind === 'row' || l.kind === 'altRow') && WHOLE.test(l.bar) && Number(l.bar) === bar)
+  const at = old.length ? old[0]! : last >= 0 ? last + 1 : rowSlot(doc, section, bar)
+  let next: ChartDoc = { lines: [...without.lines.slice(0, at), ...rows, ...without.lines.slice(at)] }
+  chords.forEach((chord, k) => {
+    const i = at + k
+    const row = next.lines[i] as AltRowLine
+    if (row.chord === chord) return
+    next = row.chord ? setRowChord(next, i, chord) : { lines: replaceAt(next.lines, i, { ...row, chord }) }
+  })
+  // redundant: the alternate plays as the standard changes do
+  const played = (d: ChartDoc): string => altSetBar(d, section, bar).join('\u0001')
+  return tidyBars(played(next) === played(without) ? without : next, section, length)
+}
+
+/** set a bar's chords in one set of changes: standard → setBarChords, alternate → setAltBarChords */
+export function setBarChordsIn(doc: ChartDoc, set: ChangesSet, section: string, bar: number, chords: readonly string[]): ChartDoc {
+  return set === 'standard' ? setBarChords(doc, section, bar, chords) : setAltBarChords(doc, section, bar, chords)
+}
+
+/**
+ * setLineChord in one set of changes: the line is read in that set's bars (so % is that set's bar before). An empty
+ * result on an alternate bar removes its alt rows; on a bar the sets share it does nothing.
+ */
+export function setLineChordIn(doc: ChartDoc, set: ChangesSet, i: number, text: string): ChartDoc {
+  if (set === 'standard') return setLineChord(doc, i, text)
+  const view = barView(changesFor(doc, set))
+  const pos = posOfLine(view, i)
+  if (!pos) return doc
+  const chords = chordsAfterTyping(view, pos, text, false)
+  if (!chords.length && !altLines(doc, pos.section, pos.bar).length) return doc
+  return setAltBarChords(doc, pos.section, pos.bar, chords)
 }
 
 /** a held bar at `bar` (see insertBar): at the section's end too, where bars: then counts it */
@@ -400,7 +485,20 @@ export function writeOutCopy(doc: ChartDoc, section: string): ChartDoc {
   const carried = layout.directives
     .filter((d) => d.section === section && (d.kind === 'key' || d.kind === 'time' || d.kind === 'context') && sections[d.line] !== section)
     .map(({ section: _s, line: _l, ...d }) => d as ChartLine)
-  let next: ChartDoc = { lines: [...doc.lines.slice(0, i), ...rows, ...carried, ...doc.lines.slice(i + 1)] }
+  // the written source's alt rows go with them, through a chain of copies (same bars; the alternate changes' analysis comments are not carried)
+  const copyOf = new Map(layout.sections.map((x) => [x.name, x.copyOf] as const))
+  const written = (name: string, seen: ReadonlySet<string>): string => {
+    const next = copyOf.get(name)
+    return next && !seen.has(next) ? written(next, new Set([...seen, next])) : name
+  }
+  const source = written(section, new Set([section]))
+  const alts = doc.lines.flatMap((l, j): AltRowLine[] => (l.kind === 'altRow' && sections[j] === source ? [{ kind: 'altRow', bar: l.bar, chord: l.chord, scale: l.scale, ...(l.function ? { function: l.function } : {}) }] : []))
+  // in bar order, after the main rows of the same bar
+  const merged = alts.reduce<ChartLine[]>((acc, a) => {
+    const after = acc.findLastIndex((r) => (r.kind === 'row' || r.kind === 'altRow') && Number(r.bar) <= Number(a.bar))
+    return [...acc.slice(0, after + 1), a, ...acc.slice(after + 1)]
+  }, rows)
+  let next: ChartDoc = { lines: [...doc.lines.slice(0, i), ...merged, ...carried, ...doc.lines.slice(i + 1)] }
   if (s.key && fieldIndex(next, section, 'key') < 0) next = setSectionField(next, section, 'key', s.key)
   if (s.beats !== chartBeats(doc) && fieldIndex(next, section, 'time') < 0) next = setSectionField(next, section, 'time', `${s.beats}/4`)
   if (s.context && fieldIndex(next, section, 'context') < 0) next = setSectionField(next, section, 'context', s.context)
@@ -426,11 +524,11 @@ export function splitSection(doc: ChartDoc, section: string, bar: number, name: 
   if (!r) return doc
   const moves = (l: ChartLine, i: number): boolean =>
     mine(i) &&
-    ((l.kind === 'row' && WHOLE.test(l.bar) && Number(l.bar) >= bar) ||
+    (((l.kind === 'row' || l.kind === 'altRow') && WHOLE.test(l.bar) && Number(l.bar) >= bar) ||
       (l.kind === 'ending' && l.from >= bar) ||
       ((l.kind === 'key' || l.kind === 'time' || l.kind === 'context' || l.kind === 'mark' || l.kind === 'nav') && l.bar >= bar))
   const renumber = (l: ChartLine): ChartLine => {
-    if (l.kind === 'row') return { ...l, bar: String(Number(l.bar) - bar + 1) }
+    if (l.kind === 'row' || l.kind === 'altRow') return { ...l, bar: String(Number(l.bar) - bar + 1) }
     if (l.kind === 'ending') return { ...l, from: l.from - bar + 1, to: l.to - bar + 1 }
     if (l.kind === 'key' || l.kind === 'time' || l.kind === 'context' || l.kind === 'mark' || l.kind === 'nav') return { ...l, bar: l.bar - bar + 1 }
     return l

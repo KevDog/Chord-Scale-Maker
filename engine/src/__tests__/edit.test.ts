@@ -69,6 +69,7 @@ describe('chord changes and comparing charts', () => {
     expect(sameChart(a('1 | Cm7 | C Dorian\n'), a('1  |  Cm7  | C Dorian\n'))).toBe(true)
     expect(sameChart(a('1 | Cm7 | C Dorian\n'), a('1 | Cm7\n'))).toBe(false) // a written scale pins it; a blank plays the analysis
     expect(sameChart(a('6 | D7 | D Half-Whole\n'), a('6 | D7 | D Half-Whole Diminished\n'))).toBe(true)
+    expect(sameChart(a('2 | Abm7\nalt 2 | Abm7 | Ab Half-Whole\n'), a('2 | Abm7\nalt 2 | Abm7 | Ab Half-Whole Diminished\n'))).toBe(true)
     expect(sameChart(a('1 | Cm7 | C Dorian\n'), a('1 | Cm7 | C Aeolian\n'))).toBe(false)
     expect(sameChart('# note\n\nsection: A\n1 | Cm7\n', a('1 | Cm7\n'))).toBe(false) // comments count
   })
@@ -86,6 +87,22 @@ describe('the function cell', () => {
   it('keeps the function when the scale is cleared', () => {
     const doc = parseChart('section: A\n1 | D7 | D Mixolydian | V7/V\n').value
     expect(serializeChart(setRowField(doc, 1, 'scale', ''))).toBe('section: A\n1 | D7 |  | V7/V\n')
+  })
+})
+
+describe('an altRow', () => {
+  const d = parseChart('section: A\n2 | Dm7\nalt 2 | Abm7\n').value
+  const i = d.lines.findIndex((l) => l.kind === 'altRow')
+
+  it('takes a scale and a function, keeping its kind', () => {
+    expect(serializeChart(setRowField(d, i, 'scale', 'Ab Dorian'))).toContain('alt 2 | Abm7 | Ab Dorian')
+    expect(serializeChart(setRowField(d, i, 'function', 'ii'))).toBe('section: A\n2 | Dm7\nalt 2 | Abm7 |  | ii\n')
+    expect(setRowField(d, i, 'scale', 'Ab Dorian').lines[i]?.kind).toBe('altRow')
+  })
+
+  it('setRowChord keeps its kind, and a default scale follows the chord', () => {
+    const e = parseChart('section: A\n2 | Dm7\nalt 2 | Abm7 | Ab Dorian\n').value
+    expect(setRowChord(e, i, 'Db7').lines[i]).toMatchObject({ kind: 'altRow', chord: 'Db7', scale: 'Db Mixolydian' })
   })
 })
 

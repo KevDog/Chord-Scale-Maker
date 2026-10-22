@@ -1,7 +1,7 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { nextTick } from 'vue'
-import { type ChartDoc, parseChart } from '@chord-scale-maker/engine'
+import { changesFor, type ChartDoc, parseChart } from '@chord-scale-maker/engine'
 import ChordChoices from '~/components/ChordChoices.vue'
 
 // lines: 5 A1 CMaj7, 6 A2 D7 (II7 in C, not resolving: ruling D5, a guess), 7 A3 Dm7, 8 A4 G7, 9 A5 CMaj7
@@ -148,5 +148,19 @@ describe('ChordChoices interface levels', () => {
     const w = await all(6)
     expect(w.html()).not.toContain('space-y-6')
     expect(w.element.nodeType).not.toBe(Node.ELEMENT_NODE)
+  })
+})
+
+describe('ChordChoices on a set of a chart with alternates (#469)', () => {
+  // lines: 5 A1 CMaj7, 6 A2 G7, 7 alt A2 D7, 8 A3 CMaj7
+  const real = parseChart('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | CMaj7\n2 | G7\nalt 2 | D7\n3 | CMaj7\n').value
+  beforeEach(() => (document.body.innerHTML = ''))
+
+  it('reads the played doc and writes the alt row of the real one', async () => {
+    const w = await mountSuspended(ChordChoices, { props: { doc: changesFor(real, 'alternate'), source: real, line: 7, part: 'function' }, attachTo: document.body })
+    await type(w, 'II7')
+    await enter(w)
+    expect(lastDoc(w)?.lines[7]).toMatchObject({ kind: 'altRow', chord: 'D7', function: 'II7' })
+    expect(lastDoc(w)?.lines[6]).toEqual(real.lines[6])
   })
 })

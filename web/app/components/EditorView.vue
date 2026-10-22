@@ -4,7 +4,7 @@
     <UiText v-if="sheetEditing" class="md:hidden print:hidden">Full editing works on a larger screen. Tap a chord on the sheet to change it.</UiText>
 
     <ShareDialog :open="shareOpen" :link="shareLink" @close="shareOpen = false" />
-    <SheetChordEditor :doc="editor.doc.value" :target="sheetChord" @update:doc="editor.setDoc" @said="said = $event" @close="sheetChord = null" />
+    <SheetChordEditor :doc="playedDoc" :source="editor.doc.value" :set="mainSet" :target="sheetChord" @update:doc="editor.setDoc" @said="said = $event" @close="sheetChord = null" />
     <!-- the sheet editor's structure dialogs: a new section, a section from a bar, a jump, pasted bars, a repeat, a rename -->
     <BarDialog
       :kind="sheetDialog?.kind ?? null"
@@ -87,8 +87,11 @@
           focus.on.value && 'fixed inset-0 z-50 overflow-y-auto bg-stand px-4 pb-8 print:static print:overflow-visible print:bg-white print:p-0',
         ]"
       >
-        <div v-if="focus.on.value" ref="focusBar" class="sticky top-0 z-10 -mx-4 flex justify-end bg-stand/90 px-4 py-3 backdrop-blur-sm print:hidden">
-          <UiButton outline @click="focus.exit"><XMarkIcon data-slot="icon" />Exit focus<kbd class="ml-1 font-sans text-xs text-zinc-500 dark:text-zinc-400">Esc</kbd></UiButton>
+        <div v-if="focus.on.value" ref="focusBar" class="sticky top-0 z-10 -mx-4 flex flex-wrap items-center justify-end gap-3 bg-stand/90 px-4 py-3 backdrop-blur-sm print:hidden">
+          <!-- the click (#254): its controls in this bar, or a button to show them -->
+          <ClickBar v-if="metronomeOn && click.shown.value" home="focus" :chart="clickChart" class="mr-auto min-w-0 flex-1" />
+          <UiButton v-else-if="metronomeOn" outline class="mr-auto" :title="CLICK_TITLE" @click="click.show()"><MusicalNoteIcon data-slot="icon" />Click</UiButton>
+          <UiButton outline data-exit-focus @click="focus.exit"><XMarkIcon data-slot="icon" />Exit focus<kbd class="ml-1 font-sans text-xs text-zinc-500 dark:text-zinc-400">Esc</kbd></UiButton>
         </div>
         <!-- display: contents, so the rail inside sticks over the whole section (the paper's top margin stands in for this
              box's own, which a contents box doesn't have) -->
@@ -172,6 +175,8 @@
                 <UiButton v-if="!editor.fatal.value" outline title="Show only the sheet music (Esc to leave)" @click="after(enterFocus)"><ArrowsPointingOutIcon data-slot="icon" />Focus</UiButton>
               </template>
               <template v-if="place === 'rail'">
+                <!-- the icon alone: the rail's actions row has no room for a word more (CI's e2e at 1440 wraps it to a third row) -->
+                <ToggleButton v-if="metronomeOn && !editor.fatal.value" :model-value="click.shown.value" aria-label="Click" :title="CLICK_TITLE" @update:model-value="$event ? click.show() : click.hide()"><MusicalNoteIcon data-slot="icon" /></ToggleButton>
                 <UiButton v-if="!editor.fatal.value" outline color="note" title="Print, or save a PDF from the print dialog" @click="print"><PrinterIcon data-slot="icon" />Print</UiButton>
                 <MoreMenu :items="moreItems" @action="onMore" />
               </template>
@@ -199,13 +204,16 @@
             <SheetStatus v-if="statusText || copyError" :text="statusText" :failed="saveFailed" :error="copyError" class="mb-2 print:hidden" />
             <UiText class="text-red-600! dark:text-red-400!">Preview paused: the chart is over a size limit.</UiText>
           </template>
-          <!-- the played set's doc: on a chart with alternates its other set's rows are blank, so an update:doc from it would
-               drop them. Such a chart isn't sheet-editable (sheetEditing, flag or not); before #469 enables it, sheet edits must merge
-               back into editor.doc -->
+          <!-- the sheet draws and reads the set played (sheetDoc); its edits are written to the chart itself, alt rows and
+               all, in that set (#469) -->
           <ChangesSheet
             v-else-if="sheet === 'changes'"
-            :doc="playedDoc"
+            :doc="sheetDoc"
+            :source="editor.doc.value"
+            :set="mainSet"
             :other-doc="otherDoc"
+            :alt-editing="altEditing"
+            :other-screen-only="!changesSet.shown.value"
             :title="sheetTitle"
             :heading-level="1"
             :subtitle="sheetSubtitle"
@@ -290,11 +298,12 @@
         </div>
       </section>
     </div>
+    <ClickBar v-if="metronomeOn && click.shown.value && !focus.on.value" home="docked" :chart="clickChart" @hide="click.hide()" />
   </div>
 </template>
 
 <script setup lang="ts">
-import { ArrowPathIcon, ArrowsPointingOutIcon, ArrowUturnLeftIcon, ArrowUturnRightIcon, BookmarkIcon, CodeBracketIcon, EllipsisHorizontalIcon, LinkIcon, PencilSquareIcon, PrinterIcon, XMarkIcon } from '@heroicons/vue/16/solid'
+import { ArrowPathIcon, ArrowsPointingOutIcon, ArrowUturnLeftIcon, ArrowUturnRightIcon, BookmarkIcon, CodeBracketIcon, EllipsisHorizontalIcon, LinkIcon, MusicalNoteIcon, PencilSquareIcon, PrinterIcon, XMarkIcon } from '@heroicons/vue/16/solid'
 import { ISSUE_CONTEXT, issuePart } from '~/utils/issueReport'
 import { CHART_REPORT_KEY, type ChartReport, guidesText } from '~/utils/chartReport'
 import { approachApplies, changesLineOf, shareLineOf } from '~/utils/sheetLine'
@@ -302,6 +311,8 @@ import { type HiddenSetting, hiddenSettings } from '~/utils/interface'
 import {
   addSection,
   barView,
+  chartBeats,
+  chartDetails,
   changesSections,
   changesFor,
   CHANGES_SETS,
@@ -323,6 +334,7 @@ import {
   hasAlternates,
   insertHeldBar,
   keyStart,
+  posOfLine,
   renameSection,
   repeatSection,
   setNav,
@@ -367,7 +379,8 @@ import { firstSheet, type SheetKind } from '~/utils/sheets'
 import { DEFAULT_PATTERN } from '~/composables/usePreferences'
 import { type MoreAction, moreMenuItems } from '~/utils/moreMenu'
 import { CHART_SUBMISSION_KEY, type ChartSubmission, submissionAction } from '~/utils/chartSubmission'
-import { SHEET_PAGED } from '~/utils/sheetPaged'
+import { FOCUS_BAR_HEIGHT, SHEET_PAGED } from '~/utils/sheetPaged'
+import { CLICK, type ClickChart, useClick } from '~/composables/useClick'
 import { spellView } from '~/utils/scaleChoices'
 import { writeSession, writeStored } from '~/utils/storage'
 import { type AnalyticsEvent, sendEvent, songOf } from '~/utils/analytics'
@@ -433,9 +446,11 @@ const changesSet = useChangesSet(props.practiceKey, props.shared)
 const alternatesOn = computed(() => alternatesFlag && hasAlternates(editor.doc.value))
 const mainSet = computed((): ChangesSet => (alternatesOn.value ? changesSet.main.value : 'standard'))
 const playedDoc = computed(() => (alternatesOn.value ? changesFor(editor.doc.value, mainSet.value) : editor.doc.value))
+/** the doc the Changes sheet draws and reads: the set played; Standard, the chart itself (its layout skips alt rows) */
+const sheetDoc = computed(() => (mainSet.value === 'alternate' ? playedDoc.value : editor.doc.value))
 const playedRows = computed(() => (alternatesOn.value ? expandRows(playedDoc.value).value : editor.rows.value))
-/** the other set, for the small line; null while it's hidden */
-const otherDoc = computed(() => (alternatesOn.value && changesSet.shown.value ? changesFor(editor.doc.value, mainSet.value === 'standard' ? 'alternate' : 'standard') : null))
+/** the other set, for the small line; null while it's hidden (typing alternates, altEditing, shows it) or there's none */
+const otherDoc = computed(() => (alternatesOn.value && (changesSet.shown.value || altEditing.value) ? changesFor(editor.doc.value, mainSet.value === 'standard' ? 'alternate' : 'standard') : null))
 const CHANGES_OPTIONS: readonly { value: ChangesSet; label: string }[] = [{ value: 'standard', label: 'Standard' }, { value: 'alternate', label: 'Alternate' }]
 /** the sheets' subtitle: a printed sheet says which set it plays */
 const sheetSubtitle = computed(() => (mainSet.value === 'alternate' ? [editor.heading.value.subtitle, 'Alternate changes'].filter(Boolean).join(' · ') : editor.heading.value.subtitle))
@@ -509,24 +524,41 @@ const sheetLine = computed(() => shareLineOf(prefs.lineMode.value, prefs.guideLi
 /** the line the Changes sheet draws: the stored one, the arpeggio slot read as the Pentatonic line under the Pentatonic overlay (#284) */
 const changesLine = computed(() => changesLineOf({ mode: prefs.lineMode.value, guide: prefs.guideLine.value, arpeggio: prefs.arpeggio.value, overlay: prefs.overlay.value, leave: prefs.pentLeave.value, dir: prefs.arpDir.value, cells: prefs.cells.value, shape: prefs.pairLine.value, order: phraseOn ? prefs.cellsOrder.value : 'as-written', phrase: phraseOn && prefs.cellsPhrase.value }))
 /**
- * chords on the Changes sheet open the chord editor while the editor is shown (on a phone, the whole editor); not on a
- * chart with alternates, whatever the flag (#469; edit.ts knows only `row`): its Source edits it
+ * chords on the Changes sheet open the chord editor while the editor is shown (on a phone, the whole editor); on a chart
+ * with alternates, in the set played (#469)
  */
-const sheetEditing = computed(() => editorShown.value && !editor.fatal.value && !hasAlternates(editor.doc.value))
+const sheetEditing = computed(() => editorShown.value && !editor.fatal.value)
 const sheetChord = ref<SheetChordEdit | null>(null)
 const selectedLine = ref<number | null>(null)
 const said = ref('')
+/**
+ * a chord's place in its bar, to find it again by: in Alternate a change can add or drop alt rows, moving its line (#469).
+ * chordIndexIn: the index of the chord on a line; chordLineAt: the line of the bar's chord at that index, or its last
+ */
+const chordIndexIn = (doc: ChartDoc, line: number): number => posOfLine(barView(doc), line)?.chord ?? 0
+function chordLineAt(doc: ChartDoc, at: SheetPlace, k: number): number | null {
+  const chords = barView(doc).sections.find((s) => s.name === at.section)?.bars.find((b) => String(b.bar) === at.bar)?.chords ?? []
+  return chords[Math.min(k, chords.length - 1)]?.line ?? null
+}
+/** the tapped chord's index in its bar, and the set it was tapped in (the bottom sheet) */
+let sheetChordAt = 0
+let sheetChordSet: ChangesSet = 'standard'
 /** a chord tapped on the sheet below md: edit it in the chord editor's bottom sheet */
 function editSheetChord(chord: SheetChordEdit): void {
   editor.flush()
   sheetChord.value = chord
+  sheetChordAt = chordIndexIn(playedDoc.value, chord.line)
+  sheetChordSet = mainSet.value
 }
-/** the Source: in the banner, or under ⋯ below md, remembered; always shown for a chart over a size limit (only the text can fix it) */
-/**
- * the Source is offered from Everything, and at any level while the text has a problem or the chart has alternates, flag
- * on or off (only the text can fix or edit those: #469)
- */
-const sourceOffered = computed(() => ui.shows('source') || editor.diagnostics.value.length > 0 || hasAlternates(editor.doc.value))
+// found again in Alternate, and when the last alternate goes and Standard plays (the alt rows' lines are gone)
+watch(playedDoc, (doc) => {
+  const c = sheetChord.value
+  const line = c && (mainSet.value === 'alternate' || sheetChordSet === 'alternate') ? chordLineAt(doc, c, sheetChordAt) : null
+  sheetChordSet = mainSet.value
+  if (c && line !== null && line !== c.line) sheetChord.value = { ...c, line }
+})
+/** the Source is offered from Everything, and at any level while the text has a problem (only the text can fix it) */
+const sourceOffered = computed(() => ui.shows('source') || editor.diagnostics.value.length > 0)
 const sourceShown = computed(() => (sourceOffered.value && prefs.source.value) || editor.fatal.value)
 /** the chart's key, for the sheets' key signature, drawn once at the start */
 const homeKey = computed(() => chartKeyOf(editor.doc.value))
@@ -618,6 +650,19 @@ function resetHidden(): void {
 }
 const focus = useFocusMode()
 const focusBar = ref<HTMLElement | null>(null)
+// its height, so focus mode's pages fit under it: one row, or two with the click on a phone
+const focusBarHeight = ref(60)
+provide(FOCUS_BAR_HEIGHT, focusBarHeight)
+let focusBarSized: ResizeObserver | undefined
+watch(focusBar, (el) => {
+  focusBarSized?.disconnect()
+  if (!el || typeof ResizeObserver === 'undefined') return
+  focusBarSized = new ResizeObserver(([e]) => {
+    if (e) focusBarHeight.value = Math.ceil(e.borderBoxSize[0]?.blockSize ?? e.contentRect.height)
+  })
+  focusBarSized.observe(el)
+})
+onBeforeUnmount(() => focusBarSized?.disconnect())
 /**
  * the lead-sheet editor (docs/superpowers/specs/2026-10-11-lead-sheet-editor-design.md): the sheet itself is the editor
  * from md up, while the editor is open on a chart the sheet can draw, outside focus mode. It shows concert pitch (D2)
@@ -631,6 +676,8 @@ const wide = useMediaQuery(WIDE, import.meta.client ? window.matchMedia(WIDE).ma
 /** phones: the short rail, its other controls in a dialog */
 const compactRail = computed(() => !wide.value)
 const sheetEditor = computed(() => wide.value && sheetEditing.value && !focus.on.value)
+/** the small line typed bar by bar (#469): the sheet editor playing Standard, on any chart, with or without alternates yet */
+const altEditing = computed(() => alternatesFlag && sheetEditor.value && mainSet.value === 'standard')
 /** numerals and scales as the sheet draws them: the editor forces both on (D3), so they don't count toward the notice while it's open (#291) */
 const showNumerals = computed(() => sheetEditor.value || prefs.numerals.value)
 const showScaleNames = computed(() => sheetEditor.value || prefs.scaleNames.value)
@@ -639,9 +686,16 @@ const sheetPreview = ref<ChordPreview | null>(null)
 /** a chord the sheet should give focus to (its field closed by a key with nowhere to go) */
 const sheetFocus = ref<SheetFocus | null>(null)
 /** ⌘Z and ⇧⌘Z anywhere on the page (#315); a text field keeps its own undo (the editor's pane takes its own first) */
+const SPACE_OWNERS = 'button, a, label, summary, [role=button], [role=radio], [role=checkbox], [role=switch], [role=menuitem], [role=option], [role=slider]'
 function onPageKeydown(e: KeyboardEvent): void {
   const t = e.target as HTMLElement | null
   if (t && (/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || t.isContentEditable)) return
+  // Space starts and stops the click while it's shown, except on a control, whose own Space it is
+  if (e.key === ' ' && metronomeOn && click.shown.value && !t?.closest(SPACE_OWNERS)) {
+    e.preventDefault()
+    click.toggle(e)
+    return
+  }
   chartHistory.onKeydown(e)
 }
 onMounted(() => window.addEventListener('keydown', onPageKeydown))
@@ -659,6 +713,14 @@ function openSheetEdit(e: SheetEdit): void {
   sheetEdit.value = e
   if (e.kind === 'chord') selectedLine.value = e.line
 }
+/** the open field's chord's index in its bar (the sheet editor) */
+let sheetChordIndex = 0
+/** the set the field opened in: the last alternate gone in Alternate, Standard plays and the alt rows' lines are gone */
+let sheetEditSet: ChangesSet = 'standard'
+watch(sheetEdit, (e) => {
+  if (e?.kind === 'chord') sheetChordIndex = chordIndexIn(sheetDoc.value, e.line)
+  sheetEditSet = mainSet.value
+}, { flush: 'sync' })
 /**
  * the field closed: stay on the chord, move to the next (previous) bar's or chord, open the new chord slot, or nothing.
  * A chord taken out (blank) comes with its place: its line is gone, or names the chord after it, so moves go from there.
@@ -667,7 +729,7 @@ function sheetDone(then: SheetDone, taken?: GridPos): void {
   const e = sheetEdit.value
   sheetPreview.value = null
   if (!e) return
-  const doc = editor.doc.value
+  const doc = sheetDoc.value
   const sections = lineSections(doc)
   /** a row's place as written */
   const writtenAt = (line: number): SheetPlace | null => {
@@ -675,8 +737,11 @@ function sheetDone(then: SheetDone, taken?: GridPos): void {
     const section = sections[line]
     return l?.kind === 'row' && section ? { section, bar: l.bar } : null
   }
-  // the chord the field was on: a slot's is the bar's last row (the chord it added, or the one before it)
-  const line = e.kind === 'chord' ? e.line : doc.lines.findLastIndex((l, i) => l.kind === 'row' && sections[i] === e.section && l.bar === e.bar)
+  // the chord the field was on: a slot's is the bar's last row (the chord it added, or the one before it); found again
+  // in Alternate, or opened there (sheetEditSet)
+  const moved = e.kind === 'chord' && (mainSet.value === 'alternate' || sheetEditSet === 'alternate') ? chordLineAt(doc, e.at, sheetChordIndex) : null
+  if (moved !== null) selectedLine.value = moved
+  const line = e.kind === 'chord' ? (moved ?? e.line) : doc.lines.findLastIndex((l, i) => l.kind === 'row' && sections[i] === e.section && l.bar === e.bar)
   const at = e.kind === 'chord' ? e.at : { section: e.section, bar: e.bar }
   if (line < 0) return void (sheetEdit.value = null)
   if (then === 'add' && !taken) {
@@ -711,6 +776,19 @@ const MOVES: Partial<Record<SheetDone, Readonly<{ dir: 'next' | 'prev'; step: 'b
 
 /** the sheet editor's structure actions (spec §1.4): the toolbar's and the ghost bar's, by the engine's edits */
 const sheetView = computed(() => barView(editor.doc.value))
+/** the click (#254): the chart's main metre and style, one per page, its tempo kept with the chart's practice settings */
+const metronomeOn = useFeature('metronome')
+const CLICK_TITLE = 'A click to practise with (Space starts and stops it)'
+const clickChart = computed(
+  (): ClickChart => ({
+    beats: chartBeats(editor.doc.value),
+    style: chartDetails(editor.doc.value).style,
+    metreChanges: sheetView.value.sections.some((sec) => sec.bars.some((b) => b.time)),
+  }),
+)
+const click = useClick(clickChart, toRef(() => props.practiceKey))
+provide(CLICK, click)
+onBeforeUnmount(() => click.dispose())
 const sheetSections = computed(() => sheetView.value.sections.filter((x) => !x.copy).map((x) => x.name))
 const sheetBeats = computed(() => sheetView.value.beats)
 const sheetDialog = ref<{ kind: BarDialogKind; section: string; bar: number; nav?: string } | null>(null)
@@ -904,7 +982,7 @@ function currentDoc(): ChartDoc {
 function enterFocus(): void {
   editor.flush()
   focus.enter(compactRail.value ? document.getElementById('controls-button') : undefined) // from the Controls dialog: back to Controls
-  nextTick(() => focusBar.value?.querySelector('button')?.focus())
+  nextTick(() => focusBar.value?.querySelector<HTMLElement>('[data-exit-focus]')?.focus())
 }
 
 function print(): void {

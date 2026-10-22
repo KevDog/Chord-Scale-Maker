@@ -86,8 +86,9 @@ import { DEFAULT_VIEW, SCALE_VIEW } from '~/utils/scaleView'
  * analysed one: choosing it, or Unpin, blanks the cell; any other scale pins it.
  * `part` (the sheet's label pickers): 'function' shows the function list and why; 'scale' the scale list and why.
  * `fallbackNote`: a line above the function list (the rules could only guess here).
+ * `source`: the chart a choice is written to, line for line `doc` (the set played, which it reads: #469); undefined: doc.
  */
-const props = withDefaults(defineProps<{ doc: ChartDoc; line: number; part?: 'function' | 'scale' | 'all'; fallbackNote?: string }>(), { part: 'all', fallbackNote: '' })
+const props = withDefaults(defineProps<{ doc: ChartDoc; line: number; part?: 'function' | 'scale' | 'all'; fallbackNote?: string; source?: ChartDoc }>(), { part: 'all', fallbackNote: '', source: undefined })
 const emit = defineEmits<{ 'update:doc': [doc: ChartDoc]; said: [text: string] }>()
 
 const id = useId()
@@ -169,7 +170,7 @@ watch(() => props.line, () => (query.value = ''))
 const found = computed(() => searchScales(query.value, rootText.value))
 
 function setScale(scale: string): void {
-  emit('update:doc', setRowField(props.doc, props.line, 'scale', scale))
+  emit('update:doc', setRowField(props.source ?? props.doc, props.line, 'scale', scale))
   emit('said', `${row.value?.chord}: ${scale || `${analysed.value}, the analyser’s`}`)
 }
 function pick(scale: string): void {
@@ -177,7 +178,7 @@ function pick(scale: string): void {
   query.value = ''
 }
 function setFunction(fn: string): void {
-  emit('update:doc', setRowField(props.doc, props.line, 'function', fn))
+  emit('update:doc', setRowField(props.source ?? props.doc, props.line, 'function', fn))
   const c = fnChoices.value.find((x) => x.value === fn)
   emit('said', `${row.value?.chord}: ${fn || 'Auto'}${c?.scale ? `, ${c.scale}` : ''}`)
 }

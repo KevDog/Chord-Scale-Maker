@@ -1,6 +1,6 @@
 <template>
   <HCombobox v-model="picked" as="div" class="relative" nullable @update:model-value="go">
-    <div class="flex h-16 items-center gap-2 rounded-paper bg-paper pr-2.5 pl-5 shadow-paper focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-note-500 max-sm:pl-3.5 dark:focus-within:outline-note-300">
+    <div class="flex flex-wrap items-center gap-x-2 rounded-paper bg-paper pr-2.5 pl-5 shadow-paper sm:h-16 max-sm:pb-2.5 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-note-500 max-sm:pl-3.5 dark:focus-within:outline-note-300">
       <MagnifyingGlassIcon class="size-5.5 shrink-0 text-zinc-400 dark:text-zinc-500" aria-hidden="true" />
       <HComboboxInput
         ref="input"
@@ -10,13 +10,13 @@
         placeholder="Search by title or composer"
         aria-label="Search by title or composer"
         :display-value="() => query"
-        class="h-full min-w-0 flex-1 bg-transparent px-1 text-xl text-zinc-900 placeholder:text-zinc-400 focus:outline-none max-sm:text-[17px] dark:text-white dark:placeholder:text-zinc-500 [&::-webkit-search-cancel-button]:hidden"
+        class="h-full min-w-0 flex-1 bg-transparent max-sm:h-13 px-1 text-xl text-zinc-900 placeholder:text-zinc-400 focus:outline-none max-sm:text-[17px] dark:text-white dark:placeholder:text-zinc-500 [&::-webkit-search-cancel-button]:hidden"
         @change="query = ($event.target as HTMLInputElement).value"
       />
       <kbd v-if="!query" class="rounded border border-zinc-950/10 px-1.5 py-1 font-sans text-xs/none font-medium text-zinc-400 max-sm:hidden dark:border-white/10 dark:text-zinc-500" title="Press / to search">/</kbd>
       <!-- the instrument is this browser's (csm-instrument), so it waits for the browser -->
       <ClientOnly>
-        <UiListbox v-model="instrument" aria-label="Instrument" class="w-36 shrink-0 sm:w-48">
+        <UiListbox v-model="instrument" aria-label="Instrument" class="w-full shrink-0 sm:w-48">
           <template #selected="{ value }"><UiListboxLabel>{{ instrumentOption(value) }}</UiListboxLabel></template>
           <UiListboxGroup v-for="g in INSTRUMENT_GROUPS" :key="g.label" :label="g.label">
             <UiListboxOption v-for="name in g.instruments" :key="name" :value="name">
@@ -24,7 +24,7 @@
             </UiListboxOption>
           </UiListboxGroup>
         </UiListbox>
-        <template #fallback><span class="w-36 shrink-0 sm:w-48" /></template>
+        <template #fallback><span class="w-full shrink-0 sm:w-48" /></template>
       </ClientOnly>
     </div>
 

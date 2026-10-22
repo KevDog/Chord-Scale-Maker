@@ -235,13 +235,24 @@ const STANDARD: ScaleView = { level: 'standard', seed: 0 }
 /** a bar's name for breakLines: "A 2" */
 export const barKey = (at: Readonly<{ section: string; bar: string }>): string => `${at.section} ${at.bar}`
 
-/** a chord of the other set, for the small line above a bar: its beat and its symbol as drawn for the part */
-export type AltChord = Readonly<{ beat: number; written: string }>
+/** a chord of the other set, for the small line above a bar: its beat and its symbol as drawn for the part; held: none starts in the bar, it goes on from before (#491) */
+export type AltChord = Readonly<{ beat: number; written: string; held: boolean }>
 
-/** the other set's chords by barKey, for the bars whose chords differ from main's; a bar the other set leaves empty maps to [] */
+/**
+ * the other set's chords by barKey, for the bars where it plays differently from main's: a bar's own chords, or on a
+ * held bar the chord held into it (marked held); a bar the other set leaves empty maps to []
+ */
 export function otherChords(main: ChangesSheet, other: ChangesSheet): ReadonlyMap<string, readonly AltChord[]> {
-  const chordsOf = (sheet: ChangesSheet): ReadonlyMap<string, readonly AltChord[]> =>
-    new Map(sheet.lines.flatMap((l) => l.bars).map((b) => [barKey(b.at), b.chords.map((c) => ({ beat: c.beat, written: c.written }))]))
+  const chordsOf = (sheet: ChangesSheet): ReadonlyMap<string, readonly AltChord[]> => {
+    let last = ''
+    return new Map(
+      sheet.lines.flatMap((l) => l.bars).map((b) => {
+        const own = b.chords.map((c) => ({ beat: c.beat, written: c.written, held: false }))
+        last = own.at(-1)?.written ?? last
+        return [barKey(b.at), own.length || !last ? own : [{ beat: 0, written: last, held: true }]]
+      }),
+    )
+  }
   const theirs = chordsOf(other)
   const same = (x: readonly AltChord[], y: readonly AltChord[]) => x.length === y.length && x.every((c, i) => c.beat === y[i]?.beat && c.written === y[i]?.written)
   return new Map(

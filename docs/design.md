@@ -536,8 +536,19 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   print too. The sheets' subtitle gains "Alternate changes" while that set plays.
 - **Flag off:** the app reads the doc itself, so a chart with `alt` rows plays standard only, with no toggle or small
   line. The engine always treats `alt` rows as real.
-- **Sheet editing is off** for a chart with alternates until #469 (it would write the played set over both; edit.ts knows
-  only `row`), flag on or off; the source stays editable, so the Source is offered at every Interface level.
+- **Sheet editing (#469):** the editing components draw from `doc` (the played set, `changesFor(doc, set)`) and write
+  against `source` (the real doc), passing `set`; this relies on `changesFor`'s line-count invariant (a played row maps
+  to the same source line). `edit.ts` holds the set-aware ops: `setBarChordsIn` / `setLineChordIn` (a chord edit in
+  the played set: on a shared bar in Alternate it makes the bar an alternate, retyping it back removes it) and
+  `setAltBarChords` / `altBarChords` (the alt line's entry for one bar). Bar ops keep `alt` rows with their bar.
+- **Redundancy:** checked only in `setAltBarChords`: an alternate equal to the bar's standard chords, scales and
+  functions is dropped (decision `alt.same`); an empty entry removes the alternate. An alternate can't be held. Both
+  sides of the check are what the Alternate set plays in the bar, a chord held into it included (#491), so typing the
+  held alternate again keeps no row; `otherChords` likewise gives a held bar the chord carried into it (`held`, drawn
+  in italics) where the sets carry different chords.
+- **App:** `SheetAltChord.vue` is the alt line's entry (Tab / Shift+Tab move between bars, Enter commits, Esc cancels);
+  `altEditing` in EditorView turns it on for a wide screen with Standard playing. A `copy:` section shows its alternates
+  but takes no new ones. The Source is no longer forced open for a chart with alternates.
 
 ### Guide tones on Changes ([spec](superpowers/specs/2026-10-10-guide-tone-lines-design.md), amended by [independent lines](superpowers/specs/2026-10-10-independent-guide-tone-lines-design.md) and [the diverge note](superpowers/specs/2026-10-11-guide-lines-diverge-note.md); first built as [guide tones on Changes](superpowers/specs/2026-10-10-guide-tones-on-changes-design.md))
 
@@ -772,6 +783,21 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **Tier:** the popovers are at Everything (`CONTROL_TIERS` `chord-picks`); picks in force at a lower level are named
   by the notice (`HiddenSetting` `chord-picks`).
 
+### The click (#254, flag `metronome`, on; [spec](superpowers/specs/2026-10-21-metronome-design.md))
+
+- **Engine** (`engine/src/click.ts`): `clickBar` and `countIn` lay out a bar's clicks (accent, beats, the feel's note
+  between them, the hat on 2 and 4 in 4/4; the feel is `quarters`, `swing`, the skip note, or `straight`, eighths), `defaultTempo`/`defaultFeel` read the chart's `style:` by whole words
+  (`DECISIONS` `click.tempo`), and `scheduleClicks(plan, state, from, until)` says which clicks fall in a window. Phase 1
+  keeps time only: one metre (the chart's main one), no following the form.
+- **App:** `useClick` books those clicks on the AudioContext's clock from a 25 ms interval, 0.1 s ahead (1.2 s while the
+  tab is hidden), and never books a time twice; a beat missed in the background is skipped, not burst. The sounds are
+  synthesized in `clickSounds.ts` (no samples, no CSP change). `ClickBar` is its controls, docked at the window's foot on
+  the song page (the body's `click-docked` class keeps the page's foot clear of it, not in print) or a row of focus
+  mode's bar. The rail's Click shows it; Space starts and stops it outside a control.
+- **State:** `csm-click` holds the settings (count-in, hat, sound, and `folded`: the bar down to Start/Stop, the tempo and the lights); `csm-click:<key>` a chart's tempo and
+  feel, written only when the player sets them, so an unset tempo follows the style as it's edited. Never in the chart
+  or a share link.
+
 ### Documentation ([spec](superpowers/specs/2026-10-17-user-docs-restructure-design.md), Phases 1–2)
 
 - **Decision registry:** `DECISIONS` (`engine/src/decisions.ts`) names every heuristic the app applies when it chooses
@@ -860,6 +886,9 @@ paper and its focus-mode pages, the rail, the More menu, the header, the library
   - Field, Label and Description wire ids through provide/inject (`utils/field.ts`).
   - The licensed kits live git-ignored in `design/tailwind-plus/` and are never committed.
   - A dev-only `/ui` page shows every component; it's removed from the production build.
+- **Navigation** (`utils/siteNav.ts`, #496): the navbar is Library and Scales (Chords joins them, #498), then a
+  Help dropdown (`UiNavbarDropdown`, opened by click) of How it works, How it decides, Functions, About and
+  Contact. The phone menu lists the same pages flat, with icons. The footer still links every page.
 - **Header quote:** a random quote in the navbar on tablet and desktop widths, kept for the visit
   (`HeaderQuote`, `useQuote`).
   - It shows the whole quote (two lines at most) and its author under it, inside the header's fixed 64 px.

@@ -625,6 +625,30 @@
           </UiText>
         </DecisionSection>
       </section>
+      <section v-if="metronomeOn" class="scroll-mt-6 space-y-8" aria-labelledby="click">
+        <UiSubheading id="click" class="scroll-mt-6">The click</UiSubheading>
+
+        <DecisionSection id="click.tempo">
+          <UiText>
+            The click starts at a tempo read from the chart's style, by the first word that matches: a
+            <strong :class="EM">medium ballad</strong> at 84 and any other ballad at 66, <strong :class="EM">slow</strong> at 72,
+            <strong :class="EM">medium up</strong> at 160 (before medium), <strong :class="EM">up</strong> or fast at 220, a
+            <strong :class="EM">waltz</strong> at 150, and medium, swing, blues, Latin, bossa, samba, even or straight 8ths,
+            funk and rock at 132. A style with none of these words starts at 120.
+          </UiText>
+          <UiText>
+            The feel is read on its own: Latin, bossa, samba, even or straight 8ths, funk and rock play
+            <strong :class="EM">straight</strong>, everything else swings, so an up samba is fast and straight. Swing plays the
+            skip note two thirds through each beat, straight an eighth halfway; Quarters, the beats alone, is one tap away. It plays the
+            chart's time signature, the one it starts in, all the way through: a chart that changes metre partway keeps its
+            first until the click can follow the form.
+          </UiText>
+          <UiText>
+            <strong :class="EM">What you can change:</strong> the tempo and the feel, on the click itself. The chart remembers
+            them, so a tune opens at the tempo you last practised it at.
+          </UiText>
+        </DecisionSection>
+      </section>
     </article>
     <PageIndex :sections="SECTIONS" column :current="current" />
   </div>
@@ -640,6 +664,7 @@ const cellsOn = useFeature('cells')
 const phraseCellsOn = useFeature('phraseCells')
 const approachesOn = useFeature('approaches')
 const patternsOn = useFeature('patterns')
+const metronomeOn = useFeature('metronome')
 
 /** the ranking examples, from the engine as the sheets rank them */
 const PENT_EXAMPLE = pentatonicChoices('Cmaj7', 'C Ionian', CONCERT).slice(0, 3)
@@ -668,6 +693,7 @@ const SECTIONS = [
   { id: 'superimposing', title: 'Superimposing' },
   { id: 'spelling', title: 'Spelling' },
   { id: 'ranges', title: 'Ranges' },
+  ...(metronomeOn ? [{ id: 'click', title: 'The click' }] : []),
 ]
 
 const current = useCurrentSection(() => SECTIONS.map((s) => s.id))
