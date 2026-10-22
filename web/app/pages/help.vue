@@ -198,6 +198,36 @@
           <UiText>What each level reaches for: <DecisionLink id="scale.level">Scale levels</DecisionLink>.</UiText>
         </div>
 
+        <div v-if="alternatesOn" class="space-y-3" data-controls-group>
+          <UiSubheading id="alternates" :level="3" class="scroll-mt-6">Alternate changes</UiSubheading>
+          <UiText>
+            Some library charts carry a second set of changes for the bars where a common substitution is played (a tritone sub in a
+            turnaround, a different bridge cadence). The other bars are shared. A chart that has them shows <strong class="font-semibold text-zinc-950 dark:text-white">Changes</strong>
+            in the toolbar; a chart without them looks as it always did.
+          </UiText>
+          <dl class="space-y-4 text-base/6 sm:text-sm/6">
+            <div>
+              <dt class="font-semibold text-zinc-950 dark:text-white">Standard · Alternate</dt>
+              <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
+                Which set is the main one. Every sheet plays it: the Changes, the Scales, the arpeggios and patterns, the guide tones, your
+                picks and Practice. Each set keeps its own picks and Practice choices, so flipping back finds them as you left them. A sheet
+                playing the alternates says <UiCode>Alternate changes</UiCode> under its title, printed too.
+              </dd>
+            </div>
+            <div>
+              <dt class="font-semibold text-zinc-950 dark:text-white">Other changes</dt>
+              <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
+                On the Changes sheet, shows the other set's chords small above their bars, as a Real Book prints them. Flip the main set and the
+                two swap places. Off hides them.
+              </dd>
+            </div>
+          </dl>
+          <UiText>
+            Both settings are remembered per chart in this browser and travel in a share link. A chart with alternates can't be edited bar by bar yet;
+            its source stays editable.
+          </UiText>
+        </div>
+
         <div class="space-y-3" data-controls-group>
           <UiSubheading :level="3">How much shows</UiSubheading>
           <dl class="space-y-4 text-base/6 sm:text-sm/6">
@@ -444,6 +474,7 @@ import { PENT_INSIDE_HELP } from '~/utils/pentatonics'
 const offline = useFeature('offline')
 const patternsOn = useFeature('patterns')
 const cellsOn = useFeature('cells')
+const alternatesOn = useFeature('alternates')
 const phraseCellsOn = useFeature('phraseCells')
 const approachesOn = useFeature('approaches')
 const ireal = useFeature('ireal')
