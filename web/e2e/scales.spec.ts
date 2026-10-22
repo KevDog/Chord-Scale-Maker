@@ -7,8 +7,9 @@ test.describe('without JavaScript', () => {
     await page.goto('/scales/dorian')
     await expect(page.getByRole('heading', { name: 'Dorian scale', level: 1 })).toBeVisible()
     await expect(page.getByRole('list', { name: 'Dorian on C' }).getByRole('listitem')).toHaveCount(7)
-    await expect(page.getByText('On C, at concert pitch: C D E♭ F G A B♭.')).toBeVisible()
+    await expect(page.getByRole('list', { name: 'Dorian on C' })).toContainText('E♭')
     await expect(page.getByRole('region', { name: 'Plays over' })).toContainText('C–7')
+    await expect(page.locator('main h2')).toHaveText(['Notes', 'Practice it', 'Plays over', 'Tunes'])
     const tunes = page.getByRole('region', { name: 'Tunes' }).getByRole('link')
     await expect(tunes.first()).toHaveAttribute('href', /^\/song\//)
     await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute('href', 'https://www.chordscalemaker.com/scales/dorian')
@@ -33,10 +34,10 @@ test.describe('without JavaScript', () => {
 test('a scale page draws its staff, written for the instrument', async ({ page }) => {
   await page.goto('/scales/dorian')
   await expect(staves(page)).toHaveCount(1)
-  const practise = page.getByRole('region', { name: 'Practise it' })
-  await expect(practise).toContainText('C Dorian')
+  const practice = page.getByRole('region', { name: 'Practice it' })
+  await expect(practice).toContainText('C Dorian')
   await chooseInstrument(page, 'Tenor')
-  await expect(practise).toContainText('D Dorian')
+  await expect(practice).toContainText('D Dorian')
 })
 
 test.describe('an unknown scale', () => {

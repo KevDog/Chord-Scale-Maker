@@ -10,7 +10,7 @@ import { createHash } from 'node:crypto'
 /** script types the browser executes (CSP script-src applies); data blocks like application/json don't */
 const EXECUTABLE = new Set(['', 'module', 'text/javascript', 'application/javascript', 'importmap'])
 
-/** browsers hash the script text after normalising line endings to LF */
+/** browsers hash the script text after normalizing line endings to LF */
 const sha256 = (text: string): string =>
   `'sha256-${createHash('sha256').update(text.replace(/\r\n?/g, '\n'), 'utf8').digest('base64')}'`
 

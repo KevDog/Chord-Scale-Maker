@@ -5,19 +5,19 @@ context: blues
 key: G
 form: AA, 24 bars
 source: iReal Pro
-# analysis: 2026-10-19, rules v2; G, blues
+# analysis: 2026-10-22, rules v2; G, blues
 
 section: A1
 1  | G   # I of the blues: a triad here implies its ♭7, Mixolydian
-2  | C7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+2  | C7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 3  | G   # I of the blues: a triad here implies its ♭7, Mixolydian
 4  | G
-5  | C7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+5  | C7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 6  | C7
 7  | G   # I of the blues: a triad here implies its ♭7, Mixolydian
 8  | G
 9  | D7  # V7 of the blues: a dominant that needn’t resolve, Mixolydian
-10 | C7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+10 | C7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 11 | G   # I of the blues: a triad here implies its ♭7, Mixolydian
 12 | D7  # V7 of the blues: a dominant that needn’t resolve, Mixolydian
 

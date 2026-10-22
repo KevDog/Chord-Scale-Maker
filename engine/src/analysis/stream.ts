@@ -33,7 +33,7 @@ const FAMILY: Readonly<Record<string, Family>> = {
   '7sus4': 'sus',
   '7sus4b9': 'sus',
 }
-/** a chord quality's family; null for one the analyser doesn't know */
+/** a chord quality's family; null for one the analyzer doesn't know */
 export const familyOf = (quality: string): Family | null => FAMILY[quality] ?? null
 
 export type Entry = Readonly<{
@@ -48,7 +48,7 @@ export type Entry = Readonly<{
   /** the section label of its first row */
   section: string
   chord: string
-  /** null: a chord the analyser can't read (unparseable, or an unknown quality); it gets no rule */
+  /** null: a chord the analyzer can't read (unparseable, or an unknown quality); it gets no rule */
   root: Spelled | null
   pc: number
   quality: string
@@ -87,7 +87,7 @@ function timing(rows: readonly LinedRow[], formBars?: number): { start: number; 
 
 export function buildStream(rows: readonly LinedRow[], formBars?: number): Entry[] {
   // each part is timed on its own: the form to its stated length, an intro or coda to its own last bar; a rest (N.C.)
-  // is no entry: the chords around it are neighbours, and the one before it lasts through it
+  // is no entry: the chords around it are neighbors, and the one before it lasts through it
   const parts = rows.map((r) => formPart(r.section))
   const times: { start: number; bars: number }[] = []
   for (const part of ['before', 'form', 'after'] as const) {

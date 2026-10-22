@@ -30,6 +30,10 @@ describe('My charts', () => {
       `csm-pent-path:mine:${id}`,
       `csm-pent-picks:mine:${id}`,
       `csm-undo:mine:${id}`,
+      `csm-changes:mine:${id}`,
+      `csm-pent-picks:mine:${id}~alt`,
+      `csm-practice:mine:${id}~alt:root`,
+      `csm-practice:mine:${id}~alt:from`,
     ]
     for (const k of [...kept('aaaaaa1'), ...kept('aaaaaa12')]) localStorage.setItem(k, 'x')
     deleteChart('aaaaaa1')
@@ -114,7 +118,7 @@ describe('sweepOrphans', () => {
   it('drops what a chart no longer in My charts left behind, and keeps the rest', () => {
     saveChart({ id: 'aaaaaa1', text: chart('Alpha'), kind: 'new' }, 1)
     const keep = ['csm-level:mine:aaaaaa1', 'csm-undo:mine:aaaaaa1', 'csm-practice:mine:aaaaaa1:root', 'csm-level:autumn-leaves', 'csm-prefs']
-    const gone = ['csm-level:mine:zzzzzz9', 'csm-pent-path:mine:zzzzzz9', 'csm-pent-picks:mine:zzzzzz9', 'csm-undo:mine:zzzzzz9', 'csm-practice:mine:zzzzzz9:from']
+    const gone = ['csm-changes:mine:zzzzzz9', 'csm-pent-picks:mine:zzzzzz9~alt', 'csm-practice:mine:zzzzzz9~alt:root', 'csm-level:mine:zzzzzz9', 'csm-pent-path:mine:zzzzzz9', 'csm-pent-picks:mine:zzzzzz9', 'csm-undo:mine:zzzzzz9', 'csm-practice:mine:zzzzzz9:from']
     for (const k of [...keep, ...gone]) localStorage.setItem(k, 'x')
     sweepOrphans()
     expect(gone.filter((k) => localStorage.getItem(k) !== null)).toEqual([])

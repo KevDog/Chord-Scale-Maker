@@ -21,7 +21,7 @@ section: Coda
 4  | DbMaj7#11  # from the symbol: #11
 
 section: A
-# the coda is a DbMaj7 turnaround with #11 colours
+# the coda is a DbMaj7 turnaround with #11 colors
 1  | DbMaj7     # tonic: the 4th is in the key
 3  | Em7        # ii of A7: Dorian
 3  | A7         # extended ii–V: a side-step, its own key

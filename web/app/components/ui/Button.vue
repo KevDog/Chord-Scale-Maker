@@ -18,7 +18,7 @@
 import { type ButtonColor, buttonStyles } from '~/utils/catalyst/button'
 import { dataFlag, vInteractive } from '~/utils/interactive'
 
-/** Catalyst Button: solid (with a colour), outline (with color="note", the accent's text) or plain; a link when given an href */
+/** Catalyst Button: solid (with a color), outline (with color="note", the accent's text) or plain; a link when given an href */
 const props = withDefaults(
   defineProps<{
     color?: ButtonColor

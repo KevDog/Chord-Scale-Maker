@@ -8,8 +8,21 @@ export type ReleaseNote = Readonly<{ date: string; items: readonly ReleaseItem[]
 
 export const RELEASE_NOTES: readonly ReleaseNote[] = [
   {
+    date: '2026-10-22',
+    items: [
+      { text: 'Charts can now be in 7/4: write time: 7/4 in the heading, or choose Bar in 7/4 from the bar menu for a single bar.', pr: 487 },
+      { text: 'A click to practise with: Click (the note icon, beside Print) puts a metronome at the foot of a song’s page, at a tempo and feel from the chart’s style. Feel plays Swing (the skip note), Straight (even eighths) or Quarters. Tap sets the tempo, Space starts and stops it, and its settings add a count-in, a hat on 2 and 4, and a wood or beep sound. Its chevron folds it to one row while it plays, and it comes into focus mode, still playing.', pr: 497 },
+      { text: 'Edit alternate changes on the sheet: while editing, a small line above the bars takes each bar’s alternate (+ alt, then type; Tab for the next bar), and with Changes set to Alternate the big chords are the alternate set. A chart with alternates no longer forces its Source open.', pr: 490 },
+      { text: 'The small line of other changes shows a chord held from an earlier bar (in italics), and an alternate typed the same as the chord already held there isn’t kept.', pr: 495 },
+      { text: 'A simpler menu bar: Library, Scales, Composers, and a Help menu with How it works, How it decides, Functions, About and Contact.' },
+      { text: 'On a phone, the home page’s instrument picker sits under the search box instead of squeezing it.' },
+      { text: 'A scale’s page puts Practice it right after its notes, without the explanations under each heading; a song’s page drops its “Chord changes (lead-sheet style)” note; American spellings throughout (practice, color, meter).' },
+    ],
+  },
+  {
     date: '2026-10-21',
     items: [
+      { text: 'Rhythm Changes now carries alternate changes: Changes → Alternate, in the toolbar above the sheet, plays them on every sheet, and Other changes prints the other set small above the bars.', pr: 476 },
       { text: 'Back up your charts: the library’s Backup menu saves My charts, their settings and your preferences to one file (Back up…), and Restore from backup… brings them into this or another browser; where a chart is in both, you choose Keep both or Keep mine.', pr: 473 },
       { text: 'The Scales sheet’s Practice panel folds its explanation under How it works, so the music starts higher on the page.', pr: 464 },
       { text: 'The Cells line now plays phrases. Phrase (on by default) picks each cell to lead into the next chord, and over a long dominant it borrows the tritone sub and the minor-3rd dominant (D♭7 and B♭7 over G7). Order plays the cells As written, Reversed, Rotated or Pairs swapped, and a new Chromatic group adds 1 ♮7 7 6, ♭9 1 3 5, II–V chromatic and more.', pr: 461 },
@@ -46,7 +59,7 @@ export const RELEASE_NOTES: readonly ReleaseNote[] = [
       { text: 'Triad pairs on the Arpeggios sheet: each chord’s triad pair as six triads through their inversions, arpeggiated or as block chords. Click the pair under the chord to pick another.', pr: 438 },
       { text: 'The Triad pair line’s Up & down now alternates chord by chord; with four notes a chord it only went up.', pr: 434 },
       { text: 'Blues read as blues: Mixolydian on the I, IV and V (Dorian on a minor blues’ i and iv), the key’s Blues scale at Basic, and Read as in the heading to say a chart is a blues whatever its form.', pr: 437 },
-      { text: 'Transpose… moves beside Edit: both rewrite the chart. Print is lighter, its label in the accent colour.', pr: 431 },
+      { text: 'Transpose… moves beside Edit: both rewrite the chart. Print is lighter, its label in the accent color.', pr: 431 },
       { text: 'The controls above the sheet take two rows instead of four: the Instrument button shows your instrument and range and opens them in a panel, and a line’s details open from Line options beside it.', pr: 429 },
       { text: 'Patterns: Stacked fourths, two fourths stacked from each scale note.', pr: 435 },
       { text: '18 charts from the Jazz Mind Accelerator backing tracks: versions of 15 library tunes, and Fly Me to the Moon, Mack the Knife and A Child Is Born.', pr: 421 },
@@ -72,7 +85,7 @@ export const RELEASE_NOTES: readonly ReleaseNote[] = [
       { text: 'Notable recordings on song pages, for the first 23 tunes.', pr: 361 },
       { text: 'Scale pages and composer pages.', pr: 346 },
       { text: 'More chord symbols read: 13sus, m13, add9, m7add11, aug, (#11), and tensions in any order.', pr: 345 },
-      { text: 'Metre changes partway through a chart, and 5/4 and 6/4.', pr: 342 },
+      { text: 'Meter changes partway through a chart, and 5/4 and 6/4.', pr: 342 },
       { text: 'The Arpeggios sheet’s 7th Chord runs span two octaves.', pr: 343 },
       { text: 'Piano is the default instrument.', pr: 338 },
       { text: 'Piano’s lines use F3–E6.', pr: 339 },
@@ -126,7 +139,7 @@ export const RELEASE_NOTES: readonly ReleaseNote[] = [
       { text: 'A new look: a control rail above the sheet, the sheet as pages in Focus, and the music first on phones.', pr: 213 },
       { text: 'Spell Scale starts from the chart’s key by default.', pr: 172 },
       { text: 'A written function that doesn’t fit its chord is marked.', pr: 190 },
-      { text: 'Chord names on neighbouring beats no longer overlap.', pr: 150 },
+      { text: 'Chord names on neighboring beats no longer overlap.', pr: 150 },
     ],
   },
   {

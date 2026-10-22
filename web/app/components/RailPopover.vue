@@ -1,8 +1,9 @@
 <template>
   <!-- inline: stacked under its toggle (in the Controls dialog); else a button whose panel opens over the sheet, so the rail keeps each group one control tall (#293) -->
   <div v-if="inline" class="flex flex-col items-start gap-2"><slot /></div>
+  <!-- above or below (the click's bar): on a phone its panel is placed on the bar, its width, not on the button -->
   <!-- eslint-disable-next-line vuejs-accessibility/no-static-element-interactions -- Escape from the button or panel inside bubbles here -->
-  <div v-else ref="root" class="relative" :class="summary && 'w-full'" @keydown.esc="close">
+  <div v-else ref="root" :class="[place === 'side' ? 'relative' : 'sm:relative', summary && 'w-full']" @keydown.esc="close">
     <!-- summary: reads as a select (Catalyst's listbox button) naming what's set, its panel below -->
     <button
       v-if="summary"
@@ -23,7 +24,8 @@
     </button>
     <!-- else a chevron, its panel to the right -->
     <UiButton v-else ref="button" plain :aria-label="label" :aria-expanded="open" aria-haspopup="dialog" @click="open = !open">
-      <ChevronRightIcon data-slot="icon" />
+      <EllipsisHorizontalIcon v-if="place !== 'side'" data-slot="icon" />
+      <ChevronRightIcon v-else data-slot="icon" />
     </UiButton>
     <Transition name="ease-fade">
       <div
@@ -32,7 +34,13 @@
         :aria-label="label"
         :class="[
           'absolute z-20 flex w-max flex-col items-start gap-2 rounded-paper bg-raised p-3 shadow-raised print:hidden',
-          summary ? 'top-full left-0 mt-2 max-sm:right-0 max-sm:left-auto' : 'top-0 left-full ml-2 max-sm:top-full max-sm:left-0 max-sm:mt-2 max-sm:ml-0',
+          summary
+            ? 'top-full left-0 mt-2 max-sm:right-0 max-sm:left-auto'
+            : place === 'above'
+              ? 'bottom-full left-0 mb-2 max-sm:right-4 max-sm:left-4 max-sm:w-auto'
+              : place === 'below'
+                ? 'top-full left-0 mt-2 max-sm:right-4 max-sm:left-4 max-sm:w-auto'
+                : 'top-0 left-full ml-2 max-sm:top-full max-sm:left-0 max-sm:mt-2 max-sm:ml-0',
         ]"
       >
         <slot />
@@ -42,7 +50,7 @@
 </template>
 
 <script setup lang="ts">
-import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/vue/16/solid'
+import { ChevronDownIcon, ChevronRightIcon, EllipsisHorizontalIcon } from '@heroicons/vue/16/solid'
 import { LISTBOX_BUTTON, LISTBOX_SELECTED } from '~/components/ui/listboxStyles'
 import { FIELD } from '~/utils/field'
 import { vInteractive } from '~/utils/interactive'
@@ -51,7 +59,8 @@ import { vInteractive } from '~/utils/interactive'
  * a group's details, opened beside it: open stays until a click outside, Escape, or the button again. summary: the
  * button reads as a select showing what's set ("Piano · F3–E6"), named "label: summary", its panel below.
  */
-defineProps<{ label: string; inline?: boolean; summary?: string }>()
+/** place: a button's panel beside it (the rail), or above or below it (the click's bar: its ⋯ button; on a phone, across the bar, which is positioned) */
+withDefaults(defineProps<{ label: string; inline?: boolean; summary?: string; place?: 'side' | 'above' | 'below' }>(), { summary: undefined, place: 'side' })
 // the panel's controls name themselves: a UiField the popover sits in labels its button, not them
 provide(FIELD, undefined)
 const open = defineModel<boolean>('open', { required: true })

@@ -2,7 +2,7 @@ import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises } from '@vue/test-utils'
 import ChangesSystem from '~/components/ChangesSystem.vue'
-import { buildChanges, type ChangesBar, type ChangesChord, type ChangesLine, type GuideNote, type Letter, CONCERT, hexatonicChoices, type OverlayPlan, type Part, parseChart, partFor, type PentatonicPlan, showHexatonics, showPentatonics, showQuartals } from '@chord-scale-maker/engine'
+import { buildChanges, type ChangesBar, type ChangesChord, type ChangesLine, changesFor, type ChartDoc, type GuideNote, type Letter, CONCERT, hexatonicChoices, type OverlayPlan, type Part, parseChart, partFor, type PentatonicPlan, showHexatonics, serializeChart, showPentatonics, showQuartals } from '@chord-scale-maker/engine'
 import PentatonicLadder from '~/components/PentatonicLadder.vue'
 
 vi.mock('~/utils/changesDrawing', async (importOriginal) => ({
@@ -63,7 +63,7 @@ describe('ChangesSystem guide tone labels', () => {
     await vi.waitFor(() => expect(parseFloat((row.element.children[1] as HTMLElement).style.left)).toBeCloseTo(48.8))
   })
 
-  it('leaves a chord without guide tones unlabelled, its rest drawn', async () => {
+  it('leaves a chord without guide tones unlabeled, its rest drawn', async () => {
     const rest: GuideNote = { pitch: null, beat: 2, beats: 2, tie: false, tiedIn: false, accidental: null }
     const w = await mount({ bars: [bar([chord(0, 'C7', '3'), chord(2, 'Cm7#5#9x', '')], [note(2, 64, 0), rest])] })
     expect(labelsOf(w.find('[data-slot="guides"]').element)).toEqual(['3', ''])
@@ -238,6 +238,34 @@ describe('ChangesSystem as the editor', () => {
   })
 })
 
+describe('ChangesSystem editing a set of a chart with alternates (#469)', () => {
+  const real = parseChart('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | C\n2 | F\nalt 2 | Dm7\n3 | C\n4 | G7\n').value
+  const played = changesFor(real, 'alternate')
+  const first = (): ChangesLine => buildChanges(played, CONCERT, 4, true).lines[0]!
+  const lineOf = (bar: string): number => played.lines.findIndex((l) => l.kind === 'row' && l.bar === bar)
+  const base = { first: true, barsPerLine: 4, numerals: true, scales: true, editable: true, doc: played, source: real, set: 'alternate' as const }
+  const text = (doc: ChartDoc): string => serializeChart(doc).replace(/[ \t]*\|[ \t]*/g, ' | ')
+
+  it('a chord typed on a shared bar in Alternate writes it an alt row, its standard row kept', async () => {
+    const w = await mountSuspended(ChangesSystem, { props: { ...base, line: first(), editing: { kind: 'chord', line: lineOf('3'), at: { section: 'A', bar: '3' } } } })
+    const field = w.find('input[aria-label="Chord, A bar 3"]')
+    await field.setValue('E7')
+    await field.trigger('keydown', { key: 'Enter' })
+    const next = w.emitted('update:doc')?.[0]?.[0] as ChartDoc
+    expect(text(next)).toMatch(/\nalt 3 \| E7\n/)
+    expect(text(next)).toMatch(/\n3 \| C\n/)
+    expect(text(next)).toMatch(/\nalt 2 \| Dm7\n/)
+  })
+
+  it('a bar op acts on the real doc: + after keeps a later alt row, renumbered', async () => {
+    const w = await mountSuspended(ChangesSystem, { props: { ...base, line: first(), editing: null } })
+    await w.find('[data-bar="0"]').trigger('pointerenter')
+    await w.find('[role=toolbar]').findAll('button').find((b) => b.attributes('aria-label') === 'Insert a held bar after A bar 1')?.trigger('click')
+    const next = w.emitted('update:doc')?.[0]?.[0] as ChartDoc
+    expect(text(next)).toMatch(/\n3 \| F\nalt 3 \| Dm7\n/)
+  })
+})
+
 describe('ChangesSystem pentatonic ladders', () => {
   it('opens a label’s ladder at its section’s rung, and a pick names the run', async () => {
     const doc = parseChart('title: T\nkey: C\n\nsection: A\n1 | Cmaj7\n\nsection: B\nbars: 3\n1 | Cmaj7').value
@@ -261,7 +289,7 @@ describe('ChangesSystem pentatonic ladders', () => {
   const slip: PentatonicPlan = { kind: 'pentatonic', bySection: { B: { rung: 5, side: 'flat' } }, fallback: { rung: 0, side: 'flat' }, counts: true }
   const AB = 'title: T\nkey: C\n\nsection: A\n1 | Cmaj7\n\nsection: B\nbars: 3\n1 | Dm7\n1 | G7\n2 | Cmaj7'
 
-  it('tints a label by its rung, its shared count and accessible name saying the same without colour (#277)', async () => {
+  it('tints a label by its rung, its shared count and accessible name saying the same without color (#277)', async () => {
     const w = await mountLine(AB, slip, 1)
     const label = w.find('[data-slot="pentatonic"] [data-section="B"]')
     expect(label.classes()).toContain('text-rung-5')
@@ -340,7 +368,7 @@ describe('ChangesSystem hexatonic row', () => {
     expect(w.find('[data-slot="hexatonic"]').html()).not.toMatch(/text-rung-/)
   })
 
-  it('greys a label ranked against the key that is not the key’s pair (#432)', async () => {
+  it('grays a label ranked against the key that is not the key’s pair (#432)', async () => {
     const KEY = { kind: 'hexatonic', basis: 'key' } as const
     const line = showHexatonics(buildChanges(parseChart('title: T\nkey: Dm\n\nsection: A\n1 | Em7b5\n2 | A7b9\n3 | Dm6\n4 | Dm6').value, CONCERT, 4, false, 'off', undefined, KEY).lines)[0]!
     const w = await mountSuspended(ChangesSystem, { props: { line, first: true, barsPerLine: 4, numerals: true, scales: true, clef: 'treble' as const, overlay: KEY } })

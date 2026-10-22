@@ -5,47 +5,47 @@ context: blues
 key: C
 form: ABCDD, 60 bars
 source: iReal Pro
-# analysis: 2026-10-19, rules v2; C, blues
+# analysis: 2026-10-22, rules v2; C, blues
 
 section: Intro
 1  | G7    # V7 of the blues: a dominant that needn’t resolve, Mixolydian
-2  | F7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-3  | C7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+2  | F7    # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+3  | C7    # I7 of the blues: a tonic with dominant color, Mixolydian
 4  | C7
 
 section: A
-1  | C7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+1  | C7    # I7 of the blues: a tonic with dominant color, Mixolydian
 2  | C7
 3  | C7
 4  | C7
-5  | F7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+5  | F7    # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 6  | F7
-7  | C7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+7  | C7    # I7 of the blues: a tonic with dominant color, Mixolydian
 8  | C7
 9  | G7    # V7 of the blues: a dominant that needn’t resolve, Mixolydian
-10 | F7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-11 | C7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+10 | F7    # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+11 | C7    # I7 of the blues: a tonic with dominant color, Mixolydian
 12 | C7
 
 section: B
 1  | C7
 1  | N.C.
 1  | G7    # V7 of the blues: a dominant that needn’t resolve, Mixolydian
-2  | C7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+2  | C7    # I7 of the blues: a tonic with dominant color, Mixolydian
 2  | N.C.
 3  | C7
 3  | N.C.
 3  | G7    # V7 of the blues: a dominant that needn’t resolve, Mixolydian
-4  | C7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+4  | C7    # I7 of the blues: a tonic with dominant color, Mixolydian
 4  | N.C.
 4  | Gb7   # tritone substitute: resolves down a half step to F7
-5  | F7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+5  | F7    # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 6  | F7
-7  | C7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+7  | C7    # I7 of the blues: a tonic with dominant color, Mixolydian
 8  | C7
 9  | G7    # V7 of the blues: a dominant that needn’t resolve, Mixolydian
-10 | F7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-11 | C7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+10 | F7    # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+11 | C7    # I7 of the blues: a tonic with dominant color, Mixolydian
 12 | C7
 
 section: C
@@ -54,18 +54,18 @@ section: C
 2  | C7
 2  | N.C.
 2  | Db7   # tritone substitute: resolves down a half step to C7
-3  | C7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+3  | C7    # I7 of the blues: a tonic with dominant color, Mixolydian
 3  | N.C.
 4  | C7
 4  | N.C.
 4  | Db7   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
-5  | F7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+5  | F7    # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 6  | F7
-7  | C7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+7  | C7    # I7 of the blues: a tonic with dominant color, Mixolydian
 8  | C7
 9  | G7    # V7 of the blues: a dominant that needn’t resolve, Mixolydian
-10 | F7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-11 | C7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+10 | F7    # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+11 | C7    # I7 of the blues: a tonic with dominant color, Mixolydian
 12 | C7
 @segno 1
 
@@ -74,13 +74,13 @@ section: D1
 2  | C7
 3  | C7
 4  | C7
-5  | F7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+5  | F7    # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 6  | F7
-7  | C7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+7  | C7    # I7 of the blues: a tonic with dominant color, Mixolydian
 8  | C7
 9  | G7    # V7 of the blues: a dominant that needn’t resolve, Mixolydian
-10 | F7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-11 | C7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+10 | F7    # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+11 | C7    # I7 of the blues: a tonic with dominant color, Mixolydian
 12 | C7
 @nav 11 D.S. al Coda
 
@@ -88,16 +88,16 @@ section: D2
 copy: D1
 
 section: Coda
-1  | C7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+1  | C7    # I7 of the blues: a tonic with dominant color, Mixolydian
 2  | C7
 3  | C7
 4  | C7
-5  | F7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+5  | F7    # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 6  | F7
-7  | C7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+7  | C7    # I7 of the blues: a tonic with dominant color, Mixolydian
 8  | C7
 9  | G7    # V7 of the blues: a dominant that needn’t resolve, Mixolydian
-10 | F7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-11 | C7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+10 | F7    # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+11 | C7    # I7 of the blues: a tonic with dominant color, Mixolydian
 12 | C7
 @coda 1

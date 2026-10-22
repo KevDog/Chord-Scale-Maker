@@ -66,3 +66,14 @@ test('the tune of the day opens its song, and Another picks a different one', as
   await expect(page).toHaveURL(/\/song\/[a-z0-9-]+$/)
   await expect(staves(page).first()).toBeVisible()
 })
+
+test('on a phone the search has the box’s width and the instrument sits under it', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/')
+  const picker = page.getByRole('button', { name: /Instrument/ })
+  await expect(picker).toBeVisible()
+  const field = (await search(page).boundingBox())!
+  const pick = (await picker.boundingBox())!
+  expect(field.width).toBeGreaterThan(260)
+  expect(pick.y).toBeGreaterThanOrEqual(field.y + field.height)
+})

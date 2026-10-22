@@ -42,7 +42,7 @@ export function composerIndex(charts: readonly Readonly<{ slug: string; text: st
   return [...bySlug.values()].map(({ c, tunes }) => ({ ...c, tunes })).sort((a, b) => a.sortKey.localeCompare(b.sortKey, 'en') || a.slug.localeCompare(b.slug, 'en'))
 }
 
-/** composers who share a surname: maybe one person spelt two ways, for the owner to check (analyse --all) */
+/** composers who share a surname: maybe one person spelled two ways, for the owner to check (analyse --all) */
 export function nearDuplicateComposers(index: readonly Composer[]): readonly (readonly string[])[] {
   const bySurname = new Map<string, Composer[]>()
   for (const c of index) {

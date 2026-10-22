@@ -52,7 +52,7 @@ test('a share link reopens the Patterns sheet with its choices', async ({ page, 
   await expect(visitor.getByRole('button', { name: 'Pattern direction' })).toContainText('Down')
 })
 
-test('a long run continues onto further staves: no overlapping heads or labels, the chord labelled once', async ({ page }) => {
+test('a long run continues onto further staves: no overlapping heads or labels, the chord labeled once', async ({ page }) => {
   await page.goto('/song/autumn-leaves')
   await chooseSheet(page, 'Patterns')
   await pickOption(page, /^Pattern$/, 'Custom…')
@@ -70,7 +70,7 @@ test('a long run continues onto further staves: no overlapping heads or labels, 
     const boxes = (await rows.nth(i).locator('span.absolute').evaluateAll((els) => els.map((e) => e.getBoundingClientRect()))).sort((a, b) => a.left - b.left)
     boxes.slice(1).forEach((b, j) => expect(b.left, `labels ${i} ${j + 1}`).toBeGreaterThanOrEqual((boxes[j]?.right ?? 0) - 0.5))
   }
-  // a line's chord is labelled on its first stave only
-  const labelled = await page.locator('.grid-cols-\\[8rem_1fr\\]').evaluateAll((els) => els.filter((e) => (e.firstElementChild?.textContent ?? '').trim() !== '').length)
-  expect(labelled).toBe(14)
+  // a line's chord is labeled on its first stave only
+  const labeled = await page.locator('.grid-cols-\\[8rem_1fr\\]').evaluateAll((els) => els.filter((e) => (e.firstElementChild?.textContent ?? '').trim() !== '').length)
+  expect(labeled).toBe(14)
 })

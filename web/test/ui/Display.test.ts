@@ -10,7 +10,7 @@ import UiTableCell from '~/components/ui/TableCell.vue'
 import UiTableRow from '~/components/ui/TableRow.vue'
 
 describe('display components', () => {
-  it('Badge takes a colour', async () => {
+  it('Badge takes a color', async () => {
     const w = await mountSuspended(UiBadge, { props: { color: 'note' }, slots: { default: 'copy' } })
     expect(w.classes()).toContain('bg-note-500/15')
   })

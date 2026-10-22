@@ -6,7 +6,7 @@ key: A
 form: AB, 16 bars
 source: iReal Pro
 aka: Hoochie Coochie Man
-# analysis: 2026-10-19, rules v2; A, blues
+# analysis: 2026-10-22, rules v2; A, blues
 
 section: A
 1 | A   # I of the blues: a triad here implies its ♭7, Mixolydian
@@ -19,11 +19,11 @@ section: A
 8 | A
 
 section: B
-1 | D7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+1 | D7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 2 | D7
-3 | A7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+3 | A7  # I7 of the blues: a tonic with dominant color, Mixolydian
 4 | A7
 5 | E7  # V7 of the blues: a dominant that needn’t resolve, Mixolydian
-6 | D7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-7 | A7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+6 | D7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+7 | A7  # I7 of the blues: a tonic with dominant color, Mixolydian
 8 | A7

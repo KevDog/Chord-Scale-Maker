@@ -22,6 +22,7 @@ import { abbreviateScale } from './scales'
 import { type QuartalNotesChoice, type QuartalStack, rankedStacks } from './quartal'
 import { type QuartalLine, quartalVoices } from './quartalLine'
 import { chunk, orNull } from './util'
+import { layRhythm, rhythmCaption, type RhythmId, type RhythmNote, rhythmNotes, targetBeats } from './rhythm'
 
 /**
  * The Changes sheet (docs/plan-changes.md): the chart as a study lead sheet. Bars of slashes in the chart's metre
@@ -146,6 +147,10 @@ export type ChangesBar = Readonly<{
   chords: readonly ChangesChord[]
   /** the guide tone or arpeggio line's notes in place of the slashes; [] with the line off */
   voice: readonly GuideNote[]
+  /** the rhythm line's notes in place of the slashes (rhythm spec §8); [] with the rhythm off or a Line on */
+  rhythm: readonly RhythmNote[]
+  /** its target beats, from 0 (rhythm spec §7); [] with target beats off */
+  targets: readonly number[]
   /** a section marker on its first bar: "A1", "A3 (= A1)", "Intro", "Coda (after the last chorus)" */
   marker: string
   /** the key, written for the part, where a key area starts: "B♭ major" */
@@ -172,7 +177,8 @@ export type ChangesBar = Readonly<{
 export type ChangesLine = Readonly<{ bars: readonly ChangesBar[]; sectionEnd: boolean }>
 /** pentatonicCaption: the path a preset plays (#276), "Pentatonics: Fifths · every 4 bars"; null otherwise */
 /** beats: the song's metre (each bar has its own, ChangesBar.beats) */
-export type ChangesSheet = Readonly<{ lines: readonly ChangesLine[]; beats: Beats; diagnostics: readonly string[]; pentatonicCaption: string | null }>
+/** rhythmCaption: the rhythm line's label and cycle, "Rhythm: 8ths in 5 · back on one every 5 bars"; null with no rhythm drawn */
+export type ChangesSheet = Readonly<{ lines: readonly ChangesLine[]; beats: Beats; diagnostics: readonly string[]; pentatonicCaption: string | null; rhythmCaption: string | null }>
 
 /** a run of rows in one section, as the chart plays them; a copy names the section it repeats */
 type Run = { section: string; part: FormPart; rows: number[]; copyOf: string | null; from: number; to: number; times: number; marker: string }
@@ -210,16 +216,16 @@ function areaLadder(name: string, part: Part): Readonly<{ ladder: readonly Penta
 /**
  * Changes lines on a printed page, one rule a line:
  * - no guide line: 8, or 7 with numerals, scales and pentatonics all shown;
- * - a guide tone or arpeggio line: 5 with all three rows, 6 with any row, 7 with none.
+ * - a guide tone or arpeggio line, or a rhythm line (rhythm spec §8): 5 with all three rows, 6 with any row, 7 with none.
  * Notes, stems and the label row take more height. Measured over the library in every transposition at letter width,
  * with a page's tallest lines (an ending raised over the stems); the 5 and 7 were measured on Stardust (tuba, From
  * 7th), the documented worst case, and print.spec checks it. With Pentatonics plus Numerals or Scales, 8 and 6 hold
  * (measured with the contour band #265 drew, since removed: #277).
  */
-export function changesLinesPerPage(line: ChangesLineChoice, rows: Readonly<{ numerals: boolean; scales: boolean; pentatonics?: boolean; hexatonics?: boolean; quartals?: boolean }>): number {
+export function changesLinesPerPage(line: ChangesLineChoice, rows: Readonly<{ numerals: boolean; scales: boolean; pentatonics?: boolean; hexatonics?: boolean; quartals?: boolean }>, rhythm = false): number {
   const overlay = !!(rows.pentatonics || rows.hexatonics || rows.quartals) // the hexatonic and quartal rows take the pentatonic row's place and height
   const all = overlay && rows.numerals && rows.scales
-  if (line === 'off') return all ? 7 : 8
+  if (line === 'off' && !rhythm) return all ? 7 : 8
   if (all) return 5
   return 6 + (!rows.numerals && !rows.scales && !overlay ? 1 : 0)
 }
@@ -228,6 +234,34 @@ const STANDARD: ScaleView = { level: 'standard', seed: 0 }
 
 /** a bar's name for breakLines: "A 2" */
 export const barKey = (at: Readonly<{ section: string; bar: string }>): string => `${at.section} ${at.bar}`
+
+/** a chord of the other set, for the small line above a bar: its beat and its symbol as drawn for the part; held: none starts in the bar, it goes on from before (#491) */
+export type AltChord = Readonly<{ beat: number; written: string; held: boolean }>
+
+/**
+ * the other set's chords by barKey, for the bars where it plays differently from main's: a bar's own chords, or on a
+ * held bar the chord held into it (marked held); a bar the other set leaves empty maps to []
+ */
+export function otherChords(main: ChangesSheet, other: ChangesSheet): ReadonlyMap<string, readonly AltChord[]> {
+  const chordsOf = (sheet: ChangesSheet): ReadonlyMap<string, readonly AltChord[]> => {
+    let last = ''
+    return new Map(
+      sheet.lines.flatMap((l) => l.bars).map((b) => {
+        const own = b.chords.map((c) => ({ beat: c.beat, written: c.written, held: false }))
+        last = own.at(-1)?.written ?? last
+        return [barKey(b.at), own.length || !last ? own : [{ beat: 0, written: last, held: true }]]
+      }),
+    )
+  }
+  const theirs = chordsOf(other)
+  const same = (x: readonly AltChord[], y: readonly AltChord[]) => x.length === y.length && x.every((c, i) => c.beat === y[i]?.beat && c.written === y[i]?.written)
+  return new Map(
+    [...chordsOf(main)].flatMap(([key, mine]) => {
+      const alt = theirs.get(key) ?? []
+      return same(mine, alt) ? [] : [[key, alt] as const]
+    }),
+  )
+}
 
 /** the lines with a new line started at each bar named (barKey) that isn't already a line's first: where names don't fit */
 export function breakLines(lines: readonly ChangesLine[], at: ReadonlySet<string>): readonly ChangesLine[] {
@@ -246,7 +280,7 @@ const mapChords = (line: ChangesLine, f: (c: ChangesChord) => ChangesChord): Cha
 const mapPentatonics = (line: ChangesLine, f: (p: ChangesPentatonic) => ChangesPentatonic): ChangesLine => mapChords(line, (c) => (c.pentatonic ? { ...c, pentatonic: f(c.pentatonic) } : c))
 
 /**
- * the pentatonic row as printed (#255), run after breakLines: a chord's label stays on a line's first labelled chord
+ * the pentatonic row as printed (#255), run after breakLines: a chord's label stays on a line's first labeled chord
  * and wherever it differs from the last one shown on the line (relative keys share a home: shown once); elsewhere
  * its label is '' (not printed), its key and ladder kept for nothing but the model's completeness. A chord with no
  * pentatonic ends the line's last shown label: the label after the gap prints again. A printed label's run (#272) is its
@@ -421,8 +455,8 @@ export function changesSections(doc: ChartDoc): readonly ChangesSection[] {
   return drawnBlocks(layout, t, sectionsWithEndingsOf(layout)).map((b) => ({ key: b.section, marker: b.marker, part: b.part }))
 }
 
-/** view: the level the sheet plays blank cells at (resolve.ts); the guide tones read the chords only; overlay: the row under the chords, the pentatonics' rungs by section or the hexatonics (null: no row); approach: the figure into the guide tone line's notes, and the 7th Chords and Cells lines' first note over each chord (#381) */
-export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatures = false, line: ChangesLineChoice = 'off', view: ScaleView = STANDARD, overlay: OverlayPlan | null = null, approach: Approach = 'none'): ChangesSheet {
+/** view: the level the sheet plays blank cells at (resolve.ts); the guide tones read the chords only; overlay: the row under the chords, the pentatonics' rungs by section or the hexatonics (null: no row); approach: the figure into the guide tone line's notes, and the 7th Chords and Cells lines' first note over each chord (#381); options: rhythm, the rhythm line over the bars as drawn, with the Line off (rhythm spec §8); targets, each bar's target beats (§7) */
+export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatures = false, line: ChangesLineChoice = 'off', view: ScaleView = STANDARD, overlay: OverlayPlan | null = null, approach: Approach = 'none', { rhythm = 'off', targets = false }: Readonly<{ rhythm?: RhythmId; targets?: boolean }> = {}): ChangesSheet {
   const pentatonic = overlay?.kind === 'pentatonic' ? overlay : null
   const { layout, rows, beats, timeline, clock, t } = laidOut(doc)
   const { diagnostics } = timeline
@@ -728,6 +762,8 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
         timeSignature: null,
         chords,
         voice: voices?.bars.get(bar) ?? [],
+        rhythm: [],
+        targets: [],
         marker: j === 0 ? block.marker : '',
         keyArea,
         repeatStart: hasEndings ? j === 0 : j === 0 && block.times > 1,
@@ -766,5 +802,23 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
   const counts = !!pentatonic && (pentatonic.counts || basis === 'chord' || flatChords(deduped).some((c) => c.pentatonic?.picked))
   const counted = counts ? deduped.map((l) => mapPentatonics(l, (p) => ({ ...p, label: `${p.label} ${p.shared}` }))) : deduped
   const pentatonicCaption = pentatonic && basis === 'key' ? pentatonicPathCaption(pentatonic.path ?? 'one', step) : null
-  return { lines: counted, beats, diagnostics: voices ? [...diagnostics, ...voices.missing] : diagnostics, pentatonicCaption }
+  // the rhythm, laid over the bars as drawn (a repeat drawn with repeat signs counts once), with the Line off
+  const drawnBars = counted.flatMap((l) => l.bars)
+  const lengths = drawnBars.map((b) => b.beats)
+  // no tie from a 1st ending into the 2nd (or later): the player jumps there from before the 1st
+  const breaks = drawnBars.flatMap((b, i) => ((b.volta?.n ?? 0) > 1 && b.volta?.n !== drawnBars[i - 1]?.volta?.n ? [i] : []))
+  const laid = line === 'off' ? layRhythm(rhythm, lengths, breaks) : null
+  const notes = laid ? rhythmNotes(laid) : []
+  const firstOf = counted.reduce<number[]>((acc, l) => [...acc, acc.at(-1)! + l.bars.length], [0]) // each line's first bar, counted over the sheet
+  const rhythmLines = counted.map((l, n): ChangesLine => ({
+    ...l,
+    bars: l.bars.map((b, j): ChangesBar => ({ ...b, rhythm: notes[firstOf[n]! + j] ?? [], targets: targets ? targetBeats(b.beats) : [] })),
+  }))
+  return {
+    lines: rhythmLines,
+    beats,
+    diagnostics: voices ? [...diagnostics, ...voices.missing] : diagnostics,
+    pentatonicCaption,
+    rhythmCaption: laid ? rhythmCaption(rhythm, laid, lengths) : null,
+  }
 }

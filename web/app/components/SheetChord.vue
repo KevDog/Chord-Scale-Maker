@@ -63,10 +63,10 @@
 </template>
 
 <script setup lang="ts">
-import { barView, cellError, type ChartDoc, chordCompletions, chordPreview, type ChordPreview, chordsAfterTyping, type ChordToken, chordTokens, CONCERT, type GridPos, lineSections, posOfLine, setBarChords, sheetScale } from '@chord-scale-maker/engine'
+import { barView, cellError, type ChartDoc, chordCompletions, chordPreview, type ChordPreview, type ChangesSet, chordsAfterTyping, type ChordToken, chordTokens, CONCERT, type GridPos, lineSections, posOfLine, setBarChordsIn, sheetScale } from '@chord-scale-maker/engine'
 import type { SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
 import { DEFAULT_VIEW, SCALE_VIEW } from '~/utils/scaleView'
-import { barFull, NO_FIRST_CHORD, notAChord } from '~/utils/refusals'
+import { barFull, noChords, notAChord } from '~/utils/refusals'
 
 /**
  * A chord on the Changes sheet while the editor is shown (docs/superpowers/specs/2026-10-11-lead-sheet-editor-design.md
@@ -74,7 +74,8 @@ import { barFull, NO_FIRST_CHORD, notAChord } from '~/utils/refusals'
  * read each candidate in this bar. Enter and Tab commit (Tab then asks to move a bar; → at the end of the text and ←
  * at its start, a chord), Space commits and asks for a new chord slot, Esc cancels, blank takes the chord out, % is
  * the bar before. A slot instance (`adding`) is the new chord after the bar's: it opens empty and commits as an added
- * chord. The doc is written once, on commit.
+ * chord. The doc is written once, on commit. `doc` is the set played, which it reads; the commit writes `source`, the
+ * chart (with its alt rows), in that `set` (#469).
  */
 const props = defineProps<{
   doc: ChartDoc
@@ -88,6 +89,8 @@ const props = defineProps<{
   selected: boolean
   adding?: boolean // the new chord slot after the bar's chords, not a chord that exists
   focusAt?: SheetFocus | null // the editor asks for focus on this chord's button (the field closed with nowhere to go)
+  source?: ChartDoc // the chart the edit is written to; undefined: doc
+  set?: ChangesSet // the set doc plays; undefined: standard
 }>()
 const emit = defineEmits<{
   edit: [edit: SheetEdit]
@@ -201,9 +204,10 @@ function commit(text = draft.value): boolean {
   if (error.value) return refuse(error.value)
   const chords = chordsWith(t)
   if (chords.length === barChords.value.length && chords.every((c, k) => c === barChords.value[k])) return true // nothing changed, or an empty slot
-  const next = setBarChords(props.doc, p.section, p.bar, chords)
-  if (next === props.doc) {
-    refused.value = chords.length ? notAChord(t, 'it’s not a chord') : NO_FIRST_CHORD
+  const source = props.source ?? props.doc
+  const next = setBarChordsIn(source, props.set ?? 'standard', p.section, p.bar, chords)
+  if (next === source) {
+    refused.value = chords.length ? notAChord(t, 'it’s not a chord') : noChords(props.set)
     return refuse(refused.value)
   }
   if (chords.length < barChords.value.length) taken = p

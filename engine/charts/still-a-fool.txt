@@ -5,10 +5,10 @@ context: blues
 key: F
 form: ABAB, 26 bars
 source: iReal Pro
-# analysis: 2026-10-19, rules v2; F, blues
+# analysis: 2026-10-22, rules v2; F, blues
 
 section: A1
-1 | F7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+1 | F7  # I7 of the blues: a tonic with dominant color, Mixolydian
 2 | F7
 3 | F7
 4 | F7
@@ -44,7 +44,7 @@ section: B2
 @nav 5 D.C. al Coda
 
 section: Coda
-1 | F7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+1 | F7  # I7 of the blues: a tonic with dominant color, Mixolydian
 2 | F7
 3 | F7
 4 | F7
