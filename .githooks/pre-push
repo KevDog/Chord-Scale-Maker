@@ -1,8 +1,11 @@
 #!/bin/sh
 # runs `make docs` (the decision anchors and the link check) when the pushed commits touch the documentation pages or
 # the decision registry, and `make a11y` (the accessibility lint and the axe scans) when they touch the interface
-# (web/app/); other pushes go straight through. Installed by `make setup` (git config core.hooksPath .githooks); skip
-# once with `git push --no-verify`
+# (web/app/); both: one build, a11y's, for the link check too (CI checks links on the production build). Other pushes
+# go straight through. Installed by `make setup` (git config core.hooksPath .githooks); skip once with
+# `git push --no-verify`.
+# DOCS is what make docs checks, not what the docs gate (web/build/docsGate.ts) counts as docs: rules.ts holds RULES,
+# which the Functions page prints, so a change to it can break an anchor; the gate counts it as behaviour (#407)
 zero=0000000000000000000000000000000000000000
 DOCS="web/app/pages/help.vue web/app/pages/functions.vue web/app/pages/how-it-decides.vue web/app/pages/release-notes.vue web/app/utils/releaseNotes.ts web/app/pages/chart-format.vue web/app/pages/glossary.vue engine/src/decisions.ts engine/src/analysis/rules.ts"
 app=""
@@ -24,11 +27,15 @@ while read -r _local_ref local_sha _remote_ref remote_sha; do
     docs="${docs}unknown"
   fi
 done
-if [ -n "$docs" ]; then
+if [ -n "$docs" ] && [ -n "$app" ]; then
+  echo "pre-push: the docs and the interface changed; running the docs tests, make a11y and the link check (skip with git push --no-verify)"
+  (cd web && npx vitest run test/docs) || exit 1
+  make a11y || exit 1
+  (cd web && npm run check:links) || exit 1
+elif [ -n "$docs" ]; then
   echo "pre-push: the docs changed; running make docs (skip with git push --no-verify)"
   make docs || exit 1
-fi
-if [ -n "$app" ]; then
+elif [ -n "$app" ]; then
   echo "pre-push: the interface changed; running make a11y (skip with git push --no-verify)"
   make a11y || exit 1
 fi
