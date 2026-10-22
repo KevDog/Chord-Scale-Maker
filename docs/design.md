@@ -240,7 +240,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   two chords = 2 + 1; 5/4: 3 + 2; 6/4: 3 + 3, three = 2 + 2 + 2; 7/4: 4 + 3, three = 2 + 2 + 3), and the Changes sheet draws a time signature on its
   first bar and wherever the metre changes (`ChangesBar.timeSignature`), its slashes and, with a line on, dotted
   halves and dotted wholes (a 5-beat note is a dotted half tied to a half, a 7-beat one a whole tied to a dotted half, `drawnLengths`). The bar menu's Bar in
-  2/4 … 6/4 (`setBarMetre`) puts one bar in a metre, the bars after it keeping theirs. The scale sheet doesn't
+  2/4 … 7/4 (`setBarMetre`) puts one bar in a metre, the bars after it keeping theirs. The scale sheet doesn't
   depend on it.
 - **Function cell, `key:` and `@key`:** a row may carry a fourth cell, the function the author states (`V7/ii`, or
   `D: V7/ii` for another key); empty means unstated. A section's `key:` states its key from its bar 1, an `@key` from

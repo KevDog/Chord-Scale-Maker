@@ -106,8 +106,10 @@ describe('timeline', () => {
 
   it('splits a 7/4 bar as 4 + 3, and three chords as 2, 2, 3', () => {
     const two = [row('1', 'C'), row('1', 'F')]
-    expect(guideToneTimeline(two, 7).events.map((e) => e.start)).toEqual([0, 4])
-    expect(guideToneTimeline([...two, row('1', 'G')], 7).events.map((e) => e.start)).toEqual([0, 2, 4])
+    const a = guideToneTimeline(two, 7).events
+    expect([a.map((e) => e.start), a.map((e) => e.beats)]).toEqual([[0, 4], [4, 3]])
+    const b = guideToneTimeline([...two, row('1', 'G')], 7).events
+    expect([b.map((e) => e.start), b.map((e) => e.beats)]).toEqual([[0, 2, 4], [2, 2, 3]])
   })
 
   it('times an intro, the form and a coda one after another, each numbered from bar 1', () => {

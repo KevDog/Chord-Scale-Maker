@@ -168,6 +168,7 @@ describe('guide tones in a changing metre (#235)', () => {
   it('writes a 5/4 bar’s whole note as a dotted half tied to a half, and a 6/4 bar’s as a dotted whole', () => {
     expect(barsText(guideVoices(inTurn(['Dm7'], 5), CONCERT, 5, null, 'third'))).toEqual(['0:f/4/3~ 3:f/4/2^'])
     expect(barsText(guideVoices(inTurn(['Dm7'], 6), CONCERT, 6, null, 'third'))).toEqual(['0:f/4/6'])
+    expect(barsText(guideVoices(inTurn(['Dm7'], 7), CONCERT, 7, null, 'third'))).toEqual(['0:f/4/4~ 4:f/4/3^'])
   })
 })
 

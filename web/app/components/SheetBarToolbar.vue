@@ -52,7 +52,7 @@ const ITEM = 'rounded px-2 py-1 hover:bg-note-50 focus-visible:outline-2 focus-v
 const ENDINGS = [1, 2] as const
 const MARKS = ['segno', 'coda'] as const
 const MARK_LABELS = { segno: 'Segno', coda: 'Coda' } as const
-const METRES = ['2/4', '3/4', '4/4', '5/4', '6/4'] as const
+const METRES = ['2/4', '3/4', '4/4', '5/4', '6/4', '7/4'] as const
 const cell = computed(() => barView(props.doc).sections.find((s) => s.name === props.section)?.bars.find((b) => b.bar === props.bar) ?? null)
 const chordLine = computed(() => cell.value?.chords[0]?.line ?? null)
 const ending = computed(() => cell.value?.ending?.n ?? null)

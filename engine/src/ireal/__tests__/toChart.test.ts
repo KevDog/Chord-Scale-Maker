@@ -197,6 +197,12 @@ describe('irealToChart', () => {
     valid(value)
   })
 
+  it('reads 7/4 as a metre', () => {
+    const { value, diagnostics } = irealToChart(song('[*AT74C7 |F7 Z'))
+    expect(value).toContain('time: 7/4\n')
+    expect(diagnostics).toEqual([])
+  })
+
   it('reports what it can’t write: 6/8, a bass alone, an unknown chord, a third time through', () => {
     const { diagnostics } = irealToChart(song('{*AT68C7 |W/E |Co^7 |<3x>F7 }Z'))
     expect(diagnostics.map((d) => d.message)).toEqual([
