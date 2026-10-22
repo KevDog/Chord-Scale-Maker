@@ -1,13 +1,26 @@
 <template>
   <fieldset class="space-y-3 rounded-xl border border-zinc-950/10 p-4 dark:border-white/10">
-    <legend class="px-1 font-display text-base/7 font-semibold text-zinc-950 dark:text-white">Practice</legend>
-    <UiText class="-mt-1">
+    <legend class="flex items-center gap-3 px-1">
+      <span class="font-display text-base/7 font-semibold text-zinc-950 dark:text-white">Practice</span>
+      <!-- the explanation stays folded so the sheet starts near the top (#463) -->
+      <button
+        type="button"
+        data-slot="practice-help-toggle"
+        :aria-expanded="helpOpen"
+        :aria-controls="helpId"
+        class="inline-flex items-center gap-1 rounded-md text-sm/6 text-zinc-500 hover:text-zinc-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent print:hidden dark:text-zinc-400 dark:hover:text-zinc-200"
+        @click="helpOpen = !helpOpen"
+      >
+        How it works<ChevronDownIcon class="size-4 transition-transform" :class="helpOpen && 'rotate-180'" aria-hidden="true" />
+      </button>
+    </legend>
+    <EaseReveal :id="helpId" :show="helpOpen" class="-mt-1 print:hidden"><UiText>
       Pick the notes to improvise with; the rest are dimmed, on screen and in print.
       {{ mode === 'root' ? 'Boxes are intervals from each chord’s root, even when its scale starts elsewhere: over B♭–7, B♭ is 1.' : `Boxes are pitches spelled from ${startName}.` }}
       <template v-if="pentatonicShown"> Pentatonic lights the minor pentatonic <em>Built on</em> a degree of each chord (Auto: the one sharing the most): the notes its scale shares, and its others added in a second colour; each staff’s caption says how many it shares. {{ PENT_INSIDE_HELP }} <DecisionLink id="pent.auto">How Auto picks a pentatonic</DecisionLink>.</template>
       <template v-if="quartalShown"> Quartal lights a stack of fourths from each scale: its notes three steps apart, from the degree it's <em>Built on</em> (Auto: <DecisionLink id="quartal.auto">the one that holds the guide tones</DecisionLink>), three or four notes, with at most one augmented fourth unless <em>Perfect only</em>.</template>
       <template v-if="hexatonicShown"> Hexatonic lights two triads from each scale, six notes in two groups. Pair <em>n</em> is the triads on degrees <em>n</em> and <em>n</em> + 1 of each staff’s scale; on a seven-note scale it leaves out degree <em>n</em> − 1 (Pair 1 leaves out the 7th). Ranked against <em>Key</em>, each staff lights its key area’s IV and V triads where its scale holds them (<DecisionLink id="hex.key">pairs by key area</DecisionLink>). <DecisionLink id="hex.auto">How Auto picks a pair</DecisionLink>.</template>
-    </UiText>
+    </UiText></EaseReveal>
 
     <!-- the presets come and go with the Interface level: the rest slide over (#297) -->
     <TransitionGroup name="ease-pop" tag="div" class="relative flex flex-wrap items-center gap-2">
@@ -69,6 +82,7 @@
 </template>
 
 <script setup lang="ts">
+import { ChevronDownIcon } from '@heroicons/vue/16/solid'
 import { groupingLabel, HEX_BASES, HEX_GROUP_NAMES, HEX_GROUPING_CHOICES, HEX_PAIR_CHOICES, hexPairLabel } from '~/utils/hexatonics'
 import { degreeLabel, PENT_DEGREE_CHOICES, PENT_INSIDE_HELP } from '~/utils/pentatonics'
 import { QUARTAL_DEGREE_CHOICES, QUARTAL_NOTE_CHOICES, quartalDegreeLabel } from '~/utils/quartal'
@@ -99,6 +113,8 @@ const quartalNotes = computed(() => String(quartal.value?.notes ?? 4) as '3' | '
 /** Pentatonic and Hexatonic light different degrees on each staff, so one row of boxes can't show them: none pressed (#308) */
 const perStaff = computed(() => !!pent.value || !!hex.value || !!quartal.value)
 const startName = computed(() => noteText(props.startText))
+const helpOpen = ref(false)
+const helpId = useId()
 
 const { shows } = useInterface()
 /** the Pentatonic and Hexatonic presets: from Everything */
