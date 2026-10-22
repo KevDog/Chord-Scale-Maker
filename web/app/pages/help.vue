@@ -221,7 +221,9 @@
         <UiText>
           On the Scales sheet, the <strong class="font-semibold text-zinc-950 dark:text-white">Practice</strong> panel
           lets you pick a handful of notes from each scale. Those stay bold and the rest fade back, on screen and in
-          print. Improvising with just the guide tones through a tune is harder (and more useful) than it sounds.
+          print. Improvising with just the guide tones through a tune is harder (and more useful) than it sounds. The
+          panel's <strong class="font-semibold text-zinc-950 dark:text-white">How it works</strong> opens a short
+          reminder of what the boxes and presets do.
         </UiText>
         <ul class="list-disc space-y-2 pl-5 text-base/6 text-zinc-600 sm:text-sm/6 dark:text-zinc-400">
           <li>

@@ -11,12 +11,32 @@ const boxes = [
 ]
 const mount = (props: Record<string, unknown>) =>
   mountSuspended(PracticePanel, { props: { mode: 'root', startText: 'C', boxes, selection: null, lit: [], ...props } })
+/** the panel with its How it works text open */
+const mountOpen = async (props: Record<string, unknown>) => {
+  const w = await mount(props)
+  await w.find('[data-slot="practice-help-toggle"]').trigger('click')
+  return w
+}
+/** the preset buttons and Clear, not the help toggle */
+const presetButtons = (w: Awaited<ReturnType<typeof mount>>) => w.findAll('button:not([data-slot="practice-help-toggle"])')
 
 describe('PracticePanel', () => {
+  it('keeps How it works closed until asked (#463)', async () => {
+    const w = await mount({})
+    const toggle = w.find('[data-slot="practice-help-toggle"]')
+    expect(toggle.attributes('aria-expanded')).toBe('false')
+    expect(w.text()).not.toContain('Pick the notes to improvise with')
+    await toggle.trigger('click')
+    expect(toggle.attributes('aria-expanded')).toBe('true')
+    expect(w.text()).toContain('Pick the notes to improvise with')
+    await toggle.trigger('click')
+    expect(w.text()).not.toContain('Pick the notes to improvise with')
+  })
+
   it('offers per-chord presets from the root, All from a start note', async () => {
-    expect((await mount({})).findAll('button').map((b) => b.text())).toEqual(['Chord tones', 'Guide tones', 'Tensions', 'Pentatonic', 'Hexatonic', 'Quartal', 'Clear'])
-    const from = await mount({ mode: 'from', startText: 'Eb' })
-    expect(from.findAll('button').map((b) => b.text())).toEqual(['All', 'Pentatonic', 'Hexatonic', 'Quartal', 'Clear'])
+    expect(presetButtons(await mount({})).map((b) => b.text())).toEqual(['Chord tones', 'Guide tones', 'Tensions', 'Pentatonic', 'Hexatonic', 'Quartal', 'Clear'])
+    const from = await mountOpen({ mode: 'from', startText: 'Eb' })
+    expect(presetButtons(from).map((b) => b.text())).toEqual(['All', 'Pentatonic', 'Hexatonic', 'Quartal', 'Clear'])
     expect(from.text()).toContain('pitches spelled from E♭')
   })
 
@@ -31,7 +51,7 @@ describe('PracticePanel', () => {
 
   it('toggles a preset off, and clears', async () => {
     const w = await mount({ selection: { preset: 'chordTones' }, lit: ['1', '3'] })
-    await w.findAll('button')[0]?.trigger('click') // the active preset
+    await presetButtons(w)[0]?.trigger('click') // the active preset
     await w.findAll('button').at(-1)?.trigger('click') // Clear
     expect(w.emitted('update:selection')).toEqual([[null], [null]])
     const off = await mount({})
@@ -64,7 +84,7 @@ describe('PracticePanel’s Pentatonic preset (#266)', () => {
   })
 
   it('says how Built on works, with the usual inside choices', async () => {
-    const text = (await mount({})).text()
+    const text = (await mountOpen({})).text()
     expect(text).toContain('Built on')
     expect(text).toContain(PENT_INSIDE_HELP)
   })
@@ -104,7 +124,7 @@ describe('PracticePanel interface levels', () => {
 
   it('offers the Pentatonic preset only at Everything', async () => {
     useInterface().level.value = 'intermediate'
-    expect((await mount({})).text()).not.toContain('Pentatonic')
+    expect((await mountOpen({})).text()).not.toContain('Pentatonic')
     useInterface().level.value = 'everything'
     expect((await mount({})).text()).toContain('Pentatonic')
   })
@@ -165,7 +185,7 @@ describe('PracticePanel’s Hexatonic preset', () => {
   })
 
   it('explains the pairs in its help text', async () => {
-    expect((await mount({})).text()).toContain('leaves out degree')
+    expect((await mountOpen({})).text()).toContain('leaves out degree')
   })
 
   it('edits a box into a custom selection from what it lit', async () => {
@@ -182,7 +202,7 @@ describe('PracticePanel’s Hexatonic preset and interface levels', () => {
 
   it('is offered only at Everything', async () => {
     useInterface().level.value = 'intermediate'
-    expect((await mount({})).text()).not.toContain('Hexatonic')
+    expect((await mountOpen({})).text()).not.toContain('Hexatonic')
     useInterface().level.value = 'everything'
     expect((await mount({})).text()).toContain('Hexatonic')
   })
@@ -190,7 +210,7 @@ describe('PracticePanel’s Hexatonic preset and interface levels', () => {
 
 describe('PracticePanel’s links to How it decides', () => {
   it('links the Pentatonic and Hexatonic text to how Auto chooses', async () => {
-    const w = await mount({})
+    const w = await mountOpen({})
     expect(w.find('a[href="/how-it-decides#pent.auto"]').exists()).toBe(true)
     expect(w.find('a[href="/how-it-decides#hex.auto"]').exists()).toBe(true)
   })
