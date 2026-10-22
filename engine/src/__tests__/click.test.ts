@@ -2,8 +2,8 @@ import { describe, expect, it } from 'vitest'
 import { clampTempo, clickBar, countIn, defaultFeel, defaultTempo, scheduleClicks, tapTempo } from '../click'
 
 describe('clickBar', () => {
-  it('accents 1 and clicks the other beats', () => {
-    expect(clickBar({ beats: 4, feel: 'swing', subdivision: false, hat: false })).toEqual([
+  it('in quarters, accents 1 and clicks the other beats', () => {
+    expect(clickBar({ beats: 4, feel: 'quarters', hat: false })).toEqual([
       { at: 0, kind: 'accent' },
       { at: 1, kind: 'beat' },
       { at: 2, kind: 'beat' },
@@ -11,30 +11,30 @@ describe('clickBar', () => {
     ])
   })
   it('adds the swing skip note two thirds through each beat', () => {
-    const subs = clickBar({ beats: 4, feel: 'swing', subdivision: true, hat: false })
+    const subs = clickBar({ beats: 4, feel: 'swing', hat: false })
       .filter((e) => e.kind === 'sub')
       .map((e) => e.at)
     expect(subs).toEqual([2 / 3, 1 + 2 / 3, 2 + 2 / 3, 3 + 2 / 3])
   })
   it('adds straight eighths halfway through each beat', () => {
-    const subs = clickBar({ beats: 3, feel: 'straight', subdivision: true, hat: false })
+    const subs = clickBar({ beats: 3, feel: 'straight', hat: false })
       .filter((e) => e.kind === 'sub')
       .map((e) => e.at)
     expect(subs).toEqual([0.5, 1.5, 2.5])
   })
   it('puts the hat on 2 and 4 in 4/4 only, beside the beat', () => {
-    const four = clickBar({ beats: 4, feel: 'swing', subdivision: false, hat: true })
+    const four = clickBar({ beats: 4, feel: 'quarters', hat: true })
     expect(four.filter((e) => e.kind === 'hat').map((e) => e.at)).toEqual([1, 3])
     expect(four.filter((e) => e.at === 1).map((e) => e.kind).sort()).toEqual(['beat', 'hat'])
-    expect(clickBar({ beats: 3, feel: 'swing', subdivision: false, hat: true }).some((e) => e.kind === 'hat')).toBe(false)
+    expect(clickBar({ beats: 3, feel: 'quarters', hat: true }).some((e) => e.kind === 'hat')).toBe(false)
   })
   it('is sorted by time', () => {
-    const bar = clickBar({ beats: 4, feel: 'swing', subdivision: true, hat: true })
+    const bar = clickBar({ beats: 4, feel: 'swing', hat: true })
     expect(bar.map((e) => e.at)).toEqual([...bar.map((e) => e.at)].sort((a, b) => a - b))
   })
   it('plays 5 and 6 beats a bar', () => {
-    expect(clickBar({ beats: 5, feel: 'straight', subdivision: false, hat: false })).toHaveLength(5)
-    expect(clickBar({ beats: 6, feel: 'straight', subdivision: false, hat: true })).toHaveLength(6)
+    expect(clickBar({ beats: 5, feel: 'quarters', hat: false })).toHaveLength(5)
+    expect(clickBar({ beats: 6, feel: 'quarters', hat: true })).toHaveLength(6)
   })
 })
 
@@ -106,7 +106,7 @@ describe('tapTempo', () => {
 })
 
 describe('scheduleClicks', () => {
-  const plan = { options: { beats: 4, feel: 'swing', subdivision: false, hat: false }, tempo: 120, countIn: 0 } as const
+  const plan = { options: { beats: 4, feel: 'quarters', hat: false }, tempo: 120, countIn: 0 } as const
   it('books the clicks inside the window, in order', () => {
     const { events, state } = scheduleClicks(plan, { barStart: 10, bar: 0 }, 10, 11.1)
     expect(events).toEqual([

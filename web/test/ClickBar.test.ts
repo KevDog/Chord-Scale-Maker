@@ -66,17 +66,24 @@ describe('ClickBar', () => {
     expect(button('Stop')!.attributes('aria-pressed')).toBe('true')
   })
 
-  it('hides the hat option outside 4/4 and names the subdivision for the feel', async () => {
+  it('hides the hat option outside 4/4', async () => {
     const three = await mountBar({ beats: 3, style: 'Jazz waltz', metreChanges: false })
     await three.button('Click settings')!.trigger('click')
     expect(three.w.text()).not.toContain('Hat on 2 & 4')
-    expect(three.w.text()).toContain('Skip note')
-    three.click.feel.value = 'straight'
-    await nextTick()
-    expect(three.w.text()).toContain('Eighths')
     const four = await mountBar()
     await four.button('Click settings')!.trigger('click')
     expect(four.w.text()).toContain('Hat on 2 & 4')
+  })
+
+  it('one Feel on the bar: Quarters, Swing or Straight, and nothing more for it under ⋯', async () => {
+    const { w, click, button } = await mountBar()
+    const feel = w.find('fieldset')
+    expect(feel.text()).toContain('Feel')
+    expect(feel.findAll('input[type=radio]').map((r) => r.element.labels?.[0]?.textContent?.trim())).toEqual(['Quarters', 'Swing', 'Straight'])
+    await feel.findAll('input[type=radio]')[0]!.setValue(true)
+    expect(click.feel.value).toBe('quarters')
+    await button('Click settings')!.trigger('click')
+    expect(w.text()).not.toMatch(/Skip note|Eighths/)
   })
 
   it('docked, the page’s foot clears it until it goes', async () => {

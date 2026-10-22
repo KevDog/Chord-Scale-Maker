@@ -48,7 +48,6 @@
     <span class="ml-auto flex items-center gap-1">
       <RailPopover v-model:open="settingsOpen" label="Click settings" :place="home === 'docked' ? 'above' : 'below'">
         <SegmentedControl v-model="countIn" legend="Count-in" :name="`click-count-${home}`" :options="COUNT_INS" />
-        <UiCheckbox v-model="subdivision">{{ click.feel.value === 'swing' ? 'Skip note' : 'Eighths' }}</UiCheckbox>
         <UiCheckbox v-if="chart.beats === 4" v-model="hat">Hat on 2 &amp; 4</UiCheckbox>
         <SegmentedControl v-model="sound" legend="Sound" :name="`click-sound-${home}`" :options="SOUNDS" />
       </RailPopover>
@@ -74,7 +73,9 @@ function missing(): never {
 }
 const emit = defineEmits<{ hide: [] }>()
 
+// the feel is what plays between the beats: nothing, swing's skip note, or straight eighths
 const FEELS: readonly { value: ClickFeel; label: string }[] = [
+  { value: 'quarters', label: 'Quarters' },
   { value: 'swing', label: 'Swing' },
   { value: 'straight', label: 'Straight' },
 ]
@@ -117,7 +118,6 @@ function setting<K extends keyof ClickSettings>(key: K) {
     set: (v: ClickSettings[K]) => (click.settings.value = { ...click.settings.value, [key]: v }),
   })
 }
-const subdivision = setting('subdivision')
 const hat = setting('hat')
 const sound = setting('sound')
 const countInSetting = setting('countIn')

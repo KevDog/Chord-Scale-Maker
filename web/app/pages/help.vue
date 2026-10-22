@@ -270,9 +270,10 @@
                 plays it, and <kbd>Space</kbd> starts and stops it from anywhere on the page.
                 <strong class="font-semibold">−</strong> and <strong class="font-semibold">+</strong> change the tempo by one
                 (with Shift, by five), as do the arrow keys in the tempo, or type it, 40 to 300; <strong class="font-semibold">Tap</strong> takes it from a few
-                taps of the beat. <strong class="font-semibold">Swing</strong> or <strong class="font-semibold">Straight</strong>
-                sets the feel. Under <strong class="font-semibold">⋯</strong>: a count-in of one or two bars, the skip note
-                (swing) or eighths (straight) between the beats, a hat on 2 and 4 in 4/4, and the sound, Wood or Beep. The
+                taps of the beat. The feel is what plays between the beats: <strong class="font-semibold">Quarters</strong>, the
+                beats alone; <strong class="font-semibold">Swing</strong>, the skip note of swung eighths; or
+                <strong class="font-semibold">Straight</strong>, even eighths. Under <strong class="font-semibold">⋯</strong>: a
+                count-in of one or two bars, a hat on 2 and 4 in 4/4, and the sound, Wood or Beep. The
                 chart remembers its tempo and feel. A chart that changes time signature partway plays the one it starts in.
                 On an iPhone or iPad the sound stops when the screen locks.
               </dd>
