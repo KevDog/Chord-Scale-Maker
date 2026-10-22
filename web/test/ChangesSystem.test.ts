@@ -7,7 +7,7 @@ import PentatonicLadder from '~/components/PentatonicLadder.vue'
 
 vi.mock('~/utils/changesDrawing', async (importOriginal) => ({
   ...(await importOriginal<typeof import('~/utils/changesDrawing')>()),
-  drawChangesLine: () => ({ xs: [0, 1, 2, 3].map((b) => [0.1, 0.3, 0.5, 0.7].map((x) => (b === 0 ? x : b * 0.25 + x / 4))), ends: [0.25, 0.5, 0.75, 1], scales: [] }),
+  drawChangesLine: () => ({ xs: [0, 1, 2, 3].map((b) => [0.1, 0.3, 0.5, 0.7].map((x) => (b === 0 ? x : b * 0.25 + x / 4))), ends: [0.25, 0.5, 0.75, 1], scales: [], dots: null }),
 }))
 mockNuxtImport('loadVexFlow', () => () => Promise.resolve({}))
 
@@ -42,6 +42,8 @@ const bar = (chords: readonly ChangesChord[], voice: readonly GuideNote[]): Chan
   coda: false,
   nav: '',
   voice,
+  rhythm: [],
+  targets: [],
 })
 const note = (letter: Letter, midi: number, beat: number): GuideNote => ({ pitch: { letter, acc: 0, midi }, beat, beats: 2, tie: false, tiedIn: false, accidental: null })
 const mount = (line: ChangesLine) =>

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { ChangesBar, ChangesChord, ChangesLine, GuideNote, Letter } from '@chord-scale-maker/engine'
-import { arpeggioAria, beatXs, DURATIONS, fitBars, guideAria, mergeNames, restatedAccidental, voicedBand, voltaShift } from '~/utils/changesDrawing'
+import { arpeggioAria, beatXs, DURATIONS, fitBars, guideAria, mergeNames, restatedAccidental, rhythmAria, targetRow, voicedBand, voltaShift, withTargets } from '~/utils/changesDrawing'
 
 const chord = (beat: number, text: string, guide: string): ChangesChord => ({
   beat,
@@ -30,6 +30,8 @@ const bar = (chords: readonly ChangesChord[], voice: readonly GuideNote[]): Chan
   coda: false,
   nav: '',
   voice,
+  rhythm: [],
+  targets: [],
 })
 const note = (letter: Letter, acc: number, midi: number, beat: number, beats: 1 | 2 | 3 | 4, more: Partial<GuideNote> = {}): GuideNote => ({
   pitch: { letter, acc, midi },
@@ -198,5 +200,35 @@ describe('arpeggioAria', () => {
   it('names the Pentatonic line as such (#284)', () => {
     const n = (letter: Letter, midi: number, beat: number): GuideNote => ({ pitch: { letter, acc: 0, midi }, beat, beats: 1, tie: false, tiedIn: false, accidental: null })
     expect(arpeggioAria({ bars: [bar([chord(0, 'Am7', '')], [n(0, 60, 0), n(1, 62, 1), n(2, 64, 2), n(4, 67, 3)])] } as ChangesLine, 'pentatonic')).toBe('; pentatonic: C4 D4 E4 G4')
+  })
+})
+
+describe('targetRow', () => {
+  it('sits over the staff with nothing above it', () => {
+    expect(targetRow([], 80)).toBe(68)
+  })
+  it('sits over the highest stem tip or accent', () => {
+    expect(targetRow([65, 90], 80)).toBe(53)
+  })
+})
+
+describe('withTargets', () => {
+  it('leaves a band with room for the dots as it is, and gives the row its height from the top', () => {
+    expect(withTargets({ top: 40, bottom: 140 }, 60)).toEqual({ band: { top: 40, bottom: 140 }, at: 0.2 })
+  })
+  it('opens the band upwards to hold them', () => {
+    expect(withTargets({ top: 74, bottom: 126 }, 68)).toEqual({ band: { top: 62, bottom: 126 }, at: 6 / 64 })
+  })
+  it('has no row without target beats', () => {
+    expect(withTargets({ top: 74, bottom: 126 }, null)).toEqual({ band: { top: 74, bottom: 126 }, at: null })
+  })
+})
+
+describe('rhythmAria', () => {
+  it('reads the rhythm caption without its "Rhythm: "', () => {
+    expect(rhythmAria('Rhythm: 8ths in 5, with accents · back on one every 5 bars')).toBe('; rhythm: 8ths in 5, with accents · back on one every 5 bars')
+  })
+  it('is empty with no rhythm drawn', () => {
+    expect(rhythmAria(null)).toBe('')
   })
 })

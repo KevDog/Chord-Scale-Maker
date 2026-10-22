@@ -10,6 +10,7 @@
         <SheetHeading :doc="source ?? doc" :level="headingLevel" @update:doc="emit('update:doc', $event)" />
         <!-- the heading replaces the subtitle on screen, so the path a preset plays shows under it (print has it in the subtitle) -->
         <p v-if="built.pentatonicCaption" data-slot="pent-caption" class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{{ built.pentatonicCaption }}</p>
+        <p v-if="built.rhythmCaption" data-slot="rhythm-caption" class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{{ built.rhythmCaption }}</p>
       </template>
       <template #default="{ page }">
         <div class="space-y-4 print:space-y-0">
@@ -23,6 +24,7 @@
             :scales="scales"
             :arpeggio="arpeggio"
             :line-name="lineName"
+            :rhythm-caption="built.rhythmCaption"
             :clef="part.clef"
             :part="part"
             :editable="editable"
@@ -68,7 +70,7 @@
 import { SHEET_PAGED } from '~/utils/sheetPaged'
 import { PlusIcon, Square2StackIcon } from '@heroicons/vue/16/solid'
 import type { SheetChordEdit, SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
-import { type Approach, barKey, breakLines, buildChanges, otherChords, changesLinesPerPage, type ChangesSet, type ChartDoc, type ChordAt, type ChordPreview, chunk, type GridPos, isArpeggioPattern, pageSubtitle, type OverlayPlan, type Part, type PentatonicPlan, type PickKind, type ScaleView, showHexatonics, showPentatonics, showQuartals, type ChangesLineChoice } from '@chord-scale-maker/engine'
+import { type Approach, barKey, type RhythmId, breakLines, buildChanges, otherChords, changesLinesPerPage, type ChangesSet, type ChartDoc, type ChordAt, type ChordPreview, chunk, type GridPos, isArpeggioPattern, pageSubtitle, type OverlayPlan, type Part, type PentatonicPlan, type PickKind, type ScaleView, showHexatonics, showPentatonics, showQuartals, type ChangesLineChoice } from '@chord-scale-maker/engine'
 
 /** the Changes sheet (docs/plan-changes.md): the chart as a study lead sheet, 4 bars a line (2 on phones), fewer where the chords' names don't fit */
 const { shows } = useInterface()
@@ -83,6 +85,8 @@ const props = defineProps<{
   numerals: boolean
   scales: boolean
   approach?: Approach // the figure into each guide tone of the guide tone line (#298); undefined: none
+  rhythm?: RhythmId // the rhythm line in place of the slashes, with the Line off (rhythm spec §8); undefined: off
+  targets?: boolean // a dot over each bar's target beats (rhythm spec §7)
   line?: ChangesLineChoice // a guide tone, arpeggio or Pentatonic line, as notes in place of the slashes (the clef then always starts line 1)
   editable?: boolean // tap a chord to edit it
   selectedLine?: number | null // the chart line of the chord the editor is on
@@ -120,7 +124,7 @@ const line = computed((): ChangesLineChoice => props.line ?? 'off')
 /** an arpeggio, Pentatonic, Triad pair or Cells line: beamed cells, no label row; lineName: the latter three's, for the aria-label */
 const lineName = computed(() => (typeof line.value === 'object' ? ({ pentatonic: 'pentatonic', 'triad-pair': 'triad pair', quartal: 'quartal', cells: 'cells' } as const)[line.value.kind] : undefined))
 const arpeggio = computed(() => !!lineName.value || isArpeggioPattern(line.value))
-const built = computed(() => buildChanges(props.doc, props.part, barsPerLine.value, true, line.value, props.view, props.overlay ?? null, props.approach ?? 'none'))
+const built = computed(() => buildChanges(props.doc, props.part, barsPerLine.value, true, line.value, props.view, props.overlay ?? null, props.approach ?? 'none', { rhythm: props.rhythm ?? 'off', targets: props.targets ?? false }))
 /** the other set's chords in each bar where they differ (#215), written for the part and spelled at the level as the main set's are */
 const others = computed(() => (props.otherDoc ? otherChords(built.value, buildChanges(props.otherDoc, props.part, barsPerLine.value, true, 'off', props.view)) : null))
 /** the bars that start a line because the names before them didn't fit (ChangesSystem measures): until the sheet changes */
@@ -148,9 +152,9 @@ function onAlt(key: string, then: 'edit' | 'next' | 'prev' | 'close'): void {
 /** the plan counts: a path, the chord basis or a pick (the engine's post-pass rule) */
 const pentatonic = computed((): PentatonicPlan | null => (props.overlay?.kind === 'pentatonic' ? props.overlay : null))
 const counted = computed(() => !!pentatonic.value && (pentatonic.value.counts || pentatonic.value.basis === 'chord' || built.value.lines.some((l) => l.bars.some((b) => b.chords.some((c) => c.pentatonic?.picked)))))
-// 8 lines with slashes (a 32-bar AABA, one section a line pair); fewer with a guide tone line, whose notes and labels are taller
-const linesPerPage = computed(() => changesLinesPerPage(line.value, { numerals: props.numerals, scales: props.scales, pentatonics: props.overlay?.kind === 'pentatonic', hexatonics: props.overlay?.kind === 'hexatonic', quartals: props.overlay?.kind === 'quartal' }))
-const subtitleText = computed(() => [pageSubtitle(props.subtitle, props.instrumentLabel, 'Changes'), built.value.pentatonicCaption].filter(Boolean).join(' · '))
+// 8 lines with slashes (a 32-bar AABA, one section a line pair); fewer with a guide tone or rhythm line, whose notes and labels are taller
+const linesPerPage = computed(() => changesLinesPerPage(line.value, { numerals: props.numerals, scales: props.scales, pentatonics: props.overlay?.kind === 'pentatonic', hexatonics: props.overlay?.kind === 'hexatonic', quartals: props.overlay?.kind === 'quartal' }, !!built.value.rhythmCaption))
+const subtitleText = computed(() => [pageSubtitle(props.subtitle, props.instrumentLabel, 'Changes'), built.value.pentatonicCaption, built.value.rhythmCaption].filter(Boolean).join(' · '))
 const pages = computed(() =>
   chunk(
     sheet.value.lines.map((line, index) => ({ line, index })),

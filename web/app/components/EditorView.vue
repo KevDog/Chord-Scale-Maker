@@ -130,6 +130,8 @@
             v-model:line-mode="prefs.lineMode.value"
             v-model:guide-line="prefs.guideLine.value"
             v-model:approach="prefs.approach.value"
+            v-model:rhythm="prefs.rhythm.value"
+            v-model:targets="prefs.targets.value"
             v-model:arpeggio="prefs.arpeggio.value"
             v-model:cells="prefs.cells.value"
             v-model:cells-order="prefs.cellsOrder.value"
@@ -224,6 +226,8 @@
             :scales="showScaleNames"
             :line="changesLine"
             :approach="approachShown"
+            :rhythm="prefs.rhythm.value"
+            :targets="prefs.targets.value"
             :editable="sheetEditing && !focus.on.value"
             :selected-line="selectedLine"
             :view="scaleView"
@@ -920,6 +924,8 @@ async function shareUrl(): Promise<string> {
     ...(sheetLine.value !== 'off' ? { line: sheetLine.value } : {}), // absent: off
     sheet: sheet.value,
     ...(sheet.value === 'changes' && approachShown.value !== 'none' ? { approach: approachShown.value } : {}), // the line's Approach (#298, #381)
+    ...(sheet.value === 'changes' && prefs.rhythm.value !== 'off' ? { rhythm: prefs.rhythm.value } : {}), // the rhythm line (rhythm spec §9); absent: off
+    ...(sheet.value === 'changes' && prefs.targets.value ? { targets: true } : {}), // target beats; absent: off
     ...(sheet.value === 'patterns' ? { pattern: prefs.pattern.value, patternNotes: prefs.patternNotes.value, patternDir: prefs.patternDir.value } : {}),
     ...(sheet.value === 'arpeggios' ? { arpNotes: prefs.arpNotes.value, arpDir: prefs.arpDir.value, ...(prefs.arpNotes.value === 'pairs' ? { arpShape: prefs.arpShape.value } : {}) } : {}),
     ...(sheet.value === 'changes' && prefs.lineMode.value === 'arpeggio' ? { arpDir: prefs.arpDir.value, pentLeave: prefs.pentLeave.value, pairLine: prefs.pairLine.value } : {}), // the Pentatonic (#284), Triad pair (#325, #432) and Quartal lines', under the receiver's own overlay

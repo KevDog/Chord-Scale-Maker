@@ -1,5 +1,5 @@
 import type { Locator, Page } from '@playwright/test'
-import { chooseInstrument, chooseInterface, chooseSheet, closePanel, type Drawn, drawn, expect, openPanel, GLYPH, arpeggiosDrawn, guidesDrawn, openEditor, sheetChord, showArpeggios, showApproach, showCell, showGuides, showOrder, test, writeChart } from './fixtures'
+import { chooseInstrument, chooseInterface, chooseRhythm, chooseSheet, closePanel, type Drawn, drawn, expect, openPanel, GLYPH, arpeggiosDrawn, guidesDrawn, openEditor, rhythmDrawn, sheetChord, showArpeggios, showApproach, showCell, showGuides, showOrder, test, writeChart } from './fixtures'
 
 const lines = (page: Page) => page.locator('svg[aria-label^="Bars:"]')
 /** the sheet itself, not the controls above it (whose menus name the same scales) */
@@ -665,4 +665,72 @@ test('chords on consecutive beats keep their names apart in print', async ({ pag
   await page.emulateMedia({ media: 'print' })
   await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden()
   await expectNamesApart(page)
+})
+
+test('a pasted chart in 7/4 draws a 7/4 time signature', async ({ page }) => {
+  await writeChart(page, 'title: S\nkey: C\ntime: 7/4\n\nsection: A\n1 | Dm7\n2 | G7\n3 | CMaj7\n4 | C6\n')
+  const sig = lines(page).first().locator('.vf-timesignature').first()
+  await expect.poll(() => sig.evaluate((el) => Array.from(el.textContent ?? '').map((c) => c.codePointAt(0)))).toEqual([0xe087, 0xe084]) // Bravura's 7 over 4, once the text is read
+})
+
+// the rhythm line (rhythm spec §8, §9): its controls show from Intermediate
+test.describe('the rhythm line', () => {
+  test.use({ interfaceLevel: 'intermediate' })
+
+  test('8ths in 5 with accents: the caption names its cycle, and Saindon’s bracket marks bars 1 and 6', async ({ page }) => {
+    await page.goto('/song/f-jazz-blues')
+    await chooseRhythm(page, '8ths', { In: 'In 5', Variation: 'with accents' })
+    await rhythmDrawn(page)
+    await expect(page.locator('section header p').first()).toContainText('back on one every 5 bars')
+    await expect(lines(page).first()).toHaveAttribute('aria-label', /; rhythm: 8ths in 5, with accents · back on one every 5 bars$/)
+    await expect(page.locator('[data-rhythm-bracket="A 1"]')).toHaveCount(1)
+    await expect(page.locator('[data-rhythm-bracket="A 6"]')).toHaveCount(1)
+    await expect(page.locator('[data-rhythm-bracket]')).toHaveCount(3) // and bar 11, the next landing
+    await expect(page.getByText(/Couldn.t draw/)).toHaveCount(0)
+  })
+
+  test('a tied unit held over a line’s last barline: a half-tie ends the line', async ({ page }) => {
+    await page.goto('/song/f-jazz-blues') // 4 bars a line: 32 8ths, so in 3 the statement from the 31st holds into bar 5
+    await chooseRhythm(page, '8ths', { In: 'In 3', Variation: 'tied' })
+    await rhythmDrawn(page)
+    const reach = (svg: Locator) =>
+      svg.evaluate((el) => {
+        const boxes = Array.from(el.querySelectorAll('.vf-stavetie path')).map((p) => (p as SVGGraphicsElement).getBBox())
+        return { width: Number(el.getAttribute('viewBox')?.split(' ')[2] ?? 0), right: Math.max(...boxes.map((b) => b.x + b.width)), left: Math.min(...boxes.map((b) => b.x)) }
+      })
+    await expect.poll(async () => { const r = await reach(lines(page).nth(0)); return r.width - r.right }).toBeLessThan(15) // open to the line's end
+    await expect.poll(async () => (await reach(lines(page).nth(1))).left).toBeLessThan(40) // and a half-tie in, before line 2's first note
+  })
+
+  test('Target beats: two dots a bar in 4/4, on beats 1 and 3', async ({ page }) => {
+    await page.goto('/song/f-jazz-blues')
+    await expect(lines(page).first()).toBeVisible()
+    const toggle = page.getByRole('button', { name: 'Target beats' })
+    await expect(async () => {
+      if ((await toggle.getAttribute('aria-pressed')) !== 'true') await toggle.click({ timeout: 1000 })
+      await expect(toggle).toHaveAttribute('aria-pressed', 'true', { timeout: 1000 })
+    }).toPass({ timeout: 10_000 })
+    const first = page.locator('[data-slot="system"]').first()
+    await expect(first.locator('[data-target-beat]')).toHaveCount(8) // 4 bars
+    await expect(first.locator('[data-target-beat="0"]')).toHaveCount(4)
+    await expect(first.locator('[data-target-beat="2"]')).toHaveCount(4)
+  })
+
+  test('a share link carries the rhythm: it opens reading Upbeats', async ({ page, browser }) => {
+    await page.goto('/song/f-jazz-blues')
+    await chooseRhythm(page, 'Upbeats')
+    await rhythmDrawn(page)
+    await page.getByRole('button', { name: 'Share' }).click()
+    const box = page.getByRole('dialog').getByLabel('Link')
+    await expect(box).toHaveValue(/\/song#s=[A-Za-z0-9_-]+$/)
+    const link = await box.inputValue()
+    const other = await browser.newContext() // fresh storage: its own rhythm is Off
+    await chooseInterface(other, 'intermediate')
+    const visitor = await other.newPage()
+    await visitor.goto(link)
+    await openPanel(visitor, 'Line options')
+    await expect(visitor.getByRole('button', { name: 'Rhythm', exact: true })).toHaveText('Rhythm: Upbeats')
+    await rhythmDrawn(visitor)
+    await other.close()
+  })
 })

@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test'
-import { arpeggiosDrawn, closePentatonicOptions, pentatonicLineDrawn, showPentatonicLine, chooseInstrument, chooseSuperimpose, chooseSheet, drawn, expect, guidesDrawn, hexatonicPreset, pentatonicPreset, pickOption, rankedAgainstChord, showArpeggios, showGuides, showPentatonics, staves, test, writeChart } from './fixtures'
+import { arpeggiosDrawn, closePentatonicOptions, pentatonicLineDrawn, showPentatonicLine, chooseInstrument, chooseRhythm, chooseSuperimpose, chooseSheet, drawn, expect, guidesDrawn, hexatonicPreset, pentatonicPreset, pickOption, rankedAgainstChord, rhythmDrawn, showArpeggios, showGuides, showPentatonics, staves, test, writeChart } from './fixtures'
 
 const pdfPages = (pdf: Buffer): number => (pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? []).length
 
@@ -234,6 +234,28 @@ test('prints the Changes with a pentatonic path and no line, a sheet page to a l
   await page.emulateMedia({ media: 'print' })
   expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(sheetPages)
 })
+
+// the rhythm line (rhythm spec §8) counts as a voiced line: its stems, accents, ties and bracket, with Numerals, Scales
+// and Target beats on, and Stardust's endings raised over the stems; and a 5/4 chart, its bars the widest
+const BARS_5_4 = Array.from({ length: 48 }, (_, i) => `${i + 1} | ${['Dm7', 'G7', 'CMaj7', 'A7'][i % 4]}`).join('\n')
+for (const [what, open] of [
+  ['Stardust', (page: Page) => page.goto('/song/stardust')],
+  ['a 5/4 chart', (page: Page) => writeChart(page, `title: F\nkey: C\ntime: 5/4\n\nsection: A\n${BARS_5_4}\n`)],
+] as const) {
+  test(`prints the Changes with a rhythm line, a sheet page to a letter page (${what})`, async ({ page }) => {
+    await open(page)
+    await chooseRhythm(page, '8ths', { In: 'In 5', Variation: 'syncopated' })
+await page.getByRole('button', { name: 'Target beats' }).click()
+await expect(page.locator('[data-target-beat]').first()).toBeAttached()
+    await rhythmDrawn(page)
+    const svgs = page.locator('svg[aria-label^="Bars:"]')
+    const sheetPages = await svgs.evaluateAll((els) => new Set(els.map((e) => e.closest('section'))).size)
+    expect(sheetPages).toBeGreaterThanOrEqual(2) // at least one full page
+    await page.emulateMedia({ media: 'print' })
+    await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden()
+    expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(sheetPages)
+  })
+}
 
 /** how many captions are taller than one line of their text */
 const wrappedCaptions = (page: Page, slot: 'hexatonic' | 'pentatonic' = 'hexatonic'): Promise<number> =>
