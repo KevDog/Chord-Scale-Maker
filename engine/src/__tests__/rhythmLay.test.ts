@@ -17,6 +17,11 @@ describe('layRhythm landings (§4)', () => {
     expect(layRhythm('run:8:4:3', [4, 4])?.landings).toEqual([])
   })
 
+  it('gives the unit and each bar start in pulses', () => {
+    expect(layRhythm('unit:8:5:accents', [4, 3, 4])).toMatchObject({ unit: 5, starts: [0, 8, 14] })
+    expect(layRhythm('run:8:4:3', [4, 4])).toMatchObject({ unit: 0, starts: [0, 8] })
+  })
+
   it('is null for off, an invalid id or no bars', () => {
     expect(layRhythm('off', [4])).toBeNull()
     expect(layRhythm('unit:8:9:accents' as RhythmId, [4])).toBeNull()

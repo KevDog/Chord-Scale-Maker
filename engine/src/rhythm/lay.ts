@@ -19,11 +19,17 @@ export type RhythmEvent = Readonly<{
   statement: number
 }>
 
+/**
+ * `unit` is a repeating rhythm's statement length in pulses (0 for a per-bar one); `starts` is each bar's first
+ * pulse in the stream, so a statement can be found at any pulse.
+ */
 export type Laid = Readonly<{
   pulse: Pulse
   kind: 'repeat' | 'bar'
   bars: readonly (readonly RhythmEvent[])[]
   landings: readonly number[]
+  unit: number
+  starts: readonly number[]
 }>
 
 /** A note (an attack and its following `_`) or one rest cell, in stream pulses. */
@@ -107,6 +113,8 @@ export function layRhythm(id: RhythmId, bars: readonly number[]): Laid | null {
       kind: 'repeat',
       bars: lengths.map((len, b) => barEvents(segs, starts[b]!, len, at => Math.floor((starts[b]! + at) / unit))),
       landings: range(bars.length).filter(b => starts[b]! % unit === 0),
+      unit,
+      starts,
     }
   }
   const segs = segments(perBarCells(r.bar, r.n, r.k, bars, lengths, starts, total))
@@ -115,6 +123,8 @@ export function layRhythm(id: RhythmId, bars: readonly number[]): Laid | null {
     kind: 'bar',
     bars: lengths.map((len, b) => barEvents(segs, starts[b]!, len, at => Math.floor(at / per))),
     landings: [],
+    unit: 0,
+    starts,
   }
 }
 

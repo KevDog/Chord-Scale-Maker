@@ -7,6 +7,7 @@ import { PULSE_PER_BEAT } from './rhythm'
 
 export type RhythmValue = 'w' | 'hd' | 'h' | 'qd' | 'q' | '8d' | '8' | '16'
 
+/** `beat` is where the note starts in its bar, in beats: halves and quarters of a beat, or thirds under `8t`. */
 export type RhythmNote = Readonly<{
   beat: number
   value: RhythmValue
@@ -67,12 +68,16 @@ function tripletPieces(at: number, length: number): readonly Piece[] {
 
 type Split = Readonly<{ note: Omit<RhythmNote, 'beam' | 'bracket'>; at: number; statement: number }>
 
-/** An event's notes: the first piece keeps its accent and tiedIn, the later ones continue it; rests never tie. */
-function splitEvent(e: RhythmEvent, per: number, triplets: boolean): readonly Split[] {
+/**
+ * An event's notes: the first piece keeps its accent and tiedIn, the later ones continue it; rests never tie.
+ * Each piece takes the statement at its own start, as a barline cut does (§4); a value held across a statement's
+ * end without a cut stays with its attack.
+ */
+function splitEvent(e: RhythmEvent, per: number, triplets: boolean, statement: (at: number) => number): readonly Split[] {
   const pieces = triplets ? tripletPieces(e.at, e.length) : straightPieces(e.at, e.length, per)
   return pieces.map((p, i) => ({
     at: p.at,
-    statement: e.statement,
+    statement: statement(p.at),
     note: {
       beat: p.at / per,
       value: p.value,
@@ -121,10 +126,11 @@ export function rhythmNotes(laid: Laid): readonly (readonly RhythmNote[])[] {
   const per = PULSE_PER_BEAT[laid.pulse]
   const triplets = laid.pulse === '8t'
   return laid.bars.map((events, b) => {
-    const splits = events.flatMap(e => splitEvent(e, per, triplets))
+    const statement = (at: number): number =>
+      laid.kind === 'repeat' ? Math.floor((laid.starts[b]! + at) / laid.unit) : Math.floor(at / per)
+    const splits = events.flatMap(e => splitEvent(e, per, triplets, statement))
     const tuplets = renumber(splits.map(s => s.note.tuplet))
-    const group = (s: Split): number =>
-      triplets ? Math.floor(s.at / per) : laid.kind === 'repeat' ? s.statement : Math.floor(s.at / per)
+    const group = (s: Split): number => (triplets || laid.kind === 'bar' ? Math.floor(s.at / per) : s.statement)
     const beamOf = beams(splits, group)
     // the sheet's first statement in bar 0, and the statement starting each later landing bar
     const bracketed = laid.kind === 'repeat' && laid.landings.includes(b) ? (b === 0 ? 0 : events[0]!.statement) : null

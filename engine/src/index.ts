@@ -28,7 +28,7 @@ export { type Approach, APPROACH_LABELS, APPROACHES, isApproach } from './approa
 export { CELL_ORDER_LABELS, CELL_ORDERS, type CellOrder, isCellOrder, orderCell, type PartialContour } from './cellOrder'
 export { type Cell, type CellId, cellLabel, fillContour, cellPitches, CELL_SYSTEMS, cellsVoices, type CellsLine, cellTones, CELL_VALUE, CHROMATIC_CELLS, type Contour, type Degree, isCellId, isSystemId, SINGLE_CELLS } from './cells'
 // `Cell` is taken by the cells module, so the rhythm's text cell is `RhythmCell`
-export { type BarRhythm, type Cell as RhythmCell, formatRhythm, isRhythmId, type Laid, layRhythm, LIBRARY_IDS, parseRhythm, type Pulse, PULSE_LABELS, PULSE_PER_BEAT, PULSES, type Rhythm, rhythmCaption, type RhythmEvent, type RhythmId, rhythmLabel, type RhythmNote, rhythmNotes, rhythmOf, type RhythmValue, targetBeats, unitRhythm, type Variation, VARIATION_LABELS, VARIATIONS } from './rhythm'
+export { type BarRhythm, type Cell as RhythmCell, formatRhythm, isRhythmId, type Laid, layRhythm, LIBRARY_IDS, parseRhythm, type Pulse, PULSE_LABELS, PULSE_PER_BEAT, PULSES, positionLabel, type Rhythm, rhythmCaption, type RhythmEvent, type RhythmId, rhythmLabel, type RhythmNote, rhythmNotes, rhythmOf, type RhythmValue, targetBeats, unitRhythm, type Variation, VARIATION_LABELS, VARIATIONS } from './rhythm'
 export * from './voiceLeading'
 export * from './util'
 export * from './practice'

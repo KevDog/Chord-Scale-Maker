@@ -61,6 +61,14 @@ describe('rhythmNotes: beams (§6.4)', () => {
     expect(notes('unit:8:2:rest-last', [2])[0]!.map(n => n.beam)).toEqual([null, null, null, null])
   })
 
+  it('beams a piece cut at a beat with its own statement', () => {
+    // statements at 0, 1.5, 3: statement 2's leading `_` holds statement 1's last x past beat 3, where it is cut
+    const n = notes('unit:8:3:syncopated', [4, 4, 4])[0]!
+    // the q at beat 1 is held into statement 1 as one value, so it stays with its attack
+    expect(vals(n)).toEqual(['8', '8', 'q', '8', '8~', '8', '8'])
+    expect(n.map(x => x.beam)).toEqual([0, 0, null, 1, 1, 2, 2])
+  })
+
   it('beams a per-bar rhythm by beat', () => {
     expect(notes('run:8:4:1', [4])[0]!.map(n => n.beam)).toEqual([null, null, 0, 0, null, null, null])
   })
@@ -78,6 +86,13 @@ describe('rhythmNotes: brackets (§6.5)', () => {
     expect(b[1]!.every(x => x === null)).toBe(true)
     expect(b[5]![0]).toBe('start')
     expect(b[5]![4]).toBe('end')
+  })
+
+  it('ends the bracket at its own statement, not at a held note cut at the beat', () => {
+    // statement 0 is _xxx; statement 1's leading `_` holds its last x across beat 1
+    const n = notes('custom:16:_xxx', [2])[0]!
+    expect(vals(n)).toEqual(['16', '16', '16', '16~', '16', '16', '16', '16'])
+    expect(n.map(x => x.bracket)).toEqual(['start', null, null, 'end', null, null, null, null])
   })
 
   it('marks a one-note statement both', () => {
