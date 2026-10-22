@@ -9,6 +9,9 @@ import { orNull } from './util'
 import { guideToneLine } from './guideToneLines'
 import type { Candidate, GuideTones } from './voiceLeading'
 import type { RhythmNote } from './rhythm/notation'
+import type { RhythmPlan } from './rhythm/pour'
+import { type Cells, cellVoices } from './arpeggios'
+import type { LineNote } from './guideToneLines'
 
 /**
  * Guide tones on the Changes sheet: one guide tone line (docs/superpowers/specs/2026-10-10-guide-tone-lines-design.md,
@@ -163,6 +166,10 @@ const APPROACH_BEATS = 0.5
 
 const readable = (chord: string): boolean => orNull(() => parseChord(chord)) !== null
 
+/** a placed guide note as a cell of one note, which every attack restates (rhythm-on-lines spec §5); null for a rest */
+const oneNote = (note: LineNote | null | undefined): Cells | null =>
+  note ? { tones: [note.pitch], next: () => ({ order: [0], up: true, midi: [note.pitch.midi] }) } : null
+
 /**
  * the guide tone line's voice for chords in time order: by timeline bar (barAt), the bar's
  * notes; by row, the chord's label (no entry for a rest); and a diagnostic for each chord without guide tones. The
@@ -171,7 +178,9 @@ const readable = (chord: string): boolean => orNull(() => parseChord(chord)) !==
  * when the line is 'off'. approach: a figure into each chord's guide tone after the first, as eighths at the end of the
  * chord before, which gives up that much of its note (and the tie into a held target); a figure's first notes that
  * are that chord's guide tone are left to it; none where that chord rests or would keep less than an eighth, the
- * figure needs a scale the chord doesn't have, or a note of it is outside the part's range.
+ * figure needs a scale the chord doesn't have, or a note of it is outside the part's range. rhythm, with restate:
+ * the same notes, labels and diagnostics, each chord's note restated on every attack of its span (cellVoices, §5);
+ * without restate the rhythm is ignored (D17).
  */
 export function guideVoices(
   chords: readonly GuideInput[],
@@ -180,6 +189,8 @@ export function guideVoices(
   keySig: string | null,
   line: GuideLine,
   approach: Approach = 'none',
+  rhythm?: RhythmPlan,
+  restate = false,
 ): { bars: ReadonlyMap<number, readonly GuideNote[]>; labels: ReadonlyMap<number, string>; missing: readonly string[] } {
   const bars = new Map<number, GuideNote[]>()
   const labels = new Map<number, string>()
@@ -195,6 +206,14 @@ export function guideVoices(
   })
   const range = rangeOf(part)
   const notes = guideToneLine(tones, range, line, chords.map((c) => c.block ?? 0))
+  if (restate && rhythm) {
+    notes.forEach((h, j) => {
+      const c = chords[j]
+      if (h && c) labels.set(c.row, guideLabel(h.label))
+    })
+    const poured = cellVoices(chords, part, beats, keySig, (_, j) => oneNote(notes[j]), undefined, approach, rhythm)
+    return { bars: poured.bars, labels, missing }
+  }
   const lead = chords.map((c, j) => {
     const target = notes[j]?.pitch
     const before = chords[j - 1]

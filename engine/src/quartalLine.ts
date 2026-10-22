@@ -6,6 +6,7 @@ import type { Metre } from './metre'
 import { type Part, rangeOf } from './part'
 import { mod, pcOf, type Spelled } from './pitch'
 import type { QuartalStack } from './quartal'
+import type { RhythmPlan } from './rhythm/pour'
 
 /**
  * The Changes sheet's Quartal line (#432 §3): under the Quartal overlay, the Line's 7th Chords slot plays each chord's
@@ -52,7 +53,7 @@ function stackCells(stacks: readonly QuartalStack[], dir: ArpDirection, range: R
 
 /**
  * the Quartal line's voice for chords in time order: each chord's stacks (by row, the labeled one first) as cells
- * (cellVoices); a chord with none plays its 7th chord arpeggio in the line's pattern
+ * (cellVoices); a chord with none plays its 7th chord arpeggio in the line's pattern; rhythm: poured into its attacks
  */
 export function quartalVoices(
   chords: readonly GuideInput[],
@@ -61,10 +62,11 @@ export function quartalVoices(
   keySig: string | null,
   line: QuartalLine,
   stacks: ReadonlyMap<number, readonly QuartalStack[]>,
+  rhythm?: RhythmPlan,
 ): { bars: ReadonlyMap<number, readonly GuideNote[]>; missing: readonly string[] } {
   const range = rangeOf(part)
   return cellVoices(chords, part, beats, keySig, (c) => {
     const own = stacks.get(c.row)
     return own?.length ? stackCells(own, line.dir, range) : arpeggioCells(part, c, line.arpeggio)
-  })
+  }, undefined, 'none', rhythm)
 }
