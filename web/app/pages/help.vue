@@ -229,7 +229,8 @@
             <strong class="font-semibold text-zinc-950 dark:text-white">Editing alternates.</strong> While you edit on a wide screen with
             Standard playing, a small line above the bars takes each bar's alternate. Click <UiCode>+ alt</UiCode> (or a bar's alternate)
             and type its chords: Tab moves to the next bar, Shift+Tab to the one before, Enter keeps it, Esc cancels. Leave it empty to
-            remove the bar's alternate. Chords the same as the standard changes there aren't kept.
+            remove the bar's alternate. A bar that goes on holding an earlier alternate shows that chord in italics. Chords the
+            alternate set already plays there (the standard changes, or a chord held from before) aren't kept.
           </UiText>
           <UiText>
             With Changes set to Alternate, the big chords are the alternate set. Retype a bar both sets share and it becomes an alternate;

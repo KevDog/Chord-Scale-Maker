@@ -332,11 +332,18 @@ function altLines(doc: ChartDoc, section: string, bar: number): number[] {
   return doc.lines.flatMap((l, i) => (i > r.start && i < r.end && l.kind === 'altRow' && WHOLE.test(l.bar) && Number(l.bar) === bar ? [i] : []))
 }
 
-/** a bar's chords in the Alternate set: chord, scale and function of each */
+/** the Alternate set's chords playing in a bar, by line: its own, or the one held into it (#491) */
+function altSetChords(alt: ChartDoc, section: string, bar: number): readonly Readonly<{ line: number }>[] {
+  const bars = barView(alt).sections.find((s) => s.name === section && !s.copy)?.bars ?? []
+  const found = bars.findLast((b) => b.bar <= bar && b.chords.length)
+  if (!found) return []
+  return found.bar === bar ? found.chords : found.chords.slice(-1)
+}
+
+/** a bar's chords in the Alternate set, held ones too: chord, scale and function of each */
 function altSetBar(doc: ChartDoc, section: string, bar: number): readonly string[] {
   const alt = changesFor(doc, 'alternate')
-  const found = writtenBar(barView(alt), section, bar)
-  return (found?.bar.chords ?? []).map((c) => {
+  return altSetChords(alt, section, bar).map((c) => {
     const l = alt.lines[c.line] as RowLine
     return `${l.chord}\u0000${l.scale}\u0000${l.function ?? ''}`
   })
@@ -354,8 +361,8 @@ export function setAltBarChords(doc: ChartDoc, section: string, bar: number, cho
   const length = found.section.bars.length
   const without: ChartDoc = old.length ? { lines: doc.lines.filter((_, i) => !old.includes(i)) } : doc
   if (!chords.length) return old.length ? tidyBars(without, section, length) : doc
-  // the Alternate set's chords at this bar, by position: what each new chord replaces
-  const source = writtenBar(barView(changesFor(doc, 'alternate')), section, bar)?.bar.chords ?? []
+  // the Alternate set's chords at this bar (or held into it), by position: what each new chord replaces
+  const source = altSetChords(changesFor(doc, 'alternate'), section, bar)
   const rows: AltRowLine[] = chords.map((_, k) => {
     const src = source[k] ? (doc.lines[source[k].line] as RowLine | AltRowLine) : null
     return { kind: 'altRow', bar: String(bar), chord: src?.chord ?? '', scale: src?.scale ?? '', ...(src?.function ? { function: src.function } : {}) }

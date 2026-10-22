@@ -226,6 +226,18 @@ test.describe('the alternate line, typed bar by bar (#469)', () => {
     expect(await source(page)).not.toMatch(/\nalt /)
   })
 
+  test('a bar holding an earlier alternate shows it held; typed again, no alt row is kept (#491)', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 })
+    await writeChart(page, PLAIN.replace('2 | G7\n', '2 | G7\nalt 2 | Abm7\n').replace('3 | CMaj7\n', ''))
+    await expect(target(page, 'A', 3)).toHaveAccessibleName('Alternate for A bar 3: Abm7 held')
+    await expect(target(page, 'A', 3).locator('[data-held]')).toHaveAttribute('data-chord', 'Abm7')
+    await target(page, 'A', 3).click()
+    await page.keyboard.type('Abm7')
+    await page.keyboard.press('Enter')
+    await expect(target(page, 'A', 3)).toHaveAccessibleName('Alternate for A bar 3: Abm7 held')
+    expect(await source(page)).not.toMatch(/\nalt 3 /)
+  })
+
   test('the targets show with Other changes off; none over a copy: section, none in Alternate', async ({ page }) => {
     await editCopy(page)
     await otherToggle(page).click()

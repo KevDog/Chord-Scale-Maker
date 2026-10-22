@@ -542,7 +542,10 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   the played set: on a shared bar in Alternate it makes the bar an alternate, retyping it back removes it) and
   `setAltBarChords` / `altBarChords` (the alt line's entry for one bar). Bar ops keep `alt` rows with their bar.
 - **Redundancy:** checked only in `setAltBarChords`: an alternate equal to the bar's standard chords, scales and
-  functions is dropped (decision `alt.same`); an empty entry removes the alternate. An alternate can't be held.
+  functions is dropped (decision `alt.same`); an empty entry removes the alternate. An alternate can't be held. Both
+  sides of the check are what the Alternate set plays in the bar, a chord held into it included (#491), so typing the
+  held alternate again keeps no row; `otherChords` likewise gives a held bar the chord carried into it (`held`, drawn
+  in italics) where the sets carry different chords.
 - **App:** `SheetAltChord.vue` is the alt line's entry (Tab / Shift+Tab move between bars, Enter commits, Esc cancels);
   `altEditing` in EditorView turns it on for a wide screen with Standard playing. A `copy:` section shows its alternates
   but takes no new ones. The Source is no longer forced open for a chart with alternates.

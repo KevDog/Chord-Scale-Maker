@@ -103,10 +103,18 @@ describe('SheetAltChord (#469)', () => {
   })
 
   it('% is the Alternate set’s bar before', async () => {
-    const w = await mount({ source: withAlt, bar: 4 })
+    const source = parseChart('title: T\nkey: C\n\nsection: A\n1 | Dm7\n2 | G7\n3 | CMaj7\nalt 3 | Em7\n4 | A7\n').value
+    const w = await mount({ source, bar: 4 })
     await type(w, '%')
     await key(w, 'Enter')
     expect(altRows(lastDoc(w))).toEqual(['alt 3 | Em7', 'alt 4 | Em7'])
+  })
+
+  it('% on a bar already holding the alternate keeps no row (#491)', async () => {
+    const w = await mount({ source: withAlt, bar: 4 })
+    await type(w, '%')
+    await key(w, 'Enter')
+    expect(altRows(lastDoc(w) ?? withAlt)).toEqual(['alt 3 | Em7'])
   })
 
   it('Esc closes and writes nothing', async () => {
