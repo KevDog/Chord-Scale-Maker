@@ -1176,7 +1176,8 @@ its reasons into a chart as comments.
     keeps the original.
 - **Back up and restore** (#466, flag `backup`, on): `engine/src/backup.ts` turns a storage snapshot into one
   `csm-backup` v1 JSON file (`chord-scale-maker-backup-YYYY-MM-DD.json`): every My-charts entry with its text and its
-  `mine:<id>` state (practice, level, pentatonic path, chord picks; keyed without the id), library tunes' state per
+  `mine:<id>` state (practice, level, pentatonic path, chord picks, the changes-set view `csm-changes`, and the alternate
+  set's picks and practice, named `csm-pent-picks~alt` / `csm-practice~alt:root`; keyed without the id), library tunes' state per
   slug, and the global preferences (`isPreferenceKey`: `csm-<name>`, no colon, not the index, `csm-recent` or
   `csm-draft`). Undo history, `csm-recent` and `csm-premigration:*` stay behind. `parseBackup` never throws: bad
   entries are dropped and counted, values go through `practiceSelectionFrom` / `chordPicksFrom`, old `_` slugs are

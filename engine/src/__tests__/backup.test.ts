@@ -301,6 +301,56 @@ describe('planImport: preferences', () => {
   })
 })
 
+describe('alternate changes state (#215)', () => {
+  const CHANGES = JSON.stringify({ main: 'alternate', shown: false })
+  const STORE: Store = {
+    'csm-charts': JSON.stringify([meta('aaaaaa1', 'Mine')]),
+    'csm-chart:aaaaaa1': chart('Mine'),
+    'csm-changes:mine:aaaaaa1': CHANGES,
+    'csm-pent-picks:mine:aaaaaa1~alt': PICKS,
+    'csm-practice:mine:aaaaaa1~alt:root': PRACTICE,
+    'csm-practice:mine:aaaaaa1~alt:from': PRACTICE,
+    'csm-changes:blue-bossa': CHANGES,
+    'csm-pent-picks:blue-bossa~alt': PICKS,
+    'csm-practice:blue-bossa~alt:from': PRACTICE,
+  }
+
+  it('is exported under the chart, named without it', () => {
+    const b = backupFrom(STORE, HEADER)
+    expect(b.charts[0]!.state).toEqual({
+      'csm-changes': CHANGES,
+      'csm-pent-picks~alt': PICKS,
+      'csm-practice~alt:root': PRACTICE,
+      'csm-practice~alt:from': PRACTICE,
+    })
+    expect(b.library).toEqual({ 'blue-bossa': { 'csm-changes': CHANGES, 'csm-pent-picks~alt': PICKS, 'csm-practice~alt:from': PRACTICE } })
+  })
+
+  it('round-trips and restores to the same keys', () => {
+    const b = roundTrip(STORE)
+    expect(b).toEqual(backupFrom(STORE, HEADER))
+    const out = run({}, applyChoices(planImport({}, b), {}, ids()).steps)
+    for (const [k, v] of Object.entries(STORE)) expect(out[k]).toBe(v)
+  })
+
+  it('drops bad values and an ~alt on state that has none', () => {
+    const b = backupFrom(STORE, HEADER)
+    const bad = JSON.stringify({
+      ...b,
+      charts: [{ ...b.charts[0], state: { 'csm-changes': '[1]', 'csm-changes~alt': CHANGES, 'csm-level~alt': LEVEL, 'csm-pent-picks~alt': 'nope', 'csm-practice~alt:root': 'junk', 'csm-practice~alt:from': PRACTICE } }],
+      library: { 'blue-bossa': { 'csm-changes': 'junk', 'csm-pent-picks~alt': PICKS } },
+    })
+    const r = parseBackup(bad)!
+    expect(r.backup.charts[0]!.state).toEqual({ 'csm-practice~alt:from': PRACTICE })
+    expect(r.backup.library).toEqual({ 'blue-bossa': { 'csm-pent-picks~alt': PICKS } })
+    expect(r.dropped).toBe(6)
+  })
+
+  it('reads a backup made before it existed', () => {
+    expect(parseBackup(serializeBackup(backupFrom(LOCAL, HEADER)))?.dropped).toBe(0)
+  })
+})
+
 describe('backupFileName', () => {
   it('is dated', () => {
     expect(backupFileName(new Date(2026, 9, 1))).toBe('chord-scale-maker-backup-2026-10-01.json')

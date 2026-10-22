@@ -420,7 +420,7 @@
           <UiSubheading id="backup" :level="3" class="scroll-mt-6 pt-2">Back up and restore</UiSubheading>
           <UiText>
             <strong class="font-semibold">Backup → Back up…</strong> in the library saves everything this browser keeps
-            in one file: My charts, each chart's practice picks, level and chord picks, the same for library tunes, and
+            in one file: My charts, each chart's practice picks, level and chord picks (the alternate changes' too, and which set you play), the same for library tunes, and
             your preferences (instrument, range, theme, how the sheets look). Undo history stays behind.
             <strong class="font-semibold">Restore from backup…</strong> (or <strong class="font-semibold">Open chart…</strong>,
             or dropping the file on the library) brings it into another browser. It shows what's new, what's already
