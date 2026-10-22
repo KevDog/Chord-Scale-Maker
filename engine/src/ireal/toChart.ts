@@ -58,20 +58,24 @@ type Played = Readonly<{
   n: number // the song's bar, from 1
   bar: IRealBar
   chords: readonly string[] // empty: the chord before holds
+  alts: readonly string[] | null // the bar's alternate chords, each ( ) in its chord's place; null: no alternate
   time?: string // a metre the sheets have, where this bar sets one
   navs: readonly string[]
 }>
 
-/** the bars as played: chords mapped, x/r filled from the bars before; reports what's left out */
-function play(bars: readonly IRealBar[], at: readonly string[]): Parsed<readonly Played[]> {
+/** the bars as played: chords mapped, x/r filled from the bars before; reports what's left out; a bar's alternate chords alongside */
+function play(bars: readonly IRealBar[], at: readonly string[], alternates: boolean): Parsed<readonly Played[]> {
   const out: Played[] = []
   const diagnostics: Diagnostic[] = []
-  let pending: readonly string[] | null = null // the second bar of an r
+  let pending: Played | null = null // the second bar of an r
   for (const [i, bar] of bars.entries()) {
     const n = i + 1
     const report = (message: string) => diagnostics.push(diag(n, `${at[i]}: ${message}`))
     if (pending && bar.items.length) report('a two-bar repeat cut short by chords in its second bar')
-    const chords: string[] = pending && !bar.items.length ? [...pending] : []
+    const filled = pending && !bar.items.length ? pending : null
+    const chords: string[] = filled ? [...filled.chords] : []
+    const alts: string[] = filled ? [...(filled.alts ?? filled.chords)] : [] // the alternate bar's chords, built beside the main bar's
+    let hasAlt = filled?.alts != null
     pending = null
     for (const item of bar.items) {
       if (item.kind === 'repeat') {
@@ -79,16 +83,31 @@ function play(bars: readonly IRealBar[], at: readonly string[]): Parsed<readonly
         if (!back) report('a repeat sign with no bar before it, left empty')
         else {
           chords.push(...back.chords)
-          if (item.bars === 2) pending = out.at(-1)?.chords ?? []
+          alts.push(...(back.alts ?? back.chords))
+          if (back.alts) hasAlt = true
+          if (item.bars === 2) pending = out.at(-1) ?? null
         }
-      } else if (item.kind === 'rest') chords.push(REST)
-      else if (item.kind === 'bass') report(`a bass note with no chord (W/${item.bass}) is left out`)
-      else if (item.kind === 'alt') report(`the alternate chord ${item.alt} is left out`)
+      } else if (item.kind === 'rest') {
+        chords.push(REST)
+        alts.push(REST)
+      } else if (item.kind === 'bass') report(`a bass note with no chord (W/${item.bass}) is left out`)
       else {
-        if (item.alt) report(`the alternate chord ${item.alt} is left out`)
-        const m = irealChord(item.text)
-        if (m.note) report(m.note)
-        if (m.chord !== null) chords.push(m.chord)
+        // a chord's ( ) stands in its place in the alternate; one on its own has no main chord
+        let main: string | null = null
+        if (!alternates && item.alt) report(`the alternate chord ${item.alt} is left out`)
+        if (item.kind === 'chord') {
+          const m = irealChord(item.text)
+          if (m.note) report(m.note)
+          main = m.chord
+          if (main !== null) chords.push(main)
+        }
+        if (item.alt && alternates) {
+          hasAlt = true
+          const m = irealChord(item.alt)
+          if (m.note) report(m.note)
+          const alt = m.chord ?? main // an alternate it can't map keeps the main chord in its place, the bar's rhythm
+          if (alt !== null) alts.push(alt)
+        } else if (main !== null) alts.push(main)
       }
     }
     const supported = bar.time === undefined || METRES.has(bar.time)
@@ -99,7 +118,7 @@ function play(bars: readonly IRealBar[], at: readonly string[]): Parsed<readonly
       if (!nav) report(`the comment "${c}" is left out`)
       return nav ? [nav] : []
     })
-    out.push({ n, bar, chords, navs, ...(time ? { time } : {}) })
+    out.push({ n, bar, chords, alts: hasAlt && alts.length ? alts : null, navs, ...(time ? { time } : {}) })
   }
   return { value: out, diagnostics }
 }
@@ -259,7 +278,7 @@ function writeBlock(b: Block, { name, source, songTime, running, held }: Context
   const bars = b.sec.bars
   // a chord holds only within its section: one opening on a held bar restates it
   const chordsOf = (p: Played, i: number): readonly string[] => (i === 0 && !p.chords.length && held !== undefined ? [held] : p.chords)
-  const rows = bars.flatMap((p, i) => chordsOf(p, i).map((c) => `${i + 1} | ${c}`))
+  const rows = bars.flatMap((p, i) => [...chordsOf(p, i).map((c) => `${i + 1} | ${c}`), ...(p.alts ?? []).map((c) => `alt ${i + 1} | ${c}`)])
   const lastRow = bars.reduce((last, p, i) => (chordsOf(p, i).length ? i + 1 : last), 0)
   const marks = bars.flatMap((p, i) => [
     ...(p.bar.segno ? [`@segno ${i + 1}`] : []),
@@ -295,10 +314,11 @@ function formOf(blocks: readonly Block[]): string | undefined {
   return `${letters}, ${bars} ${bars === 1 ? 'bar' : 'bars'}`
 }
 
-export function irealToChart(song: IRealSong): Parsed<string> {
+/** alternates: write a chord's ( ) as alt rows; off (the app's import, until the editor holds them, #469), each is reported as left out */
+export function irealToChart(song: IRealSong, { alternates = false }: Readonly<{ alternates?: boolean }> = {}): Parsed<string> {
   const read = readMusic(song.music)
   const at = labels(read.value)
-  const played = play(read.value, at)
+  const played = play(read.value, at, alternates)
   const secs = sections(played.value)
   const blocked = blocksAll(secs, at)
   const blocks = blocked.value
@@ -336,6 +356,6 @@ export function irealToChart(song: IRealSong): Parsed<string> {
 export function irealBars(song: IRealSong): Parsed<readonly (readonly string[])[]> {
   const read = readMusic(song.music)
   const at = labels(read.value)
-  const played = play(read.value, at)
+  const played = play(read.value, at, false) // the editor holds no alternates (#469): each is reported as left out
   return { value: played.value.map((p) => p.chords), diagnostics: [...read.diagnostics.map((d) => relabel(d, at)), ...played.diagnostics].sort((a, b) => a.line - b.line) }
 }

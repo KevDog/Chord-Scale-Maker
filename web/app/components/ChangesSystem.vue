@@ -1,5 +1,17 @@
 <template>
   <div ref="root" data-slot="system" class="relative break-inside-avoid" @pointerleave="leaveBar" @focusout="leaveBar">
+    <!-- a chart with alternates (#215): the other set's chords, small, over their beats (chord symbols only; printed) -->
+    <div v-if="otherMarks.length" data-slot="other-changes" class="relative h-5 print:h-3">
+      <span class="sr-only">Other changes:</span>
+      <span
+        v-for="o in otherMarks"
+        :key="o.key"
+        :data-chord="o.written"
+        :data-other-name="o.key"
+        class="absolute bottom-0 origin-bottom-left text-xs/4 font-medium whitespace-nowrap text-zinc-600 dark:text-zinc-400 print:text-[0.6rem]/3 print:text-neutral-700"
+        :style="{ left: `${o.x * 100}%`, transform: otherScale(o) === 1 ? undefined : `scale(${otherScale(o)})` }"
+      ><ChordSymbol v-if="o.tokens" :tokens="o.tokens" /><template v-else>{{ o.written }}</template></span>
+    </div>
     <!-- section markers and key areas, then chord symbols, over their beats -->
     <div ref="names" data-slot="names" class="relative h-12 print:h-7">
       <template v-for="m in marks" :key="m.key">
@@ -237,7 +249,9 @@
 
 <script setup lang="ts">
 import {
+  type AltChord,
   barKey,
+  chordTokensOrNull,
   type ChangesHexatonic,
   type ChangesLine,
   type ChangesPentatonic,
@@ -265,7 +279,7 @@ import {
   sheetScale,
 } from '@chord-scale-maker/engine'
 import { choiceId, hexChoiceRows, pickFooter, pickHeader } from '~/utils/chordPicks'
-import { drawChangesLine, type NamedBeat } from '~/utils/changesDrawing'
+import { drawChangesLine, mergeNames, type NamedBeat } from '~/utils/changesDrawing'
 import { DEFAULT_VIEW, SCALE_VIEW } from '~/utils/scaleView'
 import type { SheetChordEdit, SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
 
@@ -292,6 +306,7 @@ const props = defineProps<{
   overlay?: OverlayPlan | null // the row under the chords: the Pentatonic overlay's rungs, the Hexatonic or the Quartal; null/undefined: no row
   counted?: boolean // the sheet's pentatonics count (tints)
   part?: Part // the sheet's part, for the chord pick popovers' wording and picks (#303); concert without
+  others?: ReadonlyMap<string, readonly AltChord[]> | null // the other set's chords by bar (barKey), written (#215); null: none
 }>()
 const emit = defineEmits<{
   tap: [chord: SheetChordEdit] // a chord tapped, for the chord editor dialog
@@ -312,6 +327,7 @@ const el = ref<HTMLElement | null>(null)
 const names = ref<HTMLElement | null>(null)
 const xs = ref<readonly (readonly number[])[]>([])
 const ends = ref<readonly number[]>([]) // each bar's right edge
+const otherScales = ref<readonly ReadonlyMap<number, number>[]>([]) // each other-set name's scale, by beat, likewise
 const nameScales = ref<readonly (readonly number[])[]>([]) // each chord name's scale, where the line can't fit it
 const drawError = ref<string | null>(null)
 const rendering = useRendering()
@@ -340,6 +356,12 @@ const marks = computed(() => {
   })
   return all.map((m, i) => ({ ...m, room: Math.max(0.05, (all[i + 1]?.x ?? 1) - m.x) }))
 })
+/** the other set's chords in this line's bars (#215), over their beats; already written for the part, so drawn as they are */
+const otherMarks = computed(() =>
+  props.line.bars.flatMap((bar, b) =>
+    (props.others?.get(barKey(bar.at)) ?? []).map((c, k) => ({ key: `${b}-${k}`, barIndex: b, beat: c.beat, written: c.written, tokens: chordTokensOrNull(CONCERT, c.written), x: Math.max(0, (xs.value[b]?.[c.beat] ?? 0) - 0.012) })),
+  ),
+)
 /** the marks that print a pentatonic label (#255) */
 const pentatonicMarks = computed(() => marks.value.flatMap((m) => (m.pentatonic?.label ? [{ key: m.key, x: m.x, room: m.room, written: m.written, p: m.pentatonic }] : [])))
 /** ranked against the key, a pair that isn't the key's (#432): drawn greyed */
@@ -468,6 +490,8 @@ const ghost = computed(() => {
   const left = ends.value[n - 1] ?? n / props.barsPerLine
   return { section: last.at.section, full, style: { left: `${left * 100}%`, width: `${Math.min(1 / props.barsPerLine, 1 - left) * 100}%` } }
 })
+/** an other-set name's scale: that of its beat's merged name, as the main names', so the two lines shrink together */
+const otherScale = (o: { barIndex: number; beat: number }): number => otherScales.value[o.barIndex]?.get(o.beat) ?? 1
 /** a chord name's scale: shrunk where its bar can't be widened enough, but never the chord being edited */
 const shrunk = (m: { barIndex: number; k: number; line: number }): number =>
   props.editing?.kind === 'chord' && props.editing.line === m.line ? 1 : (nameScales.value[m.barIndex]?.[m.k] ?? 1)
@@ -486,14 +510,25 @@ const hasGuideLine = computed(() => !props.arpeggio && props.line.bars.some((b) 
 /**
  * each bar's chord names (and the marker or key area over its first), their widths as fractions of the line, which
  * widen the bars they crowd: measured at their full size, against the line as drawn or as printed (narrower, at
- * PRINT_LINE px with screen-size names), whichever is tighter; undefined while the line isn't laid out
+ * PRINT_LINE px with screen-size names), whichever is tighter; undefined while the line isn't laid out. With the other
+ * set's line over them (#215), its names too: each beat as wide as the wider of the two (mergeNames)
  */
 function measureNames(): NamedBeat[][] | undefined {
   const width = Math.min(el.value?.clientWidth ?? 0, PRINT_LINE)
   if (!width || !root.value) return undefined
   const px = new Map(Array.from(root.value.querySelectorAll<HTMLElement>('[data-name]'), (n) => [n.dataset.name, n.offsetWidth]))
-  return props.line.bars.map((_, b) => marks.value.filter((m) => m.barIndex === b && !m.slot).map((m) => ({ beat: m.beat, width: ((px.get(m.key) ?? 0) + NAME_GAP) / width })))
+  const otherPx = new Map(Array.from(root.value.querySelectorAll<HTMLElement>('[data-other-name]'), (n) => [n.dataset.otherName, n.offsetWidth]))
+  const named = (w: number | undefined): number => ((w ?? 0) + NAME_GAP) / width
+  return props.line.bars.map((_, b) => mergeNames(
+    marks.value.filter((m) => m.barIndex === b && !m.slot).map((m) => ({ beat: m.beat, width: named(px.get(m.key)) })),
+    otherMarks.value.filter((o) => o.barIndex === b).map((o) => ({ beat: o.beat, width: named(otherPx.get(o.key)) })),
+  ))
 }
+/** each bar's chord names' scales, by their index in the bar (shrunk), from the scales of its merged beats */
+const nameScalesOf = (names: readonly (readonly NamedBeat[])[] | undefined, scales: readonly (readonly number[])[]): number[][] =>
+  props.line.bars.map((_, b) => marks.value.filter((m) => m.barIndex === b && !m.slot).map((m) => scales[b]?.[names?.[b]?.findIndex((n) => n.beat === m.beat) ?? -1] ?? 1))
+const otherScalesOf = (names: readonly (readonly NamedBeat[])[] | undefined, scales: readonly (readonly number[])[]): Map<number, number>[] =>
+  props.line.bars.map((_, b) => new Map(otherMarks.value.filter((o) => o.barIndex === b).map((o) => [o.beat, scales[b]?.[names?.[b]?.findIndex((n) => n.beat === o.beat) ?? -1] ?? 1])))
 const PRINT_LINE = 800 // a printed line (about 700px) with the print's smaller names (text-sm: 14/16), in screen px
 const NAME_GAP = 8 // px between a name and the next
 const key = (names: readonly (readonly NamedBeat[])[] | undefined): string => JSON.stringify(names?.map((b) => b.map((c) => [c.beat, +c.width.toFixed(3)])))
@@ -510,7 +545,8 @@ async function draw(): Promise<void> {
     const layout = drawChangesLine(vf, el.value, props.line, { first: props.first, barsPerLine: props.barsPerLine, ...(props.clef ? { clef: props.clef } : {}), ...(props.arpeggio ? { arpeggio: true } : {}), ...(props.lineName ? { lineName: props.lineName } : {}), ...(names ? { names } : {}) })
     xs.value = layout.xs
     ends.value = layout.ends
-    nameScales.value = layout.scales
+    nameScales.value = nameScalesOf(names, layout.scales)
+    otherScales.value = otherScalesOf(names, layout.scales)
     const breakAt = props.line.bars[layout.fits]
     if (breakAt) emit('overfull', barKey(breakAt.at))
     drawError.value = null
@@ -537,5 +573,5 @@ onBeforeUnmount(() => {
   observer?.disconnect()
   clearTimeout(resized)
 })
-watch(() => [props.line, props.first, props.barsPerLine, props.clef, props.arpeggio, props.lineName], () => nextTick(draw))
+watch(() => [props.line, props.first, props.barsPerLine, props.clef, props.arpeggio, props.lineName, props.others], () => nextTick(draw))
 </script>

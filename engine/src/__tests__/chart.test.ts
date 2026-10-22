@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { beatsPerBar, chartAka, chartName, chartRecording, chartBeats, chartKind, chartDetails, chartHeading, chartMeta, expandRowLines, expandRows, isFatal, isValidKey, keyLabel, lineSections, parseChart, parseContext, qualityScale, serializeChart } from '../chart'
+import { beatsPerBar, chartAka, chartName, chartRecording, chartBeats, chartKind, chartDetails, chartHeading, chartMeta, expandRowLines, expandRows, hasAlternates, isFatal, isValidKey, keyLabel, lineSections, parseChart, parseContext, qualityScale, serializeChart } from '../chart'
 import { LIMITS } from '../limits'
 
 describe('isValidKey', () => {
@@ -395,5 +395,54 @@ describe('chartRecording', () => {
 
   it('keeps recording: in the header', () => {
     expect(parseChart('section: A\nrecording: A; B\n1 | C').diagnostics.map((d) => d.message)).toContain('recording: belongs in the header, before the first section:')
+  })
+})
+
+describe('alt rows', () => {
+  const msgs = (t: string): string[] => parseChart(t).diagnostics.map((d) => d.message)
+
+  it('parses alt BAR | CHORD as an altRow, case-insensitively', () => {
+    for (const t of ['section: A\n1 | C\n2 | G7\nalt 2 | Db7', 'section: A\n1 | C\n2 | G7\nALT 2 | Db7']) {
+      const { value, diagnostics } = parseChart(t)
+      expect(diagnostics).toEqual([])
+      expect(value.lines[3]).toEqual({ kind: 'altRow', bar: '2', chord: 'Db7', scale: '' })
+    }
+  })
+
+  it('keeps scale, function and comment', () => {
+    const { value, diagnostics } = parseChart('section: A\n1 | C\n2 | G7\nalt 2 | Db7 | Db Lydian Dominant | subV7  # keep: melody')
+    expect(diagnostics).toEqual([])
+    expect(value.lines[3]).toEqual({ kind: 'altRow', bar: '2', chord: 'Db7', scale: 'Db Lydian Dominant', function: 'subV7', comment: 'keep: melody' })
+  })
+
+  it('reports misplaced alt rows', () => {
+    expect(msgs('section: A\n1 | C\nsection: B\ncopy: A\nalt 1 | C')).toContain('a section with copy: has no bars of its own')
+    expect(msgs('alt 1 | C\nsection: A\n1 | C')).toEqual(['bars go in a section: add  section: A  above'])
+    expect(msgs('section: A\n1 | C\n2 | G7\nalt 1 | C')).toEqual(['rows and alt rows go in bar order'])
+    expect(msgs('section: A\n1 | C\n8 | G7\nalt 9 | C')).toEqual(['alt bar 9 is past the section’s end (bar 8)'])
+    expect(msgs('section: A\nbars: 9\n1 | C\n8 | G7\nalt 9 | C')).toEqual([])
+  })
+
+  it('round-trips, with alt rows in the column widths', () => {
+    const t = 'section: A\n1  | Cmaj7\n2  | G7\nalt 2  | Db7 | Db Lydian Dominant | subV7  # tritone\n10 | Cmaj7\n'
+    const text = serializeChart(parseChart(t).value)
+    expect(serializeChart(parseChart(text).value)).toBe(text)
+    const plain = 'section: A\n1 | Cm7 | C Dorian\n2 | F7\n'
+    expect(serializeChart(parseChart(plain).value)).toBe(plain)
+  })
+
+  it('formats an alt row as alt + a row with the same widths', () => {
+    const text = serializeChart(parseChart('section: A\n1 | Cmaj7\n12 | G7 | G Mixolydian\nalt 12 | Db7 | Db Lydian Dominant\n').value)
+    expect(text).toBe('section: A\n1  | Cmaj7\n12 | G7    | G Mixolydian\nalt 12 | Db7   | Db Lydian Dominant\n')
+  })
+
+  it('hasAlternates', () => {
+    expect(hasAlternates(parseChart('section: A\n1 | C\nalt 1 | Db').value)).toBe(true)
+    expect(hasAlternates(parseChart('section: A\n1 | C').value)).toBe(false)
+  })
+
+  it('counts alt rows in LIMITS.maxRows', () => {
+    const rows = Array.from({ length: LIMITS.maxRows }, () => '1 | C').join('\n')
+    expect(parseChart(`section: A\n${rows}\nalt 1 | C`).diagnostics.some((d) => d.fatal)).toBe(true)
   })
 })

@@ -6,14 +6,20 @@ import { useChartHistory } from '~/composables/useChartHistory'
 
 const TEXT = 'title: T\n\nsection: A\nbars: 4\n1 | Cm7\n'
 
-function setup(text = TEXT, key?: string) {
+/** with `alt`, an alternate set's picks kept too; `picks`: the picks the chart opens with (as stored) */
+function setup(text = TEXT, key?: string, opts: Readonly<{ alt?: boolean; picks?: Readonly<Record<string, number>> }> = {}) {
   const scope = effectScope()
   const r = scope.run(() => {
     const e = useChartEditor(text)
     const rung = ref(0)
-    const picks = ref<Readonly<Record<string, number>>>({})
-    const choices = { rung: { get: () => rung.value, set: (v: number) => (rung.value = v) }, picks: { get: () => picks.value, set: (v: Readonly<Record<string, number>>) => (picks.value = v) } }
-    return { e, rung, picks, h: useChartHistory(e, choices, key) }
+    const picks = ref<Readonly<Record<string, number>>>(opts.picks ?? {})
+    const altPicks = ref<Readonly<Record<string, number>>>({})
+    const choices = {
+      rung: { get: () => rung.value, set: (v: number) => (rung.value = v) },
+      picks: { get: () => picks.value, set: (v: Readonly<Record<string, number>>) => (picks.value = v) },
+      ...(opts.alt ? { picksAlt: { get: () => altPicks.value, set: (v: Readonly<Record<string, number>>) => (altPicks.value = v) } } : {}),
+    }
+    return { e, rung, picks, altPicks, h: useChartHistory(e, choices, key) }
   })
   if (!r) throw new Error('no editor')
   return { ...r, stop: () => scope.stop() }
@@ -128,6 +134,22 @@ describe('useChartHistory', () => {
     expect(again.h.canUndo.value).toBe(true)
     again.h.undo()
     expect(again.e.text.value).toBe(TEXT)
+  })
+
+  it('restores a history stored before a choice was kept, with that choice now kept too (#475: the alternate set’s)', async () => {
+    const first = setup(TEXT, 'blue-bossa')
+    first.picks.value = { 'A-1-0': 3 }
+    await nextTick()
+    first.stop()
+    const again = setup(TEXT, 'blue-bossa', { alt: true, picks: { 'A-1-0': 3 } })
+    expect(again.h.canUndo.value).toBe(true)
+    again.altPicks.value = { 'A-1-0': 5 }
+    await nextTick()
+    again.h.undo()
+    expect(again.altPicks.value).toEqual({})
+    expect(again.picks.value).toEqual({ 'A-1-0': 3 })
+    again.h.undo()
+    expect(again.picks.value).toEqual({})
   })
 
   it('drops a stored history the chart has moved on from, and stores none without a key', async () => {

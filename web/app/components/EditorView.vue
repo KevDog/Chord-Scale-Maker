@@ -153,6 +153,11 @@
               </UiListbox>
               <UiButton v-if="scaleLevel.level.value === 'random'" outline aria-label="Shuffle" title="Deal a new random scale for each chord" @click="scaleLevel.shuffle"><ArrowPathIcon data-slot="icon" /></UiButton>
             </template>
+            <!-- a chart with alternate changes (#215): which set plays, and the other's chords small above the Changes sheet's bars -->
+            <template v-if="alternatesOn && !editor.fatal.value" #changes>
+              <SegmentedControl v-model="changesSet.main.value" legend="Changes" name="changes-set" :options="CHANGES_OPTIONS" />
+              <ToggleButton v-if="sheet === 'changes'" v-model="changesSet.shown.value" title="The other set’s chords, small, above their bars">Other changes</ToggleButton>
+            </template>
             <!-- the actions: Edit, Transpose… (both rewrite the chart), Share, Focus, Print (the view's one primary), the rest under More; on a phone (compact)
                  Edit, Transpose…, Share and Focus are in the Controls dialog -->
             <!-- the version picker (#411), by the sheet's other choices (#427) -->
@@ -194,12 +199,16 @@
             <SheetStatus v-if="statusText || copyError" :text="statusText" :failed="saveFailed" :error="copyError" class="mb-2 print:hidden" />
             <UiText class="text-red-600! dark:text-red-400!">Preview paused: the chart is over a size limit.</UiText>
           </template>
+          <!-- the played set's doc: on a chart with alternates its other set's rows are blank, so an update:doc from it would
+               drop them. Such a chart isn't sheet-editable (sheetEditing, flag or not); before #469 enables it, sheet edits must merge
+               back into editor.doc -->
           <ChangesSheet
             v-else-if="sheet === 'changes'"
-            :doc="editor.doc.value"
+            :doc="playedDoc"
+            :other-doc="otherDoc"
             :title="sheetTitle"
             :heading-level="1"
-            :subtitle="editor.heading.value.subtitle"
+            :subtitle="sheetSubtitle"
             :composer="editor.heading.value.composer"
             :part="sheetPart"
             :instrument-label="sheetEditor ? '' : instrumentLabel(prefs.instrument.value)"
@@ -231,10 +240,10 @@
           </ChangesSheet>
           <ScaleSheet
             v-else-if="sheet === 'scales'"
-            :rows="editor.rows.value"
+            :rows="playedRows"
             :title="sheetTitle"
             :heading-level="1"
-            :subtitle="editor.heading.value.subtitle"
+            :subtitle="sheetSubtitle"
             :composer="editor.heading.value.composer"
             :part="part"
             :instrument-label="instrumentLabel(prefs.instrument.value)"
@@ -255,10 +264,10 @@
           </ScaleSheet>
           <ArpeggioSheet
             v-else
-            :rows="editor.rows.value"
+            :rows="playedRows"
             :title="sheetTitle"
             :heading-level="1"
-            :subtitle="editor.heading.value.subtitle"
+            :subtitle="sheetSubtitle"
             :composer="editor.heading.value.composer"
             :part="part"
             :instrument-label="instrumentLabel(prefs.instrument.value)"
@@ -294,6 +303,9 @@ import {
   addSection,
   barView,
   changesSections,
+  changesFor,
+  CHANGES_SETS,
+  type ChangesSet,
   buildSheet,
   chartKeyOf,
   type ChartDoc,
@@ -307,6 +319,8 @@ import {
   encodeShare,
   insertBars,
   drawnChords,
+  expandRows,
+  hasAlternates,
   insertHeldBar,
   keyStart,
   renameSection,
@@ -409,6 +423,24 @@ const prefs = props.shared ? linkPreferences(props.shared) : usePreferences()
 /** #359: the player's range, behind its flag; the preset's without it */
 const playerRange = useFeature('playerRange')
 const part = computed(() => partFor(prefs.instrument.value, playerRange ? prefs.range.value : undefined))
+/**
+ * alternate changes (#215): a chart with alt rows plays one set, the played doc, which every sheet draws and resolves;
+ * the other set's chords show small above the Changes sheet's bars. Edits, the heading, transposing and sharing keep
+ * the whole chart. With the flag off, or no alt rows, the played doc is the chart.
+ */
+const alternatesFlag = useFeature('alternates')
+const changesSet = useChangesSet(props.practiceKey, props.shared)
+const alternatesOn = computed(() => alternatesFlag && hasAlternates(editor.doc.value))
+const mainSet = computed((): ChangesSet => (alternatesOn.value ? changesSet.main.value : 'standard'))
+const playedDoc = computed(() => (alternatesOn.value ? changesFor(editor.doc.value, mainSet.value) : editor.doc.value))
+const playedRows = computed(() => (alternatesOn.value ? expandRows(playedDoc.value).value : editor.rows.value))
+/** the other set, for the small line; null while it's hidden */
+const otherDoc = computed(() => (alternatesOn.value && changesSet.shown.value ? changesFor(editor.doc.value, mainSet.value === 'standard' ? 'alternate' : 'standard') : null))
+const CHANGES_OPTIONS: readonly { value: ChangesSet; label: string }[] = [{ value: 'standard', label: 'Standard' }, { value: 'alternate', label: 'Alternate' }]
+/** the sheets' subtitle: a printed sheet says which set it plays */
+const sheetSubtitle = computed(() => (mainSet.value === 'alternate' ? [editor.heading.value.subtitle, 'Alternate changes'].filter(Boolean).join(' · ') : editor.heading.value.subtitle))
+/** where a set's own state (picks, practice) is kept: the chart's key, the alternate's with ~alt */
+const setKey = <K extends string | undefined>(key: K, set: ChangesSet): K => (key !== undefined && set === 'alternate' ? (`${key}~alt` as K) : key)
 /** the editor: hidden by default (song-first), shown for a new chart or one over a size limit (only the text can fix it) */
 const bornNew = ref(false) // latches true for a new chart, so saving it (its URL becomes ?mine) doesn't hide the editor mid-edit
 watch(() => props.isNew, (v) => { if (v) bornNew.value = true }, { immediate: true })
@@ -429,7 +461,7 @@ const sheet = ref<SheetKind>(firstSheet(props.shared?.sheet, useFeature('pattern
 /** the Interface level (#273): which controls show */
 const ui = useInterface()
 /** the chart's sections as the Changes sheet draws them, for the path presets (#264) */
-const pentSections = computed(() => changesSections(editor.doc.value))
+const pentSections = computed(() => changesSections(playedDoc.value))
 const pentPath = usePentatonicPath(props.practiceKey, pentSections, computed(() => ({ rung: prefs.pentRung.value, side: prefs.pentSide.value })))
 const pentPathModel = computed({ get: () => pentPath.path.value, set: (v) => pentPath.setPath(v) })
 const pentStepUnit = computed({ get: () => pentPath.step.value.unit, set: (unit) => pentPath.setStep({ ...pentPath.step.value, unit }) })
@@ -437,26 +469,32 @@ const pentStepBars = computed({ get: () => pentPath.step.value.bars, set: (bars)
 /** what the sheets and the grid play a blank cell at; one resolution per revision, shared by the Scales sheet and practice */
 const scaleView = computed((): ScaleView => ({ level: scaleLevel.level.value, seed: scaleLevel.seed.value }))
 provide(SCALE_VIEW, scaleView)
-const resolved = computed(() => resolveScales(editor.doc.value, scaleView.value))
+const resolved = computed(() => resolveScales(playedDoc.value, scaleView.value))
 /** each row's key area, for pairs ranked against the key (#432) */
-const keysNow = computed(() => rowKeys(editor.doc.value))
+const keysNow = computed(() => rowKeys(playedDoc.value))
 /** the chord picks (#272, #303): one set for both sheets, matched to what each drawn chord plays now */
-const pickTargetsNow = computed(() => pickTargets(editor.doc.value, resolved.value))
-const positionsNow = computed(() => chordPositions(editor.doc.value))
-const chordPicks = useChordPicks(props.practiceKey, pickTargetsNow, props.shared?.picks)
+const pickTargetsNow = computed(() => pickTargets(playedDoc.value, resolved.value))
+const positionsNow = computed(() => chordPositions(playedDoc.value))
+/** and one per changes set (#215), the played set's in use; a share link's are its main set's */
+const sharedPicks = (set: ChangesSet) => ((props.shared?.changes ?? 'standard') === set ? props.shared?.picks : undefined)
+const picksBySet: Readonly<Record<ChangesSet, ReturnType<typeof useChordPicks>>> = {
+  standard: useChordPicks(props.practiceKey, pickTargetsNow, sharedPicks('standard')),
+  alternate: useChordPicks(setKey(props.practiceKey, 'alternate'), pickTargetsNow, sharedPicks('alternate')),
+}
+const chordPicks = computed(() => picksBySet[mainSet.value])
 /** the sheet's Pentatonic overlay plan; null under another overlay or none */
 const pentatonicPlan = computed((): PentatonicPlan | null => (prefs.overlay.value === 'pentatonic'
-  ? { ...pentPath.plan.value, basis: prefs.pentBasis.value, degree: prefs.pentDegree.value, picks: chordPicks.picks.value.pentatonic } // the Changes sheet ignores stale picks by their for
+  ? { ...pentPath.plan.value, basis: prefs.pentBasis.value, degree: prefs.pentDegree.value, picks: chordPicks.value.picks.value.pentatonic } // the Changes sheet ignores stale picks by their for
   : null))
-const hexatonicPlan = computed((): OverlayPlan => ({ kind: 'hexatonic', basis: prefs.hexBasis.value, picks: chordPicks.picks.value.hexatonic }))
-const quartalPlan = computed((): OverlayPlan => ({ kind: 'quartal', notes: prefs.quartNotes.value, perfect: prefs.quartPerfect.value, picks: chordPicks.picks.value.quartal ?? {} }))
+const hexatonicPlan = computed((): OverlayPlan => ({ kind: 'hexatonic', basis: prefs.hexBasis.value, picks: chordPicks.value.picks.value.hexatonic }))
+const quartalPlan = computed((): OverlayPlan => ({ kind: 'quartal', notes: prefs.quartNotes.value, perfect: prefs.quartPerfect.value, picks: chordPicks.value.picks.value.quartal ?? {} }))
 const overlayPlan = computed((): OverlayPlan | null => (prefs.overlay.value === 'hexatonic' ? hexatonicPlan.value : prefs.overlay.value === 'quartal' ? quartalPlan.value : pentatonicPlan.value))
 /** a popover's pick (concert) for its chords on either sheet; null: back to the sheet's choice */
 function onPick(kind: PickKind, positions: readonly ChordAt[], value: number | readonly [number, number] | null): void {
-  if (value === null) chordPicks.clear(kind, positions)
-  else if (kind === 'pentatonic' && typeof value === 'number') chordPicks.pick('pentatonic', positions, value)
-  else if (kind === 'hexatonic' && typeof value !== 'number') chordPicks.pick('hexatonic', positions, value)
-  else if (kind === 'quartal' && typeof value === 'number') chordPicks.pick('quartal', positions, value)
+  if (value === null) chordPicks.value.clear(kind, positions)
+  else if (kind === 'pentatonic' && typeof value === 'number') chordPicks.value.pick('pentatonic', positions, value)
+  else if (kind === 'hexatonic' && typeof value !== 'number') chordPicks.value.pick('hexatonic', positions, value)
+  else if (kind === 'quartal' && typeof value === 'number') chordPicks.value.pick('quartal', positions, value)
 }
 /** the stored pattern's moves (the text is canonical; an unparseable one draws as the default pattern rather than nothing) */
 const patternMoves = computed(() => {
@@ -470,8 +508,11 @@ const phraseOn = useFeature('phraseCells')
 const sheetLine = computed(() => shareLineOf(prefs.lineMode.value, prefs.guideLine.value, prefs.arpeggio.value, prefs.cells.value, prefs.cellsOrder.value, prefs.cellsPhrase.value))
 /** the line the Changes sheet draws: the stored one, the arpeggio slot read as the Pentatonic line under the Pentatonic overlay (#284) */
 const changesLine = computed(() => changesLineOf({ mode: prefs.lineMode.value, guide: prefs.guideLine.value, arpeggio: prefs.arpeggio.value, overlay: prefs.overlay.value, leave: prefs.pentLeave.value, dir: prefs.arpDir.value, cells: prefs.cells.value, shape: prefs.pairLine.value, order: phraseOn ? prefs.cellsOrder.value : 'as-written', phrase: phraseOn && prefs.cellsPhrase.value }))
-/** chords on the Changes sheet open the chord editor while the editor is shown (on a phone, the whole editor) */
-const sheetEditing = computed(() => editorShown.value && !editor.fatal.value)
+/**
+ * chords on the Changes sheet open the chord editor while the editor is shown (on a phone, the whole editor); not on a
+ * chart with alternates, whatever the flag (#469; edit.ts knows only `row`): its Source edits it
+ */
+const sheetEditing = computed(() => editorShown.value && !editor.fatal.value && !hasAlternates(editor.doc.value))
 const sheetChord = ref<SheetChordEdit | null>(null)
 const selectedLine = ref<number | null>(null)
 const said = ref('')
@@ -481,36 +522,61 @@ function editSheetChord(chord: SheetChordEdit): void {
   sheetChord.value = chord
 }
 /** the Source: in the banner, or under ⋯ below md, remembered; always shown for a chart over a size limit (only the text can fix it) */
-/** the Source is offered from Everything, and at any level while the text has a problem (only the text can fix it) */
-const sourceOffered = computed(() => ui.shows('source') || editor.diagnostics.value.length > 0)
+/**
+ * the Source is offered from Everything, and at any level while the text has a problem or the chart has alternates, flag
+ * on or off (only the text can fix or edit those: #469)
+ */
+const sourceOffered = computed(() => ui.shows('source') || editor.diagnostics.value.length > 0 || hasAlternates(editor.doc.value))
 const sourceShown = computed(() => (sourceOffered.value && prefs.source.value) || editor.fatal.value)
 /** the chart's key, for the sheets' key signature, drawn once at the start */
 const homeKey = computed(() => chartKeyOf(editor.doc.value))
-const practice = usePractice(props.practiceKey)
+/** one practice selection per changes set (#215), the played set's in use */
+const practiceBySet: Readonly<Record<ChangesSet, ReturnType<typeof usePractice>>> = {
+  standard: usePractice(props.practiceKey),
+  alternate: usePractice(setKey(props.practiceKey, 'alternate')),
+}
+const practice: ReturnType<typeof usePractice> = {
+  selection: (m) => practiceBySet[mainSet.value].selection(m),
+  setSelection: (m, s) => practiceBySet[mainSet.value].setSelection(m, s),
+}
 const LEVEL_OPTIONS = SCALE_LEVELS.map((value) => ({ value, label: LEVEL_LABELS[value] }))
 const levelLabel = (v: (typeof SCALE_LEVELS)[number]): string => LEVEL_LABELS[v]
 
 if (props.shared?.practice) practice.setSelection(mode.value, props.shared.practice)
 const selection = computed(() => practice.selection(mode.value))
-/** ⌘Z and ⇧⌘Z (#315): the chart's text and its note choices, one history for both sheets; view preferences stay out */
+/**
+ * ⌘Z and ⇧⌘Z (#315): the chart's text and its note choices, one history for both sheets; view preferences stay out.
+ * Both sets' choices are kept (#215), inert for a chart without alternates (one given them later has them at once; a
+ * history stored before keeps its fields, so still restores); which set plays is a view preference, not a step.
+ */
 const chartHistory = useChartHistory(editor, {
-  picks: choice(() => chordPicks.picks.value, chordPicks.set),
+  picks: choice(() => picksBySet.standard.picks.value, picksBySet.standard.set),
   pentPath: choice(() => pentPath.state.value, pentPath.setState),
   pentRung: refChoice(prefs.pentRung),
   pentSide: refChoice(prefs.pentSide),
   pentBasis: refChoice(prefs.pentBasis),
   pentDegree: refChoice(prefs.pentDegree),
   hexBasis: refChoice(prefs.hexBasis),
-  practiceRoot: choice(() => practice.selection('root'), (s) => practice.setSelection('root', s)),
-  practiceFrom: choice(() => practice.selection('from'), (s) => practice.setSelection('from', s)),
+  practiceRoot: choice(() => practiceBySet.standard.selection('root'), (s) => practiceBySet.standard.setSelection('root', s)),
+  practiceFrom: choice(() => practiceBySet.standard.selection('from'), (s) => practiceBySet.standard.setSelection('from', s)),
+  picksAlt: choice(() => picksBySet.alternate.picks.value, picksBySet.alternate.set),
+  practiceRootAlt: choice(() => practiceBySet.alternate.selection('root'), (s) => practiceBySet.alternate.setSelection('root', s)),
+  practiceFromAlt: choice(() => practiceBySet.alternate.selection('from'), (s) => practiceBySet.alternate.setSelection('from', s)),
 }, props.practiceKey)
 // picks survive Built on, Path, Step, Rung, Side and Ranked against; a transposed chart: a legacy pick has no for to catch it.
-// An undo sets its own picks back with the text, so neither runs then.
-watch(() => JSON.stringify(chartKeyOf(editor.doc.value)), () => { if (!chartHistory.restoring.value) chordPicks.clearAll() })
-watch(() => editor.doc.value, (doc, old) => { if (!chartHistory.restoring.value && hasPicks(chordPicks.picks.value)) chordPicks.carry(drawnChords(old), drawnChords(doc)) }) // a bar in or out moves later chords' keys (#275)
+// An undo sets its own picks back with the text, so neither runs then. Each set's picks follow that set's chords.
+watch(() => JSON.stringify(chartKeyOf(editor.doc.value)), () => { if (!chartHistory.restoring.value) for (const p of Object.values(picksBySet)) p.clearAll() })
+watch(() => editor.doc.value, (doc, old) => {
+  if (chartHistory.restoring.value) return
+  for (const set of CHANGES_SETS) {
+    const p = picksBySet[set]
+    const played = (d: ChartDoc): ChartDoc => (alternatesFlag ? changesFor(d, set) : d)
+    if (hasPicks(p.picks.value)) p.carry(drawnChords(played(old)), drawnChords(played(doc)))
+  }
+}) // a bar in or out moves later chords' keys (#275)
 // every staff with its practice keys, for the panel's boxes and what the selection lights
 const practiceStaves = computed(() =>
-  buildSheet(editor.rows.value, part.value, mode.value, start.value, LIMITS.maxExpandedRows, selection.value, undefined, resolved.value, { picks: chordPicks.picks.value, at: positionsNow.value }, keysNow.value).flatMap((p) => p.pages.flat()),
+  buildSheet(playedRows.value, part.value, mode.value, start.value, LIMITS.maxExpandedRows, selection.value, undefined, resolved.value, { picks: chordPicks.value.picks.value, at: positionsNow.value }, keysNow.value).flatMap((p) => p.pages.flat()),
 )
 const practiceBoxesNow = computed(() => practiceBoxes(practiceStaves.value, mode.value, start.value))
 const litNow = computed(() => litKeys(practiceStaves.value))
@@ -522,7 +588,7 @@ const picksInForce = computed((): boolean => {
     ? (prefs.overlay.value === 'off' ? null : prefs.overlay.value)
     : sheet.value === 'scales' && s ? (isPentatonicSelection(s) ? 'pentatonic' : isHexatonicSelection(s) ? 'hexatonic' : null)
     : sheet.value === 'arpeggios' && prefs.arpNotes.value === 'pairs' ? 'hexatonic' : null
-  return kind !== null && hasPicks(chordPicks.live.value, kind)
+  return kind !== null && hasPicks(chordPicks.value.live.value, kind)
 })
 /** the Approach the sheet plays: none where the line takes none (approachApplies, #381) */
 const approachShown = computed(() => (approachApplies(prefs.lineMode.value, prefs.overlay.value) ? prefs.approach.value : 'none'))
@@ -543,7 +609,7 @@ const RESETS: Readonly<Record<HiddenSetting, (inForce: Mode) => void>> = {
     prefs.overlay.value = 'off'
     pentPath.reset() // this chart's stored path too; other charts' are their own settings (#291)
   },
-  'chord-picks': () => chordPicks.clearAll(),
+  'chord-picks': () => chordPicks.value.clearAll(),
   patterns: () => (sheet.value = 'changes'),
 }
 function resetHidden(): void {
@@ -743,10 +809,16 @@ function saveCopy(): void {
   const result = saveChart({ id, text: serializeChart(doc), kind: 'copy', ...(basedOn ? { basedOn } : {}) })
   copyError.value = result.ok ? '' : "Couldn't save a copy: this browser's storage is full, or My charts is at its limit."
   if (!result.ok) return
-  scaleLevel.carryTo(`mine:${id}`)
-  pentPath.carryTo(`mine:${id}`)
-  chordPicks.carryTo(`mine:${id}`)
+  carryTo(`mine:${id}`)
   navigateTo({ path: '/song', query: { mine: id } })
+}
+
+/** this chart's view and note choices, for another chart (a copy, or a shared chart once saved) */
+function carryTo(key: string): void {
+  scaleLevel.carryTo(key)
+  pentPath.carryTo(key)
+  changesSet.carryTo(key)
+  for (const set of CHANGES_SETS) picksBySet[set].carryTo(setKey(key, set))
 }
 
 const shareOpen = ref(false)
@@ -771,7 +843,9 @@ async function shareUrl(): Promise<string> {
     ...(sheet.value === 'changes' && prefs.lineMode.value === 'arpeggio' ? { arpDir: prefs.arpDir.value, pentLeave: prefs.pentLeave.value, pairLine: prefs.pairLine.value } : {}), // the Pentatonic (#284), Triad pair (#325, #432) and Quartal lines', under the receiver's own overlay
     ...(selection.value ? { practice: selection.value } : {}),
     ...(scaleLevel.level.value !== 'standard' ? { level: scaleLevel.level.value, seed: scaleLevel.seed.value } : {}),
-    ...(hasPicks(chordPicks.live.value) ? { picks: chordPicks.live.value } : {}), // too big a link leaves them out (encodeShare)
+    ...(hasPicks(chordPicks.value.live.value) ? { picks: chordPicks.value.live.value } : {}), // the played set's; too big a link leaves them out (encodeShare)
+    ...(alternatesOn.value && mainSet.value === 'alternate' ? { changes: 'alternate' as const } : {}), // #215; absent: standard
+    ...(alternatesOn.value && !changesSet.shown.value ? { altHidden: true as const } : {}), // absent: the other set shown
   }
   return `${location.origin}/song#s=${await encodeShare({ chart: editor.text.value, view })}`
 }
@@ -797,11 +871,11 @@ function saveShared(): void {
   const result = saveChart({ id, text: editor.text.value, kind: 'new' })
   copyError.value = result.ok ? '' : "Couldn't save it: this browser's storage is full, or My charts is at its limit."
   if (!result.ok) return
-  const kept = usePractice(`mine:${id}`)
-  for (const m of ['root', 'from'] as const) kept.setSelection(m, practice.selection(m))
-  scaleLevel.carryTo(`mine:${id}`)
-  pentPath.carryTo(`mine:${id}`)
-  chordPicks.carryTo(`mine:${id}`)
+  for (const set of CHANGES_SETS) {
+    const kept = usePractice(setKey(`mine:${id}`, set))
+    for (const m of ['root', 'from'] as const) kept.setSelection(m, practiceBySet[set].selection(m))
+  }
+  carryTo(`mine:${id}`)
   navigateTo({ path: '/song', query: { mine: id } })
 }
 
@@ -868,14 +942,14 @@ const submissionsOn = useFeature('chartSubmissions')
 const chartActions = computed(() => submissionAction(props.saveTarget, editor.text.value, submissionsOn))
 /** the rail's More menu: what this chart offers now */
 const moreItems = computed(() =>
-  moreMenuItems({ saved: !!saved, edited: !!saved?.edited.value, fatal: editor.fatal.value, picks: hasPicks(chordPicks.live.value), chart: chartActions.value }),
+  moreMenuItems({ saved: !!saved, edited: !!saved?.edited.value, fatal: editor.fatal.value, picks: hasPicks(chordPicks.value.live.value), chart: chartActions.value }),
 )
 function onMore(action: MoreAction): void {
   if (action === 'copy') saveCopy()
   else if (action === 'download') download()
   else if (action === 'revert') revertOpen.value = true
   else if (action === 'reset-picks') {
-    chordPicks.clearAll()
+    chordPicks.value.clearAll()
     said.value = 'Chord picks reset'
   }
   else if (action === 'send' || action === 'suggest') void sendChart()

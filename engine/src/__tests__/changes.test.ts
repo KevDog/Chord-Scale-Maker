@@ -1,7 +1,8 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { isRest } from '../chord'
 import { describe, expect, it, vi } from 'vitest'
-import { breakLines, buildChanges, type ChangesLine, type ChangesSheet, changesLinesPerPage, changesSections, chordPositions, drawnChords, type PentatonicPlan, pickTargets, showHexatonics, showPentatonics, showQuartals } from '../changes'
+import { breakLines, buildChanges, type ChangesLine, type ChangesSheet, changesLinesPerPage, changesSections, chordPositions, drawnChords, type PentatonicPlan, otherChords, pickTargets, showHexatonics, showPentatonics, showQuartals } from '../changes'
+import { changesFor } from '../alternates'
 import { type ChartDoc, expandRowLines, parseChart } from '../chart'
 import { NO_PICKS, pickTarget, withPick } from '../chordPicks'
 import { resolveScales } from '../resolve'
@@ -1194,5 +1195,29 @@ describe('the Why note over a blues at Basic (blues spec §5)', () => {
     const inB = parseChart('title: T\nkey: B\ncontext: blues\nform: A, 12 bars\n\nsection: A\nbars: 12\n1 | B7\n5 | E7\n7 | B7\n9 | F#7\n11 | B7\n').value
     const first = buildChanges(inB, partFor('trumpet'), 4, false, 'off', { level: 'basic', seed: 0 }).lines[0]?.bars[0]?.chords[0]
     expect(first?.levelNote).toBe(`Basic: the ${first?.scale} scale over the whole blues`)
+  })
+})
+
+describe('otherChords', () => {
+  const doc = parseChart('title: T\nkey: C\n\nsection: A\n1 | C\n2 | Dm7\n2 | G7\nalt 2 | Abm7\nalt 2 | Db7\n3 | C\n').value
+  const part = partFor('trumpet')
+  const sheet = (set: 'standard' | 'alternate') => buildChanges(changesFor(doc, set), part)
+
+  it('maps only the bars whose chords differ, written for the part', () => {
+    const m = otherChords(sheet('standard'), sheet('alternate'))
+    expect([...m.keys()]).toEqual(['A 2'])
+    expect(m.get('A 2')?.map((c) => c.beat)).toEqual([0, 2])
+    expect(m.get('A 2')?.[0]?.written).toBe('Bbm7')
+    expect(m.get('A 2')?.map((c) => c.written)).toEqual(sheet('alternate').lines[0]?.bars[1]?.chords.map((c) => c.written))
+  })
+
+  it('swapped, gives the standard bar chords', () => {
+    const m = otherChords(sheet('alternate'), sheet('standard'))
+    expect([...m.keys()]).toEqual(['A 2'])
+    expect(m.get('A 2')?.map((c) => c.written)).toEqual(sheet('standard').lines[0]?.bars[1]?.chords.map((c) => c.written))
+  })
+
+  it('is empty for identical sheets', () => {
+    expect(otherChords(sheet('standard'), sheet('standard')).size).toBe(0)
   })
 })

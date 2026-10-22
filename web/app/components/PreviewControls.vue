@@ -46,6 +46,11 @@
               <div class="flex items-center gap-2"><slot name="level" /></div>
             </UiField>
           </Transition>
+          <!-- a chart with alternate changes (#215): which set plays, and whether the other shows -->
+          <UiField v-if="$slots.changes">
+            <UiLabel class="pl-3">Changes</UiLabel>
+            <div class="flex flex-wrap items-center gap-2 *:whitespace-nowrap"><slot name="changes" /></div>
+          </UiField>
           <UiField v-if="sheet !== 'changes'">
             <UiLabel class="pl-3">Show</UiLabel>
             <div class="flex flex-wrap gap-2 *:whitespace-nowrap">
@@ -324,7 +329,7 @@
     /** compact: a phone with compactRail on: the rail keeps Work on, Instrument and the slot's rail actions; Controls opens the rest */
     /** stickyRail: the rail sticks over the sheet (lg up): while editing */
     const props = defineProps<{ lockLabels?: boolean; keyStart: string; compact?: boolean; stickyRail?: boolean }>()
-    defineSlots<{ version?: () => unknown; level?: () => unknown; actions?: (p: { place: 'rail' | 'dialog'; after: (run: () => void) => void }) => unknown }>()
+    defineSlots<{ version?: () => unknown; level?: () => unknown; changes?: () => unknown; actions?: (p: { place: 'rail' | 'dialog'; after: (run: () => void) => void }) => unknown }>()
     const controlsOpen = ref(false)
     watch(() => props.compact, () => (controlsOpen.value = false))
     /** an action chosen in the dialog runs once it has closed (Headless UI then returns focus to Controls first); in the rail, now */

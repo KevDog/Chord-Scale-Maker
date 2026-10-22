@@ -76,6 +76,14 @@ describe('transpose', () => {
     expect(serializeChart(doc)).toBe(serializeChart(parseChart(expected).value))
   })
 
+  it('transposes alt rows like rows, keeping their kind', () => {
+    const doc = parseChart('key: C\nsection: A\n1 | Dm7\n1 | G7\nalt 1 | Db7').value
+    const { doc: out, skipped } = transposeChart(doc, 'C', 'F')
+    expect(skipped).toBe(0)
+    expect(out.lines.map((l) => l.kind)).toEqual(doc.lines.map((l) => l.kind))
+    expect(out.lines[4]).toEqual({ kind: 'altRow', bar: '1', chord: 'Gb7', scale: '' })
+  })
+
   it('round-trips F -> Bb -> F', () => {
     const text = 'section: A\nbars: 8\n1 | FMaj7 | F Ionian\n2 | Em7b5\n2 | A7b9 | A Phrygian Dominant\n6 | Bbm7\n6 | Eb7\n'
     const there = transposeChart(parseChart(text).value, 'F', 'Bb').doc

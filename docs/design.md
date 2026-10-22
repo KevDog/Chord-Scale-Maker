@@ -510,6 +510,35 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   Pentatonic overlay the 7th Chords slot reads **Pentatonic** (see Pentatonic line), under the Hexatonic **Triad pair**
   (see Triad pair line).
 
+### Alternate changes (#215, flag `alternates`, on; [spec](superpowers/specs/2026-10-21-alternate-changes-design.md))
+
+- **Format:** a chart carries one alternate set as `alt BAR | chord …` rows in a section, same bar numbering and
+  cells as rows (README "Charts"). A bar with any `alt` rows plays exactly those in the alternate set; bars with none
+  are shared. `copy:` carries them; an `alt` row past the section's end or in a `copy:` section is a diagnostic.
+  The parser keeps them as `altRow` lines, so Download and Open round-trip them verbatim.
+- **`changesFor(doc, set)`** (`engine/src/alternates.ts`, `set` is `'standard' | 'alternate'`) returns an ordinary
+  single-set doc: the other set's rows become blank lines and the chosen alt rows become `row`s. **Line-count
+  invariant:** the result has the same lines as the original, so line indices (and anything keyed by them) match
+  across both sets and the source. A doc with no `alt` rows comes back as itself. Everything downstream (analysis,
+  `sheet.ts`, transpose, part, practice) takes that result and knows nothing of alternates. The analyser, `--ambiguous`,
+  `--strip` and golden (`<slug>~alternate` entries) run on each set; saved reasons document the standard reading, `alt`
+  rows the alternate one. `expandRows`/`layout.ts` ignore non-`row` kinds, so prerendered pages (OG, song page, JSON-LD,
+  search) use the standard set.
+- **View state** (`useChangesSet`): `csm-changes:<key>` as `{ main, shown }`, removed at the defaults (standard main,
+  other set shown); share links carry `changes: 'alternate'` and `altHidden: true` only when not default. Never written
+  into the chart. The toggle is not an undo step.
+- **Per-set player state:** picks and Practice choices are kept per set because a position means different chords in
+  each: `csm-pent-picks:<key>` and `csm-pent-picks:<key>~alt`, and the same `~alt` suffix on the practice keys. The
+  history keeps the standard set's fields under their old names and adds `…Alt` ones only for a chart with alternates.
+  A key change clears both sets' picks; a doc edit carries each set's picks over that set's chords.
+- **Draw:** the rail's `Changes` control (Standard / Alternate) and the `Other changes` toggle (Changes sheet only). The
+  other set is drawn by `otherChords` (the same part, bars per line and level) as a small chord row above the bars, in
+  print too. The sheets' subtitle gains "Alternate changes" while that set plays.
+- **Flag off:** the app reads the doc itself, so a chart with `alt` rows plays standard only, with no toggle or small
+  line. The engine always treats `alt` rows as real.
+- **Sheet editing is off** for a chart with alternates until #469 (it would write the played set over both; edit.ts knows
+  only `row`), flag on or off; the source stays editable, so the Source is offered at every Interface level.
+
 ### Guide tones on Changes ([spec](superpowers/specs/2026-10-10-guide-tone-lines-design.md), amended by [independent lines](superpowers/specs/2026-10-10-independent-guide-tone-lines-design.md) and [the diverge note](superpowers/specs/2026-10-11-guide-lines-diverge-note.md); first built as [guide tones on Changes](superpowers/specs/2026-10-10-guide-tones-on-changes-design.md))
 
 - **What shows:** at most one line, chosen **Off**, **From 3rd** or **From 7th**. Line A starts on the first chord's
@@ -1147,7 +1176,8 @@ its reasons into a chart as comments.
     keeps the original.
 - **Back up and restore** (#466, flag `backup`, on): `engine/src/backup.ts` turns a storage snapshot into one
   `csm-backup` v1 JSON file (`chord-scale-maker-backup-YYYY-MM-DD.json`): every My-charts entry with its text and its
-  `mine:<id>` state (practice, level, pentatonic path, chord picks; keyed without the id), library tunes' state per
+  `mine:<id>` state (practice, level, pentatonic path, chord picks, the changes-set view `csm-changes`, and the alternate
+  set's picks and practice, named `csm-pent-picks~alt` / `csm-practice~alt:root`; keyed without the id), library tunes' state per
   slug, and the global preferences (`isPreferenceKey`: `csm-<name>`, no colon, not the index, `csm-recent` or
   `csm-draft`). Undo history, `csm-recent` and `csm-premigration:*` stay behind. `parseBackup` never throws: bad
   entries are dropped and counted, values go through `practiceSelectionFrom` / `chordPicksFrom`, old `_` slugs are

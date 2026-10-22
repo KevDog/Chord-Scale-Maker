@@ -53,6 +53,14 @@ for (const theme of ['light', 'dark'] as const) {
       await expectAccessible(page)
     })
 
+    test('a song with alternate changes: the Changes toggle and the other set’s line (#215)', async ({ page }) => {
+      await page.goto('/song/rhythm-changes')
+      if (theme === 'dark') await darkMode(page)
+      await expect(page.getByRole('group', { name: 'Changes', exact: true })).toBeVisible()
+      await expect(page.locator('[data-slot="other-changes"]').first()).toBeVisible()
+      await expectAccessible(page)
+    })
+
     test('a song’s version picker open, with your chart under Mine (#425)', async ({ page }) => {
       await page.goto('/help')
       await page.evaluate(() => {

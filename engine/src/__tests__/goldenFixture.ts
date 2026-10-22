@@ -17,6 +17,8 @@ import {
   CONCERT,
   chartBeats,
   chartMeta,
+  changesFor,
+  hasAlternates,
   chordTokens,
   defaultScale,
   expandRows,
@@ -160,6 +162,15 @@ export function scaleCase(part: Part, text: string, fromStarts: readonly string[
   }
 }
 
+/** the suffix of a chart's alternate-changes entry in the fixture */
+export const ALTERNATE = '~alternate'
+
+/** a fixture chart's doc: the chart's text, at the set its name says */
+export const chartDocFor = (name: string, text: string): ChartDoc => {
+  const doc = parseChart(text).value
+  return name.endsWith(ALTERNATE) ? changesFor(doc, 'alternate') : doc
+}
+
 const repo = (path: string): URL => new URL(`../../${path}`, import.meta.url)
 export const GOLDEN_FILE = repo('fixtures/golden.json')
 
@@ -226,10 +237,12 @@ export function buildGolden(): Golden {
     ...CHORD_SCALE_PAIRS.map(([chord, scale]) => ({ part: id, chord, scale, tokens: attempt(() => chordTokens(part, chord, scale)) })),
   ])
   const charts = Object.fromEntries(
-    Object.entries({ ...libraryCharts(), ...CHART_TEXTS }).map(([name, text]) => {
+    Object.entries({ ...libraryCharts(), ...CHART_TEXTS }).flatMap(([name, text]) => {
       const doc = parseChart(text).value
       const meta = chartMeta(doc)
-      return [name, { text, title: meta.title, subtitle: meta.subtitle, key: meta.key, rows: playedRows(doc), ...chartTiming(doc) }]
+      const entry = (d: ChartDoc) => ({ text, title: meta.title, subtitle: meta.subtitle, key: meta.key, rows: playedRows(d), ...chartTiming(d) })
+      // a chart with alt rows also freezes its alternate changes, under `<slug>~alternate` (#215)
+      return [[name, entry(doc)], ...(hasAlternates(doc) ? [[`${name}${ALTERNATE}`, entry(changesFor(doc, 'alternate'))]] : [])]
     }),
   )
   return {

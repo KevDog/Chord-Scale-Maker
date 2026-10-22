@@ -229,6 +229,23 @@ const STANDARD: ScaleView = { level: 'standard', seed: 0 }
 /** a bar's name for breakLines: "A 2" */
 export const barKey = (at: Readonly<{ section: string; bar: string }>): string => `${at.section} ${at.bar}`
 
+/** a chord of the other set, for the small line above a bar: its beat and its symbol as drawn for the part */
+export type AltChord = Readonly<{ beat: number; written: string }>
+
+/** the other set's chords by barKey, for the bars whose chords differ from main's; a bar the other set leaves empty maps to [] */
+export function otherChords(main: ChangesSheet, other: ChangesSheet): ReadonlyMap<string, readonly AltChord[]> {
+  const chordsOf = (sheet: ChangesSheet): ReadonlyMap<string, readonly AltChord[]> =>
+    new Map(sheet.lines.flatMap((l) => l.bars).map((b) => [barKey(b.at), b.chords.map((c) => ({ beat: c.beat, written: c.written }))]))
+  const theirs = chordsOf(other)
+  const same = (x: readonly AltChord[], y: readonly AltChord[]) => x.length === y.length && x.every((c, i) => c.beat === y[i]?.beat && c.written === y[i]?.written)
+  return new Map(
+    [...chordsOf(main)].flatMap(([key, mine]) => {
+      const alt = theirs.get(key) ?? []
+      return same(mine, alt) ? [] : [[key, alt] as const]
+    }),
+  )
+}
+
 /** the lines with a new line started at each bar named (barKey) that isn't already a line's first: where names don't fit */
 export function breakLines(lines: readonly ChangesLine[], at: ReadonlySet<string>): readonly ChangesLine[] {
   if (!at.size) return lines
