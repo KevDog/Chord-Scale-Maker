@@ -478,8 +478,13 @@ export function writeOutCopy(doc: ChartDoc, section: string): ChartDoc {
   const carried = layout.directives
     .filter((d) => d.section === section && (d.kind === 'key' || d.kind === 'time' || d.kind === 'context') && sections[d.line] !== section)
     .map(({ section: _s, line: _l, ...d }) => d as ChartLine)
-  // the source's alt rows go with them (same bars; the alternate changes' analysis comments are not carried)
-  const source = doc.lines[i]?.kind === 'sectionMeta' ? doc.lines[i].value : ''
+  // the written source's alt rows go with them, through a chain of copies (same bars; the alternate changes' analysis comments are not carried)
+  const copyOf = new Map(layout.sections.map((x) => [x.name, x.copyOf] as const))
+  const written = (name: string, seen: ReadonlySet<string>): string => {
+    const next = copyOf.get(name)
+    return next && !seen.has(next) ? written(next, new Set([...seen, next])) : name
+  }
+  const source = written(section, new Set([section]))
   const alts = doc.lines.flatMap((l, j): AltRowLine[] => (l.kind === 'altRow' && sections[j] === source ? [{ kind: 'altRow', bar: l.bar, chord: l.chord, scale: l.scale, ...(l.function ? { function: l.function } : {}) }] : []))
   // in bar order, after the main rows of the same bar
   const merged = alts.reduce<ChartLine[]>((acc, a) => {

@@ -551,4 +551,15 @@ describe('alternate changes (alt rows)', () => {
     const chords = (x: ChartDoc) => changesFor(x, 'alternate').lines.flatMap((l) => (l.kind === 'row' ? [l.chord] : []))
     expect(chords(w)).toEqual([...chords(doc), ...chords(doc)]) // A2 now plays what A plays
   })
+
+  it('writeOutCopy writes the alt rows a chained copy carries', () => {
+    const doc = d('\nsection: A2\ncopy: A\n\nsection: A3\ncopy: A2\n')
+    const w = writeOutCopy(doc, 'A3')
+    const t = out(w)
+    const a3 = t.slice(t.indexOf('section: A3'))
+    expect(a3).toContain('alt 2 | Abm7')
+    expect(a3).toContain('alt 2 | Db7')
+    const chords = (x: ChartDoc) => changesFor(x, 'alternate').lines.flatMap((l) => (l.kind === 'row' ? [l.chord] : []))
+    expect(chords(w)).toEqual([...chords(doc), ...chords(doc)]) // A3 now plays what A plays
+  })
 })
