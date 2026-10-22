@@ -166,6 +166,7 @@ exports[`exports the same names 1`] = `
   "guideToneTimeline",
   "guideTonesFor",
   "guideVoices",
+  "hasAlternates",
   "hasPicks",
   "hexatonicAuto",
   "hexatonicCaption",

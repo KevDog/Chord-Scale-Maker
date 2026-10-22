@@ -56,6 +56,7 @@ export type ChartLine =
   // bar: counted from 1 in its section; scale '' = default; function: the author's harmonic function (V7/ii, D: V7/ii),
   // absent when not written; comment: a trailing "# …" (the analysis, docs/plan-analysis.md §12.1), kept verbatim
   | Readonly<{ kind: 'row'; bar: string; chord: string; scale: string; function?: string; comment?: string }>
+  | Readonly<{ kind: 'altRow'; bar: string; chord: string; scale: string; function?: string; comment?: string }> // alt BAR | CHORD…: the alternate changes
   | Readonly<{ kind: 'ending'; n: number; from: number; to: number }>
   | Readonly<{ kind: 'mark'; mark: 'segno' | 'coda'; bar: number }>
   | Readonly<{ kind: 'nav'; bar: number; text: string }>
@@ -185,9 +186,11 @@ function parseLine(line: string, inSection: boolean): ChartLine | string {
     return inSection || typeof d === 'string' ? d : HEADER_ONLY
   }
   // a trailing comment starts at a # with space on both sides (F#m7 and C# Lydian have none before theirs)
-  const hash = /\s#(?=\s|$)/.exec(line)
-  const body = hash ? line.slice(0, hash.index) : line
-  const comment = hash ? line.slice(hash.index + 2).trim() : undefined
+  const alt = /^alt\s+/i.exec(line)
+  const rowText = alt ? line.slice(alt[0].length) : line
+  const hash = /\s#(?=\s|$)/.exec(rowText)
+  const body = hash ? rowText.slice(0, hash.index) : rowText
+  const comment = hash ? rowText.slice(hash.index + 2).trim() : undefined
   const cells = body.split('|').map((c) => c.trim())
   if (!inSection) {
     if (cells.length >= 3 && cells.length <= 5 && INT_RE.test(cells[1] ?? '')) return 'old chart format: put rows under a section: line, numbered from 1'
@@ -197,7 +200,7 @@ function parseLine(line: string, inSection: boolean): ChartLine | string {
   if (cells.some((c) => c.length > LIMITS.maxCell)) return `cell longer than ${LIMITS.maxCell} characters`
   if (comment !== undefined && comment.length > LIMITS.maxMeta) return `comment longer than ${LIMITS.maxMeta} characters`
   const [bar = '', chord = '', scale = '', fn = ''] = cells
-  return { kind: 'row', bar, chord, scale, ...(fn ? { function: fn } : {}), ...(comment === undefined ? {} : { comment }) }
+  return { kind: alt ? 'altRow' : 'row', bar, chord, scale, ...(fn ? { function: fn } : {}), ...(comment === undefined ? {} : { comment }) }
 }
 
 /** tolerant parse: bad lines become 'invalid' lines plus a diagnostic, never an exception */
@@ -207,7 +210,7 @@ export function parseChart(text: string): Parsed<ChartDoc> {
   const diagnostics: Diagnostic[] = []
   const names = new Set<string>()
   const lengths = new Map<string, number>() // each block's length so far, for a copy: of it
-  let block: { name: string; copy: string | null; body: boolean; lastBar: number; bars: { line: number; value: number } | null } | null = null
+  let block: { name: string; copy: string | null; body: boolean; lastBar: number; lastRowBar: number; alts: { line: number; value: number }[]; bars: { line: number; value: number } | null } | null = null
   const closeBlock = (): void => {
     if (!block) return
     const carried = block.copy ? lengths.get(block.copy) : undefined
@@ -215,6 +218,8 @@ export function parseChart(text: string): Parsed<ChartDoc> {
       diagnostics.push({ line: block.bars.line, message: `bars: ${block.bars.value} is shorter than the section (its last bar is ${block.lastBar})` })
     if (block.bars && carried !== undefined && block.bars.value < carried)
       diagnostics.push({ line: block.bars.line, message: `bars: ${block.bars.value} is shorter than the section it repeats (${carried} bars)` })
+    const length = Math.max(block.bars?.value ?? 0, block.lastBar)
+    for (const a of block.alts) if (a.value > length) diagnostics.push({ line: a.line, message: `alt bar ${a.value} is past the section’s end (bar ${length})` })
     lengths.set(block.name, Math.max(block.bars?.value ?? carried ?? 0, block.lastBar, carried ?? 0, 1))
   }
   const lines = text.split(/\r?\n/).map((raw, i): ChartLine => {
@@ -228,7 +233,7 @@ export function parseChart(text: string): Parsed<ChartDoc> {
         else {
           closeBlock()
           names.add(parsed.name)
-          block = { name: parsed.name, copy: null, body: false, lastBar: 0, bars: null }
+          block = { name: parsed.name, copy: null, body: false, lastBar: 0, lastRowBar: 0, alts: [], bars: null }
         }
       } else if (parsed.kind === 'sectionMeta' && block) {
         if (block.body) parsed = 'section fields go straight under section:, before its bars'
@@ -243,9 +248,17 @@ export function parseChart(text: string): Parsed<ChartDoc> {
         }
       } else if (block && parsed.kind !== 'comment' && parsed.kind !== 'blank' && parsed.kind !== 'invalid') {
         block.body = true
-        if (parsed.kind === 'row') {
+        if (parsed.kind === 'row' || parsed.kind === 'altRow') {
+          const alt = parsed.kind === 'altRow'
           if (block.copy) report('a section with copy: has no bars of its own')
-          if (INT_RE.test(parsed.bar)) block.lastBar = Math.max(block.lastBar, Number(parsed.bar))
+          if (INT_RE.test(parsed.bar)) {
+            const bar = Number(parsed.bar)
+            if ((alt || block.alts.length) && bar < block.lastRowBar) report('rows and alt rows go in bar order')
+            block.lastRowBar = Math.max(block.lastRowBar, bar)
+            if (alt) {
+              if (!block.copy) block.alts.push({ line: i + 1, value: bar })
+            } else block.lastBar = Math.max(block.lastBar, bar)
+          }
         }
       }
     }
@@ -259,12 +272,15 @@ export function parseChart(text: string): Parsed<ChartDoc> {
     if (!recorded && l.kind === 'meta' && l.key === 'youtube' && l.value) diagnostics.push({ line: i + 1, message: 'youtube: needs a recording: line' })
   })
   if (lines.at(-1)?.kind === 'blank') lines.pop() // trailing newline
-  if (lines.filter((l) => l.kind === 'row').length > LIMITS.maxRows)
+  if (lines.filter((l) => l.kind === 'row' || l.kind === 'altRow').length > LIMITS.maxRows)
     diagnostics.push({ line: 0, message: `more than ${LIMITS.maxRows} rows`, fatal: true })
   return { value: { lines }, diagnostics }
 }
 
 export const isFatal = (diagnostics: readonly Diagnostic[]): boolean => diagnostics.some((d) => d.fatal)
+
+/** whether the chart has alternate changes (alt rows) */
+export const hasAlternates = (doc: ChartDoc): boolean => doc.lines.some((l) => l.kind === 'altRow')
 
 /** the section each line belongs to: the name of the block it is in, null in the header */
 export function lineSections(doc: ChartDoc): readonly (string | null)[] {
@@ -274,7 +290,7 @@ export function lineSections(doc: ChartDoc): readonly (string | null)[] {
 
 /** canonical text: chord rows column-aligned, everything else verbatim */
 export function serializeChart(doc: ChartDoc): string {
-  const rows = doc.lines.filter((l) => l.kind === 'row')
+  const rows = doc.lines.filter((l) => l.kind === 'row' || l.kind === 'altRow')
   const width = (f: (r: (typeof rows)[number]) => string): number => Math.max(0, ...rows.map((r) => f(r).length))
   const [wb, wc] = [width((r) => r.bar), width((r) => r.chord)]
   // scales line up where a comment or a function follows them; functions where a comment follows
@@ -288,8 +304,9 @@ export function serializeChart(doc: ChartDoc): string {
         return `section: ${l.name}`
       case 'sectionMeta':
         return `${l.field}: ${l.value}`
-      case 'row': {
-        const head = `${l.bar.padEnd(wb)} | `
+      case 'row':
+      case 'altRow': {
+        const head = `${l.kind === 'altRow' ? 'alt ' : ''}${l.bar.padEnd(wb)} | `
         const tail = l.comment !== undefined ? `  #${l.comment ? ` ${l.comment}` : ''}` : ''
         if (l.function !== undefined) {
           const fn = l.comment !== undefined ? l.function.padEnd(wf) : l.function
