@@ -1,7 +1,8 @@
 <template>
   <div ref="root" data-slot="system" class="relative break-inside-avoid" @pointerleave="leaveBar" @focusout="leaveBar">
     <!-- a chart with alternates (#215): the other set's chords, small, over their beats (chord symbols only; printed) -->
-    <div v-if="otherMarks.length || altTargets.length" data-slot="other-changes" class="relative h-5 print:h-3">
+    <!-- printed only with other-set chords to print, and not when it shows just to type alternates (otherScreenOnly) -->
+    <div v-if="otherMarks.length || altTargets.length" data-slot="other-changes" :class="['relative h-5', otherMarks.length && !otherScreenOnly ? 'print:h-3' : 'print:hidden']">
       <span class="sr-only">Other changes:</span>
       <template v-for="o in otherMarks" :key="o.key">
         <span
@@ -13,7 +14,7 @@
         ><ChordSymbol v-if="o.tokens" :tokens="o.tokens" /><template v-else>{{ o.written }}</template></span>
       </template>
       <!-- the sheet editor in Standard (#469): each written bar's alternate, a button over the bar ("+ alt" where it has none) or its field; 24px tall, a pointer target (#321) -->
-      <div v-for="t in altTargets" :key="`a${t.key}`" class="absolute bottom-0 h-6 text-xs/4 font-medium text-zinc-600 dark:text-zinc-400" :style="{ left: `${t.left * 100}%`, width: `${t.width * 100}%` }">
+      <div v-for="t in altTargets" :key="`a${t.key}`" class="absolute bottom-0 h-6 text-xs/4 font-medium print:h-3 text-zinc-600 dark:text-zinc-400" :style="{ left: `${t.left * 100}%`, width: `${t.width * 100}%` }">
         <SheetAltChord
           :source="source ?? doc!"
           :section="t.section"
@@ -102,7 +103,6 @@
         <!-- the bar toolbar (the sheet as the editor), for the bar under the pointer or with focus: right after the bar's
              last chord in the Tab order, above the bar's first beat (from the line's right edge for a bar past the middle),
              and above the alternate line's targets while they show -->
-
         <SheetBarToolbar
           v-if="toolbarBar && m.barIndex === toolbarBar.index && m.lastInBar"
           :key="toolbarBar.key"
@@ -345,6 +345,7 @@ const props = defineProps<{
   part?: Part // the sheet's part, for the chord pick popovers' wording and picks (#303); concert without
   others?: ReadonlyMap<string, readonly AltChord[]> | null // the other set's chords by bar (barKey), written (#215); null: none
   altEditing?: boolean // the sheet editor in Standard (#469): each written bar's alternate is a SheetAltChord
+  otherScreenOnly?: boolean // the other set's line shows only to type alternates (Other changes off): not printed
   altOpen?: string | null // the bar (barKey) whose alternate field is open
   altFocus?: Readonly<{ key: string; n: number }> | null // a bar whose alternate button the sheet wants focus on; n makes each request its own
 }>()

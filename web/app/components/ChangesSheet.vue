@@ -37,6 +37,7 @@
             :counted="counted"
             :others="others"
             :alt-editing="altEditing"
+            :other-screen-only="otherScreenOnly"
             :alt-open="altOpen"
             :alt-focus="altFocus"
             @tap="emit('tap', $event)"
@@ -94,6 +95,7 @@ const props = defineProps<{
   set?: ChangesSet // the set doc plays; undefined: standard
   otherDoc?: ChartDoc | null // the other set of a chart with alternates (#215), its chords drawn small above the bars; null: none
   altEditing?: boolean // the sheet editor in Standard (#469): each written bar's alternate is typed on the small line
+  otherScreenOnly?: boolean // otherDoc is there only to type alternates (Other changes off): its line isn't printed
 }>()
 const emit = defineEmits<{
   tap: [chord: SheetChordEdit]

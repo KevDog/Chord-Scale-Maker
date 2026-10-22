@@ -237,6 +237,36 @@ test.describe('the alternate line, typed bar by bar (#469)', () => {
     await expect(page.getByRole('button', { name: /^Alternate for / })).toHaveCount(0)
   })
 
+  test('in Alternate, the last alternate retyped back keeps focus on its chord as Standard plays', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 })
+    await writeChart(page, 'title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Em7\n2 | G7\nalt 2 | Abm7\n3 | CMaj7\n4 | A7\n')
+    await play(page, 'Alternate')
+    await typeChord(page, 'A', 2, 'Abm7', 'G7')
+    await expect(changesGroup(page)).toHaveCount(0)
+    await expect(sheetChord(page, 'G7', 'A', 2)).toBeFocused()
+    await expect(sheetChord(page, 'G7', 'A', 2)).toHaveClass(/ring-2/) // selected: the alt row's line is gone, so not bar 3's
+    await expect(sheetChord(page, 'CMaj7', 'A', 3)).not.toHaveClass(/ring-2/)
+    expect(await source(page)).not.toMatch(/\nalt /)
+  })
+
+  test('in print, the line is left out where it has nothing to print, or Other changes is off', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 })
+    await writeChart(page, PLAIN)
+    await expect(target(page, 'A', 2)).toBeVisible()
+    await page.emulateMedia({ media: 'print' })
+    await expect(otherLine(page)).toBeHidden()
+    await page.emulateMedia({ media: 'screen' })
+    await writeChart(page, PLAIN.replace('2 | G7\n', '2 | G7\nalt 2 | Abm7\n'))
+    await page.emulateMedia({ media: 'print' })
+    await expect(otherLine(page)).toBeVisible()
+    await page.emulateMedia({ media: 'screen' })
+    await otherToggle(page).click()
+    await expect(otherToggle(page)).toHaveAttribute('aria-pressed', 'false')
+    await expect(otherLine(page)).toBeVisible() // the targets, to type alternates
+    await page.emulateMedia({ media: 'print' })
+    await expect(otherLine(page)).toBeHidden()
+  })
+
   test('on a phone there are no targets', async ({ page }) => {
     await page.setViewportSize({ width: 390, height: 844 })
     await writeChart(page, PLAIN)

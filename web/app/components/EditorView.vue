@@ -208,6 +208,7 @@
             :set="mainSet"
             :other-doc="otherDoc"
             :alt-editing="altEditing"
+            :other-screen-only="!changesSet.shown.value"
             :title="sheetTitle"
             :heading-level="1"
             :subtitle="sheetSubtitle"
@@ -530,17 +531,21 @@ function chordLineAt(doc: ChartDoc, at: SheetPlace, k: number): number | null {
   const chords = barView(doc).sections.find((s) => s.name === at.section)?.bars.find((b) => String(b.bar) === at.bar)?.chords ?? []
   return chords[Math.min(k, chords.length - 1)]?.line ?? null
 }
-/** the tapped chord's index in its bar (the bottom sheet) */
+/** the tapped chord's index in its bar, and the set it was tapped in (the bottom sheet) */
 let sheetChordAt = 0
+let sheetChordSet: ChangesSet = 'standard'
 /** a chord tapped on the sheet below md: edit it in the chord editor's bottom sheet */
 function editSheetChord(chord: SheetChordEdit): void {
   editor.flush()
   sheetChord.value = chord
   sheetChordAt = chordIndexIn(playedDoc.value, chord.line)
+  sheetChordSet = mainSet.value
 }
+// found again in Alternate, and when the last alternate goes and Standard plays (the alt rows' lines are gone)
 watch(playedDoc, (doc) => {
   const c = sheetChord.value
-  const line = c && mainSet.value === 'alternate' ? chordLineAt(doc, c, sheetChordAt) : null
+  const line = c && (mainSet.value === 'alternate' || sheetChordSet === 'alternate') ? chordLineAt(doc, c, sheetChordAt) : null
+  sheetChordSet = mainSet.value
   if (c && line !== null && line !== c.line) sheetChord.value = { ...c, line }
 })
 /** the Source is offered from Everything, and at any level while the text has a problem (only the text can fix it) */
@@ -681,8 +686,11 @@ function openSheetEdit(e: SheetEdit): void {
 }
 /** the open field's chord's index in its bar (the sheet editor) */
 let sheetChordIndex = 0
+/** the set the field opened in: the last alternate gone in Alternate, Standard plays and the alt rows' lines are gone */
+let sheetEditSet: ChangesSet = 'standard'
 watch(sheetEdit, (e) => {
   if (e?.kind === 'chord') sheetChordIndex = chordIndexIn(sheetDoc.value, e.line)
+  sheetEditSet = mainSet.value
 }, { flush: 'sync' })
 /**
  * the field closed: stay on the chord, move to the next (previous) bar's or chord, open the new chord slot, or nothing.
@@ -700,8 +708,9 @@ function sheetDone(then: SheetDone, taken?: GridPos): void {
     const section = sections[line]
     return l?.kind === 'row' && section ? { section, bar: l.bar } : null
   }
-  // the chord the field was on: a slot's is the bar's last row (the chord it added, or the one before it)
-  const moved = e.kind === 'chord' && mainSet.value === 'alternate' ? chordLineAt(doc, e.at, sheetChordIndex) : null
+  // the chord the field was on: a slot's is the bar's last row (the chord it added, or the one before it); found again
+  // in Alternate, or opened there (sheetEditSet)
+  const moved = e.kind === 'chord' && (mainSet.value === 'alternate' || sheetEditSet === 'alternate') ? chordLineAt(doc, e.at, sheetChordIndex) : null
   if (moved !== null) selectedLine.value = moved
   const line = e.kind === 'chord' ? (moved ?? e.line) : doc.lines.findLastIndex((l, i) => l.kind === 'row' && sections[i] === e.section && l.bar === e.bar)
   const at = e.kind === 'chord' ? e.at : { section: e.section, bar: e.bar }
