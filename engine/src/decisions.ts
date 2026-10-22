@@ -46,6 +46,9 @@ export const DECISIONS = [
   { id: 'pick.order', title: 'The order of chord picks', page: 'how-it-decides', anchor: 'pick.order', summary: 'A chord pick’s list runs from inside to outside.' },
   { id: 'spell.root', title: 'Spelling a scale', page: 'how-it-decides', anchor: 'spell.root', summary: 'Each scale takes the spelling with no double flats or sharps, as few B♯, E♯, C♭ and F♭ as it can, then the fewest accidentals, then the sharp or flat side it was written on.' },
   { id: 'spell.transpose', title: 'Spelling a new key', page: 'how-it-decides', anchor: 'spell.transpose', summary: 'Transposing spells roots on the new key’s side: D♭–7 G♭7 in B♭, not C♯–7 F♯7.' },
+  { id: 'backup.charts', title: 'A restored chart that differs from yours', page: 'help', anchor: 'backup-conflicts', summary: 'A chart in a backup that differs from yours comes in beside it as “(imported)” unless you choose otherwise; an edited library tune comes in as a copy.' },
+  { id: 'backup.library', title: 'A restored tune’s picks and level', page: 'help', anchor: 'backup-library', summary: 'A library tune’s picks and level in a backup keep yours unless you choose Use imported.' },
+  { id: 'backup.preferences', title: 'Restored preferences', page: 'help', anchor: 'backup-preferences', summary: 'A backup’s preferences apply by default only in a browser that has never opened the site.' },
   { id: 'spell.chord', title: 'Spelling a chord symbol', page: 'how-it-decides', anchor: 'spell.chord', summary: 'A chord symbol follows its scale’s spelling, and a slash bass keeps its interval from the root.' },
 ] as const satisfies readonly DecisionInfo[]
 

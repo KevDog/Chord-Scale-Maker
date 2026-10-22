@@ -108,6 +108,7 @@ export default defineNuxtConfig({
         chartSubmissions: false, // send a chart to the library from the editor (#153; docs/superpowers/specs/2026-10-12-chart-submissions-design.md)
         versions: true, // a song's version picker (#411; docs/superpowers/specs/2026-10-18-tune-versions-design.md)
         phraseCells: true, // phrase cells: Order, Phrase, substitutes, Chromatic (#376–#380; docs/superpowers/specs/2026-10-21-phrase-cells-design.md)
+        backup: false, // Back up… and Restore from backup… in the library (#466)
         ireal: true, // iReal Pro import: Library's Open chart… and Import iReal link…, Paste bars (#261; docs/superpowers/specs/2026-10-17-ireal-import-design.md)
       },
     },

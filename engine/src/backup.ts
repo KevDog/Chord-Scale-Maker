@@ -215,8 +215,11 @@ export function parseBackup(text: string): Readonly<{ backup: Backup; dropped: n
 const sameState = (a: BackupState, b: BackupState): boolean =>
   Object.keys(a).length === Object.keys(b).length && Object.entries(a).every(([k, v]) => Object.hasOwn(b, k) && b[k] === v)
 
-/** whether a browser has never kept anything (no `csm-*` keys): only then do a backup's preferences apply by default */
-const isFresh = (store: Store): boolean => !Object.keys(store).some((k) => k.startsWith('csm-'))
+/**
+ * whether a browser has never kept anything (no `csm-*` keys but the Interface level, which the app sets on arrival):
+ * only then do a backup's preferences apply by default
+ */
+const isFresh = (store: Store): boolean => !Object.keys(store).some((k) => k.startsWith('csm-') && k !== 'csm-interface')
 
 /**
  * each item in a backup against what this browser has: new, identical (skipped) or a conflict. An edited chart meets

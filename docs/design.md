@@ -1140,11 +1140,23 @@ its reasons into a chart as comments.
     load: it moves `csm-practice:` and `csm-level:` keys and an edited chart's `basedOn` from the old names. `mine:`
     keys are untouched; a key that can't be written stays.
   - Download writes the text as a Blob; Open (`readChartFile`) takes a `.txt` up to the size limit.
-  - Share links (`engine/src/share.ts`): `{ v: 1, chart, view }` as deflate-raw JSON in base64url after `#s=`. The view
+  - Share links (`engine/src/share.ts`): `{ v: 2, chart, view }` as deflate-raw JSON in base64url after `#s=`. The view
     applies for that visit only (`linkPreferences`), and nothing is saved until **Save to My charts**. Chord picks
     in a link (`view.picks`) go through `chordPicksFrom`, which drops any damaged entry. The router
     rewrites the address without its `#` while a prerendered page hydrates, so `plugins/arrivalHash.client.ts`
     keeps the original.
+- **Back up and restore** (#466, flag `backup`, off): `engine/src/backup.ts` turns a storage snapshot into one
+  `csm-backup` v1 JSON file (`chord-scale-maker-backup-YYYY-MM-DD.json`): every My-charts entry with its text and its
+  `mine:<id>` state (practice, level, pentatonic path, chord picks; keyed without the id), library tunes' state per
+  slug, and the global preferences (`isPreferenceKey`: `csm-<name>`, no colon, not the index, `csm-recent` or
+  `csm-draft`). Undo history, `csm-recent` and `csm-premigration:*` stay behind. `parseBackup` never throws: bad
+  entries are dropped and counted, values go through `practiceSelectionFrom` / `chordPicksFrom`, old `_` slugs are
+  renamed. `planImport` marks each chart, slug and the preferences new, identical or conflict (an edited chart meets
+  yours of the same slug, any other the one with its id); `applyChoices` gives one step of removes and writes per item
+  (DECISIONS `backup.*`: Keep both by default, Keep mine for a slug's state, preferences only in a fresh browser).
+  `utils/backup.ts` snapshots localStorage and runs the steps: nothing past `MY_CHARTS_MAX`, each step whole or put
+  back, a full store stops with what was and wasn't written. The library's Backup menu, Open chart… and a drop reach
+  `RestoreDialog`.
 - **Interface levels** ([spec](superpowers/specs/2026-10-14-interface-levels-design.md), #273):
   Essentials / Intermediate / Everything, chosen in the More actions menu and kept as `csm-interface`, never in share
   links. `utils/interface.ts` holds the tier table (`CONTROL_TIERS`), `shows`, `hiddenSettings` and `initialLevel`;
@@ -1167,7 +1179,7 @@ its reasons into a chart as comments.
   - New flags start off, and every flag is fixed at build time. `NUXT_PUBLIC_FEATURES_<NAME>=true|false`
     overrides one for a build or `make dev`.
   - `npm run e2e` builds with every flag on.
-  - Now: `chartSubmissions` (off; Send to the library, §9) and `analyticsEvents` (off), and `offline`, `cells`,
+  - Now: `chartSubmissions` (off; Send to the library, §9), `analyticsEvents` (off) and `backup` (off; Back up and restore, above), and `offline`, `cells`,
     `approaches`, `patterns`, `recordings`, `playerRange`, `ireal` (on).
   - There are none now: #296 turned the last ones on for good and removed them with their flag-off code (`myCharts`,
     `practice`, `changes`, `keySignatures`, `arpeggios`, `compactRail`, `functions`, `pentatonics`, `hexatonics`,
