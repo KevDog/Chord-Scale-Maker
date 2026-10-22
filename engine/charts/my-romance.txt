@@ -5,7 +5,10 @@ style: Medium
 key: Bb
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 149
+recording: Bill Evans Trio; Waltz for Debby; Riverside; 1962
+youtube: XEkjCQNJWiw
 # analysis: 2026-10-19, rules v2; Bb
+# recording: recorded live 1961-06-25, Village Vanguard, NYC (Scott LaFaro, Paul Motian), take 1, Riverside RLP 399, released 1962; songbook standard (Jumbo, 1935) → the trio reading jazz players know best; Evans first recorded it solo on New Jazz Conceptions (Riverside, 1956); sources: Wikipedia, jazzdisco; video: "Provided to YouTube by Universal Music Group", Waltz For Debby, "My Romance (take 1)", the same take (not take 2)
 
 # bar | chord | scale
 # the solo changes in B bars 5–6 (the head has Dm7 Db7 | Csus4 C7)

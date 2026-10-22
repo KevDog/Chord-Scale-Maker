@@ -5,7 +5,10 @@ style: Latin
 key: F
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 232
+recording: Dexter Gordon; Tangerine; Prestige; 1975
+youtube: FoRYL710sok
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded 1972-06-22, Van Gelder Studio, Englewood Cliffs (Thad Jones, Hank Jones, Stanley Clarke, Louis Hayes), the album's title track, Prestige P-10091, released 1975; songbook standard (The Fleet's In, 1942; Jimmy Dorsey's Decca hit, its first LP unconfirmed) → the jazz reading players know from the album named after it; sources: Wikipedia; video: "Provided to YouTube by Universal Music Group", Tangerine (Prestige), the same take
 
 # bar | chord | scale
 

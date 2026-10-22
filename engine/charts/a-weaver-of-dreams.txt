@@ -4,7 +4,10 @@ style: Medium
 key: C
 form: AA, 32 bars
 source: Colorado Cookbook, p. 262
+recording: Cannonball Adderley Quintet; Cannonball Adderley Quintet in Chicago; Mercury; 1959
+youtube: Noqz9CQ1T7Q
 # analysis: 2026-10-19, rules v2; C
+# recording: recorded 1959-02-03, Universal Recording, Chicago, John Coltrane with Wynton Kelly, Paul Chambers, Jimmy Cobb (Adderley sits out), Mercury MG-20449 (jazzdisco: 1959; Wikipedia gives 1960); songbook standard (1951; Nat King Cole's hit) → Coltrane's quartet reading as the jazz reference; sources: jazzdisco, Wikipedia; video: "Provided to YouTube by Universal Music Group", Cannonball Adderley Quintet In Chicago, the same take
 
 # bar | chord | scale
 # the "standard" chords; the lead sheet offers Bbm7 Eb7 | Am7 D7 | Abm7 Db7 | Gm7 C7 for A bars 5–8

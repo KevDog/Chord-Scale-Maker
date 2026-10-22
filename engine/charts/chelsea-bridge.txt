@@ -4,7 +4,10 @@ style: Medium ballad
 key: Db
 form: AABC, 32 bars
 source: The New Real Book, Vol. 1
+recording: Duke Ellington; The Duke and His Men; RCA Victor; 1955
+youtube: NGBw09LUzKw
 # analysis: 2026-10-19, rules v2; Db
+# recording: recorded 1941-12-02, Hollywood, Duke Ellington and His Famous Orchestra with Strayhorn on piano and solos by Ben Webster and Juan Tizol, the first recording of it; first issued on 78 (Victor 27856; DAHR gives 27740), first US LP 1955 (LPM-1092) (Wikipedia, DAHR); video: Never No Lament: The Blanton-Webster Band, the same take
 
 # the pickup bar is N.C.
 # Eb9#11 may be played for BbmMaj7 and Db9#11 for AbmMaj7 throughout; then bar 8 of A, B and C may be Db C7 B7 Bb7

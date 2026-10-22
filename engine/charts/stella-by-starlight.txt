@@ -4,7 +4,10 @@ composer: Victor Young
 style: Medium up
 key: Bb
 form: ABCD
+recording: Miles Davis; Jazz Track; Columbia; 1959
+youtube: XGx1HvLV_NQ
 # analysis: 2026-10-19, rules v2; Bb
+# recording: recorded 1958-05-26, Columbia 30th Street Studio, NYC (Cannonball Adderley, John Coltrane, Bill Evans, Paul Chambers, Jimmy Cobb), Columbia CL 1268, released November 1959; later on '58 Sessions; songbook standard → Miles' sextet reading as the reference; sources: Wikipedia; video: "Official Audio" on the MilesDavisVEVO channel, 4:46 (LP 4:48), the same take
 
 # bar | chord | scale
 

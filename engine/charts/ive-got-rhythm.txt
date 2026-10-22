@@ -6,7 +6,10 @@ style: Up
 key: Bb
 form: AABA
 source: Colorado Cookbook, p. 104
+recording: Benny Goodman; The Famous 1938 Carnegie Hall Jazz Concert; Columbia; 1950
+youtube: kDHeCQ84Iy4
 # analysis: 2026-10-19, rules v2; Bb
+# recording: recorded live 1938-01-16, Carnegie Hall, NYC, by the Benny Goodman Quartet (Goodman, Lionel Hampton, Teddy Wilson, Gene Krupa); Columbia SL-160, released 1950; songbook standard: the best-known jazz reading of the tune itself (rhythm changes has countless contrafacts); sources: Wikipedia; video: "Provided to YouTube by Columbia/Legacy", Live At Carnegie Hall-1938 Complete, the same performance
 
 # bar | chord | scale
 

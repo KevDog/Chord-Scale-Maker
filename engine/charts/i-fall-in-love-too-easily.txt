@@ -4,7 +4,10 @@ style: Ballad
 key: Eb
 form: AB, 16 bars
 source: Colorado Cookbook, p. 93
+recording: Chet Baker; Chet Baker Sings; Pacific Jazz; 1954
+youtube: G8Txm-JyEsk
 # analysis: 2026-10-19, rules v2; Eb
+# recording: recorded 1954-02-15, Capitol Melrose Studios, Los Angeles (Russ Freeman, Carson Smith, Bob Neel), 10" PJ LP-11, released 1954 (not the 1953-10-27 version on 45, Pacific Jazz 614); songbook standard → the jazz reference reading, over Miles Davis's Seven Steps to Heaven (1963); sources: jazzdisco, Wikipedia; video: Blue Note Records channel, "From Chet Baker Sings on Pacific Jazz", the same take
 
 # bar | chord | scale
 
