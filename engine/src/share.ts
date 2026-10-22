@@ -60,6 +60,10 @@ export type ShareView = Readonly<{
   practice?: PracticeSelection
   level?: ScaleLevel
   seed?: number
+  /** the main changes set when it is the alternate (#215); absent: standard */
+  changes?: 'alternate'
+  /** the alternate changes hidden from the small line (#215); absent: shown */
+  altHidden?: true
   /** chord picks (#303), only when there are live ones; an old link has none */
   picks?: ChordPicks
 }>
@@ -150,6 +154,8 @@ export function shareViewFrom(v: unknown): ShareView | undefined {
     ...(practice ? { practice } : {}),
     ...(isScaleLevel(o.level) ? { level: o.level } : {}),
     ...(Number.isInteger(o.seed) && (o.seed as number) >= 0 && (o.seed as number) < 2 ** 32 ? { seed: o.seed as number } : {}),
+    ...(o.changes === 'alternate' ? { changes: 'alternate' as const } : {}),
+    ...(o.altHidden === true ? { altHidden: true as const } : {}),
     ...(hasPicks(picks) ? { picks } : {}),
   }
   return Object.keys(view).length ? view : undefined
