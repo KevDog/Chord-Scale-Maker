@@ -8,7 +8,7 @@
         data-slot="practice-help-toggle"
         :aria-expanded="helpOpen"
         :aria-controls="helpId"
-        class="inline-flex items-center gap-1 rounded-md text-sm/6 text-zinc-500 hover:text-zinc-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent print:hidden dark:text-zinc-400 dark:hover:text-zinc-200"
+        class="inline-flex items-center gap-1 rounded-md text-sm/6 text-zinc-600 hover:text-zinc-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-accent print:hidden dark:text-zinc-400 dark:hover:text-white"
         @click="helpOpen = !helpOpen"
       >
         How it works<ChevronDownIcon class="size-4 transition-transform" :class="helpOpen && 'rotate-180'" aria-hidden="true" />
