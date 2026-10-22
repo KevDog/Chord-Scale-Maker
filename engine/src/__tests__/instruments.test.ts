@@ -79,7 +79,7 @@ describe('instruments', () => {
     })
   })
 
-  it('recognises instrument names safely', () => {
+  it('recognizes instrument names safely', () => {
     expect(isInstrumentName('tenor-sax')).toBe(true)
     expect(isInstrumentName('kazoo')).toBe(false)
     expect(isInstrumentName('constructor')).toBe(false)

@@ -10,7 +10,7 @@ import type { QuartalStack } from './quartal'
 /**
  * The Changes sheet's Quartal line (#432 §3): under the Quartal overlay, the Line's 7th Chords slot plays each chord's
  * stacks of fourths, whole, bottom up or top down (never rotated mid-stack), up, down or alternating. Each chord starts
- * on its labelled stack, each later cell on it takes the next stack in Auto's order that differs from the last cell, and
+ * on its labeled stack, each later cell on it takes the next stack in Auto's order that differs from the last cell, and
  * each is placed whole nearest the last note (placeWhole), giving way to the next stack where it fits no octave of the
  * range or, starting a chord, where it would start on the last note. In the arpeggio line's rhythm; a three-note stack
  * the bar line cuts goes on into the chord's next bar, as the Triad pair line's triads do. Pure; no DOM.
@@ -26,7 +26,7 @@ function stackAt(s: QuartalStack, up: boolean): Readonly<{ first: number; at: (m
   return { first: pcs[0]!, at: (m) => rel.map((r) => m + r) }
 }
 
-/** a chord's cells: its stacks (the labelled one first, then Auto's order) */
+/** a chord's cells: its stacks (the labeled one first, then Auto's order) */
 function stackCells(stacks: readonly QuartalStack[], dir: ArpDirection, range: Range): Cells {
   const tones: Spelled[] = []
   for (const n of stacks.flatMap((s) => s.notes)) if (!tones.some((t) => pcOf(t) === pcOf(n))) tones.push(n)
@@ -51,7 +51,7 @@ function stackCells(stacks: readonly QuartalStack[], dir: ArpDirection, range: R
 }
 
 /**
- * the Quartal line's voice for chords in time order: each chord's stacks (by row, the labelled one first) as cells
+ * the Quartal line's voice for chords in time order: each chord's stacks (by row, the labeled one first) as cells
  * (cellVoices); a chord with none plays its 7th chord arpeggio in the line's pattern
  */
 export function quartalVoices(

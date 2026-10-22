@@ -17,7 +17,7 @@
     <EaseReveal :id="helpId" :show="helpOpen" class="-mt-1 print:hidden"><UiText>
       Pick the notes to improvise with; the rest are dimmed, on screen and in print.
       {{ mode === 'root' ? 'Boxes are intervals from each chord’s root, even when its scale starts elsewhere: over B♭–7, B♭ is 1.' : `Boxes are pitches spelled from ${startName}.` }}
-      <template v-if="pentatonicShown"> Pentatonic lights the minor pentatonic <em>Built on</em> a degree of each chord (Auto: the one sharing the most): the notes its scale shares, and its others added in a second colour; each staff’s caption says how many it shares. {{ PENT_INSIDE_HELP }} <DecisionLink id="pent.auto">How Auto picks a pentatonic</DecisionLink>.</template>
+      <template v-if="pentatonicShown"> Pentatonic lights the minor pentatonic <em>Built on</em> a degree of each chord (Auto: the one sharing the most): the notes its scale shares, and its others added in a second color; each staff’s caption says how many it shares. {{ PENT_INSIDE_HELP }} <DecisionLink id="pent.auto">How Auto picks a pentatonic</DecisionLink>.</template>
       <template v-if="quartalShown"> Quartal lights a stack of fourths from each scale: its notes three steps apart, from the degree it's <em>Built on</em> (Auto: <DecisionLink id="quartal.auto">the one that holds the guide tones</DecisionLink>), three or four notes, with at most one augmented fourth unless <em>Perfect only</em>.</template>
       <template v-if="hexatonicShown"> Hexatonic lights two triads from each scale, six notes in two groups. Pair <em>n</em> is the triads on degrees <em>n</em> and <em>n</em> + 1 of each staff’s scale; on a seven-note scale it leaves out degree <em>n</em> − 1 (Pair 1 leaves out the 7th). Ranked against <em>Key</em>, each staff lights its key area’s IV and V triads where its scale holds them (<DecisionLink id="hex.key">pairs by key area</DecisionLink>). <DecisionLink id="hex.auto">How Auto picks a pair</DecisionLink>.</template>
     </UiText></EaseReveal>
@@ -69,7 +69,7 @@
     </EaseReveal>
 
     <EaseReveal :show="perStaff"><UiText>Click a box to start a custom pick from these notes.</UiText></EaseReveal>
-    <div role="group" aria-label="Notes to practise" class="flex flex-wrap gap-1.5">
+    <div role="group" aria-label="Notes to practice" class="flex flex-wrap gap-1.5">
       <label
         v-for="b in boxes"
         :key="b.key"

@@ -104,6 +104,14 @@ describe('timeline', () => {
     expect(guideToneTimeline([...two, row('1', 'G')], 6).events.map((e) => e.beats)).toEqual([2, 2, 2])
   })
 
+  it('splits a 7/4 bar as 4 + 3, and three chords as 2, 2, 3', () => {
+    const two = [row('1', 'C'), row('1', 'F')]
+    const a = guideToneTimeline(two, 7).events
+    expect([a.map((e) => e.start), a.map((e) => e.beats)]).toEqual([[0, 4], [4, 3]])
+    const b = guideToneTimeline([...two, row('1', 'G')], 7).events
+    expect([b.map((e) => e.start), b.map((e) => e.beats)]).toEqual([[0, 2, 4], [2, 2, 3]])
+  })
+
   it('times an intro, the form and a coda one after another, each numbered from bar 1', () => {
     const text = 'section: Intro\nbars: 4\n1 | Dm7\n3 | G7\nsection: A\n1 | CMaj7\n3 | Am7\n5 | Dm7\n7 | G7\n8 | G7\nsection: Coda\nbars: 4\n1 | Db7\n2 | CMaj7\n'
     const l = sectionLayout(parseChart(text).value).value

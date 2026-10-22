@@ -5,6 +5,8 @@ import type { RowLine } from './edit'
 import { type Spelled, accFor, enharmonics, mod, parseRoot, pcOf, rootName, shiftBy, toLetter } from './pitch'
 import { cleanLettering, type ScaleKey, parseScale, SCALES, simplifyRoot, spellFrom, spellsCleanly } from './scales'
 
+type AltRowLine = Extract<ChartLine, { kind: 'altRow' }>
+
 /**
  * Transposing a whole chart to another concert key (the editor's Transpose…). Web-only: roots are spelled on the
  * target key's side (spellInKey), unlike instrument parts, which use plain simplifyRoot.
@@ -64,7 +66,7 @@ export function spellInKey(n: Spelled, scale: ScaleKey, side: KeySide): Spelled 
 }
 
 /** the row's scale key when that scale is built on the chord root, else Ionian */
-function rootScaleKey(row: RowLine, root: Spelled): ScaleKey {
+function rootScaleKey(row: RowLine | AltRowLine, root: Spelled): ScaleKey {
   const text = qualityScale({ ...row, section: '' })
   if (!text) return 'ionian'
   const s = parseScale(text)
@@ -92,7 +94,7 @@ function transposeFunction(fn: string, s: KeyShift, side: KeySide): string {
  * target key (spellInKey); the chord follows its scale's root when they share a pitch, and a slash
  * bass keeps its interval from the root.
  */
-function transposeRow(row: RowLine, s: KeyShift, side: KeySide): RowLine {
+function transposeRow<L extends RowLine | AltRowLine>(row: L, s: KeyShift, side: KeySide): L {
   const c = parseChord(row.chord)
   let scale = row.scale
   let root = spellInKey(shiftNote(c.root, s), rootScaleKey(row, c.root), side)
@@ -119,8 +121,8 @@ function transposeRow(row: RowLine, s: KeyShift, side: KeySide): RowLine {
 }
 
 /**
- * move every row from one key to another (`F`, `Ebm`; a minor key spells on its own signature's side); lines that
- * aren't rows, and rows it can't read, stay as they are
+ * move every row and alt row (kept as its kind) from one key to another (`F`, `Ebm`; a minor key spells on its own
+ * signature's side); lines that aren't rows, and rows it can't read, stay as they are
  */
 export function transposeChart(doc: ChartDoc, from: string, to: string): Readonly<{ doc: ChartDoc; skipped: number }> {
   const s = keyShift(readKey(from).root, readKey(to).root)
@@ -129,7 +131,7 @@ export function transposeChart(doc: ChartDoc, from: string, to: string): Readonl
   const lines = doc.lines.map((l): ChartLine => {
     if (l.kind === 'key') return { ...l, key: transposeKeyText(l.key, s, side) }
     if (l.kind === 'sectionMeta' && l.field === 'key' && l.value) return { ...l, value: transposeKeyText(l.value, s, side) }
-    if (l.kind !== 'row' || isRest(l.chord)) return l
+    if ((l.kind !== 'row' && l.kind !== 'altRow') || isRest(l.chord)) return l
     try {
       return transposeRow(l, s, side)
     } catch {

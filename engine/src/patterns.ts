@@ -13,7 +13,7 @@ import { scaleLines } from './sheet'
 import type { Range } from './instruments'
 import { chunk, orNull } from './util'
 
-/** A pattern's moves: steps between neighbouring notes of a collection, up (+) or down (−). */
+/** A pattern's moves: steps between neighboring notes of a collection, up (+) or down (−). */
 export type Moves = readonly number[]
 
 const MIN_MOVES = 2

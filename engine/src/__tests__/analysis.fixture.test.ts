@@ -1,5 +1,5 @@
 /**
- * fixtures/analysis.json: the analyser's report over every library chart (docs/plan-analysis.md §13), one row per
+ * fixtures/analysis.json: the analyzer's report over every library chart (docs/plan-analysis.md §13), one row per
  * line so a rule change shows exactly which rows move. After an intended change, or new charts: npm run golden
  * (which rewrites this fixture too), then review its diff.
  */
@@ -37,7 +37,7 @@ function build(): string {
 if (process.env.UPDATE_GOLDEN === '1') writeFileSync(FILE, build())
 
 describe('analysis fixture', () => {
-  it('matches the analyser over every library chart (else: npm run golden)', () => {
+  it('matches the analyzer over every library chart (else: npm run golden)', () => {
     expect(build() === readFileSync(FILE, 'utf8')).toBe(true)
   })
 })

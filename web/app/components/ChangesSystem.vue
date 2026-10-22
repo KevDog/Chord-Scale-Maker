@@ -1,5 +1,48 @@
 <template>
   <div ref="root" data-slot="system" class="relative break-inside-avoid" @pointerleave="leaveBar" @focusout="leaveBar">
+    <!-- a chart with alternates (#215): the other set's chords, small, over their beats (chord symbols only; printed) -->
+    <!-- printed only with other-set chords to print, and not when it shows just to type alternates (otherScreenOnly) -->
+    <div v-if="otherMarks.length || altTargets.length" data-slot="other-changes" :class="['relative h-5', otherMarks.length && !otherScreenOnly ? 'print:h-3' : 'print:hidden']">
+      <span class="sr-only">Other changes:</span>
+      <template v-for="o in otherMarks" :key="o.key">
+        <span
+          v-if="!altBars.has(o.barIndex)"
+          :data-chord="o.written"
+          :data-other-name="o.key"
+          :class="[OTHER, o.held && HELD]"
+          :data-held="o.held || undefined"
+          :style="{ left: `${o.x * 100}%`, transform: otherScale(o) === 1 ? undefined : `scale(${otherScale(o)})` }"
+        ><ChordSymbol v-if="o.tokens" :tokens="o.tokens" /><template v-else>{{ o.written }}</template></span>
+      </template>
+      <!-- the sheet editor in Standard (#469): each written bar's alternate, a button over the bar ("+ alt" where it has none) or its field; 24px tall, a pointer target (#321) -->
+      <div v-for="t in altTargets" :key="`a${t.key}`" class="absolute bottom-0 h-6 text-xs/4 font-medium print:h-3 text-zinc-600 dark:text-zinc-400" :style="{ left: `${t.left * 100}%`, width: `${t.width * 100}%` }">
+        <SheetAltChord
+          :source="source ?? doc!"
+          :section="t.section"
+          :bar="t.bar"
+          :text="t.text"
+          :open="altOpen === t.key"
+          :refocus="altFocus?.key === t.key ? altFocus.n : undefined"
+          @edit="emit('alt', t.key, 'edit')"
+          @next="emit('alt', t.key, 'next')"
+          @prev="emit('alt', t.key, 'prev')"
+          @close="emit('alt', t.key, 'close')"
+          @update:doc="emit('update:doc', $event)"
+          @said="emit('said', $event)"
+          @refused="emit('refused', $event)"
+        >
+          <span
+            v-for="o in t.marks"
+            :key="o.key"
+            :data-chord="o.written"
+            :data-other-name="o.key"
+            :class="[OTHER, o.held && HELD]"
+            :data-held="o.held || undefined"
+            :style="{ left: `${((o.x - t.left) / t.width) * 100}%`, transform: otherScale(o) === 1 ? undefined : `scale(${otherScale(o)})` }"
+          ><ChordSymbol v-if="o.tokens" :tokens="o.tokens" /><template v-else>{{ o.written }}</template></span>
+        </SheetAltChord>
+      </div>
+    </div>
     <!-- section markers and key areas, then chord symbols, over their beats -->
     <div ref="names" data-slot="names" class="relative h-12 print:h-7">
       <template v-for="m in marks" :key="m.key">
@@ -27,6 +70,8 @@
           <SheetChord
             v-if="editing !== undefined && doc && m.line >= 0"
             :doc="doc"
+            :source="source"
+            :set="set"
             :line="m.line"
             :section="m.row.section"
             :bar="m.row.bar"
@@ -58,15 +103,18 @@
           </div>
         </div>
         <!-- the bar toolbar (the sheet as the editor), for the bar under the pointer or with focus: right after the bar's
-             last chord in the Tab order, above the bar's first beat (from the line's right edge for a bar past the middle) -->
+             last chord in the Tab order, above the bar's first beat (from the line's right edge for a bar past the middle),
+             and above the alternate line's targets while they show -->
         <SheetBarToolbar
           v-if="toolbarBar && m.barIndex === toolbarBar.index && m.lastInBar"
           :key="toolbarBar.key"
           :doc="doc!"
+          :source="source"
+          :set="set"
           :section="toolbarBar.section"
           :bar="toolbarBar.bar"
           :repeat-of="toolbarBar.repeatOf"
-          class="absolute top-0 z-20 -translate-y-full whitespace-nowrap"
+          :class="['absolute top-0 z-20 -translate-y-full whitespace-nowrap', altTargets.length && '-mt-6']"
           :style="toolbarBar.x > 0.6 ? { right: 0 } : { left: `${toolbarBar.x * 100}%` }"
           @pointerenter="holdBar"
           @focusin="holdBar"
@@ -118,7 +166,7 @@
         :title="notesOn && m.reason ? undefined : m.numeral"
       >
         <template v-if="drafted(m)">{{ preview?.readable ? preview.numeral : '' }}</template>
-        <SheetLabelPicker v-else-if="editing !== undefined && shows('function-choice') && doc && m.line >= 0 && !m.slot && !isRest(m.text)" :doc="doc" :line="m.line" kind="numeral" :chord="m.text" :fallback="m.fallback" :pinned="false" :blank="!m.numeral" @update:doc="emit('update:doc', $event)" @said="emit('said', $event)">{{ m.numeral }}<span v-if="m.problem" class="ml-0.5 text-amber-700 no-underline dark:text-amber-400 print:hidden" aria-hidden="true">⚠</span></SheetLabelPicker>
+        <SheetLabelPicker v-else-if="editing !== undefined && shows('function-choice') && doc && m.line >= 0 && !m.slot && !isRest(m.text)" :doc="doc" :source="source" :line="m.line" kind="numeral" :chord="m.text" :fallback="m.fallback" :pinned="false" :blank="!m.numeral" @update:doc="emit('update:doc', $event)" @said="emit('said', $event)">{{ m.numeral }}<span v-if="m.problem" class="ml-0.5 text-amber-700 no-underline dark:text-amber-400 print:hidden" aria-hidden="true">⚠</span></SheetLabelPicker>
         <ChangesNote v-else-if="notesOn && m.reason && m.numeral" :reason="m.reason" :heard-in="m.heardIn" :key-from="m.keyFrom" :rule="m.rule" :fallback="m.fallback" :chord="m.written" :concert="m.text" :numeral="m.numeral" :scale="m.scale" :at="m.row" :problem="m.problem" :pinned="m.pinned" :slash="m.slash" :level-note="m.levelNote">{{ m.numeral }}<span v-if="m.problem" class="ml-0.5 text-amber-700 no-underline dark:text-amber-400 print:hidden" aria-hidden="true">⚠</span></ChangesNote>
         <template v-else>{{ m.numeral }}<span v-if="m.problem" class="ml-0.5 text-amber-700 dark:text-amber-400 print:hidden" :title="m.problem">⚠</span></template>
       </span>
@@ -133,7 +181,7 @@
         :style="{ left: `${m.x * 100}%`, maxWidth: `${m.room * 100}%` }"
       >
         <template v-if="drafted(m)">{{ preview?.readable ? sheetScale(CONCERT, preview.scale) : '' }}</template>
-        <SheetLabelPicker v-else-if="editing !== undefined && shows('scale-choice') && doc && m.line >= 0 && !m.slot && !isRest(m.text)" :doc="doc" :line="m.line" kind="scale" :chord="m.text" :fallback="false" :blank="!m.scale" :pinned="notes?.get(m.line)?.source === 'written'" :scale="notes?.get(m.line)?.scale" @update:doc="emit('update:doc', $event)" @said="emit('said', $event)">{{ m.scale }}</SheetLabelPicker>
+        <SheetLabelPicker v-else-if="editing !== undefined && shows('scale-choice') && doc && m.line >= 0 && !m.slot && !isRest(m.text)" :doc="doc" :source="source" :line="m.line" kind="scale" :chord="m.text" :fallback="false" :blank="!m.scale" :pinned="notes?.get(m.line)?.source === 'written'" :scale="notes?.get(m.line)?.scale" @update:doc="emit('update:doc', $event)" @said="emit('said', $event)">{{ m.scale }}</SheetLabelPicker>
         <ChangesNote v-else-if="notesOn && m.reason && m.scale" :reason="m.reason" :heard-in="m.heardIn" :key-from="m.keyFrom" :rule="m.rule" :fallback="m.fallback" :chord="m.written" :concert="m.text" :numeral="m.numeral" :scale="m.scale" :at="m.row" :problem="m.problem" :pinned="m.pinned" :slash="m.slash" :level-note="m.levelNote" wrap>{{ m.scale }}</ChangesNote>
         <template v-else>{{ m.scale }}</template>
       </span>
@@ -237,11 +285,14 @@
 
 <script setup lang="ts">
 import {
+  type AltChord,
   barKey,
+  chordTokensOrNull,
   type ChangesHexatonic,
   type ChangesLine,
   type ChangesPentatonic,
   type ChangesQuartal,
+  type ChangesSet,
   type ChartDoc,
   type ChordAt,
   type ChordPreview,
@@ -265,7 +316,7 @@ import {
   sheetScale,
 } from '@chord-scale-maker/engine'
 import { choiceId, hexChoiceRows, pickFooter, pickHeader } from '~/utils/chordPicks'
-import { drawChangesLine, type NamedBeat } from '~/utils/changesDrawing'
+import { drawChangesLine, mergeNames, type NamedBeat } from '~/utils/changesDrawing'
 import { DEFAULT_VIEW, SCALE_VIEW } from '~/utils/scaleView'
 import type { SheetChordEdit, SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
 
@@ -285,13 +336,20 @@ const props = defineProps<{
   lineName?: string // that arpeggio line's name in the aria-label: 'pentatonic' (#284), 'triad pair' (#325), 'quartal' (#432); else 7th chords
   editable?: boolean // each chord a button that asks to edit it
   selectedLine?: number | null // the chart line of the chord the editor is on, outlined
-  doc?: ChartDoc // the chart, for the sheet editor's field
+  doc?: ChartDoc // the chart (the set played, #469), for the sheet editor's field
+  source?: ChartDoc // the chart the sheet editor writes, with its alt rows (#469); undefined: doc
+  set?: ChangesSet // the set doc plays; undefined: standard
   editing?: SheetEdit | null // the sheet is the editor: what it's editing (null: nothing yet); undefined: the chord editor dialog instead
   preview?: ChordPreview | null // the reading of the draft in the open field, shown under its chord
   focusAt?: SheetFocus | null // a chord the editor wants focus on (its field closed with nowhere to go)
   overlay?: OverlayPlan | null // the row under the chords: the Pentatonic overlay's rungs, the Hexatonic or the Quartal; null/undefined: no row
   counted?: boolean // the sheet's pentatonics count (tints)
   part?: Part // the sheet's part, for the chord pick popovers' wording and picks (#303); concert without
+  others?: ReadonlyMap<string, readonly AltChord[]> | null // the other set's chords by bar (barKey), written (#215); null: none
+  altEditing?: boolean // the sheet editor in Standard (#469): each written bar's alternate is a SheetAltChord
+  otherScreenOnly?: boolean // the other set's line shows only to type alternates (Other changes off): not printed
+  altOpen?: string | null // the bar (barKey) whose alternate field is open
+  altFocus?: Readonly<{ key: string; n: number }> | null // a bar whose alternate button the sheet wants focus on; n makes each request its own
 }>()
 const emit = defineEmits<{
   tap: [chord: SheetChordEdit] // a chord tapped, for the chord editor dialog
@@ -305,6 +363,7 @@ const emit = defineEmits<{
   dialog: [kind: 'split' | 'nav' | 'paste' | 'rename', section: string, bar: number]
   addBar: [section: string]
   overfull: [at: string] // the names don't fit the line: break it before this bar (barKey)
+  alt: [key: string, then: 'edit' | 'next' | 'prev' | 'close'] // a bar's alternate (barKey): open its field, move on (Tab, ⇧Tab), or it closed
 }>()
 
 const root = ref<HTMLElement | null>(null)
@@ -312,6 +371,7 @@ const el = ref<HTMLElement | null>(null)
 const names = ref<HTMLElement | null>(null)
 const xs = ref<readonly (readonly number[])[]>([])
 const ends = ref<readonly number[]>([]) // each bar's right edge
+const otherScales = ref<readonly ReadonlyMap<number, number>[]>([]) // each other-set name's scale, by beat, likewise
 const nameScales = ref<readonly (readonly number[])[]>([]) // each chord name's scale, where the line can't fit it
 const drawError = ref<string | null>(null)
 const rendering = useRendering()
@@ -340,9 +400,28 @@ const marks = computed(() => {
   })
   return all.map((m, i) => ({ ...m, room: Math.max(0.05, (all[i + 1]?.x ?? 1) - m.x) }))
 })
+/** the other set's chords in this line's bars (#215), over their beats; already written for the part, so drawn as they are */
+const otherMarks = computed(() =>
+  props.line.bars.flatMap((bar, b) =>
+    (props.others?.get(barKey(bar.at)) ?? []).map((c, k) => ({ key: `${b}-${k}`, barIndex: b, beat: c.beat, written: c.written, held: c.held, tokens: chordTokensOrNull(CONCERT, c.written), x: Math.max(0, (xs.value[b]?.[c.beat] ?? 0) - 0.012) })),
+  ),
+)
+/** the alternate line's targets while editing in Standard (#469): every bar but a copy: section's, over its width */
+const altTargets = computed(() =>
+  props.altEditing && (props.source ?? props.doc)
+    ? props.line.bars.flatMap((bar, b) => {
+        if (bar.repeatOf) return []
+        const marks = otherMarks.value.filter((o) => o.barIndex === b)
+        const left = barLeft(b)
+        return [{ key: barKey(bar.at), index: b, section: bar.at.section, bar: Number(bar.at.bar), text: marks.map((o) => (o.held ? `${o.written} held` : o.written)).join(' '), marks, left, width: Math.max(0.01, barLeft(b + 1) - left) }]
+      })
+    : [],
+)
+/** the bars drawn as targets, whose other-set chords are drawn in them */
+const altBars = computed(() => new Set(altTargets.value.map((t) => t.index)))
 /** the marks that print a pentatonic label (#255) */
 const pentatonicMarks = computed(() => marks.value.flatMap((m) => (m.pentatonic?.label ? [{ key: m.key, x: m.x, room: m.room, written: m.written, p: m.pentatonic }] : [])))
-/** ranked against the key, a pair that isn't the key's (#432): drawn greyed */
+/** ranked against the key, a pair that isn't the key's (#432): drawn grayed */
 const offKey = (h: ChangesHexatonic): boolean => h.offKey && !h.picked
 /** the marks that print a hexatonic label */
 const hexatonicMarks = computed(() => marks.value.flatMap((m) => (m.hexatonic?.label ? [{ key: m.key, x: m.x, room: m.room, h: m.hexatonic }] : [])))
@@ -407,7 +486,7 @@ const quartLabel = (q: ChangesQuartal): string => {
   const guides = quartRows(q).find((c) => c.name === q.name)?.guides
   return `Fourths: ${q.name}, built on ${q.degree}${guides === undefined ? '' : `, ${guides} guide tone${guides === 1 ? '' : 's'}`}`
 }
-/** the rung tints (#265, #277), spelled out so Tailwind sees them; the label's shared count says the same without colour */
+/** the rung tints (#265, #277), spelled out so Tailwind sees them; the label's shared count says the same without color */
 const RUNG_TINT = ['text-rung-0', 'text-rung-1', 'text-rung-2', 'text-rung-3', 'text-rung-4', 'text-rung-5', 'text-rung-6'] as const
 const tint = (rung: number): string => (props.counted ? (RUNG_TINT[rung] ?? '') : '')
 /** the bar's last chord, when the new chord slot follows it with no beat left in the bar: the slot goes after its name */
@@ -455,6 +534,9 @@ const toolbarBar = computed(() => {
   return { key: `${bar.at.section}-${bar.at.bar}`, index: i, section: bar.at.section, bar: Number(bar.at.bar), repeatOf: bar.repeatOf, x: Math.max(0, (xs.value[i]?.[0] ?? i / props.barsPerLine) - 0.012) }
 })
 const MARKER = 'rounded-sm border border-zinc-400 px-1 font-semibold text-zinc-700 dark:border-zinc-500 dark:text-zinc-300 print:border-neutral-600 print:text-black'
+/** an other-set chord on the small line (#215) */
+const HELD = 'italic' // a chord held into the bar from before, not written there (#491)
+const OTHER = 'absolute bottom-0 origin-bottom-left text-xs/4 font-medium whitespace-nowrap text-zinc-600 dark:text-zinc-400 print:text-[0.6rem]/3 print:text-neutral-700'
 const GHOST = 'rounded-md border border-dashed border-zinc-400 text-xs font-semibold text-zinc-500 hover:border-note-500 hover:text-note-700 focus-visible:border-note-500 focus-visible:outline-none dark:border-zinc-500 dark:text-zinc-400 dark:hover:border-note-400 dark:hover:text-note-300 print:hidden'
 /**
  * the ghost bar (a section's last line, the sheet as the editor): the next bar's slot when the line has room, else a pill
@@ -468,6 +550,8 @@ const ghost = computed(() => {
   const left = ends.value[n - 1] ?? n / props.barsPerLine
   return { section: last.at.section, full, style: { left: `${left * 100}%`, width: `${Math.min(1 / props.barsPerLine, 1 - left) * 100}%` } }
 })
+/** an other-set name's scale: that of its beat's merged name, as the main names', so the two lines shrink together */
+const otherScale = (o: { barIndex: number; beat: number }): number => otherScales.value[o.barIndex]?.get(o.beat) ?? 1
 /** a chord name's scale: shrunk where its bar can't be widened enough, but never the chord being edited */
 const shrunk = (m: { barIndex: number; k: number; line: number }): number =>
   props.editing?.kind === 'chord' && props.editing.line === m.line ? 1 : (nameScales.value[m.barIndex]?.[m.k] ?? 1)
@@ -486,14 +570,25 @@ const hasGuideLine = computed(() => !props.arpeggio && props.line.bars.some((b) 
 /**
  * each bar's chord names (and the marker or key area over its first), their widths as fractions of the line, which
  * widen the bars they crowd: measured at their full size, against the line as drawn or as printed (narrower, at
- * PRINT_LINE px with screen-size names), whichever is tighter; undefined while the line isn't laid out
+ * PRINT_LINE px with screen-size names), whichever is tighter; undefined while the line isn't laid out. With the other
+ * set's line over them (#215), its names too: each beat as wide as the wider of the two (mergeNames)
  */
 function measureNames(): NamedBeat[][] | undefined {
   const width = Math.min(el.value?.clientWidth ?? 0, PRINT_LINE)
   if (!width || !root.value) return undefined
   const px = new Map(Array.from(root.value.querySelectorAll<HTMLElement>('[data-name]'), (n) => [n.dataset.name, n.offsetWidth]))
-  return props.line.bars.map((_, b) => marks.value.filter((m) => m.barIndex === b && !m.slot).map((m) => ({ beat: m.beat, width: ((px.get(m.key) ?? 0) + NAME_GAP) / width })))
+  const otherPx = new Map(Array.from(root.value.querySelectorAll<HTMLElement>('[data-other-name]'), (n) => [n.dataset.otherName, n.offsetWidth]))
+  const named = (w: number | undefined): number => ((w ?? 0) + NAME_GAP) / width
+  return props.line.bars.map((_, b) => mergeNames(
+    marks.value.filter((m) => m.barIndex === b && !m.slot).map((m) => ({ beat: m.beat, width: named(px.get(m.key)) })),
+    otherMarks.value.filter((o) => o.barIndex === b).map((o) => ({ beat: o.beat, width: named(otherPx.get(o.key)) })),
+  ))
 }
+/** each bar's chord names' scales, by their index in the bar (shrunk), from the scales of its merged beats */
+const nameScalesOf = (names: readonly (readonly NamedBeat[])[] | undefined, scales: readonly (readonly number[])[]): number[][] =>
+  props.line.bars.map((_, b) => marks.value.filter((m) => m.barIndex === b && !m.slot).map((m) => scales[b]?.[names?.[b]?.findIndex((n) => n.beat === m.beat) ?? -1] ?? 1))
+const otherScalesOf = (names: readonly (readonly NamedBeat[])[] | undefined, scales: readonly (readonly number[])[]): Map<number, number>[] =>
+  props.line.bars.map((_, b) => new Map(otherMarks.value.filter((o) => o.barIndex === b).map((o) => [o.beat, scales[b]?.[names?.[b]?.findIndex((n) => n.beat === o.beat) ?? -1] ?? 1])))
 const PRINT_LINE = 800 // a printed line (about 700px) with the print's smaller names (text-sm: 14/16), in screen px
 const NAME_GAP = 8 // px between a name and the next
 const key = (names: readonly (readonly NamedBeat[])[] | undefined): string => JSON.stringify(names?.map((b) => b.map((c) => [c.beat, +c.width.toFixed(3)])))
@@ -510,7 +605,8 @@ async function draw(): Promise<void> {
     const layout = drawChangesLine(vf, el.value, props.line, { first: props.first, barsPerLine: props.barsPerLine, ...(props.clef ? { clef: props.clef } : {}), ...(props.arpeggio ? { arpeggio: true } : {}), ...(props.lineName ? { lineName: props.lineName } : {}), ...(names ? { names } : {}) })
     xs.value = layout.xs
     ends.value = layout.ends
-    nameScales.value = layout.scales
+    nameScales.value = nameScalesOf(names, layout.scales)
+    otherScales.value = otherScalesOf(names, layout.scales)
     const breakAt = props.line.bars[layout.fits]
     if (breakAt) emit('overfull', barKey(breakAt.at))
     drawError.value = null
@@ -537,5 +633,5 @@ onBeforeUnmount(() => {
   observer?.disconnect()
   clearTimeout(resized)
 })
-watch(() => [props.line, props.first, props.barsPerLine, props.clef, props.arpeggio, props.lineName], () => nextTick(draw))
+watch(() => [props.line, props.first, props.barsPerLine, props.clef, props.arpeggio, props.lineName, props.others], () => nextTick(draw))
 </script>

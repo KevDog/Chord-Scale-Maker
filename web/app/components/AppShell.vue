@@ -8,11 +8,12 @@
         </UiNavbarItem>
         <UiNavbarDivider class="max-lg:hidden" />
         <UiNavbarSection class="max-lg:hidden" aria-label="Main">
-          <UiNavbarItem href="/library" :current="route.path === '/library'">Library</UiNavbarItem>
-          <UiNavbarItem href="/help" :current="route.path === '/help'">Help</UiNavbarItem>
-          <UiNavbarItem href="/how-it-decides" :current="route.path === '/how-it-decides'">How it decides</UiNavbarItem>
-          <UiNavbarItem href="/about" :current="route.path === '/about'">About</UiNavbarItem>
-          <UiNavbarItem href="/contact" :current="route.path === '/contact'">Contact</UiNavbarItem>
+          <template v-for="e in NAV" :key="e.label">
+            <UiNavbarDropdown v-if="isMenu(e)" :label="e.label" :current="isCurrent(e, route.path)">
+              <UiDropdownItem v-for="i in e.items" :key="i.href" :href="i.href" :aria-current="isCurrent(i, route.path) ? 'page' : undefined">{{ i.label }}</UiDropdownItem>
+            </UiNavbarDropdown>
+            <UiNavbarItem v-else :href="e.href" :current="isCurrent(e, route.path)">{{ e.label }}</UiNavbarItem>
+          </template>
         </UiNavbarSection>
         <UiNavbarSpacer />
         <HeaderQuote class="max-w-xl max-xl:hidden" />
@@ -25,11 +26,8 @@
       </UiNavbar>
     </template>
     <template #sidebar>
-      <UiNavbarItem href="/library"><BookOpenIcon data-slot="icon" />Library</UiNavbarItem>
-      <UiNavbarItem href="/help"><QuestionMarkCircleIcon data-slot="icon" />Help</UiNavbarItem>
-      <UiNavbarItem href="/how-it-decides"><LightBulbIcon data-slot="icon" />How it decides</UiNavbarItem>
-      <UiNavbarItem href="/about"><InformationCircleIcon data-slot="icon" />About</UiNavbarItem>
-      <UiNavbarItem href="/contact"><EnvelopeIcon data-slot="icon" />Contact</UiNavbarItem>
+      <!-- the phone menu: every page, flat (a dropdown inside it would only add a tap) -->
+      <UiNavbarItem v-for="l in navLinks(NAV)" :key="l.href" :href="l.href"><component :is="l.icon" data-slot="icon" />{{ l.label }}</UiNavbarItem>
     </template>
     <slot />
     <template #footer>
@@ -69,7 +67,8 @@
 </template>
 
 <script setup lang="ts">
-import { BookOpenIcon, EnvelopeIcon, InformationCircleIcon, LightBulbIcon, MoonIcon, QuestionMarkCircleIcon, SunIcon } from '@heroicons/vue/20/solid'
+import { MoonIcon, SunIcon } from '@heroicons/vue/20/solid'
+import { isCurrent, isMenu, NAV, navLinks } from '~/utils/siteNav'
 
 /** the site chrome (Catalyst StackedLayout): navbar, mobile menu, theme toggle, footer */
 const route = useRoute()

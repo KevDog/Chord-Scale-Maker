@@ -86,8 +86,9 @@ import { DEFAULT_VIEW, SCALE_VIEW } from '~/utils/scaleView'
  * analysed one: choosing it, or Unpin, blanks the cell; any other scale pins it.
  * `part` (the sheet's label pickers): 'function' shows the function list and why; 'scale' the scale list and why.
  * `fallbackNote`: a line above the function list (the rules could only guess here).
+ * `source`: the chart a choice is written to, line for line `doc` (the set played, which it reads: #469); undefined: doc.
  */
-const props = withDefaults(defineProps<{ doc: ChartDoc; line: number; part?: 'function' | 'scale' | 'all'; fallbackNote?: string }>(), { part: 'all', fallbackNote: '' })
+const props = withDefaults(defineProps<{ doc: ChartDoc; line: number; part?: 'function' | 'scale' | 'all'; fallbackNote?: string; source?: ChartDoc }>(), { part: 'all', fallbackNote: '', source: undefined })
 const emit = defineEmits<{ 'update:doc': [doc: ChartDoc]; said: [text: string] }>()
 
 const id = useId()
@@ -110,7 +111,7 @@ const note = computed((): RowNote | undefined => (row.value ? rowNotes(props.doc
 const analysed = computed(() => note.value?.analysed ?? '')
 const analysedNote = computed(() => [note.value?.numeral, note.value?.rule && `rule ${note.value.rule}`].filter(Boolean).join(', '))
 const pinned = computed(() => !!analysed.value && note.value?.source === 'written')
-const pinnedText = computed(() => (samePitchScale(row.value?.scale ?? '', analysed.value) ? 'your choice; the analyser’s too' : `your choice; the analyser says ${analysed.value}`))
+const pinnedText = computed(() => (samePitchScale(row.value?.scale ?? '', analysed.value) ? 'your choice; the analyzer’s too' : `your choice; the analyzer says ${analysed.value}`))
 /** the options, by pitch, each once: the analysed scale stands for any the same */
 const listed = (scale: string | null | undefined): boolean => !!scale && !samePitchScale(scale, analysed.value)
 const usual = computed(() => (listed(choices.value.defaultScale) ? choices.value.defaultScale : null))
@@ -169,15 +170,15 @@ watch(() => props.line, () => (query.value = ''))
 const found = computed(() => searchScales(query.value, rootText.value))
 
 function setScale(scale: string): void {
-  emit('update:doc', setRowField(props.doc, props.line, 'scale', scale))
-  emit('said', `${row.value?.chord}: ${scale || `${analysed.value}, the analyser’s`}`)
+  emit('update:doc', setRowField(props.source ?? props.doc, props.line, 'scale', scale))
+  emit('said', `${row.value?.chord}: ${scale || `${analysed.value}, the analyzer’s`}`)
 }
 function pick(scale: string): void {
   setScale(scale)
   query.value = ''
 }
 function setFunction(fn: string): void {
-  emit('update:doc', setRowField(props.doc, props.line, 'function', fn))
+  emit('update:doc', setRowField(props.source ?? props.doc, props.line, 'function', fn))
   const c = fnChoices.value.find((x) => x.value === fn)
   emit('said', `${row.value?.chord}: ${fn || 'Auto'}${c?.scale ? `, ${c.scale}` : ''}`)
 }

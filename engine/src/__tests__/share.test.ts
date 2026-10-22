@@ -68,6 +68,19 @@ describe('share links', () => {
     expect(shareViewFrom({ sheet: 'changes', picks: JSON.parse('{"__proto__":{"pentatonic":{"A:1:0":{"pc":1}}},"hexatonic":{"A:1:0":{"roots":[2,2]}}}') })).toEqual({ sheet: 'changes' })
   })
 
+  it('carry the main changes set and a hidden alternate, and open an old link as standard, shown', async () => {
+    const view = { changes: 'alternate', altHidden: true } as const
+    expect((await decodeShare(await encodeShare({ chart: CHART, view })))?.view).toEqual(view)
+    const old = (await decodeShare(await encodeShare({ chart: CHART, view: { sheet: 'changes' } })))?.view
+    expect([old?.changes, old?.altHidden]).toEqual([undefined, undefined])
+  })
+
+  it('drop bad changes values and the defaults', () => {
+    expect(shareViewFrom({ changes: 'nope', altHidden: 'yes' })).toBeUndefined()
+    expect(shareViewFrom({ changes: 'standard', altHidden: false })).toBeUndefined()
+    expect(shareViewFrom({ changes: 'alternate', altHidden: true })).toEqual({ changes: 'alternate', altHidden: true })
+  })
+
   it('stay short for an ordinary chart', async () => {
     expect((await encodeShare({ chart: CHART.repeat(4) })).length).toBeLessThan(300)
   })

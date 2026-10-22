@@ -7,15 +7,15 @@ key: Eb
 form: A, 12 bars
 source: Colorado Cookbook, p. 33
 recording: John Coltrane; Blue Train; Blue Note; 1958
-# analysis: 2026-10-19, rules v2; Eb, blues
+# analysis: 2026-10-22, rules v2; Eb, blues
 # recording: recorded 1957-09-15, released 1958 (MusicBrainz release group, Wikipedia)
 
 # bar | chord | scale
 
 section: A
 bars: 12
-1  | Eb7#9   # I7 of the blues: a tonic with dominant colour; b9, #9 and #11 from the symbol
-5  | Ab7#11  # IV7 of the blues: a subdominant with dominant colour; #11 from the symbol
-7  | Eb7#9   # I7 of the blues: a tonic with dominant colour; b9, #9 and #11 from the symbol
+1  | Eb7#9   # I7 of the blues: a tonic with dominant color; b9, #9 and #11 from the symbol
+5  | Ab7#11  # IV7 of the blues: a subdominant with dominant color; #11 from the symbol
+7  | Eb7#9   # I7 of the blues: a tonic with dominant color; b9, #9 and #11 from the symbol
 9  | Bb7#9   # V7 of the blues: a dominant that needn’t resolve; b9, #9 and #11 from the symbol
-11 | Eb7#9   # I7 of the blues: a tonic with dominant colour; b9, #9 and #11 from the symbol
+11 | Eb7#9   # I7 of the blues: a tonic with dominant color; b9, #9 and #11 from the symbol

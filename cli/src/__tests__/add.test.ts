@@ -85,6 +85,12 @@ describe('csm add', () => {
     expect(log.out.join('\n')).toContain('title: Tune')
   })
 
+  it('an alternate chord is written as an alt row (the app’s import leaves it out, #469)', () => {
+    const { fx, log } = fake()
+    expect(add(args({ print: true, input: irealLink([{ title: 'Tune', composer: 'Hall Jim', music: '[*AT44C7(Db7) |F7 Z' }]) }), fx)).toBe(0)
+    expect(log.out.join('\n')).toMatch(/^alt 1 \| Db7/m)
+  })
+
   it('refuses an existing chart without --force, before writing', () => {
     const { fx, log } = fake({}, { '/repo/engine/charts/tune.txt': 'old' })
     expect(add(args(), fx)).toBe(1)

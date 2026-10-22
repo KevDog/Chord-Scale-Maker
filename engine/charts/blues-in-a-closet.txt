@@ -6,18 +6,18 @@ form: A, 12 bars
 source: Colorado Cookbook, p. 40
 recording: Bud Powell; Blues in the Closet; Verve; 1958
 youtube: k_y1RZDdGWU
-# analysis: 2026-10-19, rules v2; F, blues
+# analysis: 2026-10-22, rules v2; F, blues
 # recording: recorded 1956-09-23, Fine Sound Studios, NYC, Bud Powell with Ray Brown, Osie Johnson, Verve MGV 8218, the title track; the composers' own first recording (Oscar Pettiford and Harry Babasin, cellos, 1953-05-14, Hollywood) was issued only on a 7" EP (Imperial IMP 122), with no LP issue confirmed and no official upload → Powell's reading as the LP-era reference (Wikipedia, jazzdisco, Fresh Sound); video: "Provided to YouTube by Universal Music Group", Blues In The Closet, the same take
 
 # bar | chord | scale
 
 section: A
-1  | F7   # I7 of the blues: a tonic with dominant colour, Mixolydian
-2  | Bb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-3  | F7   # I7 of the blues: a tonic with dominant colour, Mixolydian
-5  | Bb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-7  | F7   # I7 of the blues: a tonic with dominant colour, Mixolydian
+1  | F7   # I7 of the blues: a tonic with dominant color, Mixolydian
+2  | Bb7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+3  | F7   # I7 of the blues: a tonic with dominant color, Mixolydian
+5  | Bb7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+7  | F7   # I7 of the blues: a tonic with dominant color, Mixolydian
 9  | Gm7  # ii of C7: Dorian
 10 | C7   # extended dominant: V7 of F7
-11 | F7   # I7 of the blues: a tonic with dominant colour, Mixolydian
+11 | F7   # I7 of the blues: a tonic with dominant color, Mixolydian
 12 | C7   # V7 of the blues: a dominant that needn’t resolve, Mixolydian

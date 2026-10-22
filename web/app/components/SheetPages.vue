@@ -41,7 +41,7 @@
 </template>
 
 <script setup lang="ts" generic="T extends { subtitle: string }">
-import { PAGE_HEIGHT, PAGE_WIDTH, PAGE_ZOOM, pageZoom, SHEET_PAGED } from '~/utils/sheetPaged'
+import { FOCUS_BAR_HEIGHT, PAGE_HEIGHT, PAGE_WIDTH, PAGE_ZOOM, pageZoom, SHEET_PAGED } from '~/utils/sheetPaged'
 
 /** a sheet's printed pages: continuous on screen, one letter page each in print */
 const props = defineProps<{
@@ -63,16 +63,21 @@ const tallest = ref(0)
 const room = ref({ width: 0, height: 0 })
 const zoom = computed(() => pageZoom(room.value, tallest.value))
 provide(PAGE_ZOOM, computed(() => (paged.value ? zoom.value : 1)))
-// focus mode's chrome above and below a page: its Exit bar (60) and the bar's margin (24), the space above the
-// paper (16) and below it (32), and a little for the paper's shadow
-const FOCUS_CHROME = 136
+// focus mode's chrome above and below a page, past its top bar (measured: Exit, and the click): the bar's margin
+// (24), the space above the paper (16) and below it (32), and a little for the paper's shadow
+const FOCUS_CHROME = 76
+const focusBarHeight = inject(FOCUS_BAR_HEIGHT, ref(60))
 let sized: ResizeObserver | undefined
 let mounted = false
 const measure = (): void => {
   tallest.value = Math.max(0, ...(sections.value ?? []).map((s) => s.offsetHeight)) // offsetHeight: before the zoom
   const scroller = root.value?.closest<HTMLElement>('[aria-modal]') // the focus overlay; its scrollbar isn't room
-  room.value = { width: (scroller?.clientWidth ?? window.innerWidth) - 32, height: window.innerHeight - FOCUS_CHROME }
+  room.value = { width: (scroller?.clientWidth ?? window.innerWidth) - 32, height: window.innerHeight - FOCUS_CHROME - focusBarHeight.value }
 }
+// the top bar grows (the click shown, or wrapping on a phone): the pages fit again
+watch(focusBarHeight, () => {
+  if (paged.value && mounted) measure()
+})
 const unwatch = (): void => {
   sized?.disconnect()
   sized = undefined

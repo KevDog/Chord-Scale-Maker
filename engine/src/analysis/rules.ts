@@ -145,12 +145,12 @@ function dominantDecision(e: Entry, rule: string, fn: string, base: Slots, why: 
   return { scale: named(e, dominantScale(slots)), rule: moved ? `D1+${rule}` : rule, fn, reason }
 }
 
-const BLUES_ROLE = { I: 'a tonic with dominant colour', IV: 'a subdominant with dominant colour', V: 'a dominant that needn’t resolve' } as const
+const BLUES_ROLE = { I: 'a tonic with dominant color', IV: 'a subdominant with dominant color', V: 'a dominant that needn’t resolve' } as const
 /** D9: a blues dominant, Mixolydian; written tensions still move it (D1+D9) */
 function bluesDominant(e: Entry, step: 'I' | 'IV' | 'V'): Decision {
   const why = `${step}7 of the blues: ${BLUES_ROLE[step]}`
   const moved = dominantScale({ ...NATURAL, ...pins(e.symbol) }) !== NAME.mixolydian // the symbol's notes then name the scale
-  const extra = step === 'IV' ? ' (the #11 is an extra colour)' : ''
+  const extra = step === 'IV' ? ' (the #11 is an extra color)' : ''
   return dominantDecision(e, 'D9', `${step}7 of the blues`, NATURAL, moved ? why : `${why}, Mixolydian${extra}`, false)
 }
 
@@ -374,7 +374,7 @@ function halfDiminished(ctx: Context, i: number): Decision {
   return { scale: named(e, NAME.locrian), rule: 'h2', fn: related ? `${fn}${alsoDegree(e, key)}` : fn, reason: why, ...(related ? {} : { fallback: true as const }) }
 }
 
-type Neighbour = Pick<Entry, 'chord' | 'root' | 'pc' | 'family' | 'quality'>
+type Neighbor = Pick<Entry, 'chord' | 'root' | 'pc' | 'family' | 'quality'>
 /** the dominant a °7 hides, without its root: its root, the chord it is the V of, and the ii that stands between */
 export type Hidden = Readonly<{ root: string; target: string; ii?: string }>
 
@@ -383,10 +383,10 @@ export type Hidden = Readonly<{ root: string; target: string; ii?: string }>
  * chord after it when the next is that chord's related ii (Wave: B♭°7 → Am7 D7 hides A7♭9, not E7♭9); spelled a
  * fifth above its target. null when none is.
  */
-export function hiddenDominant(dim: number, next: Neighbour | undefined, after: Neighbour | undefined): Hidden | null {
-  const hides = (t: Neighbour | undefined): t is Neighbour & { root: NonNullable<Entry['root']> } =>
+export function hiddenDominant(dim: number, next: Neighbor | undefined, after: Neighbor | undefined): Hidden | null {
+  const hides = (t: Neighbor | undefined): t is Neighbor & { root: NonNullable<Entry['root']> } =>
     !!t?.root && t.pc >= 0 && [0, 3, 6, 9].some((k) => interval(dim + k - 1, t.pc) === 5)
-  const fifthAbove = (t: Neighbour & { root: NonNullable<Entry['root']> }): string => rootName(shiftBy(t.root, 4, 7))
+  const fifthAbove = (t: Neighbor & { root: NonNullable<Entry['root']> }): string => rootName(shiftBy(t.root, 4, 7))
   if (hides(next)) return { root: fifthAbove(next), target: next.chord }
   const ii = !!next && (next.family === 'minor' || next.family === 'halfdim') && isDominantLike(after as Entry) && !!after && interval(next.pc, after.pc) === 5
   if (ii && hides(after)) return { root: fifthAbove(after), target: after.chord, ii: next.chord }
@@ -523,7 +523,7 @@ export const RULES: readonly RuleInfo[] = [
   { id: 'D3', family: 'dominant', tier: 4, scale: 'Mixolydian', looksAt: 'the next chord, another dominant a fifth down', summary: 'An extended dominant (V7 of another V7) keeps natural tensions: Mixolydian (a blues I7 before its IV7 is not one: D9). A link into the key’s own V7 is V7/V (the dominant of the dominant), the links before it arrows; a chain that never reaches the key’s V7 keeps each chord’s own degree.' },
   { id: 'D4', family: 'dominant', tier: 4, scale: 'derived from the key', looksAt: 'the chord it resolves to, a fifth down; the major or minor chord before it that it is the V of; or the ii before it', summary: 'A resolving dominant takes each tension (9, 11, 13) in the form the key holds.' },
   { id: 'D5', family: 'dominant', tier: 3, scale: 'derived from the key', looksAt: 'its degree: the back door, or a diatonic dominant', summary: 'A dominant a whole step below a major chord (the back door, ♭VII7), or a diatonic dominant that does not resolve, takes its tensions from the key.', guess: 'a diatonic dominant that does not resolve' },
-  { id: 'D9', family: 'dominant', tier: 3, scale: 'Mixolydian', looksAt: 'a blues: its degree, the I7, IV7 or V7 (before the chords around it), and for the V7 the chord before it', summary: 'In a blues the I7 (a tonic with dominant colour), the IV7 and the V7 are Mixolydian, unless a ii before the V7 makes it a ii–V; at Basic they play the key’s Blues scale. A minor blues’ V7 keeps the minor key’s rules.' },
+  { id: 'D9', family: 'dominant', tier: 3, scale: 'Mixolydian', looksAt: 'a blues: its degree, the I7, IV7 or V7 (before the chords around it), and for the V7 the chord before it', summary: 'In a blues the I7 (a tonic with dominant color), the IV7 and the V7 are Mixolydian, unless a ii before the V7 makes it a ii–V; at Basic they play the key’s Blues scale. A minor blues’ V7 keeps the minor key’s rules.' },
   { id: 'D6', family: 'dominant', tier: 4, scale: 'Lydian Dominant', looksAt: 'a non-diatonic dominant with nowhere to go', summary: 'A non-diatonic dominant that does not resolve is Lydian Dominant: in a major key, ♭VII7, ♭VI7 or ♭III7 borrowed from the parallel minor; any other, a chromatic dominant in its own key.', guess: 'a chromatic dominant (not ♭VII7, ♭VI7 or ♭III7 in a major key)' },
   { id: 'M1', family: 'major', tier: 1, scale: 'Lydian', looksAt: 'a #11 in the symbol', summary: 'A maj7#11, or a triad with a #11 (Bb(#11)), is Lydian.' },
   { id: 'M2', family: 'major', tier: 1, scale: 'Lydian Augmented', looksAt: 'a #5 in the symbol', summary: 'A maj7#5 is Lydian Augmented; an augmented triad, Whole Tone.' },

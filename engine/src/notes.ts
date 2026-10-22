@@ -11,7 +11,7 @@ export { sameFunction } from './analysis/functions'
 
 /**
  * What the editor shows beside each row (docs/superpowers/specs/2026-10-09-chart-functions-design.md §3): why the
- * analyser chose the scale it did, any problem with the row's function, and the key area (where a key change from
+ * analyzer chose the scale it did, any problem with the row's function, and the key area (where a key change from
  * this row would start). Live, from analyse(), so every chart has notes, not only those the CLI saved. Keyed by doc
  * line.
  */
@@ -42,7 +42,7 @@ export function rowNotes(doc: ChartDoc, view: ScaleView = STANDARD): ReadonlyMap
     const played = resolved.get(r.row) ?? { scale: null, source: 'default' }
     const differs = played.source === 'written' && !!r.scale && !!played.scale && !sameScale(played.scale, r.scale)
     out.set(r.line, {
-      note: differs ? `analyser: ${r.scale} (${r.reason}); you chose ${played.scale}` : r.reason,
+      note: differs ? `analyzer: ${r.scale} (${r.reason}); you chose ${played.scale}` : r.reason,
       problem: problemAt(r.line),
       key: keyCode(r.key),
       numeral: r.numeral === '?' ? '' : r.numeral,

@@ -7,18 +7,18 @@ form: A, 12 bars
 source: Colorado Cookbook, p. 144
 recording: Oscar Peterson Trio + One; Oscar Peterson Trio + One: Clark Terry; Mercury; 1964
 youtube: FxrTl7Hqt1Q
-# analysis: 2026-10-19, rules v2; Eb, blues
+# analysis: 2026-10-22, rules v2; Eb, blues
 # recording: recorded 1964-08-17, NYC, Clark Terry (vocal) with Oscar Peterson, Ray Brown, Ed Thigpen, Mercury MG-20975/SR-60975, also a single (Mercury 72342, with Incoherent Blues), the first recording of it (jazzdisco, MusicBrainz); video: "Provided to YouTube by Universal Music Group", Oscar Peterson's Finest Hour, the same 1964 take (one take only)
 
 # bar | chord | scale
 
 section: A
 bars: 12
-1  | Eb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
-2  | Ab7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-3  | Eb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
-5  | Ab7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-7  | Eb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+1  | Eb7  # I7 of the blues: a tonic with dominant color, Mixolydian
+2  | Ab7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+3  | Eb7  # I7 of the blues: a tonic with dominant color, Mixolydian
+5  | Ab7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+7  | Eb7  # I7 of the blues: a tonic with dominant color, Mixolydian
 9  | Fm7  # ii of Bb7: Dorian
 10 | Bb7  # extended dominant: V7 of Eb7
-11 | Eb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+11 | Eb7  # I7 of the blues: a tonic with dominant color, Mixolydian

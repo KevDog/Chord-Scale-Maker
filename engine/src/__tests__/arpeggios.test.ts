@@ -12,11 +12,11 @@ const TENOR: Part = { clef: 'treble', trans: 'Bb' }
 const names = (chord: string, part: Part = CONCERT) => arpeggioTones(part, chord)?.map(rootName) ?? null
 
 describe('arpeggio patterns', () => {
-  it('lists the ten patterns in toolbar order, each labelled', () => {
+  it('lists the ten patterns in toolbar order, each labeled', () => {
     expect(ARPEGGIO_PATTERNS).toEqual(['up-root', 'up-1st', 'up-2nd', 'up-3rd', 'down-root', 'down-1st', 'down-2nd', 'down-3rd', 'up-down', 'voice-led'])
     expect(ARPEGGIO_PATTERNS.map((p) => ARPEGGIO_LABELS[p])).toEqual(['Up · root', 'Up · 1st inv', 'Up · 2nd inv', 'Up · 3rd inv', 'Down · root', 'Down · 1st inv', 'Down · 2nd inv', 'Down · 3rd inv', 'Up & down', 'Voice-led'])
   })
-  it('recognises patterns and sheet lines, nothing else', () => {
+  it('recognizes patterns and sheet lines, nothing else', () => {
     expect(isArpeggioPattern('up-root')).toBe(true)
     expect(isArpeggioPattern('third')).toBe(false)
     expect(['off', 'third', 'seventh', 'voice-led'].every(isSheetLine)).toBe(true)

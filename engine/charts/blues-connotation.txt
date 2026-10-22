@@ -6,7 +6,7 @@ form: A, 12 bars
 source: The New Real Book, Vol. 1
 recording: Ornette Coleman; This Is Our Music; Atlantic; 1961
 youtube: NwEoe84X99c
-# analysis: 2026-10-19, rules v2; Bb, blues
+# analysis: 2026-10-22, rules v2; Bb, blues
 # recording: recorded 1960-07-19, NYC, Don Cherry, Ornette Coleman, Charlie Haden, Ed Blackwell, matrix 4727 (as Untitled No. 5), Atlantic LP 1353; the composer's own first recording (not "P.S. Unless One Has (Blues Connotation No. 2)", a different piece) (jazzdisco); video: "Provided to YouTube by Rhino Atlantic", The Atlantic Years, the same take
 # chords suggested only (no chordal instrument on the recording)
 # the pickup bar is a melodic figure with no chords
@@ -16,17 +16,17 @@ youtube: NwEoe84X99c
 
 section: A
 bars: 16
-1  | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
-2  | Eb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-3  | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
-5  | Eb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-7  | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+1  | Bb7  # I7 of the blues: a tonic with dominant color, Mixolydian
+2  | Eb7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+3  | Bb7  # I7 of the blues: a tonic with dominant color, Mixolydian
+5  | Eb7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+7  | Bb7  # I7 of the blues: a tonic with dominant color, Mixolydian
 9  | Cm7  # ii of F7: Dorian
 10 | F7   # extended dominant: V7 of Bb7
-11 | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+11 | Bb7  # I7 of the blues: a tonic with dominant color, Mixolydian
 12 | F7   # V7 of the blues: a dominant that needn’t resolve, Mixolydian
 # bar 12: F7 on beat 3 (Bb7 continues on beats 1–2)
-13 | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+13 | Bb7  # I7 of the blues: a tonic with dominant color, Mixolydian
 @ending 1 12
 @ending 2 13
 @coda 11
@@ -36,5 +36,5 @@ bars: 16
 section: Coda
 bars: 4
 @coda 1
-1  | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+1  | Bb7  # I7 of the blues: a tonic with dominant color, Mixolydian
 # Coda: Bb7 held 4 bars

@@ -12,20 +12,20 @@ describe('rowNotes', () => {
     expect(notes('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n2 | G7\n3 | CMaj7\n').get(6)).toEqual({ note: 'V7 of C: natural tensions', problem: null, key: 'C', numeral: 'V7', scale: 'G Mixolydian', source: 'rules', analysed: 'G Mixolydian', rule: 'D4' })
   })
 
-  it("gives the analyser's scale and rule beside yours, at the sheet's level: what blanking the cell would play", () => {
+  it("gives the analyzer's scale and rule beside yours, at the sheet's level: what blanking the cell would play", () => {
     expect(notes('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n2 | G7 | G Altered\n3 | CMaj7\n').get(6)).toMatchObject({ scale: 'G Altered', analysed: 'G Mixolydian', rule: 'D4' })
     const minor = 'title: T\nkey: Gm\n\nsection: A\nbars: 4\n1 | Am7b5\n2 | D7\n3 | Gm7 | G Dorian\n'
     expect(notes(minor, { ...ON, level: 'basic' }).get(7)).toMatchObject({ scale: 'G Dorian', source: 'written', analysed: 'G Aeolian' })
   })
 
-  it('gives the scale played: yours over the analyser’s; and the function you stated as the numeral', () => {
+  it('gives the scale played: yours over the analyzer’s; and the function you stated as the numeral', () => {
     const n = notes('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n2 | G7 | G Altered | V7/I\n3 | CMaj7\n')
     expect(n.get(6)).toMatchObject({ numeral: 'V7/I', scale: 'G Altered', source: 'written' })
   })
 
-  it("says when your scale isn't the analyser's", () => {
+  it("says when your scale isn't the analyzer's", () => {
     expect(notes('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n2 | G7 | G Altered\n3 | CMaj7\n').get(6)?.note).toBe(
-      'analyser: G Mixolydian (V7 of C: natural tensions); you chose G Altered',
+      'analyzer: G Mixolydian (V7 of C: natural tensions); you chose G Altered',
     )
   })
 
@@ -48,7 +48,7 @@ describe('rowNotes', () => {
 })
 
 describe('functionChoices', () => {
-  it("offers the analyser's reading, then each function that fits, with the scale it would give", () => {
+  it("offers the analyzer's reading, then each function that fits, with the scale it would give", () => {
     const d7 = functionChoices(parseChart(C_TUNE).value).get(5) ?? []
     expect(d7[0]).toMatchObject({ value: '', label: 'II7', scale: 'D Mixolydian' })
     expect(d7).toContainEqual({ value: 'V7/V', label: 'V7/V (to G)', scale: 'D Mixolydian' })
@@ -56,7 +56,7 @@ describe('functionChoices', () => {
     expect(d7.map((c) => c.value)).toEqual(['', 'V7/V', 'V7/v', 'subV7/♭II', 'subV7/♭ii', '♭VII7/III'])
   })
 
-  it("leaves out a function that would read and sound the same as the analyser's", () => {
+  it("leaves out a function that would read and sound the same as the analyzer's", () => {
     const d7 = functionChoices(parseChart(C_TUNE).value).get(5) ?? []
     expect(d7.filter((c) => c.label === 'II7' && c.scale === 'D Mixolydian')).toHaveLength(1)
   })
@@ -73,7 +73,7 @@ describe('functionChoices', () => {
     expect(stated[0]).toEqual({ value: '', label: 'II7', scale: 'D Mixolydian' })
   })
 
-  it("shows Auto as the analyser's own reading even when the row states a function", () => {
+  it("shows Auto as the analyzer's own reading even when the row states a function", () => {
     const stated = functionChoices(parseChart(C_TUNE.replace('2 | D7', '2 | D7 | | subV7/♭II')).value).get(5) ?? []
     expect(stated[0]).toEqual({ value: '', label: 'II7', scale: 'D Mixolydian' })
   })

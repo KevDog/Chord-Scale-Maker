@@ -47,7 +47,7 @@ describe('scales', () => {
     expect(spellFrom(parseRoot('C#'), 'b8').map((n) => n.semis)).toEqual([11]) // an 8th is an octave above the root
   })
 
-  it('normalises names and resolves aliases', () => {
+  it('normalizes names and resolves aliases', () => {
     expect(scaleKey('Half Whole Dim')).toBe('half whole diminished')
     expect(scaleKey('major')).toBe('ionian')
     expect(scaleKey('Locrian ♮2')).toBe('locrian natural 2')

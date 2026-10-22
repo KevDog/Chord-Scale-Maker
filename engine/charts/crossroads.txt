@@ -8,20 +8,20 @@ source: iReal Pro
 aka: Cross Road Blues
 recording: Robert Johnson; King of the Delta Blues Singers; Columbia; 1961
 youtube: doZ-SAVJ8z0
-# analysis: 2026-10-19, rules v2; A, blues
+# analysis: 2026-10-22, rules v2; A, blues
 # recording: recorded 1936-11-27, Gunter Hotel, San Antonio, as "Cross Road Blues"; take SA-2629-2, first issued on this LP (CL 1654); the 78 (Vocalion 03519, 1937) used take 1; the chart's changes are a generic quick-change blues, not clearly Cream's "Crossroads" (Wheels of Fire, 1968), so the writer's record; sources: Wikipedia; video: "Provided to YouTube by Columbia/Legacy", King of the Delta Blues Singers, the same take
 
 section: A1
-1  | A7  # I7 of the blues: a tonic with dominant colour, Mixolydian
-2  | D7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-3  | A7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+1  | A7  # I7 of the blues: a tonic with dominant color, Mixolydian
+2  | D7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+3  | A7  # I7 of the blues: a tonic with dominant color, Mixolydian
 4  | A7
-5  | D7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+5  | D7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 6  | D7
-7  | A7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+7  | A7  # I7 of the blues: a tonic with dominant color, Mixolydian
 8  | A7
 9  | E7  # V7 of the blues: a dominant that needn’t resolve, Mixolydian
-10 | A7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+10 | A7  # I7 of the blues: a tonic with dominant color, Mixolydian
 11 | A7
 12 | A7
 

@@ -18,7 +18,7 @@
             “{{ row.chord }}” isn’t a chord I know. Check the spelling (Cm7, F7♯9 is F7#9, B♭maj7 is Bbmaj7), or pick a scale for it below.
           </p>
         </div>
-        <ChordChoices v-if="target" :doc="doc" :line="target.line" @update:doc="emit('update:doc', $event)" @said="emit('said', $event)" />
+        <ChordChoices v-if="target" :doc="doc" :source="source" :line="target.line" @update:doc="emit('update:doc', $event)" @said="emit('said', $event)" />
       </div>
       <div class="flex justify-end border-t border-zinc-950/5 px-5 py-3 dark:border-white/5">
         <UiButton color="note" @click="emit('close')">Done</UiButton>
@@ -29,17 +29,18 @@
 
 <script setup lang="ts">
 import { Dialog as HDialog, DialogPanel as HDialogPanel, DialogTitle as HDialogTitle } from '@headlessui/vue'
-import { cellError, type ChartDoc, lineSections, type RowLine, setLineChord } from '@chord-scale-maker/engine'
+import { cellError, type ChangesSet, type ChartDoc, lineSections, type RowLine, setLineChordIn } from '@chord-scale-maker/engine'
 import ChordChoices from './ChordChoices.vue'
-import { CANT_TAKE, NO_FIRST_CHORD, notAChord } from '~/utils/refusals'
+import { CANT_TAKE, noChords, notAChord } from '~/utils/refusals'
 import type { SheetChordEdit } from '~/utils/sheetChordEdit'
 
 /**
  * A chord tapped on the Changes sheet below md (a phone), to change: its symbol in concert pitch, then its scale and
  * function (ChordChoices), in a bottom sheet. A dialog: focus stays in it, and Escape or a tap outside closes it.
- * From md up the sheet is the editor itself (SheetChord), and no chord is tapped here.
+ * From md up the sheet is the editor itself (SheetChord), and no chord is tapped here. `doc` is the set played, which it
+ * reads; a change is written to `source`, the chart (with its alt rows), in that `set` (#469).
  */
-const props = defineProps<{ doc: ChartDoc; target: SheetChordEdit | null }>()
+const props = defineProps<{ doc: ChartDoc; target: SheetChordEdit | null; source?: ChartDoc; set?: ChangesSet }>()
 const emit = defineEmits<{ 'update:doc': [doc: ChartDoc]; said: [text: string]; close: [] }>()
 
 const row = computed((): RowLine | null => {
@@ -74,9 +75,10 @@ function apply(): void {
   const text = draft.value.trim()
   if (!t || !row.value || text === written) return
   if (error.value) return void emit('said', error.value) // shown under the field, and said
-  const next = setLineChord(props.doc, t.line, text)
-  if (next === props.doc) {
-    refused.value = text ? CANT_TAKE : NO_FIRST_CHORD
+  const source = props.source ?? props.doc
+  const next = setLineChordIn(source, props.set ?? 'standard', t.line, text)
+  if (next === source) {
+    refused.value = text ? CANT_TAKE : noChords(props.set)
     return void emit('said', refused.value)
   }
   written = text

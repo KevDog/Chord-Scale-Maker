@@ -15,7 +15,7 @@ describe('docsGate', () => {
     expect(docsGate(['engine/src/__tests__/a.test.ts'], null).ok).toBe(true)
   })
 
-  it('passes a behaviour change with Help and the release notes changed', () => {
+  it('passes a behavior change with Help and the release notes changed', () => {
     expect(docsGate([COMPONENT, HELP, RELEASE_NOTES_FILE], null)).toEqual({ ok: true, why: 'docs changed; release notes changed' })
   })
 

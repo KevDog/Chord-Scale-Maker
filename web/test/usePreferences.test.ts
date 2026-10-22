@@ -198,7 +198,7 @@ describe('usePreferences', () => {
     expect([again.instrument.value, again.spell.value]).toEqual(['alto-sax', 'Eb'])
   })
 
-  it('ignores stored values it does not recognise', () => {
+  it('ignores stored values it does not recognize', () => {
     localStorage.setItem('csm-instrument', 'kazoo')
     localStorage.setItem('csm-spell', 'H')
     const p = prefs()

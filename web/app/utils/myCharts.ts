@@ -69,8 +69,9 @@ export function saveChart(input: Readonly<{ id: string; text: string; kind: Save
 }
 
 /** what a chart's view keeps per chart, under `<prefix>:<key>` (practice adds `:<mode>`): one list for delete, the sweep and a backup (#466) */
-export const PER_CHART_PREFIXES = ['csm-practice', 'csm-level', 'csm-pent-path', 'csm-pent-picks', 'csm-undo'] as const
-const MINE_KEY = new RegExp(`^(?:${PER_CHART_PREFIXES.join('|')}):mine:([A-Za-z0-9_-]+)(?::[a-z]+)?$`)
+export const PER_CHART_PREFIXES = ['csm-practice', 'csm-level', 'csm-pent-path', 'csm-pent-picks', 'csm-undo', 'csm-changes'] as const
+/** the alternate set's picks and practice add `~alt` after the chart key (#215) */
+const MINE_KEY = new RegExp(`^(?:${PER_CHART_PREFIXES.join('|')}):mine:([A-Za-z0-9_-]+)(?:~alt)?(?::[a-z]+)?$`)
 
 /** the saved chart id a per-chart key belongs to, if it's one of yours */
 const mineIdOf = (key: string): string | null => MINE_KEY.exec(key)?.[1] ?? null

@@ -1,5 +1,5 @@
 /**
- * fixtures/golden.json: the engine's answers over a wide fixed set of inputs, frozen so any change in behaviour shows
+ * fixtures/golden.json: the engine's answers over a wide fixed set of inputs, frozen so any change in behavior shows
  * up in review. It began as jazz_scales.py's answers (the Python CLI this engine was ported from, retired after
  * v1-launch); the engine is now its own reference. After an intended change, or new charts or scales:
  *   npm run golden    (rewrites the file; review the diff)
@@ -17,6 +17,8 @@ import {
   CONCERT,
   chartBeats,
   chartMeta,
+  changesFor,
+  hasAlternates,
   chordTokens,
   defaultScale,
   expandRows,
@@ -25,6 +27,8 @@ import {
   hexatonicChoices,
   hexatonicPairs,
   isSyncCopy,
+  layRhythm,
+  LIBRARY_IDS,
   lilyNote,
   type Part,
   parseChart,
@@ -37,6 +41,10 @@ import {
   resolveQuality,
   resolveScales,
   resolveStart,
+  formatRhythm,
+  type RhythmId,
+  rhythmLabel,
+  rhythmOf,
   rootName,
   SCALES,
   type ScaleOption,
@@ -61,7 +69,10 @@ export type Golden = {
   charts: Record<string, { text: string; title: string; subtitle: string; key: string; rows: (string | null)[][]; timing: (number | string | boolean)[][]; areas: (string | boolean)[][] }>
   hexatonics: Hexatonics
   pentatonics: Pentatonics
+  rhythms: Rhythms
 }
+/** each library rhythm: its label, its text (null for a per-bar rhythm), and its landings over sixteen bars of 4/4 and of 3/4 */
+export type Rhythms = Record<RhythmId, { label: string; text: string | null; landings44: number[]; landings34: number[] }>
 /** pairs: every scale's pairs on C (no chord tones); auto: each quality's Auto pair on C over its default scale */
 /** choices: each quality's default scale on C, its pairs in the popover's (Auto's) order (#303) */
 export type Hexatonics = { pairs: Record<string, string[]>; auto: Record<string, { scale: string | null; pair: string | null }>; choices: Record<string, string[]> }
@@ -160,6 +171,15 @@ export function scaleCase(part: Part, text: string, fromStarts: readonly string[
   }
 }
 
+/** the suffix of a chart's alternate-changes entry in the fixture */
+export const ALTERNATE = '~alternate'
+
+/** a fixture chart's doc: the chart's text, at the set its name says */
+export const chartDocFor = (name: string, text: string): ChartDoc => {
+  const doc = parseChart(text).value
+  return name.endsWith(ALTERNATE) ? changesFor(doc, 'alternate') : doc
+}
+
 const repo = (path: string): URL => new URL(`../../${path}`, import.meta.url)
 export const GOLDEN_FILE = repo('fixtures/golden.json')
 
@@ -212,6 +232,17 @@ export function pentatonicCases(): Pentatonics {
   return { ranking, auto }
 }
 
+/** every library rhythm's label, text and landings (rhythm spec §3, §4) */
+export function rhythmCases(): Rhythms {
+  const landings = (id: RhythmId, beats: number) => [...(layRhythm(id, Array<number>(16).fill(beats))?.landings ?? [])]
+  return Object.fromEntries(
+    LIBRARY_IDS.map((id) => {
+      const r = rhythmOf(id)
+      return [id, { label: rhythmLabel(id), text: r?.kind === 'repeat' ? formatRhythm(r.rhythm) : null, landings44: landings(id, 4), landings34: landings(id, 3) }]
+    }),
+  ) as Rhythms
+}
+
 /** the fixture as the engine would write it now */
 export function buildGolden(): Golden {
   const chords = Object.entries(PARTS).flatMap(([id, part]) => [
@@ -226,10 +257,12 @@ export function buildGolden(): Golden {
     ...CHORD_SCALE_PAIRS.map(([chord, scale]) => ({ part: id, chord, scale, tokens: attempt(() => chordTokens(part, chord, scale)) })),
   ])
   const charts = Object.fromEntries(
-    Object.entries({ ...libraryCharts(), ...CHART_TEXTS }).map(([name, text]) => {
+    Object.entries({ ...libraryCharts(), ...CHART_TEXTS }).flatMap(([name, text]) => {
       const doc = parseChart(text).value
       const meta = chartMeta(doc)
-      return [name, { text, title: meta.title, subtitle: meta.subtitle, key: meta.key, rows: playedRows(doc), ...chartTiming(doc) }]
+      const entry = (d: ChartDoc) => ({ text, title: meta.title, subtitle: meta.subtitle, key: meta.key, rows: playedRows(d), ...chartTiming(d) })
+      // a chart with alt rows also freezes its alternate changes, under `<slug>~alternate` (#215)
+      return [[name, entry(doc)], ...(hasAlternates(doc) ? [[`${name}${ALTERNATE}`, entry(changesFor(doc, 'alternate'))]] : [])]
     }),
   )
   return {
@@ -246,6 +279,7 @@ export function buildGolden(): Golden {
     charts,
     hexatonics: hexatonicCases(),
     pentatonics: pentatonicCases(),
+    rhythms: rhythmCases(),
   }
 }
 
