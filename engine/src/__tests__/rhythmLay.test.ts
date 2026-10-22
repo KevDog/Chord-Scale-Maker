@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { layRhythm, rhythmCaption } from '../rhythm/lay'
 import type { RhythmId } from '../rhythm/library'
+import { rhythmNotes } from '../rhythm/notation'
 
 const cap = (id: RhythmId, bars: number[]) => rhythmCaption(id, layRhythm(id, bars)!, bars)
 
@@ -102,6 +103,28 @@ describe('layRhythm events', () => {
     for (const bar of r.bars) for (const e of bar) expect(e.length).toBeGreaterThan(0)
     expect(r.bars[1]!.reduce((n, e) => n + e.length, 0)).toBe(4)
     expect(r.bars[2]!.filter(e => !e.rest).map(e => e.at)).toEqual([6, 7])
+  })
+
+  it('plays only the spill in a 3/4 bar after 4/4 (Review Focus 2)', () => {
+    const r = layRhythm('run:8:3:6', [4, 3, 4])!
+    expect(r.bars[1]!.filter(e => !e.rest).map(e => e.at)).toEqual([0])
+    for (const bar of r.bars) for (const e of bar) expect(e.length).toBeGreaterThan(0)
+    expect(r.bars[1]!.reduce((n, e) => n + e.length, 0)).toBe(6)
+    expect(r.bars[2]!.filter(e => !e.rest).map(e => e.at)).toEqual([6, 7])
+    expect(rhythmNotes(r).flat().every(n => n.beat >= 0)).toBe(true)
+  })
+
+  it('takes the accent off a piece held into a bar', () => {
+    const r = layRhythm('custom:4:>x__', [2, 2])!
+    expect(r.bars[0]![0]).toMatchObject({ accent: true, tie: true })
+    expect(r.bars[1]![0]).toMatchObject({ tiedIn: true, accent: false })
+  })
+
+  it('gives a piece held into a bar the statement it belongs to', () => {
+    // 8ths in 3, tied: the statement on pulses 6–8 is the sheet's third (index 2)
+    const r = layRhythm('unit:8:3:tied', [4, 4])!
+    expect(r.bars[1]![0]).toMatchObject({ tiedIn: true, statement: 2 })
+    expect(r.bars[1]![1]).toMatchObject({ at: 1, tiedIn: false, statement: 3 })
   })
 
   it('accents only the attack and merges rests within a statement', () => {
