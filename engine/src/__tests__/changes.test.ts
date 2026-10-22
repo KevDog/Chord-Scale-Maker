@@ -18,6 +18,7 @@ import type { ScaleView } from '../resolve'
 import { type PentatonicDegree, PENTATONIC_HOME, type PentatonicPathName, type PentatonicStep } from '../pentatonics'
 import { abbreviateScale } from '../scales'
 import { chunk, isSyncCopy } from '../util'
+import { layRhythm, rhythmNotes } from '../rhythm'
 
 // a transparent wrapper, so a test can see what buildChanges hands the voice leading
 vi.mock('../guideTones', async (importOriginal) => {
@@ -1219,5 +1220,49 @@ describe('otherChords', () => {
 
   it('is empty for identical sheets', () => {
     expect(otherChords(sheet('standard'), sheet('standard')).size).toBe(0)
+  })
+})
+
+describe('the rhythm line and target beats (rhythm spec §8)', () => {
+  const eight = parseChart('key: C\n\nsection: A\nbars: 8\n1 | Dm7\n3 | G7\n5 | CMaj7\n7 | A7\n').value
+  const bars = (sheet: ChangesSheet) => sheet.lines.flatMap((l) => l.bars)
+
+  it('lays a rhythm over the bars with the Line off, and captions its cycle', () => {
+    const sheet = buildChanges(eight, CONCERT, 4, false, 'off', undefined, null, 'none', 'unit:8:5:accents')
+    expect(bars(sheet)).toHaveLength(8)
+    expect(bars(sheet).every((b) => b.rhythm.length > 0)).toBe(true)
+    expect(sheet.rhythmCaption).toBe('Rhythm: 8ths in 5, with accents · back on one every 5 bars')
+  })
+
+  it('draws no rhythm with a Line on', () => {
+    const sheet = buildChanges(eight, CONCERT, 4, false, 'third', undefined, null, 'none', 'unit:8:5:accents')
+    expect(bars(sheet).every((b) => b.rhythm.length === 0)).toBe(true)
+    expect(sheet.rhythmCaption).toBeNull()
+  })
+
+  it('has no rhythm and no targets by default', () => {
+    const sheet = buildChanges(eight, CONCERT)
+    expect(bars(sheet).every((b) => b.rhythm.length === 0 && b.targets.length === 0)).toBe(true)
+    expect(sheet.rhythmCaption).toBeNull()
+  })
+
+  it("marks each bar's target beats", () => {
+    const five = parseChart('key: C\ntime: 5/4\n\nsection: A\n1 | Dm7\n2 | G7\n3 | CMaj7\n').value
+    const sheet = buildChanges(five, CONCERT, 4, false, 'off', undefined, null, 'none', 'off', true)
+    expect(bars(sheet).map((b) => b.targets)).toEqual([[0, 3], [0, 3], [0, 3]])
+  })
+
+  it('counts a repeat drawn with repeat signs once', () => {
+    const doc = parseChart('key: C\n\nsection: A1\n1 | Dm7\n2 | G7\n3 | CMaj7\n4 | A7\n\nsection: A2\ncopy: A1\n').value
+    const sheet = buildChanges(doc, CONCERT, 4, false, 'off', undefined, null, 'none', 'unit:8:3:accents')
+    expect(bars(sheet)).toHaveLength(4)
+    expect(bars(sheet)[0]?.repeatStart).toBe(true)
+    expect(bars(sheet).map((b) => b.rhythm)).toEqual(rhythmNotes(layRhythm('unit:8:3:accents', [4, 4, 4, 4])!))
+    expect(sheet.rhythmCaption).toBe('Rhythm: 8ths in 3, with accents · back on one every 3 bars')
+  })
+
+  it('counts a rhythm as a voiced line on a printed page', () => {
+    expect(changesLinesPerPage('off', { numerals: true, scales: true }, true)).toBe(6)
+    expect(changesLinesPerPage('off', { numerals: true, scales: true })).toBe(8)
   })
 })

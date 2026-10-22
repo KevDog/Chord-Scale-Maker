@@ -27,6 +27,8 @@ import {
   hexatonicChoices,
   hexatonicPairs,
   isSyncCopy,
+  layRhythm,
+  LIBRARY_IDS,
   lilyNote,
   type Part,
   parseChart,
@@ -39,6 +41,10 @@ import {
   resolveQuality,
   resolveScales,
   resolveStart,
+  formatRhythm,
+  type RhythmId,
+  rhythmLabel,
+  rhythmOf,
   rootName,
   SCALES,
   type ScaleOption,
@@ -63,7 +69,10 @@ export type Golden = {
   charts: Record<string, { text: string; title: string; subtitle: string; key: string; rows: (string | null)[][]; timing: (number | string | boolean)[][]; areas: (string | boolean)[][] }>
   hexatonics: Hexatonics
   pentatonics: Pentatonics
+  rhythms: Rhythms
 }
+/** each library rhythm: its label, its text (null for a per-bar rhythm), and its landings over sixteen bars of 4/4 and of 3/4 */
+export type Rhythms = Record<RhythmId, { label: string; text: string | null; landings44: number[]; landings34: number[] }>
 /** pairs: every scale's pairs on C (no chord tones); auto: each quality's Auto pair on C over its default scale */
 /** choices: each quality's default scale on C, its pairs in the popover's (Auto's) order (#303) */
 export type Hexatonics = { pairs: Record<string, string[]>; auto: Record<string, { scale: string | null; pair: string | null }>; choices: Record<string, string[]> }
@@ -223,6 +232,17 @@ export function pentatonicCases(): Pentatonics {
   return { ranking, auto }
 }
 
+/** every library rhythm's label, text and landings (rhythm spec §3, §4) */
+export function rhythmCases(): Rhythms {
+  const landings = (id: RhythmId, beats: number) => [...(layRhythm(id, Array<number>(16).fill(beats))?.landings ?? [])]
+  return Object.fromEntries(
+    LIBRARY_IDS.map((id) => {
+      const r = rhythmOf(id)
+      return [id, { label: rhythmLabel(id), text: r?.kind === 'repeat' ? formatRhythm(r.rhythm) : null, landings44: landings(id, 4), landings34: landings(id, 3) }]
+    }),
+  ) as Rhythms
+}
+
 /** the fixture as the engine would write it now */
 export function buildGolden(): Golden {
   const chords = Object.entries(PARTS).flatMap(([id, part]) => [
@@ -259,6 +279,7 @@ export function buildGolden(): Golden {
     charts,
     hexatonics: hexatonicCases(),
     pentatonics: pentatonicCases(),
+    rhythms: rhythmCases(),
   }
 }
 
