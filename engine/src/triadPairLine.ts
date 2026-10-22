@@ -11,7 +11,7 @@ import { spellFrom } from './scales'
 
 /**
  * The Changes sheet's Triad pair line (#325): under the Hexatonic overlay, the Line's 7th Chords slot plays each
- * chord's labelled pair as three-note cells, its lower triad then its upper in turn (each chord from its lower), up,
+ * chord's labeled pair as three-note cells, its lower triad then its upper in turn (each chord from its lower), up,
  * down or alternating, each cell from its note nearest the last; in the arpeggio line's rhythm and range, a cell the
  * bar line cuts going on into the chord's next bar. Pure; no DOM.
  */

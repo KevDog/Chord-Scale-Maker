@@ -34,7 +34,7 @@ test('the Changes sheet’s Superimpose: Quartal names each chord’s stack; its
   await expect(page.locator('[data-slot="quartal"]')).toHaveCount(0)
 })
 
-test('the Line plays each chord’s labelled stack under the Quartal overlay, and 7th Chords again without it (#432)', async ({ page }) => {
+test('the Line plays each chord’s labeled stack under the Quartal overlay, and 7th Chords again without it (#432)', async ({ page }) => {
   await writeChart(page, CHART)
   const line = page.locator('svg[aria-label^="Bars:"]').first()
   await showArpeggios(page, 'Up · root')

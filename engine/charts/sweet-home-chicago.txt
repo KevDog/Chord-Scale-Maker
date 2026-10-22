@@ -7,19 +7,19 @@ form: A, 12 bars
 source: iReal Pro
 recording: Robert Johnson; King of the Delta Blues Singers, Vol. II; Columbia; 1970
 youtube: aXTQeNIoiwo
-# analysis: 2026-10-19, rules v2; F, blues
+# analysis: 2026-10-22, rules v2; F, blues
 # recording: recorded 1936-11-23, Gunter Hotel, San Antonio; take SA-2582-1, the only issued take, first issued on 78 (Vocalion 03601, 1937), not on the 1961 LP; the chart's plain 12-bar follows no particular cover, so the writer's record; sources: Wikipedia; video: "Provided to YouTube by Columbia/Legacy", King of the Delta Blues Singers (Volume 2), the same take
 
 section: A
-1  | F7   # I7 of the blues: a tonic with dominant colour, Mixolydian
-2  | Bb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-3  | F7   # I7 of the blues: a tonic with dominant colour, Mixolydian
+1  | F7   # I7 of the blues: a tonic with dominant color, Mixolydian
+2  | Bb7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+3  | F7   # I7 of the blues: a tonic with dominant color, Mixolydian
 4  | F7
-5  | Bb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+5  | Bb7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 6  | Bb7
-7  | F7   # I7 of the blues: a tonic with dominant colour, Mixolydian
+7  | F7   # I7 of the blues: a tonic with dominant color, Mixolydian
 8  | F7
 9  | C7   # V7 of the blues: a dominant that needn’t resolve, Mixolydian
-10 | Bb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-11 | F7   # I7 of the blues: a tonic with dominant colour, Mixolydian
+10 | Bb7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+11 | F7   # I7 of the blues: a tonic with dominant color, Mixolydian
 12 | F7

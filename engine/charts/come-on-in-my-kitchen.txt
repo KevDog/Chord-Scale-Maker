@@ -7,20 +7,20 @@ form: AA, 22 bars
 source: iReal Pro
 recording: Robert Johnson; King of the Delta Blues Singers; Columbia; 1961
 youtube: HVHT1Ylw9dI
-# analysis: 2026-10-19, rules v2; Bb, blues
+# analysis: 2026-10-22, rules v2; Bb, blues
 # recording: recorded 1936-11-23, Gunter Hotel, San Antonio; take SA-2585-1, unissued on 78 (Vocalion 03563 used take 2), first issued on this LP (CL 1654); sources: Wikipedia; video: "Provided to YouTube by Columbia/Legacy", King of the Delta Blues Singers, the same take (by length: 2:52)
 
 section: A1
-1  | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+1  | Bb7  # I7 of the blues: a tonic with dominant color, Mixolydian
 2  | Bb7
 3  | Bb7
 4  | Bb7
 5  | Bb7
 6  | Bb7
 7  | F7   # V7 of the blues: a dominant that needn’t resolve, Mixolydian
-8  | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+8  | Bb7  # I7 of the blues: a tonic with dominant color, Mixolydian
 8  | F7   # V7 of the blues: a dominant that needn’t resolve, Mixolydian
-9  | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+9  | Bb7  # I7 of the blues: a tonic with dominant color, Mixolydian
 10 | Bb7
 11 | Bb7
 

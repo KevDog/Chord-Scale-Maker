@@ -7,25 +7,25 @@ context: blues
 source: iReal Pro
 recording: The Jimi Hendrix Experience; Are You Experienced; Track; 1967
 youtube: tGNro_H388E
-# analysis: 2026-10-19, rules v2; B, blues
+# analysis: 2026-10-22, rules v2; B, blues
 # recording: recorded 1966-12-13, CBS Studios, London (Hendrix, Noel Redding, Mitch Mitchell; produced by Chas Chandler), the writer's own record; Track 612 001 (UK, 1967; not on the US album); US Smash Hits (1969) has another take (De Lane Lea, 1966-12-21); sources: Wikipedia, Discogs; video: "Provided to YouTube by Legacy Recordings", Blues (1994), the UK CBS take, the same take (not the Are You Experienced upload, which is the Smash Hits take)
 
 section: A
-1  | B7   # I7 of the blues: a tonic with dominant colour, Mixolydian
-2  | E7   # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-3  | B7   # I7 of the blues: a tonic with dominant colour, Mixolydian
+1  | B7   # I7 of the blues: a tonic with dominant color, Mixolydian
+2  | E7   # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+3  | B7   # I7 of the blues: a tonic with dominant color, Mixolydian
 4  | B7
-5  | E7   # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+5  | E7   # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 6  | E7
-7  | B7   # I7 of the blues: a tonic with dominant colour, Mixolydian
+7  | B7   # I7 of the blues: a tonic with dominant color, Mixolydian
 8  | B7
 9  | F#7  # V7 of the blues: a dominant that needn’t resolve, Mixolydian
-10 | E7   # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-11 | B7   # I7 of the blues: a tonic with dominant colour, Mixolydian
+10 | E7   # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+11 | B7   # I7 of the blues: a tonic with dominant color, Mixolydian
 12 | F#7  # V7 of the blues: a dominant that needn’t resolve, Mixolydian
-13 | B7   # I7 of the blues: a tonic with dominant colour, Mixolydian
+13 | B7   # I7 of the blues: a tonic with dominant color, Mixolydian
 14 | F#7  # V7 of the blues: a dominant that needn’t resolve, Mixolydian
 14 | C7   # tritone substitute: resolves down a half step to B7
-14 | B7   # I7 of the blues: a tonic with dominant colour, Mixolydian
+14 | B7   # I7 of the blues: a tonic with dominant color, Mixolydian
 @ending 1 11 12
 @ending 2 13 14

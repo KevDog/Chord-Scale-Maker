@@ -18,7 +18,7 @@
 import { RadioGroupOption as HRadioGroupOption } from '@headlessui/vue'
 import { dataFlag } from '~/utils/interactive'
 
-/** Catalyst Radio with its field (label and description in the slot), in the site's note colour */
+/** Catalyst Radio with its field (label and description in the slot), in the site's note color */
 defineProps<{ value: T; disabled?: boolean }>()
 
 const BASE = [

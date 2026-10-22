@@ -1,6 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { analyse, applyAnalysis, parseKey, pins, refreshAnalysis } from '../analysis'
+import { changesFor } from '../alternates'
+import { analyse, analyseBoth, applyAnalysis, onAlternate, parseKey, pins, refreshAnalysis } from '../analysis'
 import { keyText, makeKey, tonicName } from '../analysis/keys'
 import { hiddenDominant, passingReason } from '../analysis/rules'
 import { familyOf } from '../analysis/stream'
@@ -388,22 +389,22 @@ describe('R2: the blues I7 and IV7 by D9 before D3 (docs/superpowers/specs/2026-
   const fJazzBlues = library('f-jazz-blues')
 
   it('I7 of the blues is D9, not an extended dominant (F Jazz Blues bar 1)', () => {
-    expect(reasoned(fJazzBlues, '1 F7')).toBe('F Mixolydian (D9): I7 of the blues: a tonic with dominant colour, Mixolydian')
+    expect(reasoned(fJazzBlues, '1 F7')).toBe('F Mixolydian (D9): I7 of the blues: a tonic with dominant color, Mixolydian')
   })
 
   it('IV7 of the blues is Mixolydian, D9 (F Jazz Blues bar 5)', () => {
-    expect(reasoned(fJazzBlues, '5 Bb7')).toBe('Bb Mixolydian (D9): IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)')
+    expect(reasoned(fJazzBlues, '5 Bb7')).toBe('Bb Mixolydian (D9): IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)')
   })
 
   it('a IV7 whose symbol moves it off Mixolydian drops the Mixolydian clause (Ab7#11 in an Eb blues)', () => {
     const text = chart('', '1 Eb7, 5 Ab7#11, 7 Eb7, 9 Bb7, 10 Ab7, 11 Eb7, 12 Bb7')
     expect(analyse(parseChart(text).value).context).toBe('blues')
-    expect(reasoned(text, '5 Ab7#11')).toBe('Ab Lydian Dominant (D1+D9): IV7 of the blues: a subdominant with dominant colour; #11 from the symbol')
-    expect(reasoned(library('blue-trane'), 'A 5 Ab7#11')).toBe('Ab Lydian Dominant (D1+D9): IV7 of the blues: a subdominant with dominant colour; #11 from the symbol')
+    expect(reasoned(text, '5 Ab7#11')).toBe('Ab Lydian Dominant (D1+D9): IV7 of the blues: a subdominant with dominant color; #11 from the symbol')
+    expect(reasoned(library('blue-trane'), 'A 5 Ab7#11')).toBe('Ab Lydian Dominant (D1+D9): IV7 of the blues: a subdominant with dominant color; #11 from the symbol')
   })
 
   it('an I7 whose symbol moves it names the symbol’s notes, not natural tensions (Eb7#9)', () => {
-    expect(reasoned(library('blue-trane'), 'A 1 Eb7#9')).toBe('Eb Half-Whole Diminished (D1+D9): I7 of the blues: a tonic with dominant colour; b9, #9 and #11 from the symbol')
+    expect(reasoned(library('blue-trane'), 'A 1 Eb7#9')).toBe('Eb Half-Whole Diminished (D1+D9): I7 of the blues: a tonic with dominant color; b9, #9 and #11 from the symbol')
   })
 
   it('no I7 row of any library blues is reasoned by D3', () => {
@@ -654,7 +655,7 @@ describe('stated functions and @key (docs/superpowers/specs/2026-10-09-chart-fun
   const rowOf = (text: string, barChord: string) => analyse(parseChart(text).value).rows.find((r) => `${r.bar} ${r.chord}` === barChord)
   const C_TUNE = ['1 | CMaj7', '2 | D7', '3 | Dm7', '4 | G7', '5 | Am7', '6 | Dm7', '7 | G7', '8 | CMaj7']
 
-  it('a stated target overrides the neighbour: D7 going nowhere, stated V7/V', () => {
+  it('a stated target overrides the neighbor: D7 going nowhere, stated V7/V', () => {
     const plain = lines('C', C_TUNE)
     expect(verdict(plain, '2 D7')).toBe('D Mixolydian (D5)')
     expect(rowOf(plain, '2 D7')?.fallback).toBe(true)
@@ -788,10 +789,74 @@ describe('refreshAnalysis', () => {
 })
 
 describe('N.C. in the analysis', () => {
-  it('leaves a rest out of the stream: it gets no row and no problem, and the chords around it are neighbours', () => {
+  it('leaves a rest out of the stream: it gets no row and no problem, and the chords around it are neighbors', () => {
     const a = analyse(parseChart('title: T\nkey: F\n\nsection: A\nbars: 4\n1 | C7\n2 | N.C.\n3 | FMaj7\n').value)
     expect(a.rows.map((r) => r.chord)).toEqual(['C7', 'FMaj7'])
     expect(a.rows[0]).toMatchObject({ rule: 'D4', reason: 'V7 of F: natural tensions' })
     expect(a.problems).toEqual([])
+  })
+})
+
+describe('analysis over both sets of a chart with alternates (#215)', () => {
+  // the alternate Db7 makes the Bb after it read as IV (Lydian) and the C as I (Ionian); the standard set reads them the other way
+  const base = 'key: C\n\nsection: A\nbars: 4\n1 | Cm7\n2 | F7\nalt 2 | Db7\n3 | Bb\n4 | C\n'
+  const both = (t: string) => {
+    const doc = parseChart(t).value
+    return { doc, std: analyse(changesFor(doc, 'standard')), alt: analyse(changesFor(doc, 'alternate')) }
+  }
+  const apply = (t: string, scales: 'strip' | 'none', save: boolean) => {
+    const { doc, std, alt } = both(t)
+    return applyAnalysis(doc, std, { scales, save, date: '2026-10-10' }, alt)
+  }
+  const rowOf = (d: ChartDoc, chord: string) => d.lines.find((l) => (l.kind === 'row' || l.kind === 'altRow') && l.chord === chord)
+
+  it('save: an alt row takes the alternate analysis’s reason, a row the standard’s', () => {
+    const { doc } = apply(base, 'none', true)
+    const { alt, std } = both(base)
+    expect(rowOf(doc, 'Db7')?.kind).toBe('altRow')
+    expect(rowOf(doc, 'Db7')).toMatchObject({ comment: alt.rows.find((r) => r.chord === 'Db7')?.reason })
+    expect(rowOf(doc, 'F7')).toMatchObject({ comment: std.rows.find((r) => r.chord === 'F7')?.reason })
+    expect(doc.lines.filter((l) => l.kind === 'comment' && /^#\s*analysis:/.test(l.text))).toHaveLength(1)
+  })
+
+  it('save is a no-op on its own output, and keeps the header date', () => {
+    const first = serializeChart(apply(base, 'none', true).doc)
+    const doc = parseChart(first).value
+    const again = applyAnalysis(doc, analyse(changesFor(doc, 'standard')), { scales: 'none', save: true, date: '2030-01-01' }, analyse(changesFor(doc, 'alternate')))
+    expect(serializeChart(again.doc)).toBe(first)
+  })
+
+  it('strip: a shared row goes blank only when both sets give its scale; an alt row when the alternate gives it', () => {
+    const written = 'key: C\n\nsection: A\nbars: 4\n1 | Cm7 | C Dorian\n2 | F7 | F Mixolydian\nalt 2 | Db7 | Db Lydian Dominant\n3 | Bb | Bb Ionian\n4 | C | C Lydian\n'
+    const out = apply(written, 'strip', false)
+    expect(rowOf(out.doc, 'Cm7')).toMatchObject({ scale: '' }) // both sets: Dorian
+    expect(rowOf(out.doc, 'F7')).toMatchObject({ scale: '' }) // standard bar only
+    expect(rowOf(out.doc, 'Db7')).toMatchObject({ kind: 'altRow', scale: '' })
+    expect(rowOf(out.doc, 'Bb')).toMatchObject({ scale: 'Bb Ionian' }) // the alternate reads it Lydian
+    expect(rowOf(out.doc, 'C')).toMatchObject({ scale: 'C Lydian' })
+    expect(out.overrides.map((o) => `${o.chord}: ${o.scale} / ${o.rules}`)).toEqual(['Bb: Bb Ionian / Bb Lydian', 'C: C Lydian / C Ionian'])
+  })
+
+  it('strip never blanks an alt row’s # keep:', () => {
+    const written = 'key: C\n\nsection: A\nbars: 4\n1 | Cm7\n2 | F7\nalt 2 | Db7 | Db Lydian Dominant  # keep: the line\n3 | Bb\n4 | C\n'
+    expect(rowOf(apply(written, 'strip', false).doc, 'Db7')).toMatchObject({ scale: 'Db Lydian Dominant', comment: 'keep: the line' })
+  })
+
+  it('analyseBoth: the standard set, and the alternate set only when the chart has alternates (#475)', () => {
+    const { doc, std, alt } = both(base)
+    expect(analyseBoth(doc)).toEqual({ standard: std, alternate: alt })
+    const plain = parseChart('key: C\n\nsection: A\n1 | Cm7\n2 | F7\n').value
+    expect(analyseBoth(plain)).toEqual({ standard: analyse(plain), alternate: undefined })
+  })
+
+  it('onAlternate marks a line of the alternate set’s report', () => {
+    expect(onAlternate('bar 2: Db7')).toBe('alternate: bar 2: Db7')
+  })
+
+  it('refreshAnalysis rewrites alt rows’ reasons too', () => {
+    const saved = serializeChart(apply(base, 'none', true).doc)
+    const stale = parseChart(saved.replace(/(alt 2 \| Db7[^\n]*?)#[^\n]*\n/, '$1# stale\n')).value
+    expect(rowOf(stale, 'Db7')).toMatchObject({ comment: 'stale' })
+    expect(serializeChart(refreshAnalysis(stale))).toBe(saved)
   })
 })

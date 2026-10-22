@@ -18,40 +18,10 @@
             <span class="text-xs/4 text-zinc-500 tabular-nums dark:text-zinc-400"><span class="sr-only">, the </span>{{ n.degree }}</span>
           </li>
         </ol>
-        <UiText>On C, at concert pitch: {{ page.notes }}. Its formula, <span class="whitespace-nowrap">{{ page.formula }}</span>, counts each note from the root as in a major scale: ♭3 is a minor third, ♯4 a raised fourth.</UiText>
       </section>
 
-      <section class="space-y-4" aria-labelledby="plays-over">
-        <UiSubheading id="plays-over" class="scroll-mt-6">Plays over</UiSubheading>
-        <template v-if="page.playsOver.length">
-          <UiText>The chords the app offers it for, on C. The default is what a chord with no scale written plays, unless the analysis of the tune picks another.</UiText>
-          <dl class="divide-y divide-zinc-950/5 dark:divide-white/5">
-            <div v-for="o in page.playsOver" :key="`${o.quality}|${o.root}`" class="flex flex-wrap items-baseline gap-x-4 gap-y-1 py-2.5">
-              <dt class="w-20 font-display text-lg/7 font-semibold text-zinc-950 dark:text-white"><ChordSymbol :tokens="o.symbolOnC" /></dt>
-              <dd class="flex flex-wrap items-baseline gap-2 text-sm/6 text-zinc-600 dark:text-zinc-400">
-                <span v-if="o.from">{{ o.from }}</span>
-                <UiBadge v-for="t in o.tags" :key="t" :color="t === 'default' ? 'note' : 'zinc'">{{ TAG_LABELS[t] }}</UiBadge>
-              </dd>
-            </div>
-          </dl>
-        </template>
-        <UiText v-else>No chord quality has it among its scales: the app plays it only where a chart writes it, or where the analysis of a tune chooses it.</UiText>
-      </section>
-
-      <section class="space-y-4" aria-labelledby="tunes">
-        <UiSubheading id="tunes" class="scroll-mt-6">Tunes</UiSubheading>
-        <template v-if="page.tunes.length">
-          <UiText>Library tunes where a chord plays it at the Standard level.</UiText>
-          <ul class="gap-x-8 text-sm/7 sm:columns-2">
-            <li v-for="t in page.tunes" :key="t.path" class="break-inside-avoid"><UiTextLink :href="t.path">{{ t.title }}</UiTextLink></li>
-          </ul>
-          <UiText v-if="page.more">and {{ page.more }} more.</UiText>
-        </template>
-        <UiText v-else>No library tune plays it at the Standard level yet.</UiText>
-      </section>
-
-      <section class="space-y-4" aria-labelledby="practise">
-        <UiSubheading id="practise" class="scroll-mt-6">Practise it</UiSubheading>
+      <section class="space-y-4" aria-labelledby="practice">
+        <UiSubheading id="practice" class="scroll-mt-6">Practice it</UiSubheading>
         <ClientOnly>
           <SheetRail>
             <template #left>
@@ -76,6 +46,33 @@
           <template #fallback><UiText>Loading the staff…</UiText></template>
         </ClientOnly>
       </section>
+
+      <section class="space-y-4" aria-labelledby="plays-over">
+        <UiSubheading id="plays-over" class="scroll-mt-6">Plays over</UiSubheading>
+        <template v-if="page.playsOver.length">
+          <dl class="divide-y divide-zinc-950/5 dark:divide-white/5">
+            <div v-for="o in page.playsOver" :key="`${o.quality}|${o.root}`" class="flex flex-wrap items-baseline gap-x-4 gap-y-1 py-2.5">
+              <dt class="w-20 font-display text-lg/7 font-semibold text-zinc-950 dark:text-white"><ChordSymbol :tokens="o.symbolOnC" /></dt>
+              <dd class="flex flex-wrap items-baseline gap-2 text-sm/6 text-zinc-600 dark:text-zinc-400">
+                <span v-if="o.from">{{ o.from }}</span>
+                <UiBadge v-for="t in o.tags" :key="t" :color="t === 'default' ? 'note' : 'zinc'">{{ TAG_LABELS[t] }}</UiBadge>
+              </dd>
+            </div>
+          </dl>
+        </template>
+        <UiText v-else>No chord quality has it among its scales: the app plays it only where a chart writes it, or where the analysis of a tune chooses it.</UiText>
+      </section>
+
+      <section class="space-y-4" aria-labelledby="tunes">
+        <UiSubheading id="tunes" class="scroll-mt-6">Tunes</UiSubheading>
+        <template v-if="page.tunes.length">
+          <ul class="gap-x-8 text-sm/7 sm:columns-2">
+            <li v-for="t in page.tunes" :key="t.path" class="break-inside-avoid"><UiTextLink :href="t.path">{{ t.title }}</UiTextLink></li>
+          </ul>
+          <UiText v-if="page.more">and {{ page.more }} more.</UiText>
+        </template>
+        <UiText v-else>No library tune plays it at the Standard level yet.</UiText>
+      </section>
     </article>
     <PageIndex :sections="SECTIONS" column :current="current" />
   </div>
@@ -99,9 +96,9 @@ useHead({ script: [{ type: 'application/ld+json', innerHTML: head.ld }] })
 
 const SECTIONS = [
   { id: 'notes', title: 'Notes' },
+  { id: 'practice', title: 'Practice it' },
   { id: 'plays-over', title: 'Plays over' },
   { id: 'tunes', title: 'Tunes' },
-  { id: 'practise', title: 'Practise it' },
 ]
 const current = useCurrentSection(() => SECTIONS.map((s) => s.id))
 
@@ -110,7 +107,7 @@ const TAG_LABELS: Readonly<Record<PlaysOverTag, string>> = { default: 'Default',
 const group = scaleGroupOf(page.key)
 const notes = page.notes.split(' ').map((note, i) => ({ note, degree: page.formula.split(' ')[i] ?? '' }))
 const COUNTS = ['', '', '', '', '', 'five', 'six', 'seven', 'eight', 'nine']
-const intro = `${notes.length === 8 ? 'An' : 'A'} ${COUNTS[notes.length] ?? notes.length}-note scale: its notes, the chords it plays over, the library tunes that use it, and a staff written for your instrument.`
+const intro = `${notes.length === 8 ? 'An' : 'A'} ${COUNTS[notes.length] ?? notes.length}-note scale: its notes, a staff written for your instrument, the chords it plays over, and the library tunes that use it.`
 /** the staff's chord: a default seventh chord (C–7 over C–) where the scale has one */
 const staffChord = (page.playsOver.find((o) => o.tags.includes('default') && /\d/.test(o.chord)) ?? page.playsOver[0])?.chord ?? 'C'
 

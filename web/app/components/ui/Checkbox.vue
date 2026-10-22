@@ -12,7 +12,7 @@
 </template>
 
 <script setup lang="ts">
-/** Catalyst Checkbox with its field (the label in the slot), in the site's note colour: a native checkbox under Catalyst's box */
+/** Catalyst Checkbox with its field (the label in the slot), in the site's note color: a native checkbox under Catalyst's box */
 defineProps<{ name?: string }>()
 const checked = defineModel<boolean>({ default: false })
 

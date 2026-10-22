@@ -65,6 +65,15 @@ export type NamedBeat = Readonly<{ beat: number; width: number }>
  * too full breaks
  */
 export type BarFit = Readonly<{ shares: readonly number[]; scales: readonly (readonly number[])[]; fits: number }>
+/**
+ * two rows of names over a bar's beats as one (the chords and, above them, the other set's, #215): each beat either row
+ * names, as wide as the wider name there, so each row's name clears the next beat of either row
+ */
+export function mergeNames(a: readonly NamedBeat[], b: readonly NamedBeat[]): NamedBeat[] {
+  const widths = new Map<number, number>()
+  for (const n of [...a, ...b]) widths.set(n.beat, Math.max(widths.get(n.beat) ?? 0, n.width))
+  return [...widths].sort(([x], [y]) => x - y).map(([beat, width]) => ({ beat, width }))
+}
 const FLOOR = 0.5 // of a bar's even share: the least it keeps when another bar is crowded
 const MIN_SCALE = 0.6 // a name shrinks no further, so it stays readable
 const BREAK_SCALE = 0.8 // names shrink this far before their line breaks

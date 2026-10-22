@@ -1,7 +1,8 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { isRest } from '../chord'
 import { describe, expect, it, vi } from 'vitest'
-import { breakLines, buildChanges, type ChangesLine, type ChangesSheet, changesLinesPerPage, changesSections, chordPositions, drawnChords, type PentatonicPlan, pickTargets, showHexatonics, showPentatonics, showQuartals } from '../changes'
+import { breakLines, buildChanges, type ChangesLine, type ChangesSheet, changesLinesPerPage, changesSections, chordPositions, drawnChords, type PentatonicPlan, otherChords, pickTargets, showHexatonics, showPentatonics, showQuartals } from '../changes'
+import { changesFor } from '../alternates'
 import { type ChartDoc, expandRowLines, parseChart } from '../chart'
 import { NO_PICKS, pickTarget, withPick } from '../chordPicks'
 import { resolveScales } from '../resolve'
@@ -17,6 +18,7 @@ import type { ScaleView } from '../resolve'
 import { type PentatonicDegree, PENTATONIC_HOME, type PentatonicPathName, type PentatonicStep } from '../pentatonics'
 import { abbreviateScale } from '../scales'
 import { chunk, isSyncCopy } from '../util'
+import { layRhythm, rhythmNotes } from '../rhythm'
 
 // a transparent wrapper, so a test can see what buildChanges hands the voice leading
 vi.mock('../guideTones', async (importOriginal) => {
@@ -792,7 +794,7 @@ describe('buildChanges with a Pentatonic line (#284)', () => {
   const keys = (sheet: ChangesSheet) => sheet.lines.flatMap((l) => l.bars.map((b) => b.voice.map((n) => (n.pitch ? toVexKey(n.pitch) : 'r'))))
   const flatChords = (sheet: ChangesSheet) => sheet.lines.flatMap((l) => l.bars.flatMap((b) => b.chords))
   const pcSet = (root: Spelled) => new Set([0, 3, 5, 7, 10].map((d) => (pcOf(root) + d) % 12))
-  it("plays each chord's labelled pentatonic as cells, in the arpeggio's rhythm, each from the note nearest the last", () => {
+  it("plays each chord's labeled pentatonic as cells, in the arpeggio's rhythm, each from the note nearest the last", () => {
     const sheet = buildChanges(doc, CONCERT, 4, false, PENT, undefined, one(0, 'flat')) // C major: Am everywhere
     expect(keys(sheet).slice(0, 2)).toEqual([
       ['c/4', 'd/4', 'e/4', 'g/4', 'e/4', 'g/4', 'c/5', 'd/5'],
@@ -823,7 +825,7 @@ describe('buildChanges with a Pentatonic line (#284)', () => {
     const sheet = buildChanges(doc, CONCERT, 4, false, PENT, undefined, one(1, 'flat')) // Dm
     expect(keys(sheet)[0]?.slice(0, 4)).toEqual(['f/4', 'g/4', 'a/4', 'c/5'])
   })
-  it('honours a chord pick', () => {
+  it('honors a chord pick', () => {
     const targets = pickTargets(doc, resolveScales(doc, { level: 'standard', seed: 0 }))
     const picks = withPick(NO_PICKS, 'pentatonic', ['A:1:1'], 4, targets).pentatonic // G7: Em
     const sheet = buildChanges(doc, CONCERT, 4, false, PENT, undefined, { ...one(0, 'flat'), picks })
@@ -863,7 +865,7 @@ describe('buildChanges with a Quartal line (#432)', () => {
   const Q = { kind: 'quartal' } as const
   const LINE: QuartalLine = { kind: 'quartal', dir: 'up-down', arpeggio: 'up-root' }
   const keys = (sheet: ChangesSheet) => sheet.lines.flatMap((l) => l.bars.map((b) => b.voice.map((n) => (n.pitch ? toVexKey(n.pitch) : 'r'))))
-  it("plays each chord's labelled stack, whole; a chord with none its 7th chord arpeggio", () => {
+  it("plays each chord's labeled stack, whole; a chord with none its 7th chord arpeggio", () => {
     const bars = keys(buildChanges(doc, CONCERT, 4, false, LINE, undefined, Q))
     expect(bars.slice(0, 3)).toEqual([['d/4', 'g/4', 'c/5', 'f/5'], ['a/5', 'e/5', 'b/4', 'f/4'], ['e/4', 'a/4', 'd/5', 'g/5']])
     expect(bars[3]!.map((k) => k.replace(/\/\d/, ''))).toEqual(['c', 'e', 'g', 'bb']) // half-whole: no stack
@@ -882,7 +884,7 @@ describe('buildChanges with a Triad pair line (#325)', () => {
   const HEX = { kind: 'hexatonic' } as const
   const PAIR: TriadPairLine = { kind: 'triad-pair', dir: 'up', arpeggio: 'up-root' }
   const keys = (sheet: ChangesSheet) => sheet.lines.flatMap((l) => l.bars.map((b) => b.voice.map((n) => (n.pitch ? toVexKey(n.pitch) : 'r'))))
-  it("plays each chord's labelled pair: its lower triad, then its upper from the note nearest the last", () => {
+  it("plays each chord's labeled pair: its lower triad, then its upper from the note nearest the last", () => {
     const sheet = buildChanges(doc, CONCERT, 4, false, PAIR, undefined, HEX) // G/Am, C/Dm, …
     expect(keys(sheet)[0]).toEqual(['g/4', 'b/4', 'd/5', 'c/5'])
     expect(sheet.lines.flatMap((l) => l.bars.flatMap((b) => b.chords)).map((c) => c.guide)).toEqual(['', '', '', ''])
@@ -1194,5 +1196,90 @@ describe('the Why note over a blues at Basic (blues spec §5)', () => {
     const inB = parseChart('title: T\nkey: B\ncontext: blues\nform: A, 12 bars\n\nsection: A\nbars: 12\n1 | B7\n5 | E7\n7 | B7\n9 | F#7\n11 | B7\n').value
     const first = buildChanges(inB, partFor('trumpet'), 4, false, 'off', { level: 'basic', seed: 0 }).lines[0]?.bars[0]?.chords[0]
     expect(first?.levelNote).toBe(`Basic: the ${first?.scale} scale over the whole blues`)
+  })
+})
+
+describe('otherChords', () => {
+  const doc = parseChart('title: T\nkey: C\n\nsection: A\n1 | C\n2 | Dm7\n2 | G7\nalt 2 | Abm7\nalt 2 | Db7\n3 | C\n').value
+  const part = partFor('trumpet')
+  const sheet = (set: 'standard' | 'alternate') => buildChanges(changesFor(doc, set), part)
+
+  it('maps only the bars whose chords differ, written for the part', () => {
+    const m = otherChords(sheet('standard'), sheet('alternate'))
+    expect([...m.keys()]).toEqual(['A 2'])
+    expect(m.get('A 2')?.map((c) => c.beat)).toEqual([0, 2])
+    expect(m.get('A 2')?.[0]?.written).toBe('Bbm7')
+    expect(m.get('A 2')?.map((c) => c.written)).toEqual(sheet('alternate').lines[0]?.bars[1]?.chords.map((c) => c.written))
+  })
+
+  it('swapped, gives the standard bar chords', () => {
+    const m = otherChords(sheet('alternate'), sheet('standard'))
+    expect([...m.keys()]).toEqual(['A 2'])
+    expect(m.get('A 2')?.map((c) => c.written)).toEqual(sheet('standard').lines[0]?.bars[1]?.chords.map((c) => c.written))
+  })
+
+  it('gives a held bar the other set holds a different chord through, marked held (#491)', () => {
+    const held = parseChart('title: T\nkey: C\n\nsection: A\nbars: 3\n1 | C\n2 | Dm7\nalt 2 | Abm7\n').value
+    const m = otherChords(buildChanges(changesFor(held, 'standard'), CONCERT), buildChanges(changesFor(held, 'alternate'), CONCERT))
+    expect([...m.keys()]).toEqual(['A 2', 'A 3'])
+    expect(m.get('A 2')).toEqual([{ beat: 0, written: 'Abm7', held: false }])
+    expect(m.get('A 3')).toEqual([{ beat: 0, written: 'Abm7', held: true }])
+  })
+
+  it('is empty for identical sheets', () => {
+    expect(otherChords(sheet('standard'), sheet('standard')).size).toBe(0)
+  })
+})
+
+describe('the rhythm line and target beats (rhythm spec §8)', () => {
+  const eight = parseChart('key: C\n\nsection: A\nbars: 8\n1 | Dm7\n3 | G7\n5 | CMaj7\n7 | A7\n').value
+  const bars = (sheet: ChangesSheet) => sheet.lines.flatMap((l) => l.bars)
+
+  it('lays a rhythm over the bars with the Line off, and captions its cycle', () => {
+    const sheet = buildChanges(eight, CONCERT, 4, false, 'off', undefined, null, 'none', { rhythm: 'unit:8:5:accents' })
+    expect(bars(sheet)).toHaveLength(8)
+    expect(bars(sheet).every((b) => b.rhythm.length > 0)).toBe(true)
+    expect(sheet.rhythmCaption).toBe('Rhythm: 8ths in 5, with accents · back on one every 5 bars')
+  })
+
+  it('draws no rhythm with a Line on', () => {
+    const sheet = buildChanges(eight, CONCERT, 4, false, 'third', undefined, null, 'none', { rhythm: 'unit:8:5:accents' })
+    expect(bars(sheet).every((b) => b.rhythm.length === 0)).toBe(true)
+    expect(sheet.rhythmCaption).toBeNull()
+  })
+
+  it('has no rhythm and no targets by default', () => {
+    const sheet = buildChanges(eight, CONCERT)
+    expect(bars(sheet).every((b) => b.rhythm.length === 0 && b.targets.length === 0)).toBe(true)
+    expect(sheet.rhythmCaption).toBeNull()
+  })
+
+  it("marks each bar's target beats", () => {
+    const five = parseChart('key: C\ntime: 5/4\n\nsection: A\n1 | Dm7\n2 | G7\n3 | CMaj7\n').value
+    const sheet = buildChanges(five, CONCERT, 4, false, 'off', undefined, null, 'none', { targets: true })
+    expect(bars(sheet).map((b) => b.targets)).toEqual([[0, 3], [0, 3], [0, 3]])
+  })
+
+  it('counts a repeat drawn with repeat signs once', () => {
+    const doc = parseChart('key: C\n\nsection: A1\n1 | Dm7\n2 | G7\n3 | CMaj7\n4 | A7\n\nsection: A2\ncopy: A1\n').value
+    const sheet = buildChanges(doc, CONCERT, 4, false, 'off', undefined, null, 'none', { rhythm: 'unit:8:3:accents' })
+    expect(bars(sheet)).toHaveLength(4)
+    expect(bars(sheet)[0]?.repeatStart).toBe(true)
+    expect(bars(sheet).map((b) => b.rhythm)).toEqual(rhythmNotes(layRhythm('unit:8:3:accents', [4, 4, 4, 4])!))
+    expect(sheet.rhythmCaption).toBe('Rhythm: 8ths in 3, with accents · back on one every 3 bars')
+  })
+
+  it('ties nothing from a 1st ending into the 2nd', () => {
+    const doc = parseChart('key: C\n\nsection: A\n1 | Dm7\n2 | G7\n3 | CMaj7\n4 | Am7\n@ending 1 3\n@ending 2 4\n').value
+    const sheet = buildChanges(doc, CONCERT, 4, false, 'off', undefined, null, 'none', { rhythm: 'unit:8:5:tied' })
+    expect(bars(sheet).map((b) => b.volta?.n ?? null)).toEqual([null, null, 1, 2])
+    expect(bars(sheet)[2]?.rhythm.at(-1)?.tie).toBe(false)
+    expect(bars(sheet)[3]?.rhythm[0]).toMatchObject({ tiedIn: false, rest: false })
+    expect(bars(sheet).map((b) => b.rhythm)).toEqual(rhythmNotes(layRhythm('unit:8:5:tied', [4, 4, 4, 4], [3])!))
+  })
+
+  it('counts a rhythm as a voiced line on a printed page', () => {
+    expect(changesLinesPerPage('off', { numerals: true, scales: true }, true)).toBe(6)
+    expect(changesLinesPerPage('off', { numerals: true, scales: true })).toBe(8)
   })
 })

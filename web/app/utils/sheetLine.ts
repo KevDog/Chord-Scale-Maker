@@ -16,8 +16,8 @@ export function shareLineOf(mode: LineMode, guide: GuideFrom, arpeggio: Arpeggio
 
 /**
  * the line the Changes sheet draws: the stored line, but the arpeggio slot under the Pentatonic overlay is the
- * Pentatonic line (#284), each chord's labelled pentatonic in cells less `leave`, and under the Hexatonic overlay the
- * Triad pair line (#325), each chord's labelled pair a triad at a time in its shape (#432), and under the Quartal the Quartal line (#432); all going `dir` (its pattern kept for a chord with none)
+ * Pentatonic line (#284), each chord's labeled pentatonic in cells less `leave`, and under the Hexatonic overlay the
+ * Triad pair line (#325), each chord's labeled pair a triad at a time in its shape (#432), and under the Quartal the Quartal line (#432); all going `dir` (its pattern kept for a chord with none)
  */
 export function changesLineOf(c: Readonly<{ mode: LineMode; guide: GuideFrom; arpeggio: ArpeggioPattern; overlay: Overlay; leave: PentatonicLeave; dir: ArpDirection; cells: CellId; shape?: PairLineShape; order?: CellOrder; phrase?: boolean }>): ChangesLineChoice {
   if (c.mode === 'cells' && c.overlay === 'off') return { kind: 'cells', id: c.cells, ...(c.order ? { order: c.order } : {}), ...(c.phrase === undefined ? {} : { phrase: c.phrase }) }

@@ -8,7 +8,6 @@ type SongHead = Readonly<{
   ld: string
   title: string
   composer: string
-  leadSheet: string
   outline: readonly OutlineSection[]
   /** its notable recording and video ('' without one), with the recordings flag */
   recording: Recording | null
@@ -45,9 +44,6 @@ export function songHead(slug: string, opts: Readonly<{ recordings: boolean }> =
     ld: jsonLd([tuneLd({ ...summary, title: read.title }, songPath(main)), breadcrumbLd(summary, path)]),
     title: summary.title,
     composer: summary.composer,
-    leadSheet:
-      `${tuneName(summary)}${summary.aka.length ? `, also known as ${summary.aka.join(' or ')},` : ''} as a lead sheet gives it: the chord changes bar by bar, ` +
-      'without the melody. The sheets add a scale, guide tones, arpeggios and pentatonics for every chord, written for your instrument.',
     outline: chartOutline(chart.text),
     recording: summary.recording,
     youtube: summary.recording ? summary.youtube : '',

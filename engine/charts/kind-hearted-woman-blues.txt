@@ -7,20 +7,20 @@ form: A, 13 bars
 source: iReal Pro
 recording: Robert Johnson; King of the Delta Blues Singers; Columbia; 1961
 youtube: dp9jeCpMz6g
-# analysis: 2026-10-19, rules v2; B, blues
+# analysis: 2026-10-22, rules v2; B, blues
 # recording: recorded 1936-11-23, Gunter Hotel, San Antonio; take SA-2580-1, the one with the guitar solo; both takes appeared on Vocalion 03416 pressings (1937); this LP has take 1, Vol. II (1970) take 2 (the sources disagree; the lengths settle it: LP 2:50, SA-2580-1 2:52, SA-2580-2 2:31); sources: Wikipedia; video: "Provided to YouTube by Columbia/Legacy", The Centennial Collection, "(SA.2580-1)", the same take
 
 section: A
-1  | B7   # I7 of the blues: a tonic with dominant colour, Mixolydian
+1  | B7   # I7 of the blues: a tonic with dominant color, Mixolydian
 2  | B7
 3  | B7
 4  | B7
-5  | E7   # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+5  | E7   # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 6  | E7
-7  | B7   # I7 of the blues: a tonic with dominant colour, Mixolydian
+7  | B7   # I7 of the blues: a tonic with dominant color, Mixolydian
 8  | B7
 9  | F#7  # V7 of the blues: a dominant that needn’t resolve, Mixolydian
-10 | E7   # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+10 | E7   # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 11 | B    # I of the blues: a triad here implies its ♭7, Mixolydian
 12 | F#7  # V7 of the blues: a dominant that needn’t resolve, Mixolydian
-13 | B7   # I7 of the blues: a tonic with dominant colour, Mixolydian
+13 | B7   # I7 of the blues: a tonic with dominant color, Mixolydian

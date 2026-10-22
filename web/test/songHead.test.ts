@@ -33,9 +33,6 @@ describe('songHead', () => {
     })
     expect(h?.title).toBe('Blue Trane')
     expect(h?.composer).toBe('John Coltrane')
-    expect(h?.leadSheet).toBe(
-      'Blue Trane (John Coltrane), also known as Blue Train, as a lead sheet gives it: the chord changes bar by bar, without the melody. The sheets add a scale, guide tones, arpeggios and pentatonics for every chord, written for your instrument.',
-    )
     const ld = JSON.parse(h?.ld ?? '[]') as { '@type': string; url?: string }[]
     expect(ld.map((d) => d['@type'])).toEqual(['MusicComposition', 'BreadcrumbList'])
     expect(ld[0]?.url).toBe('https://www.chordscalemaker.com/song/blue-trane')

@@ -12,6 +12,7 @@ import { type Clock, clockOf } from './metre'
 const BEATS = 4 // 4/4, the default
 /** how a bar is shared by 1 chord, 2, …, in beats, for each metre; a bar holds at most one chord a beat */
 const SPLITS: Readonly<Record<number, readonly (readonly number[])[]>> = {
+  7: [[7], [4, 3], [2, 2, 3], [2, 2, 2, 1], [2, 2, 1, 1, 1], [2, 1, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1, 1]],
   6: [[6], [3, 3], [2, 2, 2], [2, 1, 2, 1], [2, 1, 1, 1, 1], [1, 1, 1, 1, 1, 1]],
   5: [[5], [3, 2], [2, 1, 2], [2, 1, 1, 1], [1, 1, 1, 1, 1]],
   4: [[4], [2, 2], [2, 1, 1], [1, 1, 1, 1]],
