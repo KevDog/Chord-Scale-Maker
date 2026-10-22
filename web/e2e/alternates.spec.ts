@@ -101,3 +101,13 @@ test('a bar of long alternate chords widens to keep their names apart (#475)', a
     for (let i = 1; i < boxes.length; i++) expect(boxes[i]!.left).toBeGreaterThanOrEqual(boxes[i - 1]!.right)
   }).toPass({ timeout: 10_000 })
 })
+
+test('at a phone width the other set\'s names do not overlap (#215)', async ({ page }) => {
+  await page.setViewportSize({ width: 360, height: 800 })
+  await page.goto(SONG)
+  await expect(otherLine(page)).toContainText('Bdim7')
+  const boxes = await otherLine(page).locator('[data-other-name]').evaluateAll((ns) =>
+    ns.map((n) => n.getBoundingClientRect()).sort((a, b) => a.left - b.left).map((r) => ({ left: r.left, right: r.right })))
+  expect(boxes.length).toBeGreaterThan(1)
+  boxes.slice(1).forEach((b, i) => expect(b.left).toBeGreaterThanOrEqual(boxes[i]!.right - 0.5))
+})

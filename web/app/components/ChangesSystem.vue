@@ -8,8 +8,8 @@
         :key="o.key"
         :data-chord="o.written"
         :data-other-name="o.key"
-        class="absolute bottom-0 text-xs/4 font-medium whitespace-nowrap text-zinc-600 dark:text-zinc-400 print:text-[0.6rem]/3 print:text-neutral-700"
-        :style="{ left: `${o.x * 100}%` }"
+        class="absolute bottom-0 origin-bottom-left text-xs/4 font-medium whitespace-nowrap text-zinc-600 dark:text-zinc-400 print:text-[0.6rem]/3 print:text-neutral-700"
+        :style="{ left: `${o.x * 100}%`, transform: otherScale(o) === 1 ? undefined : `scale(${otherScale(o)})` }"
       ><ChordSymbol v-if="o.tokens" :tokens="o.tokens" /><template v-else>{{ o.written }}</template></span>
     </div>
     <!-- section markers and key areas, then chord symbols, over their beats -->
@@ -327,6 +327,7 @@ const el = ref<HTMLElement | null>(null)
 const names = ref<HTMLElement | null>(null)
 const xs = ref<readonly (readonly number[])[]>([])
 const ends = ref<readonly number[]>([]) // each bar's right edge
+const otherScales = ref<readonly ReadonlyMap<number, number>[]>([]) // each other-set name's scale, by beat, likewise
 const nameScales = ref<readonly (readonly number[])[]>([]) // each chord name's scale, where the line can't fit it
 const drawError = ref<string | null>(null)
 const rendering = useRendering()
@@ -489,6 +490,8 @@ const ghost = computed(() => {
   const left = ends.value[n - 1] ?? n / props.barsPerLine
   return { section: last.at.section, full, style: { left: `${left * 100}%`, width: `${Math.min(1 / props.barsPerLine, 1 - left) * 100}%` } }
 })
+/** an other-set name's scale: that of its beat's merged name, as the main names', so the two lines shrink together */
+const otherScale = (o: { barIndex: number; beat: number }): number => otherScales.value[o.barIndex]?.get(o.beat) ?? 1
 /** a chord name's scale: shrunk where its bar can't be widened enough, but never the chord being edited */
 const shrunk = (m: { barIndex: number; k: number; line: number }): number =>
   props.editing?.kind === 'chord' && props.editing.line === m.line ? 1 : (nameScales.value[m.barIndex]?.[m.k] ?? 1)
@@ -524,6 +527,8 @@ function measureNames(): NamedBeat[][] | undefined {
 /** each bar's chord names' scales, by their index in the bar (shrunk), from the scales of its merged beats */
 const nameScalesOf = (names: readonly (readonly NamedBeat[])[] | undefined, scales: readonly (readonly number[])[]): number[][] =>
   props.line.bars.map((_, b) => marks.value.filter((m) => m.barIndex === b && !m.slot).map((m) => scales[b]?.[names?.[b]?.findIndex((n) => n.beat === m.beat) ?? -1] ?? 1))
+const otherScalesOf = (names: readonly (readonly NamedBeat[])[] | undefined, scales: readonly (readonly number[])[]): Map<number, number>[] =>
+  props.line.bars.map((_, b) => new Map(otherMarks.value.filter((o) => o.barIndex === b).map((o) => [o.beat, scales[b]?.[names?.[b]?.findIndex((n) => n.beat === o.beat) ?? -1] ?? 1])))
 const PRINT_LINE = 800 // a printed line (about 700px) with the print's smaller names (text-sm: 14/16), in screen px
 const NAME_GAP = 8 // px between a name and the next
 const key = (names: readonly (readonly NamedBeat[])[] | undefined): string => JSON.stringify(names?.map((b) => b.map((c) => [c.beat, +c.width.toFixed(3)])))
@@ -541,6 +546,7 @@ async function draw(): Promise<void> {
     xs.value = layout.xs
     ends.value = layout.ends
     nameScales.value = nameScalesOf(names, layout.scales)
+    otherScales.value = otherScalesOf(names, layout.scales)
     const breakAt = props.line.bars[layout.fits]
     if (breakAt) emit('overfull', barKey(breakAt.at))
     drawError.value = null

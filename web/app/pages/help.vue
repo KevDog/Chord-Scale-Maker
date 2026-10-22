@@ -201,8 +201,8 @@
         <div v-if="alternatesOn" class="space-y-3" data-controls-group>
           <UiSubheading id="alternates" :level="3" class="scroll-mt-6">Alternate changes</UiSubheading>
           <UiText>
-            Some library charts carry a second set of changes for the bars where a common substitution is played (a tritone sub in a
-            turnaround, a different bridge cadence). The other bars are shared. A chart that has them shows <strong class="font-semibold text-zinc-950 dark:text-white">Changes</strong>
+            Some library charts carry a second set of changes for the bars where a common substitution is played (passing diminished
+            chords, a bebop bridge's ii–Vs). The other bars are shared. A chart that has them shows <strong class="font-semibold text-zinc-950 dark:text-white">Changes</strong>
             in the toolbar above the sheet; a chart without them looks as it always did.
           </UiText>
           <dl class="space-y-4 text-base/6 sm:text-sm/6">

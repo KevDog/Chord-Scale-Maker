@@ -10,7 +10,7 @@ export const RELEASE_NOTES: readonly ReleaseNote[] = [
   {
     date: '2026-10-21',
     items: [
-      { text: 'Some charts now carry alternate changes: Changes switches the whole sheet to them, and Other changes shows the other set small above the staff. Rhythm Changes and the F and B♭ blues have them.' },
+      { text: 'Rhythm Changes now carries alternate changes: Changes → Alternate, in the toolbar above the sheet, plays them on every sheet, and Other changes prints the other set small above the bars.', pr: 476 },
       { text: 'Back up your charts: the library’s Backup menu saves My charts, their settings and your preferences to one file (Back up…), and Restore from backup… brings them into this or another browser; where a chart is in both, you choose Keep both or Keep mine.', pr: 473 },
       { text: 'The Scales sheet’s Practice panel folds its explanation under How it works, so the music starts higher on the page.', pr: 464 },
       { text: 'The Cells line now plays phrases. Phrase (on by default) picks each cell to lead into the next chord, and over a long dominant it borrows the tritone sub and the minor-3rd dominant (D♭7 and B♭7 over G7). Order plays the cells As written, Reversed, Rotated or Pairs swapped, and a new Chromatic group adds 1 ♮7 7 6, ♭9 1 3 5, II–V chromatic and more.', pr: 461 },
