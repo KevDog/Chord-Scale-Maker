@@ -325,9 +325,9 @@ test('Order (#376): 1 2 3 5 reversed plays each cell 5 3 2 1, and the choice sta
   await expect(page.getByRole('button', { name: 'Phrase', exact: true })).toHaveCount(0) // one cell: nothing to aim
   await closePanel(page, 'Line options')
   await showOrder(page, 'Reversed')
-  await expect(line).toHaveAttribute('aria-label', /; cells: G\d E♭\d D\d C\d /) // Cm7's 5 3 2 1
+  await expect(line).toHaveAttribute('aria-label', /; cells: G5 E♭5 D5 C5 /) // Cm7's 5 3 2 1, falling from G5
   await page.reload()
-  await expect(line).toHaveAttribute('aria-label', /; cells: G\d E♭\d D\d C\d /) // remembered
+  await expect(line).toHaveAttribute('aria-label', /; cells: G5 E♭5 D5 C5 /) // remembered
   await openPanel(page, 'Line options')
   await expect(page.getByLabel('Order', { exact: true })).toContainText('Reversed')
   await closePanel(page, 'Line options')
@@ -350,6 +350,30 @@ test('Phrase (#379): root to root over I–♭III–♭VI–♭II aims C’s cel
   await expect(line).toHaveAttribute('aria-label', /; cells: C\d D\d E\d G\d, E♭\d D♭\d C\d B♭\d /)
   await page.reload()
   await expect(line).toHaveAttribute('aria-label', /; cells: C\d D\d E\d G\d, E♭\d D♭\d C\d B♭\d /) // remembered
+})
+
+test('a share link carries the Cells line’s Order and Phrase off (#376, #462)', async ({ page, browser }) => {
+  await page.goto('/song/autumn-leaves')
+  const line = lines(page).first()
+  await showCell(page, '3rd to 3rd')
+  await showOrder(page, 'Rotated')
+  await openPanel(page, 'Line options')
+  await page.getByRole('button', { name: 'Phrase', exact: true }).click()
+  await closePanel(page, 'Line options')
+  const label = await line.getAttribute('aria-label')
+  await page.getByRole('button', { name: 'Share' }).click()
+  const box = page.getByRole('dialog').getByLabel('Link')
+  await expect(box).toHaveValue(/\/song#s=[A-Za-z0-9_-]+$/)
+  const link = await box.inputValue()
+  const other = await browser.newContext()
+  await chooseInterface(other, 'everything')
+  const visitor = await other.newPage()
+  await visitor.goto(link)
+  await expect(lines(visitor).first()).toHaveAttribute('aria-label', label ?? '')
+  await openPanel(visitor, 'Line options')
+  await expect(visitor.getByLabel('Order', { exact: true })).toContainText('Rotated')
+  await expect(visitor.getByRole('button', { name: 'Phrase', exact: true })).toHaveAttribute('aria-pressed', 'false')
+  await other.close()
 })
 
 test('Phrase (#378): G7 for a whole bar → C reads its second cell through D♭7 (F A♭ C♭ E♭, into C’s E); Off plays G7’s own (B D G F)', async ({ page }) => {

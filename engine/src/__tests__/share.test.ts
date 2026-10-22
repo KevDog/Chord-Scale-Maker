@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { LIMITS } from '../limits'
-import { decodeShare, encodeShare, SHARE_LIMITS, shareViewFrom } from '../share'
+import { cellsLineOf, cellsShareLine, decodeShare, encodeShare, SHARE_LIMITS, shareViewFrom } from '../share'
 
 const CHART = 'title: Blue Bossa\n# bar | chord | scale\n\nsection: A\nbars: 4\n1 | Cm7 | C Dorian\n3 | Fm7 | F Dorian\n'
 const b64url = (s: string): string => btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
@@ -124,6 +124,20 @@ describe('share links', () => {
     expect(shareViewFrom({ line: 'cells:3rd-3rd~bogus' })).toEqual({ line: 'cells:3rd-3rd' })
     expect(shareViewFrom({ line: 'cells:3rd-3rd~as-written~rotated' })).toEqual({ line: 'cells:3rd-3rd~rotated' })
     expect(shareViewFrom({ line: 'cells:x~reversed' })).toBeUndefined()
+  })
+
+  it('reads a cells line one way for the link and the toolbar (#462): the first Order but As written, and free', () => {
+    expect(cellsLineOf('cells:3rd-3rd~as-written~rotated~free')).toEqual({ id: '3rd-3rd', order: 'rotated', phrase: false })
+    expect(cellsLineOf('cells:1-2-3-5')).toEqual({ id: '1-2-3-5', order: 'as-written', phrase: true })
+    expect(cellsLineOf('cells:x~reversed')).toBeUndefined()
+    expect(cellsLineOf('third')).toBeUndefined()
+  })
+
+  it('writes ~free only for a system, the only cells Phrase aims (#462)', () => {
+    expect(cellsShareLine('3rd-3rd', 'rotated', false)).toBe('cells:3rd-3rd~rotated~free')
+    expect(cellsShareLine('1-2-3-5', 'reversed', false)).toBe('cells:1-2-3-5~reversed')
+    expect(cellsShareLine('ii-v-chromatic', 'as-written', false)).toBe('cells:ii-v-chromatic')
+    expect(shareViewFrom({ line: 'cells:1-2-3-5~free' })).toEqual({ line: 'cells:1-2-3-5' })
   })
 
   it("carries the Changes sheet's Approach (#298), dropping an unknown one", async () => {
