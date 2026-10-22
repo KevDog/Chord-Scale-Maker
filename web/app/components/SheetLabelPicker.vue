@@ -22,6 +22,7 @@
     >
       <ChordChoices
         :doc="doc"
+        :source="source"
         :line="line"
         :part="kind === 'numeral' ? 'function' : 'scale'"
         :fallback-note="guessed ? 'The rules could only guess here; stating the function settles it.' : undefined"
@@ -47,9 +48,9 @@ import { scalePath } from '~/utils/scalePage'
  * scale its scale list; a guessed function is marked in amber; a pinned scale shows its pin. `line` is the chart line
  * the chord is written on (a repeat's chord points at the row it repeats). A chord with no label (no analysis, or a
  * row the sheet can't read) gets a blank one, a dash, so there is still something to click. `scale`: the scale the
- * chord plays (concert), whose reference page the scale list links to.
+ * chord plays (concert), whose reference page the scale list links to. `source`: the chart a choice is written to (ChordChoices).
  */
-const props = defineProps<{ doc: ChartDoc; line: number; kind: 'numeral' | 'scale'; chord: string; fallback: boolean; pinned: boolean; blank?: boolean; scale?: string | null }>()
+const props = defineProps<{ doc: ChartDoc; source?: ChartDoc; line: number; kind: 'numeral' | 'scale'; chord: string; fallback: boolean; pinned: boolean; blank?: boolean; scale?: string | null }>()
 const emit = defineEmits<{ 'update:doc': [doc: ChartDoc]; said: [text: string] }>()
 
 const about = computed(() => (props.kind === 'scale' && props.scale ? scalePath(props.scale) : null))

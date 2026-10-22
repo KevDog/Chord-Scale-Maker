@@ -7,20 +7,20 @@ form: A, 13 bars
 source: iReal Pro
 recording: B.B. King; Singin' the Blues; Crown; 1957
 youtube: pWDSsdrzDP8
-# analysis: 2026-10-19, rules v2; Bb, blues
+# analysis: 2026-10-22, rules v2; Bb, blues
 # recording: recorded c. September 1951, Memphis YMCA (Ike Turner, piano; Evelyn Young, sax), the writer's own and the first recording (after Lowell Fulson's 1948 "Three O'Clock Blues"); first issued on 78 (RPM 339), December 1951, his first R&B No. 1; first LP Crown CLP 5020 (1957), his first album; sources: Wikipedia, Discogs; video: "Provided to YouTube by Universal Music Group", Martin Scorsese Presents The Blues: B.B. King, the same take
 
 section: A
-1  | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
-2  | Eb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+1  | Bb7  # I7 of the blues: a tonic with dominant color, Mixolydian
+2  | Eb7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 3  | Bb   # I of the blues: a triad here implies its ♭7, Mixolydian
-4  | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
-5  | Eb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+4  | Bb7  # I7 of the blues: a tonic with dominant color, Mixolydian
+5  | Eb7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 6  | Eb7
-7  | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+7  | Bb7  # I7 of the blues: a tonic with dominant color, Mixolydian
 8  | Bb7
 9  | F7   # V7 of the blues: a dominant that needn’t resolve, Mixolydian
-10 | Eb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-11 | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+10 | Eb7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+11 | Bb7  # I7 of the blues: a tonic with dominant color, Mixolydian
 12 | F7   # V7 of the blues: a dominant that needn’t resolve, Mixolydian
-13 | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+13 | Bb7  # I7 of the blues: a tonic with dominant color, Mixolydian

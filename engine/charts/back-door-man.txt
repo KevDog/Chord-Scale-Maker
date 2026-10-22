@@ -7,11 +7,11 @@ form: AB, 16 bars
 source: iReal Pro
 recording: Howlin' Wolf; Howlin' Wolf; Chess; 1962
 youtube: zlFWLtCKdyQ
-# analysis: 2026-10-19, rules v2; E, blues
+# analysis: 2026-10-22, rules v2; E, blues
 # recording: recorded June 1960, Chicago, with Hubert Sumlin, Otis Spann, Willie Dixon, Fred Below; first issued on 45 (Chess 1777, 1961), first LP Chess LP 1469 (the "rocking chair" album, 1962); Dixon's song, Wolf's record; sources: Wikipedia, MusicBrainz; video: "Provided to YouTube by Universal Music Group", Howlin' Wolf, the same take
 
 section: A
-1 | E7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+1 | E7  # I7 of the blues: a tonic with dominant color, Mixolydian
 2 | E7
 3 | E7
 4 | E7

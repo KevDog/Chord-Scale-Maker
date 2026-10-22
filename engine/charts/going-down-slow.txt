@@ -7,22 +7,22 @@ form: A, 13 bars
 source: iReal Pro
 recording: St. Louis Jimmy; Goin' Down Slow; Bluesville; 1961
 youtube: CwOAFSx-UUE
-# analysis: 2026-10-19, rules v2; C, blues
+# analysis: 2026-10-22, rules v2; C, blues
 # recording: recorded 1960-11-19, Van Gelder Studio, Englewood Cliffs, the writer's own LP-era remake, Prestige Bluesville BV 1028; the 1941 original (Chicago, with Roosevelt Sykes, Bluebird B-8889) reached LP only on RBF 16 (1967) as far as found; Howlin' Wolf's 1961 Chess version is the famous cover; sources: Discogs, Wikipedia; video: "Provided to YouTube by Universal Music Group", Goin' Down Slow (Prestige/Concord), the same take
 
 section: A
-1  | C7  # I7 of the blues: a tonic with dominant colour, Mixolydian
-2  | F7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-3  | C7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+1  | C7  # I7 of the blues: a tonic with dominant color, Mixolydian
+2  | F7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+3  | C7  # I7 of the blues: a tonic with dominant color, Mixolydian
 4  | C7
-5  | F7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+5  | F7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 6  | F7
-7  | C7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+7  | C7  # I7 of the blues: a tonic with dominant color, Mixolydian
 8  | C7
 9  | G7  # V7 of the blues: a dominant that needn’t resolve, Mixolydian
-10 | F7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-11 | C7  # I7 of the blues: a tonic with dominant colour, Mixolydian
-11 | F7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-12 | C7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+10 | F7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+11 | C7  # I7 of the blues: a tonic with dominant color, Mixolydian
+11 | F7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+12 | C7  # I7 of the blues: a tonic with dominant color, Mixolydian
 12 | G7  # V7 of the blues: a dominant that needn’t resolve, Mixolydian
-13 | C7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+13 | C7  # I7 of the blues: a tonic with dominant color, Mixolydian

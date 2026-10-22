@@ -28,6 +28,13 @@ for (const theme of ['light', 'dark'] as const) {
       }
     })
 
+    test('the navbar’s Help menu open (#496)', async ({ page }) => {
+      await page.goto('/functions')
+      if (theme === 'dark') await darkMode(page)
+      await opens(page, page.getByRole('banner').getByRole('button', { name: 'Help' }), page.getByRole('menu'))
+      await expectAccessible(page)
+    })
+
     test('the contact page with a chart for the library (#153)', async ({ page }) => {
       await page.goto('/contact')
       if (theme === 'dark') await darkMode(page)
@@ -50,6 +57,22 @@ for (const theme of ['light', 'dark'] as const) {
       await page.goto('/song/so-what')
       if (theme === 'dark') await darkMode(page)
       await expect(page.getByRole('button', { name: /Play the video/ })).toBeVisible()
+      await expectAccessible(page)
+    })
+
+    test('a song with alternate changes: the Changes toggle and the other set’s line (#215)', async ({ page }) => {
+      await page.goto('/song/rhythm-changes')
+      if (theme === 'dark') await darkMode(page)
+      await expect(page.getByRole('group', { name: 'Changes', exact: true })).toBeVisible()
+      await expect(page.locator('[data-slot="other-changes"]').first()).toBeVisible()
+      await expectAccessible(page)
+      // editing: the alternate line's targets (#469), and one's field open
+      await page.getByRole('button', { name: 'Edit', exact: true }).click()
+      await expect(page.getByRole('button', { name: 'Alternate for A1 bar 3', exact: true })).toBeVisible()
+      await expectAccessible(page)
+      await page.getByRole('button', { name: 'Alternate for A1 bar 3', exact: true }).click()
+      await page.keyboard.type('D')
+      await expect(page.getByRole('combobox', { name: 'Alternate for A1 bar 3' })).toBeFocused()
       await expectAccessible(page)
     })
 
@@ -142,6 +165,23 @@ for (const theme of ['light', 'dark'] as const) {
       await pentatonicPreset(page)
       await opens(page, page.locator('div.text-right [data-slot="pentatonic"] button').first(), page.getByRole('dialog', { name: / bar \d+$/ }))
       await expectAccessible(page, '[role="dialog"]')
+    })
+
+    test('the click, docked with its settings open, and in focus mode (#254)', async ({ page }) => {
+      await page.goto(SONG)
+      if (theme === 'dark') await darkMode(page)
+      const bar = page.getByRole('toolbar', { name: 'Click' })
+      await opens(page, page.getByRole('button', { name: 'Click', exact: true }), bar)
+      await expectAccessible(page)
+      const settings = page.getByRole('dialog', { name: 'Click settings' })
+      await opens(page, bar.getByRole('button', { name: 'Click settings' }), settings)
+      await expect(settings).toHaveCSS('opacity', '1') // past its fade: mid-fade it reads as low contrast
+      await expectAccessible(page, '[role=dialog][aria-label="Click settings"]')
+      await page.keyboard.press('Escape')
+      await page.getByRole('button', { name: 'Focus', exact: true }).click()
+      await expect(page.getByRole('dialog', { name: 'Focus mode' }).getByRole('toolbar', { name: 'Click' })).toBeVisible()
+      // the click alone: focus mode's own known violations (its Esc hint, the zoomed sheet’s chord buttons) are #488
+      await expectAccessible(page, '[aria-label="Focus mode"] [role=toolbar][aria-label=Click]')
     })
 
     test('the library’s Import iReal link… dialog', async ({ page }) => {

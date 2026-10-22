@@ -7,37 +7,37 @@ form: ABC, 33 bars
 source: iReal Pro
 recording: Muddy Waters; The Real Folk Blues; Chess; 1966
 youtube: kbxloBaiquU
-# analysis: 2026-10-19, rules v2; A, blues
+# analysis: 2026-10-22, rules v2; A, blues
 # recording: recorded February 1950, Chicago, with Big Crawford (b); first issued on 78 (Aristocrat 412, Parts 1 and 2, 1950); first LP LP-1501 (1966), Part 1; the song is Hambone Willie Newbern's 1929 Roll and Tumble Blues (Wikipedia, Discogs); video: "Provided to YouTube by Universal Music Group", His Best 1947 to 1956, "(Pt. 1)", the same take (by length)
 
 section: Intro
 1  | A     # I of the blues: a triad here implies its ♭7, Mixolydian
 2  | A
-3  | A7/C  # I7 of the blues: a tonic with dominant colour, Mixolydian
-4  | A7/D  # I7 of the blues: a tonic with dominant colour, Mixolydian
+3  | A7/C  # I7 of the blues: a tonic with dominant color, Mixolydian
+4  | A7/D  # I7 of the blues: a tonic with dominant color, Mixolydian
 5  | A     # I of the blues: a triad here implies its ♭7, Mixolydian
 6  | A
 7  | A
 8  | A
 9  | A
 10 | A
-11 | A7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+11 | A7    # I7 of the blues: a tonic with dominant color, Mixolydian
 
 section: A
 1  | A     # I of the blues: a triad here implies its ♭7, Mixolydian
 2  | A
-3  | A7/C  # I7 of the blues: a tonic with dominant colour, Mixolydian
-4  | A7/D  # I7 of the blues: a tonic with dominant colour, Mixolydian
+3  | A7/C  # I7 of the blues: a tonic with dominant color, Mixolydian
+4  | A7/D  # I7 of the blues: a tonic with dominant color, Mixolydian
 5  | A     # I of the blues: a triad here implies its ♭7, Mixolydian
 6  | A
 7  | A
 8  | A
 9  | A
 10 | A
-11 | A7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+11 | A7    # I7 of the blues: a tonic with dominant color, Mixolydian
 
 section: B
-1  | D7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+1  | D7    # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 2  | D7
 3  | D7
 4  | D7
@@ -47,12 +47,12 @@ section: B
 8  | A
 9  | A
 10 | A
-11 | A7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+11 | A7    # I7 of the blues: a tonic with dominant color, Mixolydian
 
 section: C
 1  | E7    # V7 of the blues: a dominant that needn’t resolve, Mixolydian
 2  | E7
-3  | D7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+3  | D7    # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 4  | D7
 5  | A     # I of the blues: a triad here implies its ♭7, Mixolydian
 6  | A
@@ -60,4 +60,4 @@ section: C
 8  | A
 9  | A
 10 | A
-11 | A7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+11 | A7    # I7 of the blues: a tonic with dominant color, Mixolydian

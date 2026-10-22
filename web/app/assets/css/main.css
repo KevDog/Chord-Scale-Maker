@@ -5,7 +5,7 @@
 @custom-variant dark (&:where(.dark, .dark *));
 
 /* Duotone Blue palette (Blue Note-inspired; docs/design.md §6).
-   - zinc is retuned to cool, navy-tinted neutrals, so Catalyst's class strings stay verbatim and recolour as one.
+   - zinc is retuned to cool, navy-tinted neutrals, so Catalyst's class strings stay verbatim and recolor as one.
    - note is the blue accent scale: note-800 navy for primary buttons, note-500 for selected toggles and the
      current-page marker, note-100 tint for highlights.
    Contrast (WCAG AA): white on note-500 4.7:1, on note-800 10:1; note-600 text on zinc-50 5.9:1;
@@ -127,8 +127,8 @@
 }
 
 /* practice selection on the scale staves (utils/vexflow.ts tags each note): the rest are faint. Picked notes keep the
-   staff's ink in light mode (the clef's colour) and take the accent in dark mode; in print they're black and the
-   rest light grey. The Hexatonic preset's group B (vf-second) takes the second accent; mid-grey in print */
+   staff's ink in light mode (the clef's color) and take the accent in dark mode; in print they're black and the
+   rest light gray. The Hexatonic preset's group B (vf-second) takes the second accent; mid-gray in print */
 .dark .vf-selected {
   color: var(--color-note-300);
 }
@@ -152,7 +152,7 @@
     opacity: 1;
     color: #b3b3b3;
   }
-  /* group B mid-grey: between group A's black and the dimmed light grey */
+  /* group B mid-gray: between group A's black and the dimmed light gray */
   .vf-selected.vf-second,
   .dark .vf-selected.vf-second {
     color: #666;
@@ -250,5 +250,15 @@
   html.dark {
     @apply bg-white text-black;
     color-scheme: light;
+  }
+}
+
+/* the click docked at the window's foot (#254, ClickBar.vue): the page's foot clears it; it doesn't print */
+body.click-docked {
+  padding-bottom: var(--click-h, 0px);
+}
+@media print {
+  body.click-docked {
+    padding-bottom: 0;
   }
 }

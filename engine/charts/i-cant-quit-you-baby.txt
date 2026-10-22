@@ -7,22 +7,22 @@ form: A, 13 bars
 source: iReal Pro
 recording: Otis Rush; Chicago/The Blues/Today! Vol. 2; Vanguard; 1966
 youtube: Ds7qQyhwbB4
-# analysis: 2026-10-19, rules v2; A, blues
+# analysis: 2026-10-22, rules v2; A, blues
 # recording: recorded late 1965, Chicago, Otis Rush Blues Band, produced by Samuel Charters, Vanguard VSD-79217; Rush's own remake of his first record (Cobra 5000, recorded 1956-07-11), chosen because the Cobra master's first LP is the UK Flyright FLY 562 (1980), with no US LP found; sources: Wikipedia, MusicBrainz; video: "Provided to YouTube by Universal Music Group", Chicago / The Blues / Today!, the same take
 
 section: A
-1  | A7  # I7 of the blues: a tonic with dominant colour, Mixolydian
-2  | D9  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-3  | A7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+1  | A7  # I7 of the blues: a tonic with dominant color, Mixolydian
+2  | D9  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+3  | A7  # I7 of the blues: a tonic with dominant color, Mixolydian
 4  | A7
-5  | D7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+5  | D7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 6  | D7
-7  | A7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+7  | A7  # I7 of the blues: a tonic with dominant color, Mixolydian
 8  | A7
 9  | E7  # V7 of the blues: a dominant that needn’t resolve, Mixolydian
-10 | D7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-11 | A7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+10 | D7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+11 | A7  # I7 of the blues: a tonic with dominant color, Mixolydian
 11 | Bb  # ♭II, borrowed from A Phrygian: Lydian (its ♯11 is in the key)
-12 | A7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+12 | A7  # I7 of the blues: a tonic with dominant color, Mixolydian
 12 | Bb  # ♭II, borrowed from A Phrygian: Lydian (its ♯11 is in the key)
-13 | A7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+13 | A7  # I7 of the blues: a tonic with dominant color, Mixolydian

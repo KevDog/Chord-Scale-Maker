@@ -69,7 +69,7 @@ function lineKey(chord: string, scale: string | null): string {
 export function scaleLines(rows: readonly Row[], scaleOf: (row: Row, index: number) => string | null): ScaleLine[] {
   const lines = new Map<string, { row: number; rows: number[]; chords: string[] }>()
   rows.forEach((r, i) => {
-    if (isRest(r.chord)) return // a rest has no scale to practise
+    if (isRest(r.chord)) return // a rest has no scale to practice
     const key = lineKey(r.chord, scaleOf(r, i))
     const line = lines.get(key)
     if (!line) lines.set(key, { row: i, rows: [i], chords: [r.chord] })

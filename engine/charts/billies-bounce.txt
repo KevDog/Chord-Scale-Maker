@@ -6,18 +6,18 @@ form: A, 12 bars
 source: Colorado Cookbook, p. 34
 recording: Charlie Parker; New Sounds in Modern Music, Volume 2; Savoy; 1951
 youtube: gVVffSREjd4
-# analysis: 2026-10-19, rules v2; F, blues
+# analysis: 2026-10-22, rules v2; F, blues
 # recording: recorded 1945-11-26 (Charlie Parker's Re-Boppers), master take 5, first issued on 78 (Savoy 573), first LP 1951 (MG 9001; MusicBrainz says 1950) (jazzdisco, uDiscover); video: The Complete Savoy & Dial Master Takes, the same take
 
 # bar | chord | scale
 
 section: A
-1  | F7   # I7 of the blues: a tonic with dominant colour, Mixolydian
-2  | Bb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-3  | F7   # I7 of the blues: a tonic with dominant colour, Mixolydian
-5  | Bb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-7  | F7   # I7 of the blues: a tonic with dominant colour, Mixolydian
+1  | F7   # I7 of the blues: a tonic with dominant color, Mixolydian
+2  | Bb7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+3  | F7   # I7 of the blues: a tonic with dominant color, Mixolydian
+5  | Bb7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
+7  | F7   # I7 of the blues: a tonic with dominant color, Mixolydian
 9  | Gm7  # ii of C7: Dorian
 10 | C7   # extended dominant: V7 of F7
-11 | F7   # I7 of the blues: a tonic with dominant colour, Mixolydian
+11 | F7   # I7 of the blues: a tonic with dominant color, Mixolydian
 12 | C7   # V7 of the blues: a dominant that needn’t resolve, Mixolydian

@@ -6,21 +6,21 @@ form: A, 12 bars
 source: Colorado Cookbook, p. 73
 recording: Clark Terry Quartet; New Blue Horns; Riverside; 1959
 youtube: Nu3I-lpzeUA
-# analysis: 2026-10-19, rules v2; Bb, blues
+# analysis: 2026-10-22, rules v2; Bb, blues
 # recording: recorded 1958-05-07/12, Reeves Sound Studios, NYC, Clark Terry with Thelonious Monk, Sam Jones, Philly Joe Jones, at the In Orbit sessions but left off that LP; first issued on the anthology New Blue Horns (RLP 12-294), later on the In Orbit CD (OJCCD-302-2) (jazzdisco, MusicBrainz); video: "Provided to YouTube by Universal Music Group", In Orbit (CD), the same take
 
 # bar | chord | scale
 
 section: A
-1  | Bb7    # I7 of the blues: a tonic with dominant colour, Mixolydian
-2  | Eb7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+1  | Bb7    # I7 of the blues: a tonic with dominant color, Mixolydian
+2  | Eb7    # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 2  | Edim7  # ♯IV°7 to I: A7♭9 without its root, the ♯II°7's notes
-3  | Bb7    # I7 of the blues: a tonic with dominant colour, Mixolydian
-5  | Eb7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+3  | Bb7    # I7 of the blues: a tonic with dominant color, Mixolydian
+5  | Eb7    # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 6  | Edim7  # ♯IV°7 to I: A7♭9 without its root, the ♯II°7's notes
-7  | Bb7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+7  | Bb7    # I7 of the blues: a tonic with dominant color, Mixolydian
 8  | G7     # V7/ii in Bb: the b13 is in the key
 9  | Cm7    # ii of F7: Dorian
 10 | F7     # extended dominant: V7 of Bb7
-11 | Bb7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+11 | Bb7    # I7 of the blues: a tonic with dominant color, Mixolydian
 12 | F7     # V7 of the blues: a dominant that needn’t resolve, Mixolydian

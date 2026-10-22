@@ -7,22 +7,22 @@ form: AA, 24 bars
 source: iReal Pro
 recording: Ma Rainey; Blues the World Forgot; Biograph; 1968
 youtube: jLfijnRG6II
-# analysis: 2026-10-19, rules v2; D, blues
+# analysis: 2026-10-22, rules v2; D, blues
 # recording: issued as "Booze and Blues", recorded October 1924, Chicago, Ma Rainey and Her Georgia Jazz Band, matrix 1922; first issued on 78 (Paramount 12242); first LP Biograph BLP-12001 (1968) (Discogs, MusicBrainz, Wikipedia); video: "Provided to YouTube by Virgin Music Group", Yazoo, Ma Rainey's Black Bottom, the Paramount side (the only issued take known)
 
 section: A
 1  | D   # I of the blues: a triad here implies its ♭7, Mixolydian
-2  | G7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+2  | G7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 3  | D   # I of the blues: a triad here implies its ♭7, Mixolydian
-4  | D7  # I7 of the blues: a tonic with dominant colour, Mixolydian
-5  | G7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+4  | D7  # I7 of the blues: a tonic with dominant color, Mixolydian
+5  | G7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 6  | G7
 7  | D   # I of the blues: a triad here implies its ♭7, Mixolydian
 8  | D
 9  | A7  # V7 of the blues: a dominant that needn’t resolve, Mixolydian
 10 | G   # IV of the blues: a triad here implies its ♭7, Mixolydian
-11 | D7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+11 | D7  # I7 of the blues: a tonic with dominant color, Mixolydian
 12 | A7  # V7 of the blues: a dominant that needn’t resolve, Mixolydian
-13 | D7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+13 | D7  # I7 of the blues: a tonic with dominant color, Mixolydian
 @ending 1 12
 @ending 2 13

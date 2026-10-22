@@ -14,7 +14,7 @@ README.md for the chart format. The original Python/LilyPond CLI was retired aft
   `make a11y` (template lint + axe scans in `web/e2e/a11y/`, not in `make e2e`; the pre-push hook runs it when a push
   touches `web/app/`; known violations are exceptions in `web/e2e/a11y/axe.ts`, each with an issue); `make dev` / `make preview`.
 - Docs: a new heuristic (anything the app chooses for the user) adds a row to `DECISIONS` (`engine/src/decisions.ts`)
-  with its doc anchor. A PR that changes user-facing behaviour (engine, `chord_scales.json`, components, composables,
+  with its doc anchor. A PR that changes user-facing behavior (engine, `chord_scales.json`, components, composables,
   the song page) touches a docs page (Help, Functions, …) or `decisions.ts`, or its description carries
   `Docs: none — <reason>`: the `docs` check fails otherwise. `make docs` runs the anchor test and the link check.
 - The design is in `docs/design.md` (kept current; the `docs/plan-*.md` files are historical).
@@ -62,7 +62,7 @@ README.md for the chart format. The original Python/LilyPond CLI was retired aft
   `bars: N` where a section's last chord is held past its last written bar (README "Charts"); then `cd engine && npm run analyse --
   charts/<tune-name>.txt --save` to save the reasons, read the report (its Song page section must show no gaps: they
   fail `make test`), then `--ambiguous`, `make golden` (the fixtures cover every library chart), and `make og` (its link preview image; a test fails until it's drawn). Leave the scale cells blank: they play the analysis. A scale the melody
-  demands over the rules: write it, with `# keep: …`. Otherwise, where the analyser can only guess, write the
+  demands over the rules: write it, with `# keep: …`. Otherwise, where the analyzer can only guess, write the
   function (`| | V7/ii`), a section `key:` or an `@key` rather than a scale: a function lets the rules still choose the tensions.
 - "Import <tune> from iReal": `npx csm add <irealb:// link | export.html> --song <n | title> --composer … --form …
   --aka … --recording … [--version …]` (`--version`: a second chart of a tune already in the library, filed as

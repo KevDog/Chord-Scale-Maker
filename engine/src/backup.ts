@@ -1,3 +1,4 @@
+import { isChangesSet } from './alternates'
 import { chartMeta, parseChart, serializeChart } from './chart'
 import { chordPicksFrom } from './chordPicks'
 import { setMeta } from './edit'
@@ -90,10 +91,21 @@ const STATE: Readonly<Record<string, (raw: string) => string | null>> = {
   'csm-practice:from': (raw) => practice(raw),
   'csm-level': (raw) => (hasOwn(json(raw), 'level') && isScaleLevel((json(raw) as { level: unknown }).level) ? raw : null),
   'csm-pent-path': (raw) => (hasOwn(json(raw), 'path') && isPentatonicPathName((json(raw) as { path: unknown }).path) ? raw : null),
-  'csm-pent-picks': (raw) => {
+  'csm-pent-picks': (raw) => picks(raw),
+  'csm-changes': (raw) => {
     const v = json(raw)
-    return v && typeof v === 'object' ? JSON.stringify(chordPicksFrom(v)) : null
+    if (!v || typeof v !== 'object' || Array.isArray(v)) return null
+    const o = v as { main?: unknown; shown?: unknown }
+    return isChangesSet(o.main) && typeof o.shown === 'boolean' ? JSON.stringify({ main: o.main, shown: o.shown }) : null
   },
+  // the alternate set's own picks and practice (#215), kept under the chart with `~alt` on the prefix
+  'csm-pent-picks~alt': (raw) => picks(raw),
+  'csm-practice~alt:root': (raw) => practice(raw),
+  'csm-practice~alt:from': (raw) => practice(raw),
+}
+function picks(raw: string): string | null {
+  const v = json(raw)
+  return v && typeof v === 'object' ? JSON.stringify(chordPicksFrom(v)) : null
 }
 function practice(raw: string): string | null {
   const s = practiceSelectionFrom(json(raw))
@@ -101,14 +113,16 @@ function practice(raw: string): string | null {
 }
 
 /** the state prefixes a backup carries (undo history stays behind) */
-const PREFIX = '(csm-practice|csm-level|csm-pent-path|csm-pent-picks)'
-const MINE_STATE = new RegExp(`^${PREFIX}:mine:([A-Za-z0-9_-]+)(?::(root|from))?$`)
-const LIBRARY_STATE = new RegExp(`^${PREFIX}:(?!mine:)([a-z0-9-]+)(?::(root|from))?$`)
-const stateName = (prefix: string, mode: string | undefined): string => (mode ? `${prefix}:${mode}` : prefix)
+const PREFIX = '(csm-practice|csm-level|csm-pent-path|csm-pent-picks|csm-changes)'
+/** the alternate set's state sits under the chart key with `~alt` (`csm-pent-picks:<key>~alt`, `csm-practice:<key>~alt:root`); in a backup the suffix moves to the prefix (`csm-pent-picks~alt`) */
+const MINE_STATE = new RegExp(`^${PREFIX}:mine:([A-Za-z0-9_-]+?)(~alt)?(?::(root|from))?$`)
+const LIBRARY_STATE = new RegExp(`^${PREFIX}:(?!mine:)([a-z0-9-]+?)(~alt)?(?::(root|from))?$`)
+const stateName = (prefix: string, alt: string | undefined, mode: string | undefined): string => `${prefix}${alt ?? ''}${mode ? `:${mode}` : ''}`
 /** a state name's storage key for a chart part (`mine:<id>` or a slug) */
 const stateKey = (name: string, part: string): string => {
-  const [prefix, mode] = name.split(':')
-  return mode ? `${prefix}:${part}:${mode}` : `${prefix}:${part}`
+  const [head = '', mode] = name.split(':')
+  const [prefix, alt] = head.split('~')
+  return `${prefix}:${part}${alt === undefined ? '' : '~alt'}${mode ? `:${mode}` : ''}`
 }
 
 /** a global view preference: `csm-<name>`, never your charts, per-chart state or a kept list */
@@ -135,9 +149,9 @@ export function backupFrom(store: Store, header: Readonly<{ exportedAt: string; 
     const own = MINE_STATE.exec(key)
     const m = own ?? LIBRARY_STATE.exec(key)
     if (!m) continue
-    const [, prefix, part, mode] = m as unknown as [string, string, string, string | undefined]
+    const [, prefix, part, alt, mode] = m as unknown as [string, string, string, string | undefined, string | undefined]
     const into = own ? mine : library
-    into.set(part, { ...into.get(part), [stateName(prefix, mode)]: raw })
+    into.set(part, { ...into.get(part), [stateName(prefix, alt, mode)]: raw })
   }
   const index = json(store[INDEX] ?? '[]')
   const metas = Array.isArray(index) ? index.map(savedMetaFrom).filter((m): m is SavedMeta => m !== null) : []

@@ -238,7 +238,7 @@ test('a pick stays on its chord when a bar goes in before it (#275)', async ({ p
   await expect(page.locator('[data-slot="pentatonic"] button[aria-label*="your pick"]')).toHaveCount(1)
 })
 
-test('the Line plays each chord’s labelled pentatonic in cells under the Pentatonic overlay, and 7th Chords again without it (#284)', async ({ page }) => {
+test('the Line plays each chord’s labeled pentatonic in cells under the Pentatonic overlay, and 7th Chords again without it (#284)', async ({ page }) => {
   await writeChart(page, 'title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n1 | G7\n2 | CMaj7\n')
   const line = page.locator('svg[aria-label^="Bars:"]').first()
   await showArpeggios(page, 'Up · root')

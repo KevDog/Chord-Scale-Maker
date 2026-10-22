@@ -157,7 +157,7 @@ test('choosing a scale and then the analysed one again leaves the library chart 
   const again = await scaleList()
   await again.getByRole('searchbox', { name: 'Any scale' }).fill('C dor')
   await again.getByRole('list', { name: 'Scales found' }).getByRole('button', { name: /^C Dorian \d/ }).click()
-  await expect(page.getByLabel('Chart text')).toHaveValue(/\n1 +\| Cm7 +\| C Dorian/) // the name pins it, though the analyser agrees
+  await expect(page.getByLabel('Chart text')).toHaveValue(/\n1 +\| Cm7 +\| C Dorian/) // the name pins it, though the analyzer agrees
   await expect(status(page)).toHaveText(/^Your edited version of Autumn Leaves/)
 })
 

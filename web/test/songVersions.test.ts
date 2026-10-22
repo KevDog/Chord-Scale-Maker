@@ -19,7 +19,7 @@ describe('versionChoices (#411)', () => {
     expect(versionChoices(tuneAt({ mine: saved('a1b2c3', 'My Tune') }), [saved('a1b2c3', 'My Tune')])).toEqual(none)
   })
 
-  it('adds your saved charts of the tune, by what they are based on or by title, labelled by version: or "My chart"', () => {
+  it('adds your saved charts of the tune, by what they are based on or by title, labeled by version: or "My chart"', () => {
     const mine = [
       saved('aaaaaa', 'Summertime', { kind: 'new', version: 'Ballad' }),
       saved('bbbbbb', 'Mine', { basedOn: 'summertime-jazz-mind-accelerator', createdAt: 2 }),

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { ChangesBar, ChangesChord, ChangesLine, GuideNote, Letter } from '@chord-scale-maker/engine'
-import { arpeggioAria, beatXs, DURATIONS, fitBars, guideAria, restatedAccidental, voicedBand, voltaShift } from '~/utils/changesDrawing'
+import { arpeggioAria, beatXs, DURATIONS, fitBars, guideAria, mergeNames, restatedAccidental, voicedBand, voltaShift } from '~/utils/changesDrawing'
 
 const chord = (beat: number, text: string, guide: string): ChangesChord => ({
   beat,
@@ -112,6 +112,17 @@ describe('guideAria', () => {
   it('spells accidentals and names a rest', () => {
     const line: ChangesLine = { bars: [bar([chord(0, 'Gm7', '3'), chord(2, 'Cm7#5#9x', '')], [note(6, -1, 70, 0, 2), rest(2, 2)])] }
     expect(guideAria(line)).toBe('; guide tones: B♭4 3, rest')
+  })
+})
+
+describe('mergeNames', () => {
+  const at = (beat: number, width: number) => ({ beat, width })
+  it('names every beat either row names, as wide as the wider name there, in beat order (#475)', () => {
+    expect(mergeNames([at(0, 0.1), at(2, 0.05)], [at(0, 0.2), at(1, 0.15), at(2, 0.01), at(3, 0.3)])).toEqual([at(0, 0.2), at(1, 0.15), at(2, 0.05), at(3, 0.3)])
+  })
+  it('is the one row when the other is empty', () => {
+    expect(mergeNames([at(0, 0.1), at(2, 0.05)], [])).toEqual([at(0, 0.1), at(2, 0.05)])
+    expect(mergeNames([], [at(1, 0.1)])).toEqual([at(1, 0.1)])
   })
 })
 

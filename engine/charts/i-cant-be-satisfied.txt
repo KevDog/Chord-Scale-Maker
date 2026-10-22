@@ -7,11 +7,11 @@ form: AA, 46 bars
 source: iReal Pro
 recording: Muddy Waters; The Best of Muddy Waters; Chess; 1958
 youtube: LG95MseHfgA
-# analysis: 2026-10-19, rules v2; G, blues
+# analysis: 2026-10-22, rules v2; G, blues
 # recording: recorded April 1948, Chicago, with Big Crawford (b); first issued on 78 (Aristocrat 1305, 1948); first LP LP-1427 (1958) (Wikipedia, Discogs, DAHR); video: "Provided to YouTube by Universal Music Group", The Best of Muddy Waters, the same take
 
 section: A1
-1  | G7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+1  | G7  # I7 of the blues: a tonic with dominant color, Mixolydian
 2  | G7
 3  | G7
 4  | G7
@@ -28,11 +28,11 @@ section: A1
 15 | G7
 16 | D7  # V7 of the blues: a dominant that needn’t resolve, Mixolydian
 17 | D7
-18 | C7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+18 | C7  # IV7 of the blues: a subdominant with dominant color, Mixolydian (the #11 is an extra color)
 19 | C7
 20 | G   # I of the blues: a triad here implies its ♭7, Mixolydian
 21 | G
-22 | G7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+22 | G7  # I7 of the blues: a tonic with dominant color, Mixolydian
 23 | G7
 
 section: A2
