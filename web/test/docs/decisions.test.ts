@@ -1,10 +1,13 @@
-import { mountSuspended } from '@nuxt/test-utils/runtime'
+import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import type { Component } from 'vue'
 import { describe, expect, it } from 'vitest'
 import { DECISIONS, type DocPage } from '@chord-scale-maker/engine'
 import Functions from '~/pages/functions.vue'
 import Help from '~/pages/help.vue'
 import HowItDecides from '~/pages/how-it-decides.vue'
+
+// every flag on, as e2e builds: a decision may be documented in a section a flag still hides (backup, #466)
+mockNuxtImport('useFeature', () => () => true)
 
 /** the pages a decision can live on (the analysis rules' rows: functionsPage.test.ts) */
 const PAGES: Record<DocPage, Component> = { help: Help, functions: Functions, 'how-it-decides': HowItDecides }

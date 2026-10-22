@@ -113,6 +113,10 @@ describe('cell phrase: the Cells line aims each cell at the next chord (#379, #3
     expect(slots(notes(seq(['Cmaj7', 2], ['N.C.', 2], ['Eb7', 2]), phrase('root-root')))[0]).toBe('C D E G')
     expect(slots(notes(seq(['Cmaj7', 2], ['Eb7', 2]), phrase('root-root')))[0]).toBe('C A G E')
   })
+  it('the slot before a chord that plays its arpeggio (no scale: no 2 or 6) plays the system’s cell, unaimed (#462)', () => {
+    const cs: GuideInput[] = [{ row: 0, chord: 'Cmaj7', scale: 'C Ionian', start: 0, beats: 2 }, { row: 1, chord: 'Eb7', start: 2, beats: 2 }]
+    expect(slots(notes(cs, phrase('root-root')))).toEqual(['C D E G', 'Eb G Bb Db'])
+  })
   it('3/4, a chord of two bars: every bar turns back, so none of its cells is aimed (the phrase-off line)', () => {
     const cs = seq(['Cmaj7', 6], ['Eb7', 3])
     const on = notes(cs, phrase('root-root'), 3)
@@ -156,6 +160,18 @@ describe('cell phrase: the Cells line aims each cell at the next chord (#379, #3
       { row: 2, chord: 'Cmaj7', scale: 'C major pentatonic', start: 4, beats: 2 },
     ]
     for (const id of Object.keys(CELL_SYSTEMS) as CellId[]) expect(notes(cs, phrase(id)).filter((n) => n !== 'r')).toHaveLength(12)
+    // Dm7's 3 2 1 7 has no 2 in D minor pentatonic: its arpeggio; G7's 3 5 1 7 steps into C's E, kept
+    expect(slots(notes(cs, phrase('3rd-3rd')))).toEqual(['D F A C', 'B D G F', 'E D C B'])
+  })
+  it('a dominant on a diminished scale (Half-Whole, pinned): every degree read, its 2 the ♭2 (#462)', () => {
+    const cs: GuideInput[] = [
+      { row: 0, chord: 'Dm7', scale: 'D Dorian', start: 0, beats: 2 },
+      { row: 1, chord: 'G7', scale: 'G half whole diminished', start: 2, beats: 4, pinned: true },
+      { row: 2, chord: 'Cmaj7', scale: 'C Ionian', start: 6, beats: 2 },
+    ]
+    for (const id of Object.keys(CELL_SYSTEMS) as CellId[]) expect(notes(cs, phrase(id)).filter((n) => n !== 'r')).toHaveLength(16)
+    // G7's B, 1 7 6 5, into its A's G: 1 3 5 7 (CHANGED); its A, 1 2 3 5, reads the 2 as A♭
+    expect(slots(notes(cs, phrase('root-root')))).toEqual(['D E F A', 'G B D F', 'G Ab B D', 'C B A G'])
   })
 })
 
@@ -218,6 +234,20 @@ describe('cell phrase: substitutes over a long dominant (#378)', () => {
   })
   it('a dominant restated bar by bar is one chord for substitutes: G7 | G7 | C plays G7 (8 beats) | C', () => {
     for (const id of Object.keys(CELL_SYSTEMS) as CellId[]) expect(notes(seq(['G7', 4], ['G7', 4], ['C', 2]), phrase(id))).toEqual(notes(seq(['G7', 8], ['C', 2]), phrase(id)))
+  })
+  it('a dominant restated across two blocks is two chords: the first, into a G7, takes no substitutes (#462)', () => {
+    const cs = seq(['G7', 4], ['G7', 4], ['C', 2]).map((c, i) => ({ ...c, block: i === 0 ? 0 : 1 }))
+    for (const id of Object.keys(CELL_SYSTEMS) as CellId[]) {
+      expect(notes(cs, phrase(id))).not.toEqual(notes(seq(['G7', 8], ['C', 2]), phrase(id)))
+      expect(notes(cs, phrase(id)).slice(0, 8)).toEqual(notes(pin(cs, 0), phrase(id)).slice(0, 8))
+    }
+  })
+  it('a pinned row ends a restated run: G7 (pinned) | G7 | C takes substitutes over the second bar only (#462)', () => {
+    const cs = pin(seq(['G7', 4], ['G7', 4], ['C', 2]), 0)
+    for (const id of Object.keys(CELL_SYSTEMS) as CellId[]) {
+      expect(notes(cs, phrase(id))).not.toEqual(notes(seq(['G7', 4], ['G7', 4], ['C', 2]), phrase(id)))
+      expect(notes(cs, phrase(id)).slice(8)).toEqual(notes(seq(['G7', 4], ['C', 2]), phrase(id)))
+    }
   })
   it('3/4, G7 for two bars → C: the second bar’s turn-back replays its substitute cell’s notes', () => {
     const on = notes(seq(['G7', 6], ['C', 3]), phrase('3rd-3rd'), 3)

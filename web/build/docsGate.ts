@@ -19,8 +19,9 @@ export const HAS_DOCS: readonly RegExp[] = [/^web\/app\/pages\/(help|how-it-deci
 /** the release notes (docs/superpowers/specs/2026-10-17-user-docs-restructure-design.md §12): a user-facing PR adds one */
 export const RELEASE_NOTES_FILE = 'web/app/utils/releaseNotes.ts'
 
-const ESCAPE = /^Docs: none (?:—|--) (.*\S.*)$/m
-const NOTE_ESCAPE = /^Release notes: none (?:—|--) (.*\S.*)$/m
+/** an em dash, an en dash or two hyphens, spaced or not (#407) */
+const ESCAPE = /^Docs: none[ \t]*(?:—|–|--)[ \t]*(.*\S.*)$/m
+const NOTE_ESCAPE = /^Release notes: none[ \t]*(?:—|–|--)[ \t]*(.*\S.*)$/m
 const SHOWN = 10
 
 export type GateResult = Readonly<{ ok: true; why: string } | { ok: false; triggers: readonly string[]; message: string }>

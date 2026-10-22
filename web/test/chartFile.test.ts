@@ -31,4 +31,21 @@ describe('chart files', () => {
   it('.htm is an export too', async () => {
     expect(await readChartFile(file('<html>', 'x.htm', 'text/html'), { ireal: true })).toMatchObject({ ok: true, kind: 'ireal' })
   })
+
+  it('a .json file is a backup when Back up is on, and turned away when it’s off', async () => {
+    const json = '{"format":"csm-backup","v":1}'
+    expect(await readChartFile(file(json, 'chord-scale-maker-backup-2026-10-21.json', 'application/json'), { backup: true })).toEqual({ ok: true, text: json, kind: 'backup' })
+    expect(await readChartFile(file(json, 'b.json', 'application/json'))).toMatchObject({ ok: false, error: /\.txt/ })
+  })
+
+  it('a backup may be far bigger than a chart, up to 8 MB', async () => {
+    const json = `{"format":"csm-backup","v":1,"pad":"${'x'.repeat(100_000)}"}`
+    expect(await readChartFile(file(json, 'b.json', 'application/json'), { backup: true })).toMatchObject({ ok: true, kind: 'backup' })
+    const big = new File(['x'.repeat(8_000_001)], 'b.json', { type: 'application/json' })
+    expect(await readChartFile(big, { backup: true })).toEqual({ ok: false, error: 'That file is too big for a backup (over 8 MB).' })
+  })
+
+  it('a .json that isn’t a backup says so', async () => {
+    expect(await readChartFile(file('{"a":1}', 'x.json', 'application/json'), { backup: true })).toEqual({ ok: false, error: 'That isn’t a Chord Scale Maker backup.' })
+  })
 })

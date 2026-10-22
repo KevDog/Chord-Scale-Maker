@@ -1,4 +1,4 @@
-import { LIMITS } from '@chord-scale-maker/engine'
+import { LIMITS, parseBackup } from '@chord-scale-maker/engine'
 
 /**
  * Charts as files: Download saves the chart text as a .txt (a Blob with an object URL, so no CSP change), and Open
@@ -15,13 +15,17 @@ export function downloadText(filename: string, text: string): void {
   setTimeout(() => URL.revokeObjectURL(url), 0)
 }
 
-export type ChartFileResult = Readonly<{ ok: true; text: string; kind: 'chart' | 'ireal' }> | Readonly<{ ok: false; error: string }>
+export type ChartFileResult = Readonly<{ ok: true; text: string; kind: 'chart' | 'ireal' | 'backup' }> | Readonly<{ ok: false; error: string }>
 
 const isText = (f: Pick<File, 'name' | 'type'>): boolean => /\.txt$/i.test(f.name) || f.type === 'text/plain' || f.type === ''
 const isHtml = (f: Pick<File, 'name' | 'type'>): boolean => /\.html?$/i.test(f.name) || f.type === 'text/html'
+const isJson = (f: Pick<File, 'name' | 'type'>): boolean => /\.json$/i.test(f.name) || f.type === 'application/json'
+/** a backup holds every chart (#466): far bigger than one, but still under what a browser's storage holds */
+const BACKUP_MAX = 8_000_000
 
-/** a chart file's text, or an iReal Pro export's (when iReal import is on), or why it can't be opened */
-export async function readChartFile(file: File, opts: Readonly<{ ireal?: boolean }> = {}): Promise<ChartFileResult> {
+/** a chart file's text, or an iReal Pro export's (when iReal import is on), or a backup's (when Back up is on), or why it can't be opened */
+export async function readChartFile(file: File, opts: Readonly<{ ireal?: boolean; backup?: boolean }> = {}): Promise<ChartFileResult> {
+  if (opts.backup === true && isJson(file)) return readBackupFile(file)
   const ireal = opts.ireal === true && isHtml(file)
   if (!isText(file) && !ireal) return { ok: false, error: opts.ireal ? 'Please open a chart saved as a .txt file, or an iReal Pro export (.html).' : 'Please open a chart saved as a .txt file.' }
   // an iReal playlist can be far bigger than a chart; the link inside is what's read
@@ -37,4 +41,15 @@ export async function readChartFile(file: File, opts: Readonly<{ ireal?: boolean
   if (!text.trim()) return { ok: false, error: 'That file is empty.' }
   if (text.includes('\u0000')) return { ok: false, error: 'That doesn’t look like a chart: it isn’t plain text.' }
   return { ok: true, text, kind: ireal ? 'ireal' : 'chart' }
+}
+
+async function readBackupFile(file: File): Promise<ChartFileResult> {
+  if (file.size > BACKUP_MAX) return { ok: false, error: 'That file is too big for a backup (over 8 MB).' }
+  let text: string
+  try {
+    text = (await file.text()).replace(/^\uFEFF/, '')
+  } catch {
+    return { ok: false, error: "That file couldn't be read. Please try it again." }
+  }
+  return parseBackup(text) ? { ok: true, text, kind: 'backup' } : { ok: false, error: 'That isn’t a Chord Scale Maker backup.' }
 }

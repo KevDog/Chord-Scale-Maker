@@ -12,8 +12,10 @@ concurrency:
   cancel-in-progress: true
 jobs:
   docs:
-    # Dependabot's bumps change no behaviour a user reads about; a skipped required check reports success
-    if: github.actor != 'dependabot[bot]'
+    # Dependabot's bumps change no behaviour a user reads about; a skipped required check reports success. The PR's
+    # author, not github.actor: a person who re-runs or edits a Dependabot PR is still skipped, and a PR of theirs
+    # that Dependabot rebases is still checked (#407)
+    if: github.event.pull_request.user.login != 'dependabot[bot]'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
