@@ -5,7 +5,10 @@ style: Medium up
 key: F
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 161
+recording: Jones-Smith Incorporated; Lester Leaps In; Epic; 1956
+youtube: j4JL-AR2ZiI
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded 1936-11-09, Chicago (Count Basie, Lester Young, Carl Smith, Walter Page, Jo Jones), matrix C-1660-1, first issued on 78 (Vocalion 3459); first LP Epic LN 3107 (credited to Count Basie), 1956 per MusicBrainz (1955 per NYPL); songbook standard → Lester Young's solo is the jazz reference; sources: Wikipedia, Mosaic, MusicBrainz; video: "Provided to YouTube by Columbia", The Essential Count Basie, Vol. I, the same take
 
 # bar | chord | scale
 

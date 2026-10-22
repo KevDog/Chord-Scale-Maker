@@ -4,7 +4,10 @@ style: Medium swing
 key: Dm
 form: ABAC, 32 bars
 source: The New Real Book, Vol. 1
+recording: Bill Evans Trio; Explorations; Riverside; 1961
+youtube: 7cdVTEe5Tyw
 # analysis: 2026-10-19, rules v2; D minor
+# recording: recorded 1961-02-02, Bell Sound, NYC (Scott LaFaro, Paul Motian), take 2, Riverside RLP 351, released 1961; the chart follows Bill Evans, and this is his first studio recording of it; sources: Wikipedia, jazzdisco; video: Craft Recordings upload on the Bill Evans channel, from Explorations, the same take (not take 1)
 # as played by Bill Evans; originally written in 3/4
 # the book: a 16-bar form with 1st and 2nd endings; the pickup bar has no chord
 

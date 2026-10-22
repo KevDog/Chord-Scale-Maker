@@ -4,7 +4,10 @@ style: Medium
 key: Bb
 form: AB, 18 bars
 source: Colorado Cookbook, p. 103
+recording: Ella Fitzgerald; Ella Fitzgerald Sings the George and Ira Gershwin Song Book; Verve; 1959
+youtube: efkM8SxaQW4
 # analysis: 2026-10-19, rules v2; Bb
+# recording: recorded 1959 (January, March and July sessions), Capitol Studio A, Hollywood, with Nelson Riddle; Verve MGVS 6082-5, released December 1959; songbook standard → Ella's reading as the reference, over Sinatra's 1947 Columbia 78 and Ella's 1950 Decca duo with Ellis Larkins; sources: Wikipedia; video: "Provided to YouTube by Universal Music Group", the Song Book album track, the same take
 
 # bar | chord | scale
 

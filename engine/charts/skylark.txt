@@ -4,7 +4,10 @@ style: Ballad
 key: Eb
 form: AABA, 32 bars
 source: The New Real Book, Vol. 1
+recording: Art Blakey & the Jazz Messengers; Caravan; Riverside; 1963
+youtube: dqsJ-WS-uOo
 # analysis: 2026-10-19, rules v2; Eb
+# recording: recorded 1962-10-23/24, Plaza Sound Studios, NYC (Freddie Hubbard, Curtis Fuller, Wayne Shorter, Cedar Walton, Reggie Workman), Riverside RLP 438, released 1963; songbook standard → the instrumental reading, over the Krupa/Anita O'Day 1941 78 and Aretha Franklin (1963); sources: Wikipedia, jazzstandards.com; video: "Provided to YouTube by Universal Music Group", Caravan (Craft Recordings), the same take
 # book: Med. Ballad
 # the book's letters: A (16 bars, the two A strains), B, C (the last A)
 

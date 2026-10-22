@@ -4,7 +4,10 @@ style: Medium up
 key: C
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 265
+recording: Clifford Brown & Max Roach; Clifford Brown and Max Roach at Basin Street; EmArcy; 1956
+youtube: JTWRZkoLGx8
 # analysis: 2026-10-19, rules v2; C
+# recording: recorded 1956-02-16, New York, with Sonny Rollins, master take 12463-7, MG 36070, released 1956 (the alternate, take 6, first came out in 1989); songbook standard → the Brown–Roach reading as the jazz reference, over Bill Evans' Portrait in Jazz (1960) (jazzdisco); video: "Provided to YouTube by Universal Music Group", At Basin Street, the master, the same take
 
 # bar | chord | scale
 

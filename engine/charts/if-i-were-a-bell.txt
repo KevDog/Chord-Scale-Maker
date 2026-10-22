@@ -4,7 +4,10 @@ style: Medium swing
 key: F
 form: AB, 32 bars
 source: The New Real Book, Vol. 1
+recording: Miles Davis Quintet; Relaxin' with the Miles Davis Quintet; Prestige; 1958
+youtube: GSRy1HlEpf4
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded 1956-10-26, Van Gelder Studio, Hackensack (Coltrane, Red Garland, Paul Chambers, Philly Joe Jones), PRLP 7129, released 1958; the book's chart is as played by Miles Davis; video: Miles Davis's official channel (Craft), from Relaxin', the same take
 # the book: as played by Miles Davis; in 2 for the head
 # the intro is a melodic figure with no chords (N.C., four bars with 1st and 2nd endings)
 # solo on AB; take the Coda to end each solo, to A for more solos; after solos D.S. al Coda

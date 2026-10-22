@@ -6,7 +6,10 @@ style: Medium
 key: Bb
 form: ABAD, 32 bars
 source: Colorado Cookbook, p. 200
+recording: Sonny Rollins; Sonny Rollins Quartet; Prestige; 1952
+youtube: DIgTNZcPVXs
 # analysis: 2026-10-19, rules v2; Bb
+# recording: recorded 1951-12-17, Apex Studios, New York (Kenny Drew, Percy Heath, Art Blakey), first issued on the 10" PRLP 137 (1952; no 78); later on Sonny Rollins with the Modern Jazz Quartet (PRLP 7029, 1956); songbook standard → Rollins's reading as the jazz reference (jazzdisco); video: Sonny Rollins's official channel (Craft), Sonny Rollins with the Modern Jazz Quartet, the same take
 
 # bar | chord | scale
 # bar 2 can also be Bdim7

@@ -5,7 +5,10 @@ style: Mixed
 key: Bbm
 form: AABC, 64 bars
 source: Colorado Cookbook, p. 129
+recording: Cannonball Adderley; Somethin' Else; Blue Note; 1958
+youtube: Z3TTnMY9ptg
 # analysis: 2026-10-19, rules v2; Bb minor
+# recording: recorded 1958-03-09, Van Gelder Studio, Hackensack, with Miles Davis, Hank Jones, Sam Jones, Art Blakey, BLP 1595, released 1958; songbook standard → the Latin-intro, swing-body reading the chart's layout matches; video: "Provided to YouTube by Universal Music Group", Somethin' Else (RVG), the same take
 
 # bar | chord | scale
 # the lead sheet offers Eb7 for EbMaj7 and Bb7 for Bbm in the A sections; the Maj7 / minor reading is written

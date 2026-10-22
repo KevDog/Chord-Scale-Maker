@@ -4,7 +4,10 @@ style: Ballad
 key: Db
 form: ABCD, 54 bars
 source: The New Real Book, Vol. 1
+recording: John Coltrane; Lush Life; Prestige; 1961
+youtube: RvgRLfxolHU
 # analysis: 2026-10-19, rules v2; Db
+# recording: recorded 1958-01-10, Van Gelder Studio, Hackensack (Donald Byrd, Red Garland, Paul Chambers, Louis Hayes), PRLP 7188, released 1961; the book's chart is as played by John Coltrane (jazzdisco); video: "Provided to YouTube by Universal Music Group", the Lush Life album track, the same take
 # book: as played by John Coltrane. A: freely (verse); B: faster; C–D: medium ballad (quarter = 58).
 # routing: A, B, C, D; repeat C–D for solos (double-time feel swing; the first solo begins at D bars 13–14);
 # after solos, D.S. al Coda (from C to D bar 10, then the Coda).

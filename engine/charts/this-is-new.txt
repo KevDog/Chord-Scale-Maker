@@ -4,7 +4,10 @@ style: Medium up
 key: Cm
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 248
+recording: Kenny Drew; This Is New; Riverside; 1957
+youtube: 4FMVFZPKbds
 # analysis: 2026-10-19, rules v2; C minor
+# recording: recorded 1957-03-28, Reeves Sound Studios, NYC (Kenny Drew Quintet: Donald Byrd, Hank Mobley, Wilbur Ware, G.T. Hogan), the album's title track, Riverside RLP 12-236; songbook standard (Lady in the Dark, 1941) → the hard-bop reading jazz players know, over the Gertrude Lawrence cast record; sources: jazzdisco; video: "Provided to YouTube by Universal Music Group", This Is New (Riverside), the same take
 
 # bar | chord | scale
 

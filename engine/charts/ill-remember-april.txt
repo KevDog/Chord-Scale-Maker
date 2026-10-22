@@ -5,7 +5,10 @@ style: Mixed
 key: G
 form: ABA, 48 bars
 source: Colorado Cookbook, p. 100
+recording: Erroll Garner; Concert by the Sea; Columbia; 1955
+youtube: WhpMvnk6UCE
 # analysis: 2026-10-19, rules v2; G
+# recording: recorded live 1955-09-19, Sunset School, Carmel-by-the-Sea, with Eddie Calhoun and Denzil Best, the album's opener, CL 883, released 1955; songbook standard → Garner's reading as the reference, over Bud Powell's and Clifford Brown's (Wikipedia); video: "Provided to YouTube by Columbia/Legacy", The Complete Concert by the Sea ("Original Edited Concert", as on the LP), the same take
 
 # bar | chord | scale
 # the standard 48-bar form; the lead sheet condenses the A sections
