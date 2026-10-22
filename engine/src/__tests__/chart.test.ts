@@ -157,10 +157,10 @@ describe('chart', () => {
   })
 
   it('reads a time: line, and flags one it can’t use', () => {
-    expect(['3/4', '2/4', '4/4', '5/4', '6/4', '', '6/8', '7/4', 'waltz'].map(beatsPerBar)).toEqual([3, 2, 4, 5, 6, 4, null, null, null])
+    expect(['3/4', '2/4', '4/4', '5/4', '6/4', '', '6/8', '7/4', '8/4', 'waltz'].map(beatsPerBar)).toEqual([3, 2, 4, 5, 6, 4, null, 7, null, null])
     expect(chartBeats(parseChart('time: 3/4\nsection: A\n1 | C').value)).toBe(3)
     expect(chartBeats(parseChart('time: 6/4\nsection: A\n1 | C').value)).toBe(6)
-    expect(parseChart('time: 6/8\nsection: A\n1 | C').diagnostics.map((d) => d.message)).toEqual(['time: 2/4, 3/4, 4/4, 5/4 or 6/4'])
+    expect(parseChart('time: 6/8\nsection: A\n1 | C').diagnostics.map((d) => d.message)).toEqual(['time: 2/4, 3/4, 4/4, 5/4, 6/4 or 7/4'])
   })
 
   it('reads a kind: line (a tune without one), and flags one it can’t use', () => {
@@ -352,7 +352,7 @@ describe('context: and @context (docs/superpowers/specs/2026-10-10-chart-context
 
   it('rejects a malformed @time', () => {
     for (const bad of ['@time 1', '@time x 3/4', '@time 1 6/8', '@time 1 3/4 extra'])
-      expect(parseChart(`section: A\n${bad}`).diagnostics[0]?.message, bad).toBe('use  @time BAR METRE  (2/4, 3/4, 4/4, 5/4 or 6/4)')
+      expect(parseChart(`section: A\n${bad}`).diagnostics[0]?.message, bad).toBe('use  @time BAR METRE  (2/4, 3/4, 4/4, 5/4, 6/4 or 7/4)')
   })
 
   it('rejects a malformed @context', () => {

@@ -460,7 +460,7 @@ export function splitSection(doc: ChartDoc, section: string, bar: number, name: 
 }
 
 /**
- * put one bar of a section in a metre (2/4 to 6/4), the bars after it keeping theirs: its @time, and one on the bar
+ * put one bar of a section in a metre (2/4 to 7/4), the bars after it keeping theirs: its @time, and one on the bar
  * after to go back; a change the bar before already makes is dropped, and bar 1's is the section's time:. Not on a
  * copy's bar, or in the metre it is in.
  */

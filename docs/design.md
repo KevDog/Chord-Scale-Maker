@@ -234,12 +234,12 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **Outside the form** (`formPart`, or `outside: yes`): sections named `Intro`, `Coda`, `Tag` or `Ending` (with an
   optional number). They print where they stand; the analysis links an intro into the form's first chord and a coda
   after its last (the form itself wraps to its own top), and each is timed on its own.
-- **Metre:** a `time:` header line, `2/4` to `6/4` (`4/4` the default; anything else is a diagnostic); a section's
+- **Metre:** a `time:` header line, `2/4` to `7/4` (`4/4` the default; anything else is a diagnostic); a section's
   own `time:`, and `@time BAR METRE` from a bar to its section's end (#235, #234). `chartBeats` gives the song's;
   each bar has its own (`ChartBar.beats`, `ChangesBar.beats`). The guide tone timeline splits a bar by its metre (3/4:
-  two chords = 2 + 1; 5/4: 3 + 2; 6/4: 3 + 3, three = 2 + 2 + 2), and the Changes sheet draws a time signature on its
+  two chords = 2 + 1; 5/4: 3 + 2; 6/4: 3 + 3, three = 2 + 2 + 2; 7/4: 4 + 3, three = 2 + 2 + 3), and the Changes sheet draws a time signature on its
   first bar and wherever the metre changes (`ChangesBar.timeSignature`), its slashes and, with a line on, dotted
-  halves and dotted wholes (a 5-beat note is a dotted half tied to a half, `drawnLengths`). The bar menu's Bar in
+  halves and dotted wholes (a 5-beat note is a dotted half tied to a half, a 7-beat one a whole tied to a dotted half, `drawnLengths`). The bar menu's Bar in
   2/4 … 6/4 (`setBarMetre`) puts one bar in a metre, the bars after it keeping theirs. The scale sheet doesn't
   depend on it.
 - **Function cell, `key:` and `@key`:** a row may carry a fourth cell, the function the author states (`V7/ii`, or

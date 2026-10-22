@@ -358,8 +358,8 @@
             not to the intro. <UiCode>outside: yes</UiCode> does the same for a section of any name.
           </li>
           <li>
-            <UiCode>time: 3/4</UiCode> makes it a waltz (<UiCode>2/4</UiCode>, <UiCode>4/4</UiCode>, <UiCode>5/4</UiCode>
-            and <UiCode>6/4</UiCode> work too; 4/4 is what you get without it). With a guide tone line on, the Changes
+            <UiCode>time: 3/4</UiCode> makes it a waltz (<UiCode>2/4</UiCode>, <UiCode>4/4</UiCode>, <UiCode>5/4</UiCode>,
+            <UiCode>6/4</UiCode> and <UiCode>7/4</UiCode> work too; 4/4 is what you get without it). With a guide tone line on, the Changes
             sheet writes its guide tones in it. Under a <UiCode>section:</UiCode> line, <UiCode>time:</UiCode> sets that
             section's metre, and <UiCode>@time 11 2/4</UiCode> changes it from bar 11 to the section's end (follow it with
             <UiCode>@time 12 4/4</UiCode> for a single 2/4 bar). The bar menu's Bar in 2/4 … 6/4 does it for you.

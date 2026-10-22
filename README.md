@@ -69,7 +69,7 @@ section.
 | `@ending N FIRST [LAST]` | A 1st/2nd ending (volta) over the section's bars `FIRST`..`LAST`; the section is played twice on the Changes sheet — repeat signs with the two endings bracketed. Write the two endings as sequential bars (e.g. 7–8 then 9–10). |
 | `@segno BAR` / `@coda BAR` | A segno (𝄋) or coda (⊕) glyph above that bar on the Changes sheet (the coda marks both the "to the coda" departure and the coda arrival). |
 | `@nav BAR TEXT` | A navigation instruction above that bar on the Changes sheet: `D.S. al Coda`, `D.C. al Fine`, `To Coda`, `Fine`. |
-| `time: 3/4` | The song's metre: `2/4`, `3/4`, `4/4` (the default), `5/4` or `6/4`. The Changes sheet writes its slashes and guide tones in it (the waltzes in the library say `3/4`), with a time signature wherever a bar's metre changes. |
+| `time: 3/4` | The song's metre: `2/4`, `3/4`, `4/4` (the default), `5/4`, `6/4` or `7/4`. The Changes sheet writes its slashes and guide tones in it (the waltzes in the library say `3/4`), with a time signature wherever a bar's metre changes. |
 | `Intro`, `Coda`, `Tag`, `Ending` sections | Outside the form (`Tag2` too): they print where they stand, but the form's turnaround goes back to its own bar 1, and each is analysed and timed on its own. `form:` counts only the form. |
 | `title:`, `subtitle:` | The heading on each page. |
 | `composer:`, `style:`, `key:`, `form:`, `source:` | About the tune: who wrote it, the feel (`Ballad`, `Medium up`, `Latin`…), the key (`Eb`, `Fm`), the form (`AABA, 32 bars`) and where the chart came from. Kept with the chart, not shown; `key:` is the analyser's starting point. |
