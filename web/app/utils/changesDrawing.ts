@@ -49,8 +49,8 @@ export function voltaShift(inkTops: readonly number[], bracketBottom: number): n
 }
 
 const STAFF_TOP = 80 // the staff's top line
-const DOT_RISE = 12 // a target dot's centre over the highest ink: the staff, a stem tip or an accent
-const DOT_ROOM = 6 // the crop's room over a dot's centre
+const DOT_RISE = 12 // a target dot's center over the highest ink: the staff, a stem tip or an accent
+const DOT_ROOM = 6 // the crop's room over a dot's center
 /** a slash line's target dots: in the staff's top space, over the slashes (which reach only the lines either side of the middle), so no line grows and the page budgets hold */
 export const SLASH_TARGET_ROW = STAFF_TOP + 5
 
@@ -59,11 +59,14 @@ export function targetRow(inkTops: readonly number[], staffTop = STAFF_TOP): num
   return Math.min(staffTop, ...inkTops) - DOT_RISE
 }
 
-/** the crop opened up to hold the target dots' row (null: none), and the row's height from its top as a fraction (null: none) */
+/**
+ * the target dots' row (null: none) in the crop, as a fraction of its height from its top (null: none). The crop never
+ * opens for them, so no line grows and the page budgets hold: a row over its headroom comes down to DOT_ROOM under its
+ * top (only where the staff, not ink, sets the row: a voiced line's crop keeps 24 over its ink, the row 12)
+ */
 export function withTargets(band: Band, row: number | null): Readonly<{ band: Band; at: number | null }> {
   if (row === null) return { band, at: null }
-  const top = Math.min(band.top, row - DOT_ROOM)
-  return { band: { top, bottom: band.bottom }, at: (row - top) / (band.bottom - top) }
+  return { band, at: (Math.max(row, band.top + DOT_ROOM) - band.top) / (band.bottom - band.top) }
 }
 
 /** a guide tone line's crop: its note heads and stem tips, at least the clef's band, and over its bracket (null: none) */
@@ -337,7 +340,7 @@ function drawGuideLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, op
   const first = laid[0]?.stave
   const bracket = first && line.bars.some((b) => b.volta) ? first.getYForTopText(first.getNumLines()) + VOLTA_Y : null
   const tops = [...tips, ...heads.map((y) => y - ACCIDENTAL_RISE)]
-  const row = hasTargets(line) ? targetRow(tops) : null
+  const row = hasTargets(line) ? targetRow([...tips, ...heads]) : null // a dot sits over its head's center, clear of the accidental to its left
   const shift = first && bracket !== null ? voltaShift([...tops, ...(row === null ? [] : [row - DOT_ROOM])], bracket + 1.5 * first.getSpacingBetweenLines()) : 0
   laid.forEach((l) => {
     setVolta(vf, l.stave, l.bar, VOLTA_Y + shift)

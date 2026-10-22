@@ -262,8 +262,8 @@
               <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
                 After Ed Saindon's <em>Exploration in Rhythm, Vol. 1: Rhythmic Phrasing in Improvisation</em> (pp. 7–8). A unit is a group of 2 to 7 pulses, repeated from the first beat and ignoring
                 barlines. <strong class="font-semibold">In</strong> sets the group, and <strong class="font-semibold">Variation</strong>
-                shapes it: with accents, with rests, rest last, syncopated or tied. Saindon's bracket under the staff marks each
-                statement of the unit where it starts again. The caption names the cycle, for example <UiCode>back on one every 5 bars</UiCode>.
+                shapes it: with accents, with rests, rest last, syncopated or tied. Saindon's bracket under the staff marks the
+                unit's first statement, and again the first at each bar where it is back on one. The caption names the cycle, for example <UiCode>back on one every 5 bars</UiCode>.
                 That counts the unit and the bar in pulses: 8ths in 5 over 4/4 is back on one every 5 bars, 8ths in 4 over 3/4 every 2.
                 Where the time signature changes, the caption lists the bars.
               </dd>

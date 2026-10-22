@@ -42,6 +42,8 @@ for (const [what, guides, pentatonics, pages, targets] of [
   ['guide tones and pentatonics', true, true, 2, false], // 5
   ['slashes and target beats', false, false, 1, true],
   ['slashes, pentatonics and target beats', false, true, 2, true],
+  ['guide tones and target beats', true, false, 2, true],
+  ['guide tones, pentatonics and target beats', true, true, 2, true],
 ] as const) {
   test(`prints the Changes with the other changes' line in its pages (${what})`, async ({ page }) => {
     await page.goto('/song/rhythm-changes')
@@ -95,11 +97,14 @@ test('the Changes sheet shows 1st/2nd endings and a D.S. al Coda', async ({ page
 // raised above the stems, and a bass part in the lowest guide tone range (the tuba's, C2–B♭3). On Stardust From 7th
 // reaches F♯2, below the staff; From 3rd, placed nearer the centre, bottoms out at C3, inside it. Each sheet page
 // holds changesLinesPerPage lines, so the PDF has as many pages as the sheet: a page that overflowed would add one
+// (and with Target beats, rhythm spec §7: their dots take no room of their own)
 for (const line of ['From 3rd', 'From 7th'] as const) {
-test(`prints the Changes with a guide tone line (${line}), a sheet page to a letter page, in the tallest case`, async ({ page }) => {
+for (const targets of [false, true]) {
+test(`prints the Changes with a guide tone line (${line}${targets ? ', target beats' : ''}), a sheet page to a letter page, in the tallest case`, async ({ page }) => {
   await page.goto('/song/stardust')
   await chooseInstrument(page, 'Tuba')
   await showGuides(page, line)
+  if (targets) await showTargets(page)
   await expect(page.getByRole('button', { name: 'Numerals' })).toHaveAttribute('aria-pressed', 'true')
   await expect(page.getByRole('button', { name: 'Scales', exact: true })).toHaveAttribute('aria-pressed', 'true')
   await guidesDrawn(page)
@@ -114,12 +119,15 @@ test(`prints the Changes with a guide tone line (${line}), a sheet page to a let
   expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(sheetPages)
 })
 }
+}
 
 // an arpeggio line: sixteenths and beams on the tuba's bass staff, the same tune; again a sheet page to a letter page
-test('prints the Changes with a 7th chord line, a sheet page to a letter page', async ({ page }) => {
+for (const targets of [false, true]) {
+test(`prints the Changes with a 7th chord line${targets ? ' and target beats' : ''}, a sheet page to a letter page`, async ({ page }) => {
   await page.goto('/song/stardust')
   await chooseInstrument(page, 'Tuba')
   await showArpeggios(page, 'Up · root')
+  if (targets) await showTargets(page)
   await expect(page.getByRole('button', { name: 'Numerals' })).toHaveAttribute('aria-pressed', 'true')
   await expect(page.getByRole('button', { name: 'Scales', exact: true })).toHaveAttribute('aria-pressed', 'true')
   await arpeggiosDrawn(page)
@@ -130,6 +138,7 @@ test('prints the Changes with a 7th chord line, a sheet page to a letter page', 
   await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden()
   expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(sheetPages)
 })
+}
 
 // the Pentatonic line (#284): the arpeggio line's notes under the Pentatonics row, the tuba's tallest case; lines a page unchanged
 test('prints the Changes with the Pentatonic line, a sheet page to a letter page', async ({ page }) => {

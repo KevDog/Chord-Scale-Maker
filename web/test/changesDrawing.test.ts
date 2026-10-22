@@ -216,8 +216,8 @@ describe('withTargets', () => {
   it('leaves a band with room for the dots as it is, and gives the row its height from the top', () => {
     expect(withTargets({ top: 40, bottom: 140 }, 60)).toEqual({ band: { top: 40, bottom: 140 }, at: 0.2 })
   })
-  it('opens the band upwards to hold them', () => {
-    expect(withTargets({ top: 74, bottom: 126 }, 68)).toEqual({ band: { top: 62, bottom: 126 }, at: 6 / 64 })
+  it('never opens the band: a row over its top comes down to its headroom, so no line grows and the page budgets hold', () => {
+    expect(withTargets({ top: 64, bottom: 134 }, 58)).toEqual({ band: { top: 64, bottom: 134 }, at: 6 / 70 })
   })
   it('keeps a slash line’s crop: its dots sit in the staff’s top space, over the slashes', () => {
     expect(withTargets({ top: 74, bottom: 126 }, SLASH_TARGET_ROW).band).toEqual({ top: 74, bottom: 126 })

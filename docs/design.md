@@ -714,7 +714,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   `16`), the library of ids generated from formulas (`unit:<pulse>:<g>:<variation>` after Saindon, `run:<pulse>:<n>:<k>`
   after Bergonzi, `card:*`, `custom:*`; `isRhythmId`, `rhythmLabel`), `layRhythm(id, bars)` (events per bar, ties split at
   barlines, and for a repeating rhythm the landing bars and the cycle caption: `DECISIONS` `rhythm.cycle`), `rhythmNotes`
-  (events to `RhythmNote`s: values, tuplets, beams, Saindon's brackets) and `targetBeats` (Galper's strong beats by metre:
+  (events to `RhythmNote`s: values, tuplets, beams, Saindon's brackets) and `targetBeats` (Galper's strong beats by meter:
   `rhythm.targets`). Nothing from the three books' printed examples is reproduced; they are cited.
 - **buildChanges:** options `rhythm` and `targets`; `ChangesBar.rhythm` and `.targets`, `ChangesSheet.rhythmCaption`.
 - **Drawing** (`changesDrawing.ts`, `drawRhythmLine`): slash noteheads on the middle line with stems, rests, `a>` accents,

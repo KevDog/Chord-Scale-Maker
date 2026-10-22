@@ -517,6 +517,11 @@
       if (p?.kind === 'custom' && (!typed || formatRhythm(typed) !== formatRhythm(p.rhythm))) rhythmText.value = formatRhythm(p.rhythm) // not typed here: the box follows
       rhythmCustom.value = p?.kind === 'custom' || (id === 'off' && rhythmCustom.value && !parseRhythm(rhythmText.value)) // invalid text plays Off, still Your rhythm…
     })
+    // a reset comes from the hidden-settings notice, with these controls hidden; it sets an Off rhythm to Off, which no
+    // watch sees, so text that doesn't read stops holding Your rhythm… once the controls hide: they come back on Off
+    watch(() => rhythmOn && shows('rhythm'), (shown) => {
+      if (!shown && rhythm.value === 'off') rhythmCustom.value = false
+    })
     const rhythmFamily = computed<RhythmFamily>({
       get: () => (rhythmCustom.value ? 'custom' : familyOf(rhythm.value)),
       set: (f) => {
