@@ -7,7 +7,7 @@ import { readFileSync, writeFileSync } from 'node:fs'
 import { isDeepStrictEqual } from 'node:util'
 import { describe, expect, it } from 'vitest'
 import { type Clef, type Part, chartMeta, chordTokens, defaultScale, expandRows, parseChart, resolveQuality, resolveStart } from '..'
-import { attempt, buildGolden, chartDocFor, GOLDEN_FILE, type Golden, hexatonicCases, playedRows, renderGolden, scaleCase } from './goldenFixture'
+import { attempt, buildGolden, chartDocFor, GOLDEN_FILE, type Golden, hexatonicCases, playedRows, renderGolden, rhythmCases, scaleCase } from './goldenFixture'
 
 if (process.env.UPDATE_GOLDEN === '1') writeFileSync(GOLDEN_FILE, renderGolden(buildGolden()))
 const TEXT = readFileSync(GOLDEN_FILE, 'utf8')
@@ -89,6 +89,13 @@ describe('golden fixture', () => {
       ...Object.entries(G.hexatonics.pairs).map(([k, want]) => [`pairs ${k}`, want, got.pairs[k]] as const),
       ...Object.entries(G.hexatonics.auto).map(([c, want]) => [`auto ${c}`, want, got.auto[c]] as const),
     ]
+    expect(mismatches(cases)).toEqual([])
+  })
+
+  it("each library rhythm's text and landings over sixteen bars of 4/4 and of 3/4", () => {
+    const got = rhythmCases()
+    const cases = Object.entries(got).map(([id, g]) => [id, G.rhythms?.[id as keyof typeof got], g] as const)
+    expect(cases.length).toBeGreaterThan(0)
     expect(mismatches(cases)).toEqual([])
   })
 

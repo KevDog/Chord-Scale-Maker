@@ -33,13 +33,13 @@ export function parseContext(text: string): ChartContext | null {
 }
 
 /** a bar's length in quarter-note beats: the metres a chart can be in */
-export type Beats = 2 | 3 | 4 | 5 | 6
-const METRES = 'time: 2/4, 3/4, 4/4, 5/4 or 6/4'
-/** `time:` or `@time` 2/4 to 6/4 (4/4, the default, when empty): beats a bar for the Changes sheet and its guide tones; null if it's another */
+export type Beats = 2 | 3 | 4 | 5 | 6 | 7
+const METRES = 'time: 2/4, 3/4, 4/4, 5/4, 6/4 or 7/4'
+/** `time:` or `@time` 2/4 to 7/4 (4/4, the default, when empty): beats a bar for the Changes sheet and its guide tones; null if it's another */
 export function beatsPerBar(time: string): Beats | null {
   const t = time.trim()
   if (!t) return 4
-  const m = /^([2-6])\/4$/.exec(t)
+  const m = /^([2-7])\/4$/.exec(t)
   return m ? (Number(m[1]) as Beats) : null
 }
 /** a section block's own fields (docs/design.md §4), in the order the serializer writes them */
@@ -62,7 +62,7 @@ export type ChartLine =
   | Readonly<{ kind: 'nav'; bar: number; text: string }>
   // the author's key area, from this bar to the end of its section
   | Readonly<{ kind: 'key'; bar: number; key: string }>
-  // the metre (2/4 to 6/4), from this bar to the end of its section (#235)
+  // the metre (2/4 to 7/4), from this bar to the end of its section (#235)
   | Readonly<{ kind: 'time'; bar: number; time: string }>
   // the author's context, from this bar to the end of its section (parsed; the analyser doesn't use it yet)
   | Readonly<{ kind: 'context'; bar: number; context: ChartContext }>
@@ -117,7 +117,7 @@ function parseDirective(line: string, low: string): ChartLine | string | null {
   if (low.startsWith('@time')) {
     const m = /^@time\s+(\S+)\s+(\S+)$/i.exec(line)
     const time = (m?.[2] ?? '').trim()
-    if (!m || !INT_RE.test(m[1] ?? '') || !time || beatsPerBar(time) === null) return 'use  @time BAR METRE  (2/4, 3/4, 4/4, 5/4 or 6/4)'
+    if (!m || !INT_RE.test(m[1] ?? '') || !time || beatsPerBar(time) === null) return 'use  @time BAR METRE  (2/4, 3/4, 4/4, 5/4, 6/4 or 7/4)'
     return { kind: 'time', bar: Number(m[1]), time }
   }
   if (low.startsWith('@context')) {

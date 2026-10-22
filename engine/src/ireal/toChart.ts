@@ -13,7 +13,7 @@ import { type IRealBar, readMusic } from './music'
  * is their line.
  */
 
-const METRES = new Set(['2/4', '3/4', '4/4', '5/4', '6/4'])
+const METRES = new Set(['2/4', '3/4', '4/4', '5/4', '6/4', '7/4'])
 const NAV: readonly string[] = ['D.S. al Coda', 'D.S. al Fine', 'D.C. al Coda', 'D.C. al Fine', 'To Coda', 'Fine']
 const navOf = (comment: string): string | undefined => NAV.find((n) => n.toLowerCase() === comment.replace(/\s+/g, ' ').trim().toLowerCase())
 

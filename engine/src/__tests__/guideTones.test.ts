@@ -3,6 +3,7 @@ import { isRest } from '../chord'
 import { describe, expect, it } from 'vitest'
 import { type ChartDoc, chartBeats, expandRows, parseChart, qualityScale } from '../chart'
 import {
+  drawnLengths,
   type GuideInput,
   guideLabel,
   type GuideNote,
@@ -160,9 +161,14 @@ describe('guide tones in a changing metre (#235)', () => {
     expect(barsText(guideVoices(chords, CONCERT, clockOf([2, 4, 3], 4), null, 'third'))).toEqual(['0:f/4/2~', '0:f/4/4^', '0:f/4/3'])
   })
 
+  it('draws 7 beats as 4 + 3', () => {
+    expect(drawnLengths(7)).toEqual([4, 3])
+  })
+
   it('writes a 5/4 bar’s whole note as a dotted half tied to a half, and a 6/4 bar’s as a dotted whole', () => {
     expect(barsText(guideVoices(inTurn(['Dm7'], 5), CONCERT, 5, null, 'third'))).toEqual(['0:f/4/3~ 3:f/4/2^'])
     expect(barsText(guideVoices(inTurn(['Dm7'], 6), CONCERT, 6, null, 'third'))).toEqual(['0:f/4/6'])
+    expect(barsText(guideVoices(inTurn(['Dm7'], 7), CONCERT, 7, null, 'third'))).toEqual(['0:f/4/4~ 4:f/4/3^'])
   })
 })
 

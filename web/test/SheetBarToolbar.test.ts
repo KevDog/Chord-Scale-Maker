@@ -59,7 +59,7 @@ describe('SheetBarToolbar', () => {
     await press(w, 'More actions for A bar 2')
     await nextTick()
     const items = [...document.querySelectorAll<HTMLElement>('[role=menuitem]')]
-    expect(items.map((m) => m.textContent?.trim())).toEqual(['Key change here', '1st ending', '2nd ending', 'Segno', 'Coda', 'Bar in 2/4', 'Bar in 3/4', 'Bar in 5/4', 'Bar in 6/4', 'Jump…', 'New section here…', 'Paste bars…'])
+    expect(items.map((m) => m.textContent?.trim())).toEqual(['Key change here', '1st ending', '2nd ending', 'Segno', 'Coda', 'Bar in 2/4', 'Bar in 3/4', 'Bar in 5/4', 'Bar in 6/4', 'Bar in 7/4', 'Jump…', 'New section here…', 'Paste bars…'])
     items.at(-2)?.click()
     await nextTick()
     expect(w.emitted('dialog')?.[0]).toEqual(['split', 'A', 2])
