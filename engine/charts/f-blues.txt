@@ -4,20 +4,32 @@ subtitle: Basic 12-Bar Blues
 style: Blues
 form: A, 12 bars
 key: F
-# analysis: 2026-10-19, rules v2; F, blues
+# analysis: 2026-10-22, rules v2; F, blues
+# alternates: the jazz blues' substitutions (ii–Vs, #iv dim, VI7 turnaround); Mark Levine, The Jazz Theory Book
 
 # bar | chord | scale
 
 section: A
-1  | F7   # I7 of the blues: a tonic with dominant colour, Mixolydian
-2  | Bb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-3  | F7   # I7 of the blues: a tonic with dominant colour, Mixolydian
+1  | F7     # I7 of the blues: a tonic with dominant colour, Mixolydian
+2  | Bb7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+3  | F7     # I7 of the blues: a tonic with dominant colour, Mixolydian
 4  | F7
-5  | Bb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+alt 4  | Cm7    # ii of F7: Dorian
+alt 4  | F7     # I7 of the blues: a tonic with dominant colour, Mixolydian
+5  | Bb7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
 6  | Bb7
-7  | F7   # I7 of the blues: a tonic with dominant colour, Mixolydian
+alt 6  | Bdim7  # ♯IV°7 to I: E7♭9 without its root, the ♯II°7's notes
+7  | F7     # I7 of the blues: a tonic with dominant colour, Mixolydian
 8  | F7
-9  | C7   # V7 of the blues: a dominant that needn’t resolve, Mixolydian
-10 | Bb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-11 | F7   # I7 of the blues: a tonic with dominant colour, Mixolydian
-12 | C7   # V7 of the blues: a dominant that needn’t resolve, Mixolydian
+alt 8  | Am7    # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+alt 8  | D7b9   # V7/ii in F: the b13 is in the key, the b9 from the symbol
+9  | C7     # V7 of the blues: a dominant that needn’t resolve, Mixolydian
+alt 9  | Gm7    # ii of C7: Dorian
+10 | Bb7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+alt 10 | C7     # extended dominant: V7 of F7
+11 | F7     # I7 of the blues: a tonic with dominant colour, Mixolydian
+alt 11 | F7     # I7 of the blues: a tonic with dominant colour, Mixolydian
+alt 11 | D7b9   # V7/ii in F: the b13 is in the key, the b9 from the symbol
+12 | C7     # V7 of the blues: a dominant that needn’t resolve, Mixolydian
+alt 12 | Gm7    # ii of C7: Dorian
+alt 12 | C7     # extended dominant: V7 of F7
