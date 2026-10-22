@@ -23,7 +23,8 @@
     </button>
     <!-- else a chevron, its panel to the right -->
     <UiButton v-else ref="button" plain :aria-label="label" :aria-expanded="open" aria-haspopup="dialog" @click="open = !open">
-      <ChevronRightIcon data-slot="icon" />
+      <EllipsisHorizontalIcon v-if="place !== 'side'" data-slot="icon" />
+      <ChevronRightIcon v-else data-slot="icon" />
     </UiButton>
     <Transition name="ease-fade">
       <div
@@ -32,7 +33,13 @@
         :aria-label="label"
         :class="[
           'absolute z-20 flex w-max flex-col items-start gap-2 rounded-paper bg-raised p-3 shadow-raised print:hidden',
-          summary ? 'top-full left-0 mt-2 max-sm:right-0 max-sm:left-auto' : 'top-0 left-full ml-2 max-sm:top-full max-sm:left-0 max-sm:mt-2 max-sm:ml-0',
+          summary
+            ? 'top-full left-0 mt-2 max-sm:right-0 max-sm:left-auto'
+            : place === 'above'
+              ? 'right-0 bottom-full mb-2'
+              : place === 'below'
+                ? 'top-full right-0 mt-2'
+                : 'top-0 left-full ml-2 max-sm:top-full max-sm:left-0 max-sm:mt-2 max-sm:ml-0',
         ]"
       >
         <slot />
@@ -42,7 +49,7 @@
 </template>
 
 <script setup lang="ts">
-import { ChevronDownIcon, ChevronRightIcon } from '@heroicons/vue/16/solid'
+import { ChevronDownIcon, ChevronRightIcon, EllipsisHorizontalIcon } from '@heroicons/vue/16/solid'
 import { LISTBOX_BUTTON, LISTBOX_SELECTED } from '~/components/ui/listboxStyles'
 import { FIELD } from '~/utils/field'
 import { vInteractive } from '~/utils/interactive'
@@ -51,7 +58,8 @@ import { vInteractive } from '~/utils/interactive'
  * a group's details, opened beside it: open stays until a click outside, Escape, or the button again. summary: the
  * button reads as a select showing what's set ("Piano · F3–E6"), named "label: summary", its panel below.
  */
-defineProps<{ label: string; inline?: boolean; summary?: string }>()
+/** place: a button's panel beside it (the rail), or above or below it (the click's bar: its ⋯ button) */
+withDefaults(defineProps<{ label: string; inline?: boolean; summary?: string; place?: 'side' | 'above' | 'below' }>(), { summary: undefined, place: 'side' })
 // the panel's controls name themselves: a UiField the popover sits in labels its button, not them
 provide(FIELD, undefined)
 const open = defineModel<boolean>('open', { required: true })

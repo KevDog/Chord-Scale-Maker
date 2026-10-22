@@ -252,3 +252,13 @@
     color-scheme: light;
   }
 }
+
+/* the click docked at the window's foot (#254, ClickBar.vue): the page's foot clears it; it doesn't print */
+body.click-docked {
+  padding-bottom: var(--click-h, 0px);
+}
+@media print {
+  body.click-docked {
+    padding-bottom: 0;
+  }
+}
