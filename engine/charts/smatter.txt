@@ -5,7 +5,10 @@ style: Medium
 key: Bbm
 form: AB, 20 bars
 source: Colorado Cookbook, p. 201
+recording: Kenny Wheeler; Gnu High; ECM; 1976
+youtube: YGQ2a11UYog
 # analysis: 2026-10-19, rules v2; Bb minor, modal
+# recording: recorded June 1975, Generation Sound, NYC, with Keith Jarrett, Dave Holland, Jack DeJohnette, ECM 1069 ST; the first recording of it, the composer leading (Wikipedia, MusicBrainz); video: "Provided to YouTube by Universal Music Group", Gnu High, the same take
 
 # bar | chord | scale
 

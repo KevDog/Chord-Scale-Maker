@@ -4,7 +4,10 @@ style: Latin
 key: Gm
 form: ABCDE, 72 bars
 source: The New Real Book, Vol. 1
+recording: Airto; Touching You... Touching Me; Warner Bros.; 1979
+youtube: IauWsWycvtg
 # analysis: 2026-10-19, rules v2; G minor
+# recording: Airto with Flora Purim, José Roberto Bertrami (Fender Rhodes), Alphonso Johnson, George Sopuch, Joe Farrell, Laudir de Oliveira, recorded in Los Angeles; the version the chart follows ("as played by Airto"); the album credits it to Bertrami and Alex Malheiros (AllMusic, MusicBrainz); video: "Provided to YouTube by WM Brazil", Touching You, Touching Me, the same take (not the 1988 The Colours of Life version)
 # book: Med. Latin/Funk (quarter = 172), as played by Airto. A and B are played twice (the repeat goes back to A);
 # C and D are for solos (repeated); after solos E (a bass vamp, 4x), then D.S. al Coda: from the segno, A to its last bar, then the Coda
 # the book writes most chords over an eighth-note anticipation; each is placed in the bar it anticipates

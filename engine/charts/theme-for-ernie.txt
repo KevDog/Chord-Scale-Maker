@@ -4,7 +4,10 @@ style: Medium ballad
 key: Ab
 form: AABC, 35 bars
 source: The New Real Book, Vol. 1
+recording: John Coltrane; Soultrane; Prestige; 1958
+youtube: 36toCmk4SCI
 # analysis: 2026-10-19, rules v2; Ab
+# recording: recorded 1958-02-07, Van Gelder Studio, Hackensack, John Coltrane with Red Garland, Paul Chambers, Arthur Taylor, master 1461, Prestige PRLP 7142, released October 1958; the chart is "as played by John Coltrane" (jazzdisco, Wikipedia); video: John Coltrane's official channel (Craft Recordings), from Soultrane, the same take
 # the book: as played by John Coltrane; melody is freely interpreted
 # last time: from C bar 10 to the Coda
 

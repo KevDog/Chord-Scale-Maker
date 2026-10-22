@@ -5,7 +5,10 @@ style: Blues
 key: Bb
 form: A, 12 bars
 source: Colorado Cookbook, p. 197
+recording: Cecil Taylor Quintet; Hard Driving Jazz; United Artists; 1959
+youtube: W3clvXwxvEg
 # analysis: 2026-10-22, rules v2; Bb, blues
+# recording: recorded 1958-10-13, NYC, Kenny Dorham, John Coltrane, Cecil Taylor, Chuck Israels, Louis Hayes, United Artists UAL 4014 (stereo UAS 5014 as Stereo Drive), later reissued as John Coltrane's Coltrane Time; the first recording of it, with the composer on trumpet (jazzdisco, Wikipedia); video: "Provided to YouTube by Universal Music Group", Coltrane Time, the same take (one take only)
 
 # bar | chord | scale
 

@@ -5,7 +5,10 @@ key: Fm
 # key: the book's index says Ab; the lead sheet is in Fm (four flats, F- to F-)
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 254
+recording: Kenny Barron; What If?; Enja; 1986
+youtube: Ml8yPpczFnc
 # analysis: 2026-10-19, rules v2; F minor
+# recording: recorded 1986-02-17, Van Gelder Studio, Englewood Cliffs, with Wallace Roney, John Stubblefield, Cecil McBee, Victor Lewis, Enja 5013; the first recording of it, the composer leading, ahead of Stan Getz's title track on Voyage (Black-Hawk, 1986, with Barron) (jazzdisco, Fitzgerald's Kenny Barron discography); video: "Provided to YouTube by Kontor New Media", What If?, the same take
 
 # bar | chord | scale
 

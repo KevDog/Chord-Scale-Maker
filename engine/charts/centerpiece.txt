@@ -5,7 +5,9 @@ style: Blues
 key: Bb
 form: A, 12 bars
 source: Colorado Cookbook, p. 50
+recording: Harry "Sweets" Edison; Sweetenings; Roulette; 1959
 # analysis: 2026-10-22, rules v2; Bb, blues
+# recording: recorded 1958-11-12/14, New York, Harry Edison with Jimmy Jones, Joe Benjamin or John Simmons, Charlie Persip, Roulette R 52023, the album's opener, the composer's first recording of it (before Jon Hendricks's lyric); Discogs gives 1959, Wikipedia 1958 (Discogs, Wikipedia)
 
 # bar | chord | scale
 

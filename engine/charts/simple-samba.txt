@@ -4,7 +4,10 @@ style: Up samba
 key: C
 form: ABCDE, 90 bars (solos on ABCD, 70 bars)
 source: The New Real Book, Vol. 1
+recording: Jim Hall; Where Would I Be?; Milestone; 1972
+youtube: avRknOnPgs8
 # analysis: 2026-10-19, rules v2; C
+# recording: recorded July 1971, Mediasound, NYC, with Benny Aronov, Malcolm Cecil, Airto Moreira, Milestone MSP 9037, the album's opener; the first recording of it, the composer leading (Wikipedia, Wikipedia "Jim Hall compositions"); video: "Provided to YouTube by Universal Music Group", Where Would I Be?, the same take
 
 # book tempo marking: Fast Samba, in cut time
 # solo on ABCD (play through the drum fills); after solos, D.C. al Coda: the coda is taken in E after bar 18

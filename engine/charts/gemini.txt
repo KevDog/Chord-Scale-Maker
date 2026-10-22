@@ -5,7 +5,10 @@ key: Eb
 time: 3/4
 form: ABCD, 112 bars
 source: The New Real Book, Vol. 1
+recording: Cannonball Adderley Sextet; The Cannonball Adderley Sextet in New York; Riverside; 1962
+youtube: k24kf41J7pM
 # analysis: 2026-10-19, rules v2; Eb
+# recording: recorded live 1962-01-12/14, Village Vanguard, NYC, Nat Adderley, Yusef Lateef, Joe Zawinul, Sam Jones, Louis Hayes, Riverside RLP 404/RLP 9404, also a two-part single (R-4509); the version the chart follows ("as played by Cannonball Adderley") (jazzdisco, Wikipedia); video: "Provided to YouTube by Universal Music Group", In New York (2005 remaster), the same take (not the Comblain-la-Tour or Half Note versions)
 # book: as played by Cannonball Adderley
 # routing: Intro vamp, A (head), D.S. al solos; solo form is A (once), B (indefinitely, till cue);
 # play C before the 2nd solo and D before the last solo (then to A); after solos, D.S. al Coda.

@@ -5,7 +5,10 @@ style: Christmas
 key: F
 form: BBC, 24 bars
 source: Colorado Cookbook, p. 280
+recording: Ella Fitzgerald; Ella Wishes You a Swinging Christmas; Verve; 1960
+youtube: DUyxx4Hsjeg
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded July–August 1960, Ella Fitzgerald with Frank DeVol's orchestra, Verve MG V-4042; carol (1857) → a judgement pick: the best-known jazz reading, over Duke Ellington's 1962 Columbia single (Wikipedia, Discogs); video: Ella Fitzgerald's official channel (EllaFitzgeraldVEVO), from the album, the same take
 
 # bar | chord | scale
 # the 16-bar verse (F | Bb | C7 | F …) is left out

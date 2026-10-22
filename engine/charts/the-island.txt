@@ -6,7 +6,10 @@ style: Medium Latin
 key: C
 form: ABC, 57 bars
 source: The New Real Book, Vol. 1
+recording: Sarah Vaughan; Crazy and Mixed Up; Pablo Today; 1982
+youtube: 8_aF_D-KID0
 # analysis: 2026-10-19, rules v2; C
+# recording: recorded 1982-03-01/02, Sarah Vaughan with Roland Hanna, Joe Pass, Andy Simpkins, Harold Jones, Pablo Today 2312-137; Brazilian song (Começar de Novo, 1979) → the Bergmans' English lyric in the jazz reading players know, over Ivan Lins's own Portuguese original (Wikipedia, Discogs); video: "Provided to YouTube by Universal Music Group", Crazy and Mixed Up, the same take
 
 # through-composed; B is A a half step up from its bar 9; melodic rhythm freely interpreted
 # bar | chord

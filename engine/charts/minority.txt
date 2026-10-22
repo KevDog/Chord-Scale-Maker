@@ -4,7 +4,10 @@ style: Medium up
 key: Fm
 form: A, 16 bars
 source: Colorado Cookbook, p. 134
+recording: Gigi Gryce–Clifford Brown Sextet; Gigi Gryce Clifford Brown Sextet; Blue Note; 1954
+youtube: FuYtPwOOoE8
 # analysis: 2026-10-19, rules v2; F minor
+# recording: recorded 1953-10-08, Paris, Gigi Gryce with Clifford Brown, Henri Renaud, Jimmy Gourley, Pierre Michelot, Jean-Louis Viale, take 1, the composer's first recording; first issued in France (Vogue LD 175, Jazz Time Paris Vol. 11), US 10" Blue Note BLP 5048 (1954); takes 2 and 3 came out later (jazzdisco, MusicBrainz); video: "Provided to YouTube by Vogue", RTL Clifford Brown, "Minority (Master Take)", the same take
 
 # bar | chord | scale
 

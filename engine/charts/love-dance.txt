@@ -4,7 +4,10 @@ style: Medium funk ballad
 key: Eb
 form: AABC, 43 bars
 source: The New Real Book, Vol. 1
+recording: Sarah Vaughan; Crazy and Mixed Up; Pablo Today; 1982
+youtube: 7Plh_vg6Jy4
 # analysis: 2026-10-19, rules v2; Eb
+# recording: recorded 1982-03-01/02, Sarah Vaughan with Roland Hanna, Joe Pass, Andy Simpkins, Harold Jones, Pablo Today 2312-137; the earliest recording found of Paul Williams's lyric and the song's best-known jazz reading; no earlier recording by Lins or Peranzzetta could be confirmed (Wikipedia, Discogs, Qobuz); video: "Provided to YouTube by Universal Music Group", Crazy and Mixed Up, the same take
 # routing: Intro, A (repeated, 1st and 2nd endings), B, C, D.S. (tenor solo over B, end solo), C al Coda;
 # the Coda ends in a two-bar vamp (bars 7–8: vamp, solo and fade).
 

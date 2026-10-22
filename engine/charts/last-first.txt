@@ -5,7 +5,10 @@ key: G
 form: AAB head (39 bars) + CCDEE solos (32 bars), 71 bars
 source: The New Real Book, Vol. 1
 context: modal
+recording: Gary Peacock; Shift in the Wind; ECM; 1980
+youtube: lfbyjJsb24g
 # analysis: 2026-10-19, rules v2; G, modal
+# recording: recorded February 1980, Columbia Recording Studios, NYC, Gary Peacock with Art Lande, Eliot Zigmund, ECM 1165 (some sources give 1981); the composer's first recording found (Wikipedia, MusicBrainz, ecmreviews); video: "Provided to YouTube by Universal Music Group", Shift in the Wind, the same take
 
 # book: use the G major scale on the Gsus chord for solos
 # bar | chord

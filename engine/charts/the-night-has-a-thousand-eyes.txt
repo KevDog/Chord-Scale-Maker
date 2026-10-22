@@ -5,7 +5,10 @@ style: Mixed
 key: G
 form: ABABCD, 48 bars
 source: Colorado Cookbook, p. 236
+recording: John Coltrane; Coltrane's Sound; Atlantic; 1964
+youtube: ioPRCwpB1Ak
 # analysis: 2026-10-19, rules v2; G
+# recording: recorded 1960-10-26, Atlantic Studios, New York, John Coltrane Quartet (McCoy Tyner, Steve Davis, Elvin Jones), matrix 5143, Atlantic LP 1419; songbook standard (1948) → Coltrane's Latin-and-swing reading, the version jazz players know; earlier attempts (1959-12-02, 1960-10-21) were rejected (jazzdisco, Wikipedia); video: "Provided to YouTube by Rhino Atlantic", Coltrane's Sound, the same take
 
 # bar | chord | scale
 

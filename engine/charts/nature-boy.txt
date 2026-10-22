@@ -6,7 +6,10 @@ key: Dm
 time: 3/4
 form: AA, 32 bars
 source: Colorado Cookbook, p. 153
+recording: Nat King Cole; Harvest of Hits; Capitol; 1950
+youtube: xBpD-ZioGgY
 # analysis: 2026-10-19, rules v2; D minor
+# recording: recorded 1947-08-22, Nat King Cole with an orchestra conducted by Frank De Vol, the first recording of it; first issued on 78 (Capitol 15054, March 1948, a No. 1 hit), first LP 10" H-213 (1950); song standard → Cole's original as the reference (Miles Davis's Blue Moods and Coltrane's 1965 quartet are the best-known instrumental readings); the 1961 Nat King Cole Story version is a remake (Wikipedia, Discogs); video: "Provided to YouTube by Universal Music Group", The Complete Capitol Recordings of the Nat King Cole Trio, the 1947 take (De Vol credited)
 
 # bar | chord | scale
 

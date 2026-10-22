@@ -5,7 +5,10 @@ style: Medium slow Latin funk
 key: Bb
 form: AABC, 56 bars
 source: The New Real Book, Vol. 1
+recording: Quincy Jones; The Dude; A&M; 1981
+youtube: UrRAhvYJ1a8
 # analysis: 2026-10-19, rules v2; Bb
+# recording: recorded 1980, Westlake Recording Studios, Los Angeles, Toots Thielemans (guitar, harmonica, whistle), strings arranged by Johnny Mandel, A&M SP-3721; the chart follows the Quincy Jones version (Wikipedia, Discogs); video: "Provided to YouTube by Virgin Music Group", From Q, With Love (℗ 1981), the same take
 # as played by Quincy Jones; D.S. (to B) al Coda; the coda vamps and fades
 # the intro is from the Bobbi Norris LP, played on bass; on the Quincy Jones version guitar improvises over it
 

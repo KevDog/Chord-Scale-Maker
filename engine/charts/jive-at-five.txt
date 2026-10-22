@@ -4,7 +4,10 @@ style: Medium
 key: Eb
 form: AABA
 source: Colorado Cookbook, p. 114
+recording: Count Basie and His Orchestra; Count Basie and His Orchestra; Decca; 1953
+youtube: EA5CK4O65oo
 # analysis: 2026-10-19, rules v2; Eb
+# recording: recorded 1939-02-04, New York, Count Basie and His Orchestra with Harry Edison (the co-composer's trumpet solo) and Lester Young, matrix 64982-A, the first recording of it; first issued on 78 (Decca 2922, with Evil Blues), first LP the 12-inch DL 8049 (1953) (DAHR, Discogs); video: "Provided to YouTube by Universal Music Group", The Complete Decca Recordings, the same take
 
 # bar | chord | scale
 

@@ -4,7 +4,10 @@ style: Medium
 key: Eb
 form: ABAB
 source: Colorado Cookbook, p. 101
+recording: Sonny Rollins; Way Out West; Contemporary; 1957
+youtube: C6Oma0WOALU
 # analysis: 2026-10-19, rules v2; Eb
+# recording: recorded 1957-03-07, Contemporary's studio, Los Angeles, with Ray Brown, Shelly Manne, Contemporary C3530, the album's opener; the jazz reference for the Mercer song (jazzdisco, Wikipedia); video: Sonny Rollins's official channel (Craft Recordings), Way Out West, the same take (the 5:40 master, not the 10:06 alternate on the CD)
 
 # bar | chord | scale
 

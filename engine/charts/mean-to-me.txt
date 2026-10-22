@@ -4,7 +4,10 @@ style: Medium
 key: F
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 132
+recording: Teddy Wilson and His Orchestra with Billie Holiday; The Golden Years, Volume II; Columbia; 1966
+youtube: qAdNw8AiwFY
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded 1937-05-11, NYC, Billie Holiday with Teddy Wilson's orchestra (Lester Young on tenor), matrix B21120-1, first issued on 78 (Brunswick 7903); the earliest US LP found is the box The Golden Years, Volume II (Columbia C3L 40, 1966), but an earlier LP issue could not be ruled out; songbook standard (1929) → Holiday and Young's reading as the reference; take 2 is on CD only (DAHR, billieholiday.be, jazzstandards.com); video: "Provided to YouTube by Columbia/Legacy", Lady Day: The Complete Billie Holiday on Columbia, "Mean to Me (Take 1)", the issued take
 
 # bar | chord | scale
 

@@ -5,7 +5,10 @@ time: 3/4
 key: D
 form: AA, 28 bars
 source: The New Real Book, Vol. 1
+recording: Shelly Manne & His Men; At the Black Hawk, Vol. 1; Contemporary; 1960
+youtube: Sa6VgBsuscM
 # analysis: 2026-10-19, rules v2; D
+# recording: recorded live 1959-09-24, the Black Hawk, San Francisco, Shelly Manne with Joe Gordon, Richie Kamuca, Victor Feldman, Monty Budwig, Contemporary M3577/S7577; the first recording of it (Rosolino was not on the date; his own came later); the CD's alternate take is a different take (Wikipedia, MusicBrainz); video: Contemporary Records' official channel (Craft Recordings), "Official Visualizer" from At the Black Hawk, Vol. 1, the issued take (8:44)
 
 # the book's A13sus is written A9sus4, the nearest symbol the library reads
 # the 14-bar A is repeated; the Ending follows the last time

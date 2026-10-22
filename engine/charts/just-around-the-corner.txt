@@ -5,7 +5,10 @@ style: Up
 key: Bb
 form: A, 12 bars
 source: Colorado Cookbook, p. 117
+recording: John McNeil Quintet; Clean Sweep; SteepleChase; 1981
+youtube: x84a6vQRKPk
 # analysis: 2026-10-22, rules v2; Bb, blues
+# recording: John McNeil with Dave Liebman, Joanne Brackeen, Rufus Reid, Billy Hart, SteepleChase SCS 1154; the composer's own recording, the only one found (Wikipedia "SteepleChase Records", Apple Music); video: "Provided to YouTube by The Orchard Enterprises", Clean Sweep, the same take
 
 # bar | chord | scale
 

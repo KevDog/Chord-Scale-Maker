@@ -5,7 +5,10 @@ style: Medium
 key: F
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 218
+recording: Miles Davis Quintet; Miles: The New Miles Davis Quintet; Prestige; 1956
+youtube: 7BqWr1En4pk
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded 1955-11-16, Van Gelder Studio, Hackensack, Miles Davis with John Coltrane, Red Garland, Paul Chambers, Philly Joe Jones, master 816, Prestige PRLP 7014; Ellington's own first recording (1946-07-09, Hollywood, Ray Nance vocal, RCA Victor 20-1992) is a 78 whose first LP could not be confirmed → the quintet's instrumental reading as the LP-era reference (jazzdisco, DAHR, Wikipedia); video: Miles Davis's official channel (Craft Recordings), "Official Visualizer" from Miles: The New Miles Davis Quintet, the same take
 
 # bar | chord | scale
 

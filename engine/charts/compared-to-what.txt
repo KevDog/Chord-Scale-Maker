@@ -4,7 +4,10 @@ style: Medium gospel rock
 key: F
 form: ABC, 48 bars
 source: The New Real Book, Vol. 1
+recording: Les McCann and Eddie Harris; Swiss Movement; Atlantic; 1969
+youtube: _UrjQSVbIkk
 # analysis: 2026-10-19, rules v2; F
+# recording: recorded live 1969-06-21, Montreux Jazz Festival, Les McCann (piano, vocal), Eddie Harris, Benny Bailey, Leroy Vinnegar, Donald Dean, Atlantic SD 1537; the hit reading of the song (McCann had first cut it on Much Les, 1969), with the piano intro and solo vamp the chart follows (Wikipedia); video: "Provided to YouTube by Rhino Atlantic", Swiss Movement (Montreux 30th Anniversary), the same performance
 
 # Intro bars 1–8 (and the pickup): N.C., the piano and bass figure
 # Intro bars 9–48: a piano solo; the drums play time from bar 25

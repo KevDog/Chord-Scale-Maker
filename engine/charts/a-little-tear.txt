@@ -4,7 +4,10 @@ style: Bossa nova
 key: Db
 form: AB, 32 bars
 source: The New Real Book, Vol. 1
+recording: Sarah Vaughan; O Som Brasileiro de Sarah Vaughan; RCA Victor; 1978
+youtube: jAWVGF5XMgQ
 # analysis: 2026-10-19, rules v2; Db
+# recording: recorded 1977-10-31 to 11-07, Rio de Janeiro, Sarah Vaughan with Hélio Delmiro (guitar), José Roberto Bertrami and others, RCA Victor (Brazil) 110.0018, issued in the US as I Love Brazil! (Pablo 2312-101); "Razão de Viver" (1964) with Ray Gilbert's English lyric → Vaughan's reading as the reference for the English title (Wikipedia, MusicBrainz); video: "Provided to YouTube by Universal Music Group", I Love Brazil!, the same take
 # book: Med. Bossa Nova, quarter = 94. The form repeats (repeat signs around A–B); last time, to the Coda at B bar 15.
 # the intro is a 2-bar guitar figure over an Eb bass, with no chord symbols
 
