@@ -81,7 +81,6 @@ describe('lineRhythm by steps (Phase 4 spec §3 "Lines", D14)', () => {
     ] as const
     const r = lineRhythm(steps, [4, 4, 4], [], chords, 'pickup-2', 0)!
     expect(pattern(r, 1)).toBe('x...x...')
-    expect(who(r, 1).filter(o => typeof o === 'string' && o.startsWith('2<'))).toEqual([])
     expect(pattern(r, 2)).toBe('x..x..x.')
   })
 
@@ -99,5 +98,24 @@ describe('lineRhythm by steps (Phase 4 spec §3 "Lines", D14)', () => {
     )!
     expect(who(r, 0)).toEqual(Array(8).fill(0))
     expect(who(r, 1)).toEqual(Array(16).fill(1))
+  })
+
+  it('forces targets and pick-ups at each step\'s own pulses, 8ths then triplets, never across the boundary', () => {
+    const chords = [S(0), S(4), S(8), S(10)]
+    const steps = [
+      { from: 0, id: 'unit:8:3:rests' },
+      { from: 2, id: 'unit:8t:4:rests' },
+    ] as const
+    const r = lineRhythm(steps, [4, 4, 4], [], chords, 'pickup-2', 0)!
+    // 8ths: chord 1's target is stream pulse 8 (bar 2's first), its pick-ups 6 and 7 (bar 1's last two), from chord 0
+    expect(pattern(r, 0)).toBe('x..x..xx')
+    expect(who(r, 0)).toEqual([0, null, null, 0, null, 0, 0])
+    expect(r.laid.bars[1]![0]).toMatchObject({ rest: false })
+    // chord 2 starts the triplet step: no pick-ups back in bar 2, whose stream keeps its 8ths in 3
+    expect(pattern(r, 1)).toBe('xx..x..x') // the bare rhythm would force pulse 14 as chord 2's 2nd pick-up
+    expect(pattern(lineRhythm('unit:8:3:rests', [4, 4, 4], [], chords, 'pickup-2', 0)!, 1)).toBe('xx..x.xx')
+    // triplets: chord 3 at beat 2 of bar 3 is triplet pulse 6, its pick-ups pulses 4 and 5
+    expect(pattern(r, 2)).toBe('x...xxx.x...')
+    expect(who(r, 2)).toEqual([2, null, null, 2, 2, 3, null, 3, null])
   })
 })

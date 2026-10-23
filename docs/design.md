@@ -753,7 +753,21 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   `Tuplet` and `Beam` groups, the guide line's tie chain (half-ties at a line's ends), and the bracket as an SVG path under the
   staff (`data-rhythm-bracket`). The volta shift and the crop include the stem tips. Target dots are HTML spans
   (`data-target-beat`) placed over the drawing at `ChangesLayout.xs` in a top row (`ChangesLayout.dots`), on slashes, lines and
-  rhythm alike. The aria-label adds "; rhythm: <caption>". A rhythm counts as a voiced line in `changesLinesPerPage`.
+  rhythm alike. The aria-label adds "; rhythm: <caption>". A rhythm counts as a voiced line in `changesLinesPerPage`, one
+  line fewer when it draws tuplets (`drawsTuplets`: their numbers stand over the beams; Task 3.2, measured on Autumn Leaves,
+  trombone from B). A bar takes its notes' room (`notesFit`: VexFlow never sets notes closer than their glyphs, so 24 or
+  28 16ths overflow a quarter of the line). Where a line's notes overrun at VexFlow's spacing they are set close
+  (`formatVoices` tight: the 12 units VexFlow leaves before a bar's first note, `Stave.padding`, shrink to 4, and the
+  last glyph clears the barline by 6), and every bar takes its notes' need (`fitBars` rooms); a line whose notes fit
+  lays out as before; names shrink (to `BREAK_SCALE`) before notes give up room. Where a line's notes still can't all
+  fit, that line alone splits, balanced (`balancedSplit`: the fewest even lines that each fit, measured as the lines
+  they become; 4 → 2 2, else 1 1 1 1; 3 → 2 1, else 1 1 1; never 3 1): `ChangesSystem` emits `crowded` with the bars
+  that start the new lines and `ChangesSheet` adds them to its `breaks`, as for names. Straight 16ths in 4/4 keep four
+  bars a line except a first line whose clef and key signature (two or more accidentals) crowd it, which splits 2 2
+  (Stardust, Body and Soul, Satin Doll for trumpet: one line more than 8ths); on a phone (two bars, 600 units; a
+  first line's need about 637) that line splits 1 1. Sextuplets, septuplets and 16th quintuplets in 4/4 or 7 split
+  every line 2 2. Where two tuplet brackets would still cross, a beamed tuplet draws its number alone
+  (`unbracketCrowded`). The Scales card widens such bars too and shows the ones that fit, then "…" (`cardFit`).
 - **UI:** the Rhythm controls are inside the Line's options (`PreviewControls.vue`): a listbox reading "Rhythm: <family>"
   (Off, Units by pulse, Runs, Cards, "Your rhythm…"), then In and Variation for a unit, Attacks and From for a run, or a text
   field for a custom rhythm. Target beats is a toggle in the Changes sheet's Analysis group. `CONTROL_TIERS.rhythm` is
@@ -787,10 +801,14 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   first bar; the caption names the path. Paths act on units (Groups) and units or Your rhythm (Gears) on the Changes only.
 - **Web:** `useRhythmPath(key)` stores `csm-rhythm-path:<slug | mine:id>` (visit-only without a key, from a link's
   `rhythmPath`); removed when both lists are One; read off with the flag off. Line options adds Groups (One · Up · Down ·
-  Your list…) and Step at Everything (`CONTROL_TIERS['rhythm-gears']`); a path that acts raises the hidden-settings notice
-  under `rhythm-gears`, whose reset clears the chart's path. Drawing: a circled numeral (`data-rhythm-step`) over each
-  step's first note on the target dots' row (right of a dot there), and ", from bar N: in G" in the line's aria-label.
-  Print: the marks take no room; Autumn Leaves, trombone, 6 lines a page holds.
+  Your list…; units only), Gears (One · Up the gears · Down the gears · Your list… of `PULSES` spellings; units and Your
+  rhythm) and Step at Everything (`CONTROL_TIERS['rhythm-gears']`); a path that acts raises the hidden-settings notice
+  under `rhythm-gears`, whose reset clears the chart's path. Drawing: over each step's first note on the target dots'
+  row (right of a dot there), a circled numeral where the group changes, then the pulse's short name
+  (`PULSE_SHORT_LABELS`: ♩ triplets, Sextuplets) in small italics where the pulse changes, shrunk or cut short to keep
+  clear of the next target dot and the barline (`data-rhythm-step`: the group and pulse), and ", from bar N: in G, pulse" in the line's aria-label.
+  Print: the marks take no room; Autumn Leaves, trombone, 6 lines a page holds (with a tuplet pulse, 5: the tuplet
+  numbers stand taller, `drawsTuplets`).
 
 ### Pentatonics on Changes ([spec](superpowers/specs/2026-10-13-pentatonic-ladders-design.md))
 
@@ -1008,10 +1026,12 @@ paper and its focus-mode pages, the rail, the More menu, the header, the library
   about 9.6in, even when every note has ledger lines (e.g. trombone from B). Autumn Leaves prints on 2 pages.
 - **Changes:** 8 four-bar lines a page with guide tones off, so a 32-bar AABA prints on one page.
   - With a line on, `changesLinesPerPage` (`engine/src/changes.ts`) gives fewer: 6 with a line on and
-    numerals and scales, one more with both rows off; an arpeggio or Pentatonic line the same. `print.spec.ts` prints the tallest
+    numerals and scales, one more with both rows off; an arpeggio or Pentatonic line the same; a rhythm line with tuplets, or
+    a rhythm poured into a Line, one fewer. `print.spec.ts` prints the tallest
     case (one line, numerals, scales, an ending and a bass part, guide tones or 7th chords) a sheet page to a letter page.
   - The chord row and spacing are shorter in print; lines with a clef or guide tones close up (`print:space-y-0`).
-  - Print always uses 4 bars a line.
+  - Print always uses 4 bars a line; a line whose notes need more room splits 2 2 (sextuplets, septuplets), and pages
+    count the lines drawn.
   - Lines never split across pages.
 - **Saving a PDF:** users choose "Save as PDF" in the browser's print dialog. There is no server-side PDF.
 

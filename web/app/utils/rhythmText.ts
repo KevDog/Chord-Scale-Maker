@@ -31,18 +31,29 @@ export function rhythmTextError(text: string, gears = false): string {
   return `Use x, ., _ and > after ${pulses.slice(0, -1).map((p) => `${p}:`).join(', ')} or ${pulses.at(-1)}:`
 }
 
-const MAX_GROUPS = 8 // a Groups path's longest list (Phase 4 spec §3)
+const MAX_LIST = 8 // a Groups or Gears path's longest list (Phase 4 spec §3)
 
 /** a typed Groups list (Your list…, Phase 4 spec §3): 1 to 8 unit groups (2–7), separated by spaces or commas; else null */
 export function typedGroups(text: string): number[] | null {
   const words = text.split(/[\s,]+/).filter(Boolean)
   const groups = words.map((w) => (/^\d+$/.test(w) ? Number(w) : NaN))
-  return words.length >= 1 && words.length <= MAX_GROUPS && groups.every((g) => UNIT_GROUPS.includes(g)) ? groups : null
+  return words.length >= 1 && words.length <= MAX_LIST && groups.every((g) => UNIT_GROUPS.includes(g)) ? groups : null
 }
 
 /** what's wrong with a typed Groups list: '' when it reads or the box is empty, else how to write one */
 export function groupsTextError(text: string): string {
-  return !text.trim() || typedGroups(text) ? '' : `Groups of ${UNIT_GROUPS[0]} to ${UNIT_GROUPS.at(-1)}, separated by spaces: up to ${MAX_GROUPS} of them.`
+  return !text.trim() || typedGroups(text) ? '' : `Groups of ${UNIT_GROUPS[0]} to ${UNIT_GROUPS.at(-1)}, separated by spaces: up to ${MAX_LIST} of them.`
+}
+
+/** a typed Gears list (Your list…, Phase 4 spec §3): 1 to 8 pulses by their spellings in PULSES, separated by spaces or commas; else null */
+export function typedGears(text: string): Pulse[] | null {
+  const words = text.split(/[\s,]+/).filter(Boolean)
+  return words.length >= 1 && words.length <= MAX_LIST && words.every((w) => (PULSES as readonly string[]).includes(w)) ? (words as Pulse[]) : null
+}
+
+/** what's wrong with a typed Gears list: '' when it reads or the box is empty, else how to write one */
+export function gearsTextError(text: string): string {
+  return !text.trim() || typedGears(text) ? '' : `Pulses from ${PULSES.slice(0, -1).join(', ')} and ${PULSES.at(-1)}, separated by spaces: up to ${MAX_LIST} of them.`
 }
 
 /** a rhythm at one of Phase 4's tuplet pulses (Phase 4 spec D8, D22): a unit's, a run's or your rhythm's pulse; off and cards are at none */

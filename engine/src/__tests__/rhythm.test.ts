@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { barPulse, formatRhythm, parseRhythm, PULSE_GRID, PULSE_LABELS, PULSE_PER_BEAT, pulseBeat, PULSES, pulsesIn } from '../rhythm/rhythm'
+import { barPulse, formatRhythm, parseRhythm, PULSE_GRID, PULSE_LABELS, PULSE_PER_BEAT, PULSE_SHORT_LABELS, pulseBeat, PULSES, pulsesIn } from '../rhythm/rhythm'
 
 describe('rhythm text form (spec §1, §2)', () => {
   it('lists the pulses', () => {
@@ -14,6 +14,21 @@ describe('rhythm text form (spec §1, §2)', () => {
       '4q': 'Quarter-note quintuplets',
       '8q': '8th-note quintuplets',
       '16q': '16th quintuplets',
+      '16t': 'Sextuplets',
+      '16s': 'Septuplets',
+    })
+  })
+
+  it('gives each pulse a short name for the gear marks (Phase 4 spec D17)', () => {
+    expect(PULSE_SHORT_LABELS).toEqual({
+      '4': 'Quarters',
+      '8': '8ths',
+      '8t': 'Triplets',
+      '16': '16ths',
+      '4t': '♩ triplets',
+      '4q': '♩ quints',
+      '8q': '♪ quints',
+      '16q': '16th quints',
       '16t': 'Sextuplets',
       '16s': 'Septuplets',
     })

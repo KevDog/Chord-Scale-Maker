@@ -221,18 +221,25 @@ function areaLadder(name: string, part: Part): Readonly<{ ladder: readonly Penta
  * - no guide line: 8, or 7 with numerals, scales and pentatonics all shown;
  * - a guide tone or arpeggio line, or a rhythm line (rhythm spec §8): 5 with all three rows, 6 with any row, 7 with none.
  * A rhythm poured into a Line (rhythm-on-lines spec §9, `poured`) takes one line fewer: 4 with all three rows, 5 with any row, 6 with none.
+ * So does a rhythm line that draws tuplets (`tuplets`, drawsTuplets; Task 3.2): their numbers stand over the beams.
  * Notes, stems and the label row take more height. Measured over the library in every transposition at letter width,
  * with a page's tallest lines (an ending raised over the stems); the 5 and 7 were measured on Stardust (tuba, From
  * 7th), the documented worst case, and print.spec checks it. With Pentatonics plus Numerals or Scales, 8 and 6 hold
- * (measured with the contour band #265 drew, since removed: #277).
+ * (measured with the contour band #265 drew, since removed: #277). The tuplet line's 5 was measured on Autumn Leaves
+ * (trombone from B, Triplets and Septuplets in 7, with and without a Groups path), whose six overflowed a letter page.
  */
-export function changesLinesPerPage(line: ChangesLineChoice, rows: Readonly<{ numerals: boolean; scales: boolean; pentatonics?: boolean; hexatonics?: boolean; quartals?: boolean }>, rhythm = false, poured = false): number {
+export function changesLinesPerPage(line: ChangesLineChoice, rows: Readonly<{ numerals: boolean; scales: boolean; pentatonics?: boolean; hexatonics?: boolean; quartals?: boolean }>, rhythm = false, poured = false, tuplets = false): number {
   const overlay = !!(rows.pentatonics || rows.hexatonics || rows.quartals) // the hexatonic and quartal rows take the pentatonic row's place and height
   const all = overlay && rows.numerals && rows.scales
   if (line === 'off' && !rhythm) return all ? 7 : 8
   const voiced = all ? 5 : 6 + (!rows.numerals && !rows.scales && !overlay ? 1 : 0)
-  return poured && line !== 'off' ? voiced - 1 : voiced // a poured rhythm's ties, tuplets and target marks stand taller (rhythm-on-lines spec §9)
+  // a poured rhythm's ties, tuplets and target marks stand taller (rhythm-on-lines spec §9), as a rhythm line's tuplets do
+  return (poured && line !== 'off') || (rhythm && tuplets) ? voiced - 1 : voiced
 }
+
+/** whether the sheet's rhythm draws a tuplet (Task 3.2): a note with a ratio, on its rhythm line or poured into a Line */
+export const drawsTuplets = (lines: readonly ChangesLine[]): boolean =>
+  lines.some((l) => l.bars.some((b) => b.rhythm.some((n) => n.ratio !== null) || b.voice.some((n) => !!n.mark?.ratio)))
 
 const STANDARD: ScaleView = { level: 'standard', seed: 0 }
 

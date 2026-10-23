@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { isRest } from '../chord'
 import { describe, expect, it, vi } from 'vitest'
-import { breakLines, buildChanges, type ChangesBar, type ChangesLine, type ChangesLineChoice, type ChangesSheet, changesLinesPerPage, changesSections, chordPositions, drawnChords, rowBarBeats, type PentatonicPlan, otherChords, type OverlayPlan, pickTargets, showHexatonics, showPentatonics, showQuartals, takesRhythm } from '../changes'
+import { breakLines, buildChanges, drawsTuplets, type ChangesBar, type ChangesLine, type ChangesLineChoice, type ChangesSheet, changesLinesPerPage, changesSections, chordPositions, drawnChords, rowBarBeats, type PentatonicPlan, otherChords, type OverlayPlan, pickTargets, showHexatonics, showPentatonics, showQuartals, takesRhythm } from '../changes'
 import { changesFor } from '../alternates'
 import { type ChartDoc, expandRowLines, parseChart } from '../chart'
 import { NO_PICKS, pickTarget, withPick } from '../chordPicks'
@@ -18,7 +18,7 @@ import type { ScaleView } from '../resolve'
 import { type PentatonicDegree, PENTATONIC_HOME, type PentatonicPathName, type PentatonicStep } from '../pentatonics'
 import { abbreviateScale } from '../scales'
 import { chunk, isSyncCopy } from '../util'
-import { layRhythm, type RhythmPath, rhythmNotes } from '../rhythm'
+import { layRhythm, type RhythmId, type RhythmPath, rhythmNotes } from '../rhythm'
 import { sectionLayout } from '../layout'
 import { stepUnits } from '../steps'
 
@@ -1375,6 +1375,25 @@ describe('the rhythm line and target beats (rhythm spec §8)', () => {
     expect(changesLinesPerPage('off', { numerals: true, scales: true }, true)).toBe(6)
     expect(changesLinesPerPage('off', { numerals: true, scales: true })).toBe(8)
   })
+
+  // Task 3.2: the tuplets' numbers stand over the beams, the tallest rhythm line (measured on Autumn Leaves, trombone from B)
+  it('counts a rhythm line with tuplets one line fewer on a printed page; a poured Line already takes one fewer', () => {
+    expect(changesLinesPerPage('off', { numerals: true, scales: true }, true, false, true)).toBe(5)
+    expect(changesLinesPerPage('off', { numerals: false, scales: false }, true, false, true)).toBe(6)
+    expect(changesLinesPerPage('off', { numerals: true, scales: true }, true, false, false)).toBe(6)
+    expect(changesLinesPerPage('up-root', { numerals: true, scales: true }, true, true, true)).toBe(5)
+  })
+
+  it('tells a sheet whose rhythm draws tuplets, on its rhythm line or poured into a Line', () => {
+    const doc = parseChart('key: C\n\nsection: A\n1 | Dm7\n2 | G7\n3 | CMaj7\n4 | A7\n').value
+    const sheet = (rhythm: RhythmId, line: ChangesLineChoice = 'off') => buildChanges(doc, CONCERT, 4, false, line, undefined, null, 'none', { rhythm }).lines
+    expect(drawsTuplets(sheet('unit:8t:7:accents'))).toBe(true)
+    expect(drawsTuplets(sheet('unit:16s:7:accents'))).toBe(true)
+    expect(drawsTuplets(sheet('unit:8:7:accents'))).toBe(false)
+    expect(drawsTuplets(sheet('off'))).toBe(false)
+    expect(drawsTuplets(sheet('unit:8t:4:accents', 'up-root'))).toBe(true)
+    expect(drawsTuplets(sheet('unit:8:4:accents', 'up-root'))).toBe(false)
+  })
 })
 
 describe("the rhythm's paths on the Changes sheet (Phase 4 spec §3, D17)", () => {
@@ -1398,6 +1417,27 @@ describe("the rhythm's paths on the Changes sheet (Phase 4 spec §3, D17)", () =
   it('marks the pulse alone under a Gears path', () => {
     const marks = bars(sheetOf(sixBars, 'unit:8:4:accents', gears)).map((b) => b.step)
     expect(marks).toEqual([{ group: null, pulse: '8' }, null, { group: null, pulse: '8t' }, null, { group: null, pulse: '16' }, null])
+  })
+
+  it('plays Gears 8 8t 16 by 2 bars: triplets in 4 in bars 3–4, 12 a bar, accented at pulses 0, 4 and 8 (§3 row 3)', () => {
+    const sheet = bars(sheetOf(sixBars, 'unit:8:4:accents', gears))
+    const third = 1 / 3
+    ;[2, 3].forEach((b) => {
+      const notes = sheet[b]!.rhythm
+      expect(notes).toHaveLength(12)
+      expect(notes.map((n) => Math.round(n.beat * 1000) / 1000)).toEqual(Array.from({ length: 12 }, (_, k) => Math.round(k * third * 1000) / 1000))
+      expect(notes.flatMap((n, k) => (n.accent ? [k] : []))).toEqual([0, 4, 8])
+    })
+    expect(sheet[2]!.step?.pulse).toBe('8t')
+  })
+
+  it('plays Groups 3 5 with Gears 8 16: step 2 is unit:8:3:accents again, both marks at each step (§3 row 4)', () => {
+    const both: RhythmPath = { groups: [3, 5], gears: ['8', '16'], step: { unit: 'bars', bars: 2 } }
+    const sheet = sheetOf(sixBars, 'unit:8:4:accents', both)
+    expect(bars(sheet).map((b) => b.step)).toEqual([{ group: 3, pulse: '8' }, null, { group: 5, pulse: '16' }, null, { group: 3, pulse: '8' }, null])
+    const plan = [{ from: 0, id: 'unit:8:3:accents' }, { from: 2, id: 'unit:16:5:accents' }, { from: 4, id: 'unit:8:3:accents' }] as const
+    expect(bars(sheet).map((b) => b.rhythm)).toEqual(rhythmNotes(layRhythm(plan, Array<number>(6).fill(4))!))
+    expect(bars(sheet)[4]!.rhythm).toEqual(bars(sheet)[0]!.rhythm) // a fresh start: as step 0
   })
 
   it('marks nothing with no path, or a group on a custom rhythm (D12)', () => {

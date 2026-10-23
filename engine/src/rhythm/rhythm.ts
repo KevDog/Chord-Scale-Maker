@@ -75,6 +75,20 @@ export const PULSE_LABELS: Readonly<Record<Pulse, string>> = {
   '16s': 'Septuplets',
 }
 
+/** each pulse's short name, for a gear mark over a bar (Phase 4 spec D17); PULSE_LABELS names it everywhere else */
+export const PULSE_SHORT_LABELS: Readonly<Record<Pulse, string>> = {
+  '4': 'Quarters',
+  '8': '8ths',
+  '8t': 'Triplets',
+  '16': '16ths',
+  '4t': '♩ triplets',
+  '4q': '♩ quints',
+  '8q': '♪ quints',
+  '16q': '16th quints',
+  '16t': 'Sextuplets',
+  '16s': 'Septuplets',
+}
+
 /** `x` attack, `.` rest, `_` tie to the note before, `>x` accented attack (one cell). */
 export type Cell = 'x' | '.' | '_' | '>x'
 

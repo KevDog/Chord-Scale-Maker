@@ -1,5 +1,5 @@
 import type { Locator, Page } from '@playwright/test'
-import { chooseGroups, chooseInstrument, chooseInterface, chooseRhythm, chooseRhythmStep, chooseSheet, chooseStart, closePanel, type Drawn, drawn, expect, openPanel, GLYPH, arpeggiosDrawn, guidesDrawn, openEditor, restateOn, rhythmDrawn, sheetChord, showArpeggios, showApproach, showCell, showGuides, showOrder, test, writeChart } from './fixtures'
+import { chooseGears, chooseGroups, chooseInstrument, chooseInterface, chooseRhythm, chooseRhythmStep, chooseSheet, chooseStart, closePanel, type Drawn, drawn, expect, openPanel, GLYPH, arpeggiosDrawn, guidesDrawn, openEditor, restateOn, rhythmDrawn, sheetChord, showArpeggios, showApproach, showCell, showGuides, showOrder, showTargets, test, writeChart } from './fixtures'
 
 const lines = (page: Page) => page.locator('svg[aria-label^="Bars:"]')
 /** the sheet itself, not the controls above it (whose menus name the same scales) */
@@ -747,6 +747,120 @@ test.describe('the tuplet pulses', () => {
     await expect(line.locator('.vf-tuplet text')).toHaveText(Array(4).fill(String.fromCodePoint(0xe885))) // Bravura's tuplet 5
     await expect(page.getByText(/Couldn.t draw/)).toHaveCount(0)
   })
+
+  // Task 3.2: a bar of 28 septuplet 16ths can't fit a quarter of a line (each note keeps its glyph's room), so it ran on
+  // under the next bar, its tuplets over that bar's; now a bar takes its notes' room and each line splits, balanced: two bars a line, every line
+  for (const [what, open] of [
+    ['the rhythm line', async (page: Page) => {
+      await page.addInitScript(() => localStorage.setItem('csm-rhythm', 'unit:16s:7:accents'))
+      await page.goto('/song/f-jazz-blues')
+      await rhythmDrawn(page)
+    }],
+    ['a poured Line', async (page: Page) => {
+      await page.addInitScript(() => Object.entries({ 'csm-rhythm': 'unit:16s:7:accents', 'csm-rhythm-start': 'beat', 'csm-anticipate': '0' }).forEach(([k, v]) => localStorage.setItem(k, v)))
+      await writeChart(page, 'title: T\nkey: C\n\nsection: A\n1 | CMaj7\n2 | Dm7\n3 | G7\n4 | CMaj7\n')
+      await chooseInstrument(page, 'Piano')
+      await showArpeggios(page, 'Up · root')
+      await arpeggiosDrawn(page)
+    }],
+  ] as const) {
+    test(`septuplets in 7 on ${what}: a tuplet a beat, none overlapping, each bar's notes inside it`, async ({ page }) => {
+      await open(page)
+      const all = await lines(page).all()
+      expect(all.length).toBeGreaterThan(1)
+      for (const line of all) {
+        const d = await line.evaluate((svg) => {
+          const rect = (e: Element) => e.getBoundingClientRect()
+          const staves = Array.from(svg.querySelectorAll('.vf-stave')).map(rect)
+          const notes = Array.from(svg.querySelectorAll('.vf-stavenote')).map(rect)
+          const tuplets = Array.from(svg.querySelectorAll('.vf-tuplet')).map(rect).sort((a, b) => a.left - b.left)
+          return {
+            bars: staves.length,
+            tuplets: tuplets.length,
+            // adjacent brackets meet where one beat's last note ends and the next's first starts: allow that pixel
+            overlaps: tuplets.slice(1).filter((t, i) => t.left < tuplets[i]!.right - 1).length,
+            // each bar holds its own 28 notes: none starts past its bar's right edge
+            inside: staves.map((s, b) => notes.filter((n) => n.left >= s.left && n.left < (staves[b + 1]?.left ?? s.right) && n.right <= s.right).length),
+          }
+        })
+        expect(d.bars).toBe(2)
+        expect(d.tuplets).toBe(4 * d.bars)
+        expect(d.overlaps).toBe(0)
+        expect(d.inside).toEqual(Array(d.bars).fill(28))
+      }
+      await expect(page.getByText(/Couldn.t draw/)).toHaveCount(0)
+    })
+  }
+
+  /** each line's bars, and how far (px) each bar's notes stop short of its barline (negative: they cross it) */
+  const barClearances = (line: Locator) =>
+    line.evaluate((svg) => {
+      const rect = (e: Element) => e.getBoundingClientRect()
+      const staves = Array.from(svg.querySelectorAll('.vf-stave')).map(rect)
+      const notes = Array.from(svg.querySelectorAll('.vf-stavenote')).map(rect).sort((a, b) => a.left - b.left)
+      // a bar's notes: those starting in it, by order; its last note's right edge against the bar's right edge
+      return staves.map((s, b) => {
+        const mine = notes.filter((n) => n.left >= s.left && n.left < (staves[b + 1]?.left ?? Infinity))
+        return s.right - Math.max(...mine.map((n) => n.right))
+      })
+    })
+
+  /** a song's sheet for an instrument and rhythm, once its crowded lines have split: each line's bar clearances */
+  const sheetLines = async (page: Page, song: string, instrument: string, rhythm: string): Promise<number[][]> => {
+    await page.addInitScript(([i, r]) => Object.entries({ 'csm-interface': 'everything', 'csm-instrument': i!, 'csm-rhythm': r! }).forEach(([k, v]) => localStorage.setItem(k, v)), [instrument, rhythm])
+    await page.goto(`/song/${song}`)
+    await rhythmDrawn(page)
+    let last = ''
+    await expect // a crowded line splits after it draws: until the lines stop changing
+      .poll(async () => {
+        const now = JSON.stringify(await lines(page).evaluateAll((svgs) => svgs.map((svg) => svg.querySelectorAll('.vf-stave').length)))
+        const same = now === last
+        last = now
+        return same
+      }, { intervals: [300] })
+      .toBe(true)
+    return Promise.all((await lines(page).all()).map(barClearances))
+  }
+
+  // Task 3.2 final ruling: a line whose notes can't fit splits on its own, balanced (2 2, never 3 1; on a phone 1 1),
+  // every other line keeps its bars. Straight 16ths set close keep four a line except where a key signature of two or
+  // more accidentals (or a long name) crowds the first line: Satin Doll for trumpet (E), Body and Soul for piano (Db).
+  // No note reaches its barline (set close they clear it by 6 units); the slashes are Bravura's, sized by VexFlow's
+  // font metrics on every platform, so 2 px is margin enough
+  for (const [song, instrument] of [['f-jazz-blues', 'piano'], ['satin-doll', 'trumpet'], ['body-and-soul', 'piano']] as const) {
+    for (const [width, perLine] of [[1400, 4], [390, 2]] as const) {
+      test(`16ths in 4, ${song} for ${instrument} at ${width} px: only crowded lines split, balanced, every note clear of its barline`, async ({ browser }) => {
+        const sheet = async (rhythm: string) => {
+          const page = await browser.newPage({ viewport: { width, height: 900 } })
+          const got = await sheetLines(page, song, instrument, rhythm)
+          await page.close()
+          return got
+        }
+        const eighths = await sheet('unit:8:4:accents')
+        const sixteenths = await sheet('unit:16:4:accents')
+        const bars = sixteenths.map((l) => l.length)
+        expect(bars.reduce((a, b) => a + b, 0)).toBe(eighths.reduce((a, l) => a + l.length, 0))
+        for (const c of sixteenths.flat()) expect(c).toBeGreaterThanOrEqual(2)
+        expect(sixteenths.length - eighths.length).toBeGreaterThanOrEqual(0)
+        expect(sixteenths.length - eighths.length).toBeLessThanOrEqual(2) // measured: +0 or +1 on desktop, +1 on a phone
+        expect(bars.filter((n) => n === perLine).length).toBeGreaterThanOrEqual(eighths.filter((l) => l.length === perLine).length - 1)
+        // balanced: no one-bar line beside a line of three or more
+        bars.slice(1).forEach((n, i) => expect(Math.min(n, bars[i]!) === 1 && Math.max(n, bars[i]!) >= 3).toBe(false))
+      })
+    }
+  }
+
+  // 16th quintuplets in 7: 20 notes a bar don't fit four a line; each line splits 2 2, so no bar is left on a line of
+  // its own (whole-sheet reflow to three left Autumn Leaves 3 3 … 2 1 and Stardust's 4-bar sections 3 1)
+  for (const song of ['autumn-leaves', 'stardust']) {
+    test(`16th quintuplets in 7 on ${song}: no one-bar line, each bar clear of its barline`, async ({ page }) => {
+      const all = await sheetLines(page, song, 'piano', 'unit:16q:7:accents')
+      for (const clear of all) {
+        expect(clear.length).toBeGreaterThanOrEqual(2)
+        for (const c of clear) expect(c).toBeGreaterThanOrEqual(2)
+      }
+    })
+  }
 })
 
 // mixed phrasing (Phase 4 spec §3, §6, §7; flag `rhythmGears`): Groups Up by section on an AABA chart, 4 bars a line
@@ -784,6 +898,67 @@ test.describe('the Groups path', () => {
     await rhythmDrawn(visitor)
     await expect(visitor.locator('[data-rhythm-step]')).toHaveText(['③', '④', '⑤', '⑥'])
     await other.close()
+  })
+})
+
+// gears (Phase 4 spec §3, §6, §7; flag `rhythmGears`): Up the gears by 2 bars, 4 bars a line
+test.describe('the Gears path', () => {
+  test('names each step’s pulse over its first bar and in the lines’ aria-labels', async ({ page }) => {
+    await page.goto('/song/f-jazz-blues')
+    await chooseRhythm(page, '8ths', { In: 'In 4', Variation: 'with accents' })
+    await chooseGears(page, 'Up the gears')
+    await chooseRhythmStep(page, 'Every 2 bars')
+    await rhythmDrawn(page)
+    await expect(page.locator('section header p').first()).toContainText('quarter-note triplets → 8ths → triplets → 16ths → sextuplets · every 2 bars')
+    await expect(lines(page).nth(0)).toHaveAttribute('aria-label', /, from bar 1: quarter-note triplets, from bar 3: 8ths(?!,)/)
+    await expect(lines(page).nth(1)).toHaveAttribute('aria-label', /, from bar 5: triplets, from bar 7: 16ths/)
+    await expect(page.locator('[data-rhythm-step]').first()).toHaveText('♩ triplets') // the short name; the aria-label keeps the full one
+    await expect(page.locator('[data-rhythm-step]').nth(1)).toHaveText('8ths')
+    await expect(page.getByText(/Couldn.t draw/)).toHaveCount(0)
+  })
+
+  test('marks both where both change, the numeral first', async ({ page }) => {
+    await page.goto('/song/f-jazz-blues')
+    await chooseRhythm(page, '8ths', { In: 'In 3', Variation: 'with accents' })
+    await chooseGroups(page, 'Up')
+    await chooseGears(page, 'Down the gears')
+    await chooseRhythmStep(page, 'Every 4 bars')
+    await rhythmDrawn(page)
+    await expect(page.locator('[data-rhythm-step]').first()).toHaveText('③Sextuplets')
+    await expect(lines(page).nth(0)).toHaveAttribute('aria-label', /, from bar 1: in 3, sextuplets/)
+  })
+
+  // the longest short names (♩ triplets, ③ before each) at phone width, the narrowest bars, with the target dots on the same row
+  test('keeps each mark clear of the target dots and inside its bar (phone width, Target beats on)', async ({ page }) => {
+    await page.goto('/song/f-jazz-blues')
+    await chooseRhythm(page, '8ths', { In: 'In 3', Variation: 'with accents' })
+    await chooseGroups(page, 'Up')
+    await chooseGears(page, 'Up the gears')
+    await chooseRhythmStep(page, 'Every 2 bars')
+    await showTargets(page)
+    await page.setViewportSize({ width: 390, height: 844 }) // the controls set, the lines redraw at phone width
+    await rhythmDrawn(page)
+    await expect(page.locator('[data-target-beat]').first()).toBeVisible()
+    await expect(page.locator('[data-rhythm-step]')).toHaveCount(6)
+    type Box = Readonly<{ left: number; right: number; top: number; bottom: number }>
+    const found = await page.locator('svg[aria-label^="Bars:"]').evaluateAll((svgs) => {
+      const box = (e: Element): Box => {
+        const r = e.getBoundingClientRect()
+        return { left: r.left, right: r.right, top: r.top, bottom: r.bottom }
+      }
+      const dots = Array.from(document.querySelectorAll('[data-target-beat]')).map(box)
+      return svgs.flatMap((svg) => {
+        const staves = Array.from(svg.querySelectorAll('.vf-stave')).map(box)
+        return Array.from(svg.querySelectorAll('[data-rhythm-step]')).map((m) => ({ mark: box(m), text: m.textContent, dots, bar: staves.find((s) => s.left <= box(m).left && box(m).left < s.right) ?? null }))
+      })
+    })
+    const overlaps = (a: Box, b: Box): boolean => a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom
+    expect(found).toHaveLength(6)
+    for (const { mark, text, dots, bar } of found) {
+      expect(dots.filter((d) => overlaps(mark, d)), `${text} over a target dot`).toEqual([])
+      expect(bar, `${text}'s bar`).not.toBeNull()
+      expect(mark.right, `${text} inside its bar`).toBeLessThanOrEqual(bar!.right)
+    }
   })
 })
 

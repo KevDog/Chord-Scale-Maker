@@ -291,6 +291,57 @@ test('prints the Changes with Groups Up by section, a sheet page to a letter pag
   expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(sheetPages)
 })
 
+// gears' marks (Phase 4 spec §8; flag `rhythmGears`): the numeral and the gear's name sit in the target dots' band,
+// so a rhythm line with Groups Up and Gears 8 16 by section keeps its count; trombone from B, the tallest staves.
+// (A tuplet pulse's rhythm line takes five lines a page: the next tests.)
+test('prints the Changes with Groups Up and Gears 8 16 by section, a sheet page to a letter page (autumn-leaves, Trombone, from B)', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('csm-rhythm-path:autumn-leaves', JSON.stringify({ groups: [3, 4, 5, 6, 7], gears: ['8', '16'], step: { unit: 'section', bars: 4 } })))
+  await page.goto('/song/autumn-leaves')
+  await chooseInstrument(page, 'Trombone')
+  await chooseSheet(page, 'Scales')
+  await pickOption(page, 'Where each scale starts', 'From B')
+  await chooseSheet(page, 'Changes')
+  await chooseRhythm(page, '8ths', { In: 'In 3', Variation: 'with accents' })
+  await rhythmDrawn(page)
+  await expect(page.locator('[data-rhythm-step]').first()).toHaveText('③8ths')
+  await expect(page.locator('[data-rhythm-step]').nth(1)).toHaveText('④16ths')
+  const svgs = page.locator('svg[aria-label^="Bars:"]')
+  const sheetPages = await svgs.evaluateAll((els) => new Set(els.map((e) => e.closest('section'))).size)
+  await expect(svgs).toHaveCount(6) // a full page: a rhythm line with Numerals and Scales prints six lines a page
+  expect(sheetPages).toBe(1)
+  await page.emulateMedia({ media: 'print' })
+  await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden()
+  expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(sheetPages)
+})
+
+// a tuplet rhythm line (Task 3.2): its numbers stand over the beams, so a sheet page holds one line fewer; trombone
+// from B, the tallest staves: Triplets in 7 (flag `rhythm`), and Septuplets in 7 (flag `rhythmGears`) with and without Groups Up by section
+for (const [id, path] of [
+  ['unit:8t:7:accents', false],
+  ['unit:16s:7:accents', false],
+  ['unit:8t:7:accents', true],
+] as const) {
+  test(`prints the Changes with a tuplet rhythm line (${id}${path ? ', Groups Up by section' : ''}), a sheet page to a letter page (autumn-leaves, Trombone, from B)`, async ({ page }) => {
+    await page.addInitScript((r) => localStorage.setItem('csm-rhythm', r), id)
+    if (path) await page.addInitScript(() => localStorage.setItem('csm-rhythm-path:autumn-leaves', JSON.stringify({ groups: [3, 4, 5, 6, 7], gears: null, step: { unit: 'section', bars: 4 } })))
+    await page.goto('/song/autumn-leaves')
+    await chooseInstrument(page, 'Trombone')
+    await chooseSheet(page, 'Scales')
+    await pickOption(page, 'Where each scale starts', 'From B')
+    await chooseSheet(page, 'Changes')
+    await rhythmDrawn(page)
+    await expect(page.locator('svg[aria-label^="Bars:"] .vf-tuplet').first()).toBeAttached()
+    if (path) await expect(page.locator('[data-rhythm-step]').first()).toBeAttached()
+    const svgs = page.locator('svg[aria-label^="Bars:"]')
+    const sheetPages = await svgs.evaluateAll((els) => new Set(els.map((e) => e.closest('section'))).size)
+    const first = await svgs.evaluateAll((els) => els.filter((e) => e.closest('section') === els[0]!.closest('section')).length)
+    await page.emulateMedia({ media: 'print' })
+    await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden()
+    expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(sheetPages)
+    expect(first).toBe(5) // a full first page: a tuplet rhythm line with Numerals and Scales prints five lines a page
+  })
+}
+
 // a poured line (rhythm-on-lines spec §9) is a voiced line: the arpeggio line's ink plus the rhythm line's, within budget
 for (const [what, open, pour] of [
   ['Stardust, 3-note pick-up and target beats', async (page: Page) => {

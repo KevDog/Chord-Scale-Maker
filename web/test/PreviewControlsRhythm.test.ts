@@ -128,6 +128,32 @@ describe('the Rhythm controls (rhythm spec §9)', () => {
       expect(w.find('#groups-error').text()).toContain('Groups of 2 to 7')
       expect(w.find('[aria-label="Groups"]').text()).toContain('Your list…')
     })
+
+    it('shows Gears for a unit and your rhythm, and the Step while it acts; not for a per-bar rhythm', async () => {
+      const w = await at('unit:8:3:accents')
+      expect(w.find('[aria-label="Gears"]').text()).toContain('Gears: One')
+      await choose(w, 'Gears', 'Up the gears')
+      expect(w.emitted('update:rhythmPath')?.at(-1)).toEqual([{ ...OFF, gears: ['4t', '8', '8t', '16', '16t'] }])
+      const custom = await at('custom:8:>xx', { ...OFF, gears: ['16t', '16', '8t', '8', '4t'] })
+      expect(custom.find('[aria-label="Groups"]').exists()).toBe(false)
+      expect(custom.find('[aria-label="Gears"]').text()).toContain('Gears: Down the gears')
+      expect(custom.find('[aria-label="Step"]').exists()).toBe(true)
+      expect((await at('run:8:4:0', { ...OFF, gears: ['8', '16'] })).find('[aria-label="Gears"]').exists()).toBe(false)
+      expect((await at('card:downbeats', { ...OFF, gears: ['8', '16'] })).find('[aria-label="Gears"]').exists()).toBe(false)
+    })
+
+    it('reads Gears’ Your list… by the pulses’ spellings, with an error under it', async () => {
+      const w = await at('unit:8:3:accents')
+      await choose(w, 'Gears', 'Your list…')
+      const input = w.find('input[aria-label="Your gears"]')
+      await input.setValue('8 16s')
+      await nextTick()
+      expect(w.emitted('update:rhythmPath')?.at(-1)).toEqual([{ ...OFF, gears: ['8', '16s'] }])
+      await input.setValue('8 32')
+      await nextTick()
+      expect(w.find('#gears-error').text()).toContain('Pulses from 4, 8')
+      expect(w.find('[aria-label="Gears"]').text()).toContain('Your list…')
+    })
   })
 
   it('ties the Start and Timing help to their buttons, for a screen reader (#505)', async () => {

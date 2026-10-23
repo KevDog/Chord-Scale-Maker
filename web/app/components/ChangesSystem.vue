@@ -369,6 +369,7 @@ const emit = defineEmits<{
   dialog: [kind: 'split' | 'nav' | 'paste' | 'rename', section: string, bar: number]
   addBar: [section: string]
   overfull: [at: string] // the names don't fit the line: break it before this bar (barKey)
+  crowded: [at: readonly string[]] // the notes don't fit the line (Task 3.2): split it, balanced, before these bars (barKey)
   alt: [key: string, then: 'edit' | 'next' | 'prev' | 'close'] // a bar's alternate (barKey): open its field, move on (Tab, ⇧Tab), or it closed
 }>()
 
@@ -623,7 +624,10 @@ async function draw(): Promise<void> {
     nameScales.value = nameScalesOf(names, layout.scales)
     otherScales.value = otherScalesOf(names, layout.scales)
     const breakAt = props.line.bars[layout.fits]
-    if (breakAt) emit('overfull', barKey(breakAt.at))
+    const starts = layout.split?.slice(0, -1).map((_, i) => layout.split!.slice(0, i + 1).reduce((a, n) => a + n, 0)) ?? []
+    const at = starts.flatMap((s) => { const bar = props.line.bars[s]; return bar ? [barKey(bar.at)] : [] })
+    if (at.length) emit('crowded', at)
+    else if (breakAt) emit('overfull', barKey(breakAt.at))
     drawError.value = null
   } catch (e) {
     drawError.value = `Couldn't draw these bars (${e instanceof Error ? e.message : String(e)})`

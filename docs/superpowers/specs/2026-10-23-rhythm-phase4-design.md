@@ -351,6 +351,28 @@ and Arpeggios with a run 11.
 **If one overflows:** first make the step mark smaller. If it still overflows, the Changes drops one more line a page
 when a path is on, and the spec's §8 records the measurement.
 
+**Measured (Task 3.2):**
+
+- Tuplet lines are taller: their numbers stand over the beams.
+  - Measured on Autumn Leaves, trombone from B: a line is 164–175 px with tuplets and 146–156 px without.
+  - 6 rhythm lines with tuplets took about 1,030–1,140 px, past a letter page's about 970 px printable.
+- So a rhythm line that draws tuplets prints one line fewer a page (`changesLinesPerPage(…, tuplets)`, from
+  `drawsTuplets`). At 5 lines a page the worst case is 919 px, which leaves 51 px.
+- A poured Line already drops one line, so it doesn't drop a second.
+- `print.spec` covers three cases, each at 5 lines a page:
+  - `8t:7`;
+  - `16s:7`;
+  - `8t:7` with Groups Up by section.
+
+**Crowded notes (Task 3.2):**
+
+- A bar takes its notes' room. VexFlow never sets notes closer than their glyphs, so the bars widen to fit them.
+- Where a line still can't hold its notes, only that line splits, balanced: 4 bars become 2 2, else 1 1 1 1, never 3 1.
+  3 bars become 2 1, else 1 1 1.
+- Every other line keeps its bars, and the page budget counts the lines drawn.
+- Straight 16ths are set close, and they keep 4 bars a line, except a first line crowded by its clef and a key
+  signature of 2 or more accidentals. That line splits 2 2, which adds 1 line over 8ths.
+
 ### 9. Docs
 
 - **Help** (`#rhythm`) gains:
