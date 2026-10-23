@@ -114,6 +114,7 @@ export default defineNuxtConfig({
         backup: true, // Back up… and Restore from backup… in the library (#466)
         alternates: true, // alternate changes on a chart (#215; docs/superpowers/specs/2026-10-21-alternate-changes-design.md)
         metronome: true, // the click on the song page (#254; docs/superpowers/specs/2026-10-21-metronome-design.md)
+        hearLine: false, // Hear line: the Changes sheet's Line sounds with the click (#507; docs/superpowers/specs/2026-10-23-hear-line-design.md)
         ireal: true, // iReal Pro import: Library's Open chart… and Import iReal link…, Paste bars (#261; docs/superpowers/specs/2026-10-17-ireal-import-design.md)
       },
     },

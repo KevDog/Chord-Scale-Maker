@@ -4,7 +4,7 @@ import { webAudio } from '~/utils/clickSounds'
 /** just enough of an AudioContext to build the click's nodes, counting the buffers it makes */
 function stubContext() {
   const made = { buffers: 0, oscillators: 0 }
-  const param = () => ({ value: 0, setValueAtTime: () => {}, exponentialRampToValueAtTime: () => {} })
+  const param = () => ({ value: 0, setValueAtTime: () => {}, exponentialRampToValueAtTime: () => {}, linearRampToValueAtTime: () => {} })
   const node = () => ({ connect: (n: unknown) => n, gain: param(), frequency: param(), type: '', buffer: null, start: () => {}, stop: () => {} })
   class Ctx {
     sampleRate = 48000
@@ -43,5 +43,11 @@ describe('clickSounds', () => {
     expect(made.oscillators).toBe(0)
     audio.play('beat', 0, 'wood')
     expect(made.oscillators).toBe(1)
+  })
+
+  it('Hear line’s lead is two oscillators a note', () => {
+    const made = stubContext()
+    webAudio()!.note(65, 0, 1)
+    expect(made.oscillators).toBe(2)
   })
 })

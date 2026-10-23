@@ -1,7 +1,7 @@
 import type { ClickKind } from '@chord-scale-maker/engine'
 
 /**
- * The click's sounds (#254), synthesized: no samples, so nothing to fetch and no CSP change. The only file that builds
+ * The click's sounds (#254) and Hear line's lead (#507), synthesized: no samples, so nothing to fetch and no CSP change. The only file that builds
  * audio nodes; useClick books through a ClickAudio, which tests replace with a fake.
  */
 export type ClickSound = 'wood' | 'beep'
@@ -11,6 +11,8 @@ export type ClickAudio = Readonly<{
   /** the audio clock, in seconds */
   now: () => number
   play: (kind: ClickKind, time: number, sound: ClickSound) => void
+  /** Hear line's lead: a note at midi (concert pitch), from time for length seconds */
+  note: (midi: number, time: number, length: number) => void
   resume: () => Promise<void>
   suspend: () => Promise<void>
   close: () => Promise<void>
@@ -64,6 +66,36 @@ export function playClick(ctx: AudioContext, out: AudioNode, kind: ClickKind, ti
   osc.stop(time + DECAY + 0.02)
 }
 
+const LEAD = { peak: 0.35, attack: 0.01, release: 0.06, held: 0.9, cutoff: 2400 } as const
+
+/**
+ * Hear line's lead (#507): a triangle and a quieter sine an octave up through a low-pass, a short attack and release,
+ * held for most of the note so a repeated note is heard again
+ */
+export function playNote(ctx: AudioContext, out: AudioNode, midi: number, time: number, length: number): void {
+  const freq = 440 * 2 ** ((midi - 69) / 12)
+  const end = time + Math.max(length * LEAD.held, LEAD.attack + 0.02)
+  const env = ctx.createGain()
+  const filter = ctx.createBiquadFilter()
+  filter.type = 'lowpass'
+  filter.frequency.value = LEAD.cutoff
+  filter.connect(env).connect(out)
+  env.gain.setValueAtTime(0, time)
+  env.gain.linearRampToValueAtTime(LEAD.peak, time + LEAD.attack)
+  env.gain.setValueAtTime(LEAD.peak, end)
+  env.gain.linearRampToValueAtTime(0, end + LEAD.release)
+  for (const [wave, mult, level] of [['triangle', 1, 1], ['sine', 2, 0.25]] as const) {
+    const osc = ctx.createOscillator()
+    osc.type = wave
+    osc.frequency.value = freq * mult
+    const gain = ctx.createGain()
+    gain.gain.value = level
+    osc.connect(gain).connect(filter)
+    osc.start(time)
+    osc.stop(end + LEAD.release + 0.02)
+  }
+}
+
 /** the browser's audio, or null where there is none; create it only inside a user's gesture (autoplay rules) */
 export function webAudio(): ClickAudio | null {
   try {
@@ -74,6 +106,7 @@ export function webAudio(): ClickAudio | null {
     return {
       now: () => ctx.currentTime,
       play: (kind, time, sound) => playClick(ctx, out, kind, time, sound),
+      note: (midi, time, length) => playNote(ctx, out, midi, time, length),
       resume: () => ctx.resume(),
       suspend: () => ctx.suspend(),
       close: () => ctx.close(),

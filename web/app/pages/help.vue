@@ -469,6 +469,15 @@
                 On an iPhone or iPad the sound stops when the screen locks.
               </dd>
             </div>
+            <div v-if="hearLineOn">
+              <dt class="font-semibold text-zinc-950 dark:text-white">Hear line</dt>
+              <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
+                With a Line on the Changes sheet, <strong class="font-semibold">Hear line</strong> on the click plays it with the
+                click: the notes on the sheet, in their rhythm, at concert pitch (<DecisionLink id="hear.pitch">where</DecisionLink>),
+                from the top again at the end. With the click on Swing, its 8ths swing (<DecisionLink id="hear.swing">how</DecisionLink>).
+                Listen first, then play it with the sound, then turn it off and play it alone.
+              </dd>
+            </div>
           </dl>
         </div>
       </section>
@@ -740,6 +749,7 @@ const approachesOn = useFeature('approaches')
 const ireal = useFeature('ireal')
 const backupOn = useFeature('backup')
 const metronomeOn = useFeature('metronome')
+const hearLineOn = useFeature('hearLine')
 const rhythmOn = useFeature('rhythm')
 const rhythmSheetsOn = useFeature('rhythmSheets')
 const rhythmGearsOn = useFeature('rhythmGears')

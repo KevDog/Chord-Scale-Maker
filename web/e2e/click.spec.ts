@@ -1,5 +1,5 @@
 import type { Locator, Page } from '@playwright/test'
-import { expect, test } from './fixtures'
+import { expect, showGuides, test } from './fixtures'
 
 /** click until it takes: a click before hydration is lost */
 async function clickUntil(page: Page, button: Locator, shown: Locator): Promise<void> {
@@ -141,3 +141,18 @@ for (const [phone, viewport] of [['iPhone 14', { width: 390, height: 844 }], ['P
     })
   })
 }
+
+test('Hear line shows with a Line on the Changes, and plays with the click (#507)', async ({ page }) => {
+  await page.goto('/song/autumn-leaves')
+  await clickUntil(page, page.getByRole('button', { name: 'Click', exact: true }), clickBar(page))
+  const hear = clickBar(page).getByRole('button', { name: 'Hear line' })
+  await expect(hear).toHaveCount(0) // no Line drawn
+  await showGuides(page, 'From 3rd')
+  await hear.click()
+  await expect(hear).toHaveAttribute('aria-pressed', 'true')
+  await clickBar(page).getByRole('button', { name: 'Start' }).click()
+  await expect(clickBar(page).locator('[data-testid=click-lights] i[data-on]')).toHaveCount(1) // running, with no error (the fixture fails on one)
+  await page.reload()
+  await clickUntil(page, page.getByRole('button', { name: 'Click', exact: true }), clickBar(page))
+  await expect(clickBar(page).getByRole('button', { name: 'Hear line' })).toHaveAttribute('aria-pressed', 'true') // remembered, with the Line
+})

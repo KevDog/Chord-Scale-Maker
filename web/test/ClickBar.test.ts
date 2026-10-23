@@ -141,4 +141,25 @@ describe('ClickBar', () => {
     await nextTick()
     expect(w.text()).toContain('Sound isn’t available in this browser')
   })
+
+  it('Hear line: a toggle with the flag on and a Line drawn, kept in the click’s settings', async () => {
+    const features = useRuntimeConfig().public.features as Record<string, unknown>
+    const was = { ...features }
+    try {
+      const off = await mountBar()
+      off.click.setLine({ notes: [{ bar: 0, at: 0, beats: 4, midi: 65 }], bars: 1 })
+      await nextTick()
+      expect(off.button('Hear line')).toBeUndefined() // the flag off
+      Object.assign(features, { hearLine: true })
+      const { click, button } = await mountBar()
+      expect(button('Hear line')).toBeUndefined() // no Line
+      click.setLine({ notes: [{ bar: 0, at: 0, beats: 4, midi: 65 }], bars: 1 })
+      await nextTick()
+      expect(button('Hear line')!.attributes('aria-pressed')).toBe('false')
+      await button('Hear line')!.trigger('click')
+      expect(click.settings.value.hear).toBe(true)
+    } finally {
+      Object.assign(features, was)
+    }
+  })
 })

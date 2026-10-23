@@ -33,6 +33,8 @@
     </span>
     <UiButton v-if="!folded" outline aria-label="Tap the tempo" title="Tap the beat a few times" @click="click.tap()">Tap</UiButton>
     <SegmentedControl v-if="!folded" v-model="click.feel.value" legend="Feel" :name="`click-feel-${home}`" :options="FEELS" />
+    <!-- Hear line (#507): the Changes sheet's Line sounds with the click -->
+    <ToggleButton v-if="!folded && hearOn && click.hasLine.value" v-model="hear" title="Play the Line on the sheet with the click">Hear line</ToggleButton>
     <!-- its settings beside the controls they qualify, not by Hide (the owner, #497) -->
     <RailPopover v-if="!folded" v-model:open="settingsOpen" label="Click settings" :place="home === 'docked' ? 'above' : 'below'">
       <SegmentedControl v-model="countIn" legend="Count-in" :name="`click-count-${home}`" :options="COUNT_INS" />
@@ -153,6 +155,8 @@ function setting<K extends keyof ClickSettings>(key: K) {
   })
 }
 const hat = setting('hat')
+const hear = setting('hear')
+const hearOn = useFeature('hearLine')
 const folded = setting('folded')
 const sound = setting('sound')
 const countInSetting = setting('countIn')
