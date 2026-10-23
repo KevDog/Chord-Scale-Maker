@@ -1013,6 +1013,7 @@ test.describe('Feel', () => {
     await rhythmDrawn(page)
     await expect(page.locator('section header p').first()).toContainText('feel in 2')
     await expect(lines(page).first()).toHaveAttribute('aria-label', /; rhythm: .* · feel in 2/)
+    await expect(lines(page).first()).not.toHaveAttribute('aria-label', /feel in 2.*feel in 2/) // the caption carries it once
     await expect(page.locator('[data-feel-mark]')).toHaveText(['in 2'])
     await expect(page.locator('[data-slot="system"]').first().locator('[data-target-beat]')).toHaveCount(8)
   })

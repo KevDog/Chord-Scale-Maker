@@ -605,7 +605,7 @@ function drawGuideLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, op
   const { band, at } = withTargets(voicedBand([...heads, ...tips], bracket === null ? null : bracket + shift), row)
   const poured = line.bars.some((b) => b.voice.some((n) => n.mark))
   if (marks !== null) drawMarks(ctx, laid, stepRow(marks, band.top), xs.map((bar) => bar.map((x) => x * total)), row !== null, feel)
-  fitSvg(el, band, total, barsLabel(line) + (opts.arpeggio ? arpeggioAria(line, opts.lineName) : guideAria(line)) + feelAria(feel) + (poured ? rhythmAria(opts.rhythmCaption ?? null) + stepAria(line, opts.fromBar ?? 1) : '') + targetsAria(line))
+  fitSvg(el, band, total, barsLabel(line) + (opts.arpeggio ? arpeggioAria(line, opts.lineName) : guideAria(line)) + (poured && opts.rhythmCaption ? '' : feelAria(feel)) + (poured ? rhythmAria(opts.rhythmCaption ?? null) + stepAria(line, opts.fromBar ?? 1) : '') + targetsAria(line))
   return { xs, ends: endsOf(widths, total), scales, fits, split, dots: at }
 }
 
@@ -905,7 +905,7 @@ function drawRhythmLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, o
   const hasBracket = line.bars.some((b) => b.rhythm.some((m) => m.bracket))
   const { band, at } = withTargets(voicedBand([...heads, ...tips, ...(hasBracket ? [under] : [])], bracket === null ? null : bracket + shift), row)
   if (marks !== null) drawMarks(ctx, laid, stepRow(marks, band.top), xs.map((bar) => bar.map((x) => x * total)), row !== null, feel)
-  fitSvg(el, band, total, barsLabel(line) + feelAria(feel) + rhythmAria(opts.rhythmCaption ?? null) + stepAria(line, opts.fromBar ?? 1) + targetsAria(line))
+  fitSvg(el, band, total, barsLabel(line) + (opts.rhythmCaption ? '' : feelAria(feel)) + rhythmAria(opts.rhythmCaption ?? null) + stepAria(line, opts.fromBar ?? 1) + targetsAria(line))
   return { xs, ends: endsOf(widths, total), scales, fits, split, dots: at }
 }
 
