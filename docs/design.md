@@ -748,6 +748,11 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   barlines, and for a repeating rhythm the landing bars and the cycle caption: `DECISIONS` `rhythm.cycle`), `rhythmNotes`
   (events to `RhythmNote`s: values, tuplets, beams, Saindon's brackets) and `targetBeats` (Galper's strong beats by meter:
   `rhythm.targets`). Nothing from the three books' printed examples is reproduced; they are cited.
+- **Pulse grid** (flag `rhythmGears` for the tuplet pulses; [spec](superpowers/specs/2026-10-23-rhythm-phase4-design.md) §1,
+  §2): every pulse is a ratio in `PULSE_GRID` (`n` pulses in `beats` beats, its note value, its tuplet ratio and its
+  fallback): `4`, `8`, `8t`, `16`, and the tuplet pulses `4t`, `4q`, `8q`, `16q`, `16t`, `16s`. `barPulse` plays a bar
+  that isn't a whole number of a pulse's groups at its fallback (quarters for `4t` and `4q`, 8ths for `8q`; `DECISIONS`
+  `rhythm.tuplet-fallback`), so no tuplet crosses a barline. `RhythmNote.ratio` gives `vf.Tuplet` its 3:2, 5:4, 6:4 or 7:4.
 - **buildChanges:** options `rhythm` and `targets`; `ChangesBar.rhythm` and `.targets`, `ChangesSheet.rhythmCaption`.
 - **Drawing** (`changesDrawing.ts`, `drawRhythmLine`): slash noteheads on the middle line with stems, rests, `a>` accents,
   `Tuplet` and `Beam` groups, the guide line's tie chain (half-ties at a line's ends), and the bracket as an SVG path under the
@@ -809,6 +814,23 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   clear of the next target dot and the barline (`data-rhythm-step`: the group and pulse), and ", from bar N: in G, pulse" in the line's aria-label.
   Print: the marks take no room; Autumn Leaves, trombone, 6 lines a page holds (with a tuplet pulse, 5: the tuplet
   numbers stand taller, `drawsTuplets`).
+
+#### Feel in 4 · 2 · 1 (flag `rhythmGears`, off; [spec](superpowers/specs/2026-10-23-rhythm-phase4-design.md) §4, §6, §7)
+
+- **Engine** (`rhythm/feel.ts`): `Feel` (4 · 2 · 1), `feelGroups(beats, feel)` (every beat; the `targetBeats` split; the
+  bar), `feelSlashes` (one slash a group, a group past a whole note in tied pieces as `restPieces` splits a rest) and
+  `feelTargets` (the downbeat alone in 1). `buildChanges` option `feel`: every `ChangesBar.slashes`, the targets, and
+  `rhythmNotes`' beat-grouped beams (runs, cards, a poured Line's straight beats) by the group; a unit's statement
+  beams and tuplets don't change. The caption appends " · feel in 2" ("feel", so it doesn't read as a Groups path's
+  "in 3 → 4"). Display only: the rhythm plays the same (`DECISIONS` `rhythm.feel`). Changes only (D13).
+- **Drawing:** a bar of plain slashes (no rhythm and no Line there) draws `bar.slashes`: VexFlow's hollow slash heads
+  at `h` and `w`, dotted, tied; a ghost a beat keeps each beat's x (`slashXs`) for the chord names and target dots.
+  "in 2" or "in 1" in small italics over the sheet's first bar (`data-feel-mark`), on the target dots' row (right of a
+  dot on beat 1; a slash line's in the staff's top space, as its dots), so no line grows; a step mark on that bar
+  follows it (`drawMarks`). The first line's aria-label adds "; feel in 2".
+- **Web:** a Feel listbox (In 4 · In 2 · In 1) in Line options under the rhythm, with or without one, at Everything
+  (`CONTROL_TIERS.feel`); `csm-feel` (global, 4 with the flag off but kept), share links `feel` (2 or 1); a Feel other than 4
+  raises the hidden-settings notice under `feel`, whose reset sets 4.
 
 ### Pentatonics on Changes ([spec](superpowers/specs/2026-10-13-pentatonic-ladders-design.md))
 
