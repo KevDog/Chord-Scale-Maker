@@ -967,12 +967,38 @@ test.describe('Feel', () => {
   /** each line's slash notes a bar, wait until every line is drawn with the mark's line first */
   const slashesABar = (page: Page) =>
     lines(page).evaluateAll((svgs) => svgs.map((svg) => svg.querySelectorAll('.vf-stavenote').length / svg.querySelectorAll('.vf-stave').length))
+  /** every slash head drawn, as SMuFL glyphs: E100 a quarter's, E103 a hollow half's, E102 a hollow whole's */
+  const heads = (page: Page) =>
+    lines(page).evaluateAll((svgs) => [...new Set(svgs.flatMap((svg) => Array.from(svg.querySelectorAll('.vf-stavenote text')).flatMap((t) => [...(t.textContent ?? '')].filter((c) => c >= '\uE100' && c <= '\uE103'))))].sort())
+  type Box = Readonly<{ left: number; right: number; top: number; bottom: number }>
+  const overlaps = (a: Box, b: Box): boolean => a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom
+  /** the first line's Feel mark, its step mark (if any), the target dots and its first bar, as client boxes */
+  const firstBarMarks = (page: Page) =>
+    lines(page).first().evaluate((svg) => {
+      const box = (e: Element): Box => {
+        const r = e.getBoundingClientRect()
+        return { left: r.left, right: r.right, top: r.top, bottom: r.bottom }
+      }
+      const step = svg.querySelector('[data-rhythm-step]')
+      return { feel: box(svg.querySelector('[data-feel-mark]')!), step: step ? box(step) : null, dots: Array.from(document.querySelectorAll('[data-target-beat]')).map(box), bar: box(svg.querySelectorAll('.vf-stave')[0]!) }
+    })
+  /** the Feel mark and any step mark on the first bar: apart, inside the bar, and over no target dot */
+  const expectClear = (found: Awaited<ReturnType<typeof firstBarMarks>>) => {
+    expect(found.dots.filter((d) => overlaps(found.feel, d)), 'the Feel mark over a target dot').toEqual([])
+    expect(found.feel.right, 'the Feel mark inside the first bar').toBeLessThanOrEqual(found.bar.right)
+    if (!found.step) return
+    expect(overlaps(found.feel, found.step), 'the Feel mark over the step mark').toBe(false)
+    expect(found.feel.right).toBeLessThanOrEqual(found.step.left)
+    expect(found.dots.filter((d) => overlaps(found.step!, d)), 'the step mark over a target dot').toEqual([])
+    expect(found.step.right, 'the step mark inside the first bar').toBeLessThanOrEqual(found.bar.right)
+  }
 
   test('in 2: two hollow slashes a bar, the mark over the first bar, and its words in the first line’s aria-label', async ({ page }) => {
     await page.goto('/song/f-jazz-blues')
     await chooseFeel(page, 'In 2')
     await expect(lines(page).first()).toHaveAttribute('aria-label', /; feel in 2/)
     await expect.poll(() => slashesABar(page)).toEqual([2, 2, 2])
+    expect(await heads(page)).toEqual(['\uE103']) // hollow half slashes only
     await expect(page.locator('[data-feel-mark]')).toHaveText(['in 2'])
     await expect(lines(page).nth(1)).not.toHaveAttribute('aria-label', /feel/)
     await expect(page.locator('section header p').first()).not.toContainText('feel') // no rhythm, no caption
@@ -991,15 +1017,32 @@ test.describe('Feel', () => {
     await expect(page.locator('[data-slot="system"]').first().locator('[data-target-beat]')).toHaveCount(8)
   })
 
-  test('in 1: one whole slash a bar and the downbeat alone a target', async ({ page }) => {
+  test('in 1: one hollow whole slash a bar, the downbeat alone a target, and the mark clear of its dot and inside the bar (phone width)', async ({ page }) => {
     await page.goto('/song/f-jazz-blues')
     await chooseFeel(page, 'In 1')
     await showTargets(page)
     await expect.poll(() => slashesABar(page)).toEqual([1, 1, 1])
+    expect(await heads(page)).toEqual(['\uE102'])
     await expect(page.locator('[data-feel-mark]')).toHaveText(['in 1'])
     const first = page.locator('[data-slot="system"]').first()
     await expect(first.locator('[data-target-beat]')).toHaveCount(4)
     await expect(first.locator('[data-target-beat="0"]')).toHaveCount(4)
+    expectClear(await firstBarMarks(page))
+    await page.setViewportSize({ width: 390, height: 844 }) // 2 bars a line: the dots take the most drawing units
+    await expect.poll(() => slashesABar(page)).toEqual([1, 1, 1, 1, 1, 1])
+    expectClear(await firstBarMarks(page))
+  })
+
+  test('in 1 and in 2 off 4/4: a 5/4 bar a whole slash tied to a quarter, a 3/4 bar a dotted half', async ({ page }) => {
+    await writeChart(page, 'title: T\nkey: C\ntime: 5/4\n\nsection: A\n1 | Dm7\n2 | G7\n3 | CMaj7\n@time 3 3/4\n')
+    await chooseFeel(page, 'In 1')
+    await expect.poll(() => slashesABar(page)).toEqual([5 / 3]) // 2, 2 and 1
+    await expect(lines(page).first().locator('.vf-stavetie')).toHaveCount(2)
+    expect(await heads(page)).toEqual(['\uE100', '\uE102', '\uE103']) // the tied quarter, the whole, the dotted half
+    await chooseFeel(page, 'In 2')
+    await expect.poll(() => slashesABar(page)).toEqual([5 / 3]) // hd h, hd h, hd
+    await expect(lines(page).first().locator('.vf-stavetie')).toHaveCount(0)
+    expect(await lines(page).first().evaluate((svg) => [...(svg.textContent ?? '')].filter((c) => c === '\uE1E7').length)).toBe(3) // SMuFL's augmentation dot
   })
 
   // a path's ③ is on the first bar too: the Feel mark first, the step mark after it, neither over a target dot (phone width)
@@ -1014,21 +1057,26 @@ test.describe('Feel', () => {
     await page.setViewportSize({ width: 390, height: 844 })
     await rhythmDrawn(page)
     await expect(page.locator('[data-feel-mark]')).toHaveCount(1)
-    type Box = Readonly<{ left: number; right: number; top: number; bottom: number }>
-    const found = await lines(page).first().evaluate((svg) => {
-      const box = (e: Element): Box => {
-        const r = e.getBoundingClientRect()
-        return { left: r.left, right: r.right, top: r.top, bottom: r.bottom }
-      }
-      const bar = box(svg.querySelectorAll('.vf-stave')[0]!)
-      return { feel: box(svg.querySelector('[data-feel-mark]')!), step: box(svg.querySelector('[data-rhythm-step]')!), dots: Array.from(document.querySelectorAll('[data-target-beat]')).map(box), bar }
-    })
-    const overlaps = (a: Box, b: Box): boolean => a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom
-    expect(overlaps(found.feel, found.step), 'the Feel mark over the step mark').toBe(false)
-    expect(found.feel.right).toBeLessThanOrEqual(found.step.left)
-    expect(found.dots.filter((d) => overlaps(found.feel, d)), 'the Feel mark over a target dot').toEqual([])
-    expect(found.dots.filter((d) => overlaps(found.step, d)), 'the step mark over a target dot').toEqual([])
-    expect(found.step.right, 'the step mark inside the first bar').toBeLessThanOrEqual(found.bar.right)
+    const found = await firstBarMarks(page)
+    expect(found.step).not.toBeNull()
+    expectClear(found)
+  })
+
+  // a 2/4 first bar before 4/4 bars: the narrowest first bar, at phone width, with ③ and a gear's name after the Feel mark
+  test('fits the marks into a narrow first bar (2/4, phone width)', async ({ page }) => {
+    await writeChart(page, 'title: T\nkey: C\n\nsection: A\n1 | Dm7\n2 | G7\n3 | CMaj7\n4 | A7\n@time 1 2/4\n@time 2 4/4\n')
+    await chooseRhythm(page, '8ths', { In: 'In 3', Variation: 'with accents' })
+    await chooseGroups(page, 'Up')
+    await chooseGears(page, 'Up the gears')
+    await chooseRhythmStep(page, 'Every 2 bars')
+    await chooseFeel(page, 'In 2')
+    await showTargets(page)
+    await page.setViewportSize({ width: 390, height: 844 })
+    await rhythmDrawn(page)
+    await expect(page.locator('[data-feel-mark]')).toHaveCount(1)
+    const found = await firstBarMarks(page)
+    expect(found.step).not.toBeNull()
+    expectClear(found)
   })
 
   test('a share link carries the Feel: it opens in 1', async ({ page, browser }) => {

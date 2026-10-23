@@ -56,6 +56,8 @@ const DOT_RISE = 12 // a target dot's center over the highest ink: the staff, a 
 const DOT_ROOM = 6 // the crop's room over a dot's center
 /** a slash line's target dots: in the staff's top space, over the slashes (which reach only the lines either side of the middle), so no line grows and the page budgets hold */
 export const SLASH_TARGET_ROW = STAFF_TOP + 5
+/** a slash line's Feel mark (Phase 4 spec §6): over the staff, in the clef's headroom on the sheet's first line (CLEF_BAND's top, 64), its glyphs about 69 to 76 */
+const SLASH_FEEL_ROW = STAFF_TOP - 8
 
 /** the target dots' row (rhythm spec §7), in drawing units: over the staff and the line's ink tops */
 export function targetRow(inkTops: readonly number[], staffTop = STAFF_TOP): number {
@@ -471,8 +473,9 @@ export function drawChangesLine(vf: VexFlowModule, el: HTMLElement, line: Change
   const plain = clef ? CLEF_BAND : BAND
   const { band, at } = withTargets(line.bars.some((b) => b.volta) ? { top: VOLTA_BAND.top, bottom: plain.bottom } : plain, hasTargets(line) ? SLASH_TARGET_ROW : null)
   const feel = lineFeel(opts)
-  // the Feel mark in the staff's top space, as the slash line's target dots (SLASH_TARGET_ROW): no line grows
-  if (feel && line.bars[0]) drawFeelMark(ctx, line.bars[0], (xs[0]?.[0] ?? 0) * total, feel, SLASH_TARGET_ROW, hasTargets(line))
+  // the Feel mark over the staff, in the headroom the first line's clef keeps (CLEF_BAND), so no line grows; under it
+  // the slash line's target dots sit in the staff's top space (SLASH_TARGET_ROW), clear of it
+  if (feel && line.bars[0]) drawFeelMark(ctx, line.bars[0], (xs[0] ?? []).map((x) => x * total), widths[0] ?? 0, feel, clef ? SLASH_FEEL_ROW : SLASH_TARGET_ROW, !clef && hasTargets(line)) // no clef, no headroom: in the top space, after a dot
   fitSvg(el, band, total, barsLabel(line) + feelAria(feel) + targetsAria(line))
   return { xs, ends: endsOf(widths, total), scales, fits, split: null, dots: at }
 }
@@ -716,15 +719,17 @@ const GEAR_MARK_MIN = 7 // the smallest it shrinks to, to fit its room, before i
 const GEAR_MARK_GAP = 3 // from the numeral (as measured) to the gear's name
 const GEAR_MARK_CLEAR = 10 // from the gear's name's end to the next target dot's centre, or to the barline
 
+const STEP_MARK_MIN = 8 // the smallest a numeral shrinks to, to fit its room (a numeral is never cut)
+
 /**
- * a gear's name at the size that fits room (drawing units): GEAR_MARK_SIZE, else shrunk as far as GEAR_MARK_MIN,
- * else cut short with an ellipsis; the context's font is left at the size returned
+ * italic words (a gear's name, the Feel mark) at the size that fits room (drawing units): size, else shrunk as far
+ * as GEAR_MARK_MIN, else cut short with an ellipsis; the context's font is left at the size returned
  */
-function fitGearName(ctx: Context, name: string, room: number): Readonly<{ text: string; size: number }> {
+function fitItalic(ctx: Context, name: string, room: number, fullSize = GEAR_MARK_SIZE): Readonly<{ text: string; size: number }> {
   const width = (text: string, size: number): number => ctx.setFont('serif', size, 'normal', 'italic').measureText(text).width
-  const full = width(name, GEAR_MARK_SIZE)
-  if (full <= room) return { text: name, size: GEAR_MARK_SIZE }
-  const size = Math.max(GEAR_MARK_MIN, (GEAR_MARK_SIZE * room) / full)
+  const full = width(name, fullSize)
+  if (full <= room) return { text: name, size: fullSize }
+  const size = Math.max(GEAR_MARK_MIN, (fullSize * room) / full)
   if (width(name, size) <= room) return { text: name, size }
   const cut = [...name].findLastIndex((_, k) => k > 0 && width(`${name.slice(0, k).trimEnd()}…`, size) <= room)
   return { text: `${name.slice(0, Math.max(1, cut)).trimEnd()}…`, size }
@@ -735,8 +740,9 @@ function fitGearName(ctx: Context, name: string, room: number): Readonly<{ text:
  * already clear of the crop's top): the circled numeral where the group changes, then the pulse's short name in small
  * italics where the pulse changes; the mark starts centred on the note's head (its numeral, or its name's first
  * letter), or just right of a target dot over it. dots: each bar's target dots' x by beat, in drawing units (null:
- * the line draws none); the name keeps clear of the next dot and of the barline (fitGearName). data-rhythm-step: the
- * group and pulse
+ * the line draws none); the mark keeps clear of the next dot and of the barline: the numeral shrinks as far as
+ * STEP_MARK_MIN (on the sheet's first bar it may start after the Feel mark: after), the name shrinks or is cut short
+ * (fitItalic). data-rhythm-step: the group and pulse
  */
 export function drawStepMarks(ctx: Context, bars: readonly MarkedBar[], row: number, dots: readonly (readonly number[])[] | null, after: number | null = null): void {
   bars.forEach(({ bar, ticks, stave }, b) => {
@@ -750,44 +756,58 @@ export function drawStepMarks(ctx: Context, bars: readonly MarkedBar[], row: num
     const left = b === 0 && after !== null ? Math.max(own, after + FEEL_MARK_GAP) : own // after the Feel mark on the sheet's first bar
     const g: unknown = ctx.openGroup('rhythm-step')
     if (g instanceof Element) g.setAttribute('data-rhythm-step', [group, pulse].filter((v) => v !== null).join(' '))
-    const numeral = group === null ? 0 : ctx.setFont('serif', STEP_MARK_SIZE).measureText(stepNumeral(group)).width
+    const endFrom = (x: number): number => Math.min(stave.getX() + stave.getWidth(), ...dotXs.filter((d) => d > x)) - GEAR_MARK_CLEAR
+    const numeral = group === null ? 0 : fitNumeral(ctx, stepNumeral(group), endFrom(left) - left)
     if (group !== null) ctx.fillText(stepNumeral(group), left, row + STEP_MARK_SIZE * 0.35) // its baseline, so its middle sits on the row
     if (pulse !== null) {
       const x = group !== null ? left + numeral + GEAR_MARK_GAP : left
-      const end = Math.min(stave.getX() + stave.getWidth(), ...dotXs.filter((d) => d > x)) - GEAR_MARK_CLEAR
-      const { text, size } = fitGearName(ctx, PULSE_SHORT_LABELS[pulse], end - x)
+      const { text, size } = fitItalic(ctx, PULSE_SHORT_LABELS[pulse], endFrom(x) - x)
       ctx.fillText(text, x, row + size * 0.35)
     }
     ctx.closeGroup()
   })
 }
 
+/** a numeral at STEP_MARK_SIZE, else shrunk to fit room as far as STEP_MARK_MIN; the context's font is left at that size; returns its width */
+function fitNumeral(ctx: Context, numeral: string, room: number): number {
+  const full = ctx.setFont('serif', STEP_MARK_SIZE).measureText(numeral).width
+  if (full <= room) return full
+  return ctx.setFont('serif', Math.max(STEP_MARK_MIN, (STEP_MARK_SIZE * room) / full)).measureText(numeral).width
+}
+
 const FEEL_MARK_SIZE = 10 // the Feel mark: small italics, as a gear's name, so it keeps to the target dots' band
 const FEEL_MARK_GAP = 5 // from the Feel mark's end to a step mark on the same bar
+
+/** the room (drawing units) the Feel mark leaves on the first bar for its step mark: the numeral and a gear's name at their least */
+const stepReserve = (step: ChangesBar['step']): number =>
+  step === null ? 0 : FEEL_MARK_GAP + (step.group !== null ? STEP_MARK_MIN * STEP_MARK_WIDTH : 0) + (step.pulse !== null ? GEAR_MARK_GAP + GEAR_MARK_MIN * 2 : 0)
 
 type MarkedBar = Readonly<{ bar: ChangesBar; ticks: readonly StaveNote[]; stave: Stave }>
 
 /**
  * the Feel mark over the sheet's first bar (Phase 4 spec §6, D21) on row (drawing units): "in 2" or "in 1" in small
- * italics, its first letter centred on the bar's first beat (x: its head's centre), or just right of a target dot on
- * it (dotted: the line draws dots), as a step mark starts. Returns its right edge: a step mark on the same bar
- * follows it. data-feel-mark: its words
+ * italics, its first letter centred on the bar's first beat (xs: its beats' x, in drawing units), or just right of a
+ * target dot on it (dotted: the line draws dots), as a step mark starts; it keeps clear of the next dot and of the
+ * barline (right), leaving room for a step mark on the bar (stepReserve), shrunk or cut short as a gear's name is
+ * (fitItalic). Returns its right edge: a step mark on the same bar follows it. data-feel-mark: its words
  */
-function drawFeelMark(ctx: Context, bar: ChangesBar, x: number, text: string, row: number, dotted: boolean): number {
-  const width = ctx.setFont('serif', FEEL_MARK_SIZE, 'normal', 'italic').measureText(text).width
+function drawFeelMark(ctx: Context, bar: ChangesBar, xs: readonly number[], right: number, text: string, row: number, dotted: boolean): number {
+  const x = xs[0] ?? 0
   const left = dotted && bar.targets.includes(0) ? x + STEP_MARK_GAP : x - FEEL_MARK_SIZE * 0.15
+  const dots = dotted ? bar.targets.flatMap((beat) => (xs[beat] === undefined ? [] : [xs[beat]])) : []
+  const end = Math.min(right, ...dots.filter((d) => d > left)) - GEAR_MARK_CLEAR - stepReserve(bar.step)
+  const fit = fitItalic(ctx, text, end - left, FEEL_MARK_SIZE)
   const g: unknown = ctx.openGroup('feel-mark')
   if (g instanceof Element) g.setAttribute('data-feel-mark', text)
-  ctx.fillText(text, left, row + FEEL_MARK_SIZE * 0.35) // its baseline, so its middle sits on the row
+  ctx.fillText(fit.text, left, row + fit.size * 0.35) // its baseline, so its middle sits on the row
   ctx.closeGroup()
-  return left + width
+  return left + ctx.measureText(fit.text).width
 }
 
 /** a voiced or rhythm line's marks on the dots' row (xs: each bar's beats' x, in drawing units; dotted: the line draws target dots): the Feel mark (feel: its words, on the sheet's first line) first, then the step marks after it */
 function drawMarks(ctx: Context, bars: readonly MarkedBar[], row: number, xs: readonly (readonly number[])[], dotted: boolean, feel: string | null): void {
   const first = bars[0]
-  const x = xs[0]?.[0]
-  const after = feel && first && x !== undefined ? drawFeelMark(ctx, first.bar, x, feel, row, dotted) : null
+  const after = feel && first && xs[0] ? drawFeelMark(ctx, first.bar, xs[0], first.stave.getX() + first.stave.getWidth(), feel, row, dotted) : null
   const dots = dotted ? xs : null
   drawStepMarks(ctx, bars, row, dots, after)
 }
@@ -868,7 +888,9 @@ function drawRhythmLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, o
   laid.forEach((l) => l.tuplets.forEach((t) => t.setContext(ctx).draw()))
 
   rhythmTies(vf, ctx, laid.map((l) => ({ rhythm: l.bar.rhythm, ticks: l.ticks })))
-  laid.forEach((l) => l.bar.rhythm.length || slashTies(vf, ctx, l.bar, l.ticks))
+  laid.forEach((l) => {
+    if (!l.bar.rhythm.length) slashTies(vf, ctx, l.bar, l.ticks) // a bar the rhythm leaves empty: its plain slashes
+  })
   const under = (first?.getBottomLineY() ?? 120) + BRACKET_DROP
   laid.forEach((l) => saindonBracket(ctx, l.bar.rhythm, l.ticks, under, barKey(l.bar.at)))
 

@@ -826,7 +826,8 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **Drawing:** a bar of plain slashes (no rhythm and no Line there) draws `bar.slashes`: VexFlow's hollow slash heads
   at `h` and `w`, dotted, tied; a ghost a beat keeps each beat's x (`slashXs`) for the chord names and target dots.
   "in 2" or "in 1" in small italics over the sheet's first bar (`data-feel-mark`), on the target dots' row (right of a
-  dot on beat 1; a slash line's in the staff's top space, as its dots), so no line grows; a step mark on that bar
+  dot on beat 1; a slash line's over the staff, in the first line's clef headroom, its dots under it in the top
+  space), fitted clear of the next dot and the barline, so no line grows; a step mark on that bar
   follows it (`drawMarks`). The first line's aria-label adds "; feel in 2".
 - **Web:** a Feel listbox (In 4 · In 2 · In 1) in Line options under the rhythm, with or without one, at Everything
   (`CONTROL_TIERS.feel`); `csm-feel` (global, 4 with the flag off but kept), share links `feel` (2 or 1); a Feel other than 4
