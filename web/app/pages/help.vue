@@ -309,7 +309,7 @@
               <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
                 Also Everything. <strong class="font-semibold">Timing</strong> begins each chord's notes early (Anticipate) or late (Resolve late), after
                 Jerry Bergonzi's <em>Inside Improvisation, Vol. 4: Melodic Rhythms</em> (p. 119). The chord symbols stay put. With Target beats on, the target
-                colour is judged against the chart's chord at that beat, so under Anticipate or Resolve late a note can be judged against the chord before or after the one it plays.
+                color is judged against the chart's chord at that beat, so under Anticipate or Resolve late a note can be judged against the chord before or after the one it plays.
               </dd>
             </div>
             <div>
