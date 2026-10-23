@@ -4,7 +4,7 @@ import type { Row } from './chart'
 import { qualityScale } from './chart'
 import { type ChordToken, chordTokensOrNull, isRest, parseChord, writtenChordRoot, writtenChordRootLenient } from './chord'
 import { intervalLabels } from './intervals'
-import { cardBars, type RhythmCardModel, type RhythmId, rhythmLabel } from './rhythm'
+import { cardBars, type NotesPerBar, type RhythmCardModel, type RhythmId, rhythmLabel } from './rhythm'
 import { type HexPair, hexatonicPairs, hexatonicPick, pickablePairs, type StaffHexatonic, writtenKeyPair } from './hexatonics'
 import { isHexatonicSelection, isPentatonicSelection, isQuartalSelection, type PracticeSelection, practiceKeys, selectedNotes, startReference } from './practice'
 import { outsideNotes, pentatonicPick, type StaffPentatonic } from './pentatonics'
@@ -229,9 +229,9 @@ export function pageSubtitle(subtitle: string, instrument: string, heading: stri
   return [head, ...extra].join(' · ')
 }
 
-/** the subtitle's words for the sheet's rhythm: "Rhythm: 8ths in 3, with accents"; none for Off */
-export function sheetRhythmText(rhythm: RhythmId): readonly string[] {
-  return rhythm === 'off' ? [] : [`Rhythm: ${rhythmLabel(rhythm)}`]
+/** the subtitle's words for the sheet's rhythm and notes per bar: "Rhythm: 8ths in 3, with accents", "4 a bar"; none for Off and Whole notes */
+export function sheetRhythmText(rhythm: RhythmId, notesPerBar?: NotesPerBar): readonly string[] {
+  return [...(rhythm === 'off' ? [] : [`Rhythm: ${rhythmLabel(rhythm)}`]), ...(typeof notesPerBar === 'number' ? [`${notesPerBar} a bar`] : [])]
 }
 
 
