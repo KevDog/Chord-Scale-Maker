@@ -3,7 +3,7 @@
  * Pure TypeScript; the notation (Task 5's notes, beams and brackets) reads these events.
  */
 import { rhythmLabel, rhythmOf, type RhythmId } from './library'
-import { PULSE_PER_BEAT, range, type Cell, type Pulse } from './rhythm'
+import { barPulse, pulseBeat, pulsesIn, range, type Cell, type Pulse } from './rhythm'
 
 /**
  * One note, rest or tied piece in a bar. `at` and `length` are in pulses from the bar's start; `statement` is the
@@ -21,10 +21,12 @@ export type RhythmEvent = Readonly<{
 
 /**
  * `unit` is a repeating rhythm's statement length in pulses (0 for a per-bar one); `starts` is each bar's first
- * pulse in the stream, so a statement can be found at any pulse.
+ * pulse in the stream, so a statement can be found at any pulse. `pulse` is the rhythm's; `pulses` is each bar's,
+ * its fallback where the pulse's group doesn't fit the bar (Phase 4 spec §1, D11).
  */
 export type Laid = Readonly<{
   pulse: Pulse
+  pulses: readonly Pulse[]
   kind: 'repeat' | 'bar'
   bars: readonly (readonly RhythmEvent[])[]
   landings: readonly number[]
@@ -105,8 +107,9 @@ export function layRhythm(id: RhythmId, bars: readonly number[], breaks: readonl
   const r = rhythmOf(id)
   if (!r || bars.length === 0) return null
   const pulse = r.kind === 'repeat' ? r.rhythm.pulse : r.pulse
-  const per = PULSE_PER_BEAT[pulse]
-  const lengths = bars.map(b => b * per)
+  // each bar at its own pulse (a fallback where the group doesn't fit); the stream counts cells through every bar
+  const pulses = bars.map(b => barPulse(pulse, b))
+  const lengths = bars.map(b => pulsesIn(pulse, b))
   let sum = 0
   const starts = lengths.map(len => (sum += len) - len)
   const total = sum
@@ -118,6 +121,7 @@ export function layRhythm(id: RhythmId, bars: readonly number[], breaks: readonl
     const segs = segments(forced(range(total).map(i => r.rhythm.cells[i % unit]!), force), cut)
     return {
       pulse,
+      pulses,
       kind: 'repeat',
       bars: lengths.map((len, b) => barEvents(segs, starts[b]!, len, at => Math.floor((starts[b]! + at) / unit))),
       landings: range(bars.length).filter(b => starts[b]! % unit === 0),
@@ -128,8 +132,9 @@ export function layRhythm(id: RhythmId, bars: readonly number[], breaks: readonl
   const segs = segments(forced(perBarCells(r, { beats: bars, lengths, starts, total }), force), cut)
   return {
     pulse,
+    pulses,
     kind: 'bar',
-    bars: lengths.map((len, b) => barEvents(segs, starts[b]!, len, at => Math.floor(at / per))),
+    bars: lengths.map((len, b) => barEvents(segs, starts[b]!, len, at => Math.floor(pulseBeat(pulses[b]!, at)))),
     landings: [],
     unit: 0,
     starts,

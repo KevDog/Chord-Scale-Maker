@@ -1,12 +1,80 @@
 import { describe, expect, it } from 'vitest'
-import { formatRhythm, parseRhythm, PULSE_LABELS, PULSE_PER_BEAT, PULSES } from '../rhythm/rhythm'
+import { barPulse, formatRhythm, parseRhythm, PULSE_GRID, PULSE_LABELS, PULSE_PER_BEAT, pulseBeat, PULSES, pulsesIn } from '../rhythm/rhythm'
 
 describe('rhythm text form (spec §1, §2)', () => {
   it('lists the pulses', () => {
-    expect(PULSES).toEqual(['4', '8', '8t', '16'])
+    expect(PULSES).toEqual(['4', '8', '8t', '16', '4t', '4q', '8q', '16q', '16t', '16s'])
     expect(PULSE_PER_BEAT).toEqual({ '4': 1, '8': 2, '8t': 3, '16': 4 })
-    expect(PULSE_LABELS).toEqual({ '4': 'Quarters', '8': '8ths', '8t': 'Triplets', '16': '16ths' })
+    expect(PULSE_LABELS).toEqual({
+      '4': 'Quarters',
+      '8': '8ths',
+      '8t': 'Triplets',
+      '16': '16ths',
+      '4t': 'Quarter-note triplets',
+      '4q': 'Quarter-note quintuplets',
+      '8q': '8th-note quintuplets',
+      '16q': '16th quintuplets',
+      '16t': 'Sextuplets',
+      '16s': 'Septuplets',
+    })
   })
+
+  it('parses accents as one cell', () => {
+    expect(parseRhythm('8: >xx.x_')).toEqual({ pulse: '8', cells: ['>x', 'x', '.', 'x', '_'] })
+  })
+
+  it('parses the tuplet pulses (Phase 4 spec §1)', () => {
+    const r = parseRhythm('16s: >xxxxxxx')
+    expect(r?.pulse).toBe('16s')
+    expect(r?.cells).toHaveLength(7)
+  })
+})
+
+describe('the pulse grid (Phase 4 spec §1, D11)', () => {
+  it('follows the table', () => {
+    expect(PULSE_GRID).toEqual({
+      '4': { n: 1, beats: 1, value: 'q', tuplet: null, fallback: null },
+      '8': { n: 2, beats: 1, value: '8', tuplet: null, fallback: null },
+      '8t': { n: 3, beats: 1, value: '8', tuplet: { notes: 3, of: 2 }, fallback: null },
+      '16': { n: 4, beats: 1, value: '16', tuplet: null, fallback: null },
+      '4t': { n: 3, beats: 2, value: 'q', tuplet: { notes: 3, of: 2 }, fallback: '4' },
+      '4q': { n: 5, beats: 4, value: 'q', tuplet: { notes: 5, of: 4 }, fallback: '4' },
+      '8q': { n: 5, beats: 2, value: '8', tuplet: { notes: 5, of: 4 }, fallback: '8' },
+      '16q': { n: 5, beats: 1, value: '16', tuplet: { notes: 5, of: 4 }, fallback: null },
+      '16t': { n: 6, beats: 1, value: '16', tuplet: { notes: 6, of: 4 }, fallback: null },
+      '16s': { n: 7, beats: 1, value: '16', tuplet: { notes: 7, of: 4 }, fallback: null },
+    })
+  })
+
+  it('keeps the old pulses per beat', () => {
+    for (const p of ['4', '8', '8t', '16'] as const) expect(PULSE_GRID[p].n / PULSE_GRID[p].beats).toBe(PULSE_PER_BEAT[p])
+  })
+
+  it("falls back where the pulse's group doesn't fit the bar", () => {
+    expect(barPulse('4t', 3)).toBe('4')
+    expect(barPulse('4t', 4)).toBe('4t')
+    expect(barPulse('4q', 5)).toBe('4')
+    expect(barPulse('16s', 3)).toBe('16s')
+    expect(barPulse('8q', 3)).toBe('8')
+  })
+
+  it('counts the pulses in a bar', () => {
+    expect(pulsesIn('4t', 4)).toBe(6)
+    expect(pulsesIn('4t', 3)).toBe(3)
+    expect(pulsesIn('8q', 4)).toBe(10)
+    expect(pulsesIn('8q', 3)).toBe(6)
+    expect(pulsesIn('16', 3)).toBe(12)
+  })
+
+  it("finds a pulse's beat", () => {
+    expect(pulseBeat('8', 3)).toBe(1.5)
+    expect(pulseBeat('4t', 3)).toBe(2)
+    expect(pulseBeat('4q', 5)).toBe(4)
+    expect(pulseBeat('16s', 7)).toBe(1)
+  })
+})
+
+describe('rhythm text form, canonically (spec §2)', () => {
 
   it('parses accents as one cell', () => {
     expect(parseRhythm('8: >xx.x_')).toEqual({ pulse: '8', cells: ['>x', 'x', '.', 'x', '_'] })

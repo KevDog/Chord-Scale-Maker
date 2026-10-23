@@ -2,7 +2,7 @@
  * The rhythm library and its ids (rhythm spec §3): units, runs, cards and custom rhythms,
  * each one string that the preference, the share link and the listboxes carry.
  */
-import { PULSES, PULSE_LABELS, PULSE_PER_BEAT, formatRhythm, parseRhythm, range, type Cell, type Pulse, type Rhythm } from './rhythm'
+import { PULSES, PULSE_LABELS, PULSE_GRID, formatRhythm, parseRhythm, pulseBeat, pulsesIn, range, type Cell, type Pulse, type Rhythm } from './rhythm'
 
 export type Variation = 'accents' | 'rests' | 'rest-last' | 'syncopated' | 'tied'
 
@@ -37,7 +37,7 @@ export const RUN_PULSES: readonly Pulse[] = ['8', '8t', '16']
 export const RUN_ATTACKS: readonly number[] = [2, 3, 4, 5, 6, 7]
 
 /** k runs from 0 to the pulses in a 4/4 bar, less one. */
-const maxK = (pulse: Pulse): number => 4 * PULSE_PER_BEAT[pulse] - 1
+const maxK = (pulse: Pulse): number => pulsesIn(pulse, 4) - 1
 
 /** A run's starting positions at a pulse, from 0 (beat 1) to the last pulse of a 4/4 bar. */
 export const runPositions = (pulse: Pulse): readonly number[] => range(maxK(pulse) + 1)
@@ -96,18 +96,18 @@ export function unitRhythm(pulse: Pulse, g: number, v: Variation): Rhythm {
   return { pulse, cells }
 }
 
-const COUNT: Readonly<Record<Pulse, readonly string[]>> = {
+/** The count's words within a beat, for the pulses a beat holds a whole number of (a run's, and quarters). */
+const COUNT: Readonly<Partial<Record<Pulse, readonly string[]>>> = {
   '4': [''],
   '8': ['', 'and'],
   '8t': ['', 'trip', 'let'],
   '16': ['', 'e', 'and', 'a'],
 }
 
-/** A pulse position read as the count: `1`, `the and of 1`, `2`, … */
+/** A pulse position read as the count: `1`, `the and of 1`, `2`, … (a run's pulse: 8, 8t or 16) */
 export function positionLabel(pulse: Pulse, k: number): string {
-  const per = PULSE_PER_BEAT[pulse]
-  const beat = Math.floor(k / per) + 1
-  const word = COUNT[pulse][k % per]!
+  const beat = Math.floor(pulseBeat(pulse, k)) + 1
+  const word = COUNT[pulse]?.[k % PULSE_GRID[pulse].n] ?? ''
   return word ? `the ${word} of ${beat}` : `${beat}`
 }
 
@@ -130,7 +130,7 @@ function cardBar(card: RhythmCard, beats: number): readonly Cell[] {
 }
 
 function runBar(pulse: Pulse, n: number, k: number, beats: number): readonly Cell[] {
-  return range(beats * PULSE_PER_BEAT[pulse]).map((i): Cell => (i >= k && i < k + n ? 'x' : '.'))
+  return range(pulsesIn(pulse, beats)).map((i): Cell => (i >= k && i < k + n ? 'x' : '.'))
 }
 
 export function rhythmOf(

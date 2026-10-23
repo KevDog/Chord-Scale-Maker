@@ -93,7 +93,7 @@ describe('rhythm library', () => {
 
   it('every library id is valid and resolves', () => {
     expect(new Set(LIBRARY_IDS).size).toBe(LIBRARY_IDS.length)
-    expect(LIBRARY_IDS.length).toBe(4 * 6 * 5 + 6 * (8 + 12 + 16) + 3)
+    expect(LIBRARY_IDS.length).toBe(10 * 6 * 5 + 6 * (8 + 12 + 16) + 3)
     expect(LIBRARY_IDS[0]).toBe('unit:4:2:accents')
     expect(LIBRARY_IDS.at(-1)).toBe('card:halves')
     for (const id of LIBRARY_IDS) {

@@ -3,9 +3,12 @@
  * Pure TypeScript, so the sheet only maps these notes onto its drawing.
  */
 import type { Laid, RhythmEvent } from './lay'
-import { PULSE_PER_BEAT } from './rhythm'
+import { PULSE_GRID, pulseBeat, type Pulse, type RhythmValue } from './rhythm'
 
-export type RhythmValue = 'w' | 'hd' | 'h' | 'qd' | 'q' | '8d' | '8' | '16'
+export type { RhythmValue } from './rhythm'
+
+/** Pulses a beat at a bar's pulse (a fraction for a pulse whose group is longer than a beat). */
+const perBeat = (p: Pulse): number => PULSE_GRID[p].n / PULSE_GRID[p].beats
 
 /** `beat` is where the note starts in its bar, in beats: halves and quarters of a beat, or thirds under `8t`. */
 export type RhythmNote = Readonly<{
@@ -77,19 +80,20 @@ type Split = Readonly<{ note: Omit<RhythmNote, 'beam' | 'bracket'>; at: number; 
  * Each piece takes the statement at its own start, as a barline cut does (§4); a value held across a statement's
  * end without a cut stays with its attack.
  */
-function splitEvent(e: RhythmEvent, per: number, triplets: boolean, statement: (at: number) => number): readonly Split[] {
+function splitEvent(e: RhythmEvent, pulse: Pulse, triplets: boolean, statement: (at: number) => number): readonly Split[] {
+  const per = perBeat(pulse)
   const pieces = triplets ? tripletPieces(e.at, e.length) : straightPieces(e.at, e.length, per)
   return pieces.map((p, i) => ({
     at: p.at,
     statement: statement(p.at),
     note: {
-      beat: p.at / per,
+      beat: pulseBeat(pulse, p.at),
       value: p.value,
       rest: e.rest,
       accent: i === 0 && e.accent,
       tiedIn: i === 0 ? e.tiedIn : !e.rest,
       tie: i === pieces.length - 1 ? e.tie : !e.rest,
-      tuplet: p.triplet ? Math.floor(p.at / per) : null,
+      tuplet: p.triplet ? Math.floor(pulseBeat(pulse, p.at)) : null,
     },
   }))
 }
@@ -127,14 +131,15 @@ function brackets(splits: readonly Split[], statement: number | null): readonly 
 
 /** Each bar's drawable notes, one array a bar (§6). */
 export function rhythmNotes(laid: Laid): readonly (readonly RhythmNote[])[] {
-  const per = PULSE_PER_BEAT[laid.pulse]
-  const triplets = laid.pulse === '8t'
   return laid.bars.map((events, b) => {
+    const pulse = laid.pulses[b]!
+    const triplets = pulse === '8t'
+    const beatOf = (at: number): number => Math.floor(pulseBeat(pulse, at))
     const statement = (at: number): number =>
-      laid.kind === 'repeat' ? Math.floor((laid.starts[b]! + at) / laid.unit) : Math.floor(at / per)
-    const splits = events.flatMap(e => splitEvent(e, per, triplets, statement))
+      laid.kind === 'repeat' ? Math.floor((laid.starts[b]! + at) / laid.unit) : beatOf(at)
+    const splits = events.flatMap(e => splitEvent(e, pulse, triplets, statement))
     const tuplets = renumber(splits.map(s => s.note.tuplet))
-    const group = (s: Split): number => (triplets || laid.kind === 'bar' ? Math.floor(s.at / per) : s.statement)
+    const group = (s: Split): number => (triplets || laid.kind === 'bar' ? beatOf(s.at) : s.statement)
     const beamOf = beams(splits, group)
     // the sheet's first statement in bar 0, and the statement starting each later landing bar
     const bracketed = laid.kind === 'repeat' && laid.landings.includes(b) ? (b === 0 ? 0 : events[0]!.statement) : null

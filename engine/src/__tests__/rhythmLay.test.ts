@@ -181,6 +181,23 @@ describe('layRhythm forced attacks (lines spec §3.2)', () => {
   })
 })
 
+describe("each bar's pulse (Phase 4 spec §1, D11)", () => {
+  it('lays a bar the group does not fit at the fallback, the stream counting through it', () => {
+    const laid = layRhythm('unit:4t:2:accents', [4, 3, 4])!
+    expect(laid.pulses).toEqual(['4t', '4', '4t'])
+    expect(laid.starts).toEqual([0, 6, 9])
+    expect(laid.bars.map(events => events.reduce((n, e) => n + e.length, 0))).toEqual([6, 3, 6])
+    // 15 cells of a 2-cell unit: the third bar starts on the unit's 2nd cell
+    expect(laid.bars[2]![0]).toMatchObject({ at: 0, accent: false })
+    expect(laid.landings).toEqual([0, 1])
+  })
+
+  it('keeps one pulse where every bar fits', () => {
+    expect(layRhythm('unit:16s:3:accents', [4, 3])!.pulses).toEqual(['16s', '16s'])
+    expect(layRhythm('run:8:4:2', [4, 3])!.pulses).toEqual(['8', '8'])
+  })
+})
+
 // recorded on the four-pulse code before the pulse grid (Phase 4 spec §1): the grid must not move the old pulses
 describe('the old pulses on the pulse grid (regression)', () => {
   const ids: RhythmId[] = [

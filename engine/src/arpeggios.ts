@@ -11,7 +11,7 @@ import { spellFrom } from './scales'
 import { orNull } from './util'
 import { lineRhythm, type LineRhythm, type LineSpan, type RhythmPlan } from './rhythm/pour'
 import { restPieces, type RhythmNote, type RhythmValue } from './rhythm/notation'
-import { PULSE_PER_BEAT, type Pulse } from './rhythm/rhythm'
+import { PULSE_GRID, type Pulse } from './rhythm/rhythm'
 
 /**
  * 7th chord arpeggios on the Changes sheet (docs/superpowers/specs/2026-10-12-seventh-chord-arpeggios-design.md):
@@ -455,7 +455,7 @@ function pourVoices(poured: LineRhythm, rhythm: RhythmPlan, played: readonly Pla
       voice.push({ pitch, beat: n.beat, beats: valueBeats(n), tie: !!pitch && n.tie, tiedIn: !!pitch && n.tiedIn, accidental: null, mark: { value: n.value, tuplet: n.tuplet, beam: n.beam, accent: !!pitch && n.accent } })
     }
     const silent = voice.map((n, i) => !n.pitch && !poured.owners[d]?.[i])
-    bars.set(rhythm.clockBars[d] ?? d, voiceAccidentals(mergeSilence(voice, silent, poured.laid.pulse), keySig))
+    bars.set(rhythm.clockBars[d] ?? d, voiceAccidentals(mergeSilence(voice, silent, poured.laid.pulses[d]!), keySig))
   })
   return bars
 }
@@ -466,8 +466,9 @@ function pourVoices(poured: LineRhythm, rhythm: RhythmPlan, played: readonly Pla
  * a scale-below pick-up out of range keeps its own rest
  */
 function mergeSilence(voice: readonly GuideNote[], silent: readonly boolean[], pulse: Pulse): readonly GuideNote[] {
-  const per = PULSE_PER_BEAT[pulse]
-  const pulseOf = (beat: number): number => Math.round(beat * per)
+  const { n: count, beats } = PULSE_GRID[pulse] // the bar's pulse (Phase 4 spec §1)
+  const per = count / beats
+  const pulseOf = (beat: number): number => Math.round((beat * count) / beats)
   const runs = voice.reduce<GuideNote[][]>((out, n, i) => {
     const last = out.at(-1)
     const prev = voice[i - 1]

@@ -5,7 +5,7 @@
 import { cycleBars, layRhythm } from './lay'
 import { rhythmOf, type RhythmId } from './library'
 import { restPieces, rhythmNotes, type RhythmNote, type RhythmValue } from './notation'
-import { PULSE_PER_BEAT, range } from './rhythm'
+import { barPulse, PULSE_GRID, pulsesIn, range, type Pulse } from './rhythm'
 
 /** The longest card: a cycle longer than this is cut and the card says it continues. */
 const MAX_CARD_BARS = 4
@@ -20,7 +20,7 @@ export type RhythmCardModel = Readonly<{ bars: readonly (readonly RhythmNote[])[
 export function cardBars(id: RhythmId, beats: number): RhythmCardModel | null {
   const r = rhythmOf(id)
   if (!r) return null
-  const cycle = r.kind === 'repeat' ? cycleBars(r.rhythm.cells.length, beats * PULSE_PER_BEAT[r.rhythm.pulse]) : 1
+  const cycle = r.kind === 'repeat' ? cycleBars(r.rhythm.cells.length, pulsesIn(r.rhythm.pulse, beats)) : 1
   const laid = layRhythm(id, Array<number>(Math.min(cycle, MAX_CARD_BARS)).fill(beats))
   if (!laid) return null
   return { bars: rhythmNotes(laid), cut: cycle > MAX_CARD_BARS, beats }
@@ -166,8 +166,12 @@ const EPS = 1e-9
  * One poured bar's notes: each run of rests holding a silent attack merges into one silence (§2, §3); the rhythm's
  * own values, accents and tuplets stand, its beams break at the new rests, and no bracket draws (§4).
  */
-function notateBar(bar: readonly Poured[], barPulses: number, per: number, triplets: boolean): readonly RunNote[] {
-  const pulseOf = (m: RhythmNote): number => Math.round(m.beat * per)
+function notateBar(bar: readonly Poured[], barPulses: number, pulse: Pulse): readonly RunNote[] {
+  const { n, beats } = PULSE_GRID[pulse]
+  const per = n / beats
+  const triplets = pulse === '8t'
+  // pulseBeat's inverse
+  const pulseOf = (m: RhythmNote): number => Math.round((m.beat * n) / beats)
   const runs = bar.reduce<Poured[][]>((out, p, i) => {
     const last = out.at(-1)
     if (p.note === null && last && bar[i - 1]!.note === null) last.push(p)
@@ -206,7 +210,8 @@ export function pourRun(count: number, id: RhythmId, beats: number, perBar: numb
   const r = rhythmOf(id)
   if (!r || count <= 0) return null
   const pulse = r.kind === 'repeat' ? r.rhythm.pulse : r.pulse
-  const per = PULSE_PER_BEAT[pulse]
+  // every bar is `beats` long, so every bar has one pulse
+  const barP = barPulse(pulse, beats)
   for (let n = Math.min(MAX_RUN_BARS, Math.max(1, count)); ; n = Math.min(MAX_RUN_BARS, n * 2)) {
     const laid = layRhythm(id, Array<number>(n).fill(beats))
     if (!laid) return null
@@ -214,7 +219,7 @@ export function pourRun(count: number, id: RhythmId, beats: number, perBar: numb
     const last = poured.findLastIndex(bar => bar.some(p => p.note === count - 1))
     // the last laid bar may cut the last note's tie: lay more unless at the cap
     if (last >= 0 && (last < n - 1 || n === MAX_RUN_BARS)) {
-      return { beats, bars: poured.slice(0, last + 1).map(bar => ({ notes: notateBar(bar, beats * per, per, pulse === '8t'), tuplet: null })) }
+      return { beats, bars: poured.slice(0, last + 1).map(bar => ({ notes: notateBar(bar, pulsesIn(pulse, beats), barP), tuplet: null })) }
     }
     if (n === MAX_RUN_BARS) return null
   }

@@ -6,7 +6,7 @@ import { layRhythm, type Laid } from './lay'
 import { rhythmOf, type RhythmId } from './library'
 import { rhythmNotes, type RhythmNote } from './notation'
 import { pickupNotes, type RhythmStart } from './phrasing'
-import { PULSE_PER_BEAT } from './rhythm'
+import { barPulse, PULSE_GRID, pulsesIn } from './rhythm'
 
 /** A chord on the sheet, for the rhythm: its start in sheet beats, and whether its line plays it. */
 export type LineSpan = Readonly<{ at: number; sounds: boolean }>
@@ -68,11 +68,19 @@ export function lineRhythm(
 ): LineRhythm | null {
   const r = rhythmOf(id)
   if (!r || bars.length === 0) return null
-  const per = PULSE_PER_BEAT[r.kind === 'repeat' ? r.rhythm.pulse : r.pulse]
+  const pulse = r.kind === 'repeat' ? r.rhythm.pulse : r.pulse
   const total = bars.reduce((a, b) => a + b, 0)
   const before = (d: number): number => bars.slice(0, d).reduce((a, b) => a + b, 0)
+  // each bar's pulse, first beat and first stream pulse (Phase 4 spec §1): sheet beats to stream pulses bar by bar
+  const grids = bars.map(b => PULSE_GRID[barPulse(pulse, b)])
+  const beatStarts = bars.map((_, d) => before(d))
+  const pulseStarts = bars.map((_, d) => bars.slice(0, d).reduce((a, b) => a + pulsesIn(pulse, b), 0))
+  const toPulse = (beat: number): number => {
+    const d = Math.max(0, beatStarts.findLastIndex(s => s <= beat))
+    return pulseStarts[d]! + ((beat - beatStarts[d]!) * grids[d]!.n) / grids[d]!.beats
+  }
   const breakBeats = breaks.filter(b => b >= 0 && b < bars.length).map(before) // each break bar's first beat
-  const breakPulses = breakBeats.map(b => b * per)
+  const breakPulses = breakBeats.map(toPulse)
   const bounds = boundaries(chords, anticipate, breakBeats, total)
   const end = (j: number): number => bounds[j + 1] ?? total
   const n = pickupNotes(start)
@@ -82,8 +90,8 @@ export function lineRhythm(
       ? []
       : chords.flatMap((c, j): Forced[] => {
           if (!c.sounds || end(j) - bounds[j]! < EPS) return []
-          const target = Math.ceil(bounds[j]! * per - EPS)
-          if (target >= end(j) * per - EPS) return []
+          const target = Math.ceil(toPulse(bounds[j]!) - EPS)
+          if (target >= toPulse(end(j)) - EPS) return []
           const pickups = Array.from({ length: n }, (_, i) => target - i - 1).map(p =>
             p < 0 || breakPulses.some(q => q > p && q <= target) ? null : p,
           )
@@ -95,7 +103,7 @@ export function lineRhythm(
   const notes = rhythmNotes(laid)
 
   const spanOf = (pulse: number): number =>
-    bounds.findLastIndex((b, j) => pulse >= b * per - EPS && pulse < end(j) * per - EPS)
+    bounds.findLastIndex((b, j) => pulse >= toPulse(b) - EPS && pulse < toPulse(end(j)) - EPS)
   const attackOwner = (pulse: number): Owner | null => {
     const j = spanOf(pulse)
     if (j >= 0 && chords[j]!.sounds) return { chord: j, below: 0 }
@@ -108,7 +116,7 @@ export function lineRhythm(
   const owners = notes.map((bar, b) =>
     bar.map(note => {
       if (note.rest) return null
-      if (!note.tiedIn) held = attackOwner(Math.round(laid.starts[b]! + note.beat * per))
+      if (!note.tiedIn) held = attackOwner(Math.round(toPulse(beatStarts[b]! + note.beat)))
       return held
     }),
   )
