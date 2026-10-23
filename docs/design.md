@@ -609,7 +609,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **Patterns** (ten): Up and Down from the root or the 1st, 2nd or 3rd inversion (Down reverses Up), Up & down
   (alternating per arpeggio across the run; after the run's first, a Down starts on the chord tone just below the last
   note and an Up on the one just above, never that note, so the line keeps going its way: #356), Voice-led (Up from the chord tone nearest the last note).
-- **Note value, per bar:** the longest of ♩ ♪ 𝅘𝅥𝅯 giving the bar's shortest chord four notes or more (4/4: one chord ♩,
+- **Note value, per bar** (a chosen rhythm replaces this rule): the longest of ♩ ♪ 𝅘𝅥𝅯 giving the bar's shortest chord four notes or more (4/4: one chord ♩,
   two ♪, three or four 𝅘𝅥𝅯; 3/4 and 2/4: one ♪, more 𝅘𝅥𝅯). Timing is the guide tone timeline's, so a last chord holds
   through the empty bars after it.
 - **Filling:** a chord's slots repeat its pattern from the start, again in each bar it lasts into; slots too few for
@@ -643,7 +643,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   that differs from the last cell; with none, the arpeggio's range-first rule. Up & down keeps its alternation: the
   nearest placement that fits, the way its turn says.
 - **Rhythm, octave, rests:** the arpeggio line's (`cellVoices`, shared with `arpeggioVoices`): ♩ ♪ 𝅘𝅥𝅯 by the bar's
-  shortest chord. A chord with no pentatonic (no
+  shortest chord (a chosen rhythm replaces this rule). A chord with no pentatonic (no
   scale, no key area, unreadable) plays its 7th chord arpeggio in the stored pattern; one with no tones either rests.
 - **Model:** `buildChanges` takes a `ChangesLineChoice`: a `SheetLine` or `{ kind: 'pentatonic', leave, dir,
   arpeggio }` (`changesLineOf` in `utils/sheetLine.ts` builds it); it works out each chord's pentatonic before the line
@@ -663,7 +663,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   starting on its lower (`triadTones` spells each from its root). Direction, the run's first cell, the nearest-note
   start and the turn at the range's wall: the Pentatonic line's (`nextCell`). A cell the bar line cuts goes on into
   the chord's next bar (`Cells.carry`); one the chord's end cuts is dropped.
-- **Rhythm, rests, model:** `cellVoices`, which steps by each cell's length; a chord with no pair plays its 7th chord
+- **Rhythm, rests, model:** `cellVoices`, which steps by each cell's length (a chosen rhythm replaces the note-value rule); a chord with no pair plays its 7th chord
   arpeggio in the stored pattern. `ChangesLineChoice` adds `{ kind: 'triad-pair', dir, arpeggio }`; `buildChanges`
   works out each chord's pair before the line. Aria-label `; triad pair: G4 B4 D5 C5 | …`.
 - **Preferences:** none new: the stored arpeggio line reads as Triad pair under the overlay; Direction
@@ -708,8 +708,8 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 ### The rhythm line on Changes (flag `rhythm`, off; [spec](superpowers/specs/2026-10-22-rhythm-line-design.md))
 
 - **What:** a pitch-free rhythm drawn on the Changes sheet in place of the beat slashes, laid over the chart's own bars. A view
-  preference like the level, never written into chart rows. Drawn only while the Line is Off (a Line on shows
-  "Turn Line off to see the rhythm." in the control).
+  preference like the level, never written into chart rows. With the Line off it draws as the rhythm line; with a Line on, the
+  Line plays in it (below).
 - **Engine** (`engine/src/rhythm/`, pure): the text form (`parseRhythm`, `formatRhythm`: `8: >xx.x_`, pulses `4`, `8`, `8t`,
   `16`), the library of ids generated from formulas (`unit:<pulse>:<g>:<variation>` after Saindon, `run:<pulse>:<n>:<k>`
   after Bergonzi, `card:*`, `custom:*`; `isRhythmId`, `rhythmLabel`), `layRhythm(id, bars)` (events per bar, ties split at
@@ -729,6 +729,23 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **Preferences:** `csm-rhythm` (a RhythmId; anything else reads Off, and with the flag off a stored one stays stored) and
   `csm-targets`. Share links carry `rhythm` (not when Off) and `targets`; invalid values are dropped. Either on below
   Intermediate raises the hidden-settings notice (`rhythm`).
+
+#### The rhythm on the Lines ([spec](superpowers/specs/2026-10-22-rhythm-on-lines-design.md))
+
+- **Pouring:** `takesRhythm(line, restate)` (engine, the one answer web also uses) says which Lines take the rhythm. Their
+  `*Voices` take a `RhythmPlan` (`{ id, start, anticipate, bars, clockBars, breaks }`) and `lineRhythm` (`rhythm/pour.ts`)
+  lays the rhythm over the drawn bars, forces the targets and pick-ups, and names each note's owner. A segment is a chord's
+  whole span and its slots are the poured attacks, so the cell logic (`next`, turn-back, Approach) is unchanged. Unowned
+  rests merge within a beat; a pitchless note carries no accent. `GuideNote` gains `mark` (notation) and `target`.
+- **Start** (`beat`, 1-, 2-, 3-note pick-up) forces each chord's target and pick-up pulses to attacks; **Timing** moves a
+  chord's span by half-beat steps (`ANTICIPATE_STEPS`) while the symbols stay; **Restate** pours each Guide Tone chord's
+  one note on every attack. Captions add the pick-up and timing (`phrasingCaption`).
+- **Target tones** (`markTargets`): with Target beats on, a note on a dot is `tone` (lit) or `other` (grey) against the
+  chart's chord at that beat.
+- **Controls:** Start, Timing (Everything: `CONTROL_TIERS['rhythm-phrasing']`) and Restate (Intermediate) are inside Line
+  options under the rhythm's detail. Prefs `csm-rhythm-start`, `csm-anticipate`, `csm-guide-restate`; share links
+  `rhythmStart`, `anticipate`, `restate`. Print: a poured Line counts one line fewer per page than a voiced line
+  (measured on a 5/4 triplet chart).
 
 ### Pentatonics on Changes ([spec](superpowers/specs/2026-10-13-pentatonic-ladders-design.md))
 

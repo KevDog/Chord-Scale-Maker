@@ -8,6 +8,7 @@ import { type Part, rangeOf } from './part'
 import { nextCell, orderFrom } from './pentatonicLine'
 import { mod, pcOf, type Spelled } from './pitch'
 import { spellFrom } from './scales'
+import type { RhythmPlan } from './rhythm/pour'
 
 /**
  * The Changes sheet's Triad pair line (#325): under the Hexatonic overlay, the Line's 7th Chords slot plays each
@@ -90,7 +91,7 @@ function climbCells(pair: TriadPair, dir: ArpDirection, range: Range, four: bool
 
 /**
  * the Triad pair line's voice for chords in time order: each chord's pair (by row, as its label shows it) as cells
- * (cellVoices); a chord with none plays its 7th chord arpeggio in the line's pattern
+ * (cellVoices); a chord with none plays its 7th chord arpeggio in the line's pattern; rhythm: poured into its attacks
  */
 export function triadPairVoices(
   chords: readonly GuideInput[],
@@ -99,11 +100,12 @@ export function triadPairVoices(
   keySig: string | null,
   line: TriadPairLine,
   pairs: ReadonlyMap<number, TriadPair>,
+  rhythm?: RhythmPlan,
 ): { bars: ReadonlyMap<number, readonly GuideNote[]>; missing: readonly string[] } {
   const range = rangeOf(part)
   return cellVoices(chords, part, beats, keySig, (c) => {
     const pair = pairs.get(c.row)
     if (!pair) return arpeggioCells(part, c, line.arpeggio)
     return line.shape === 'climb' || line.shape === 'arpeggios' ? climbCells(pair, line.dir, range, line.shape === 'arpeggios') : pairCells(pair, line.dir, range)
-  })
+  }, undefined, 'none', rhythm)
 }

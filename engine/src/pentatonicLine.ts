@@ -6,6 +6,7 @@ import type { Metre } from './metre'
 import { type Part, rangeOf } from './part'
 import { mod, pcOf, type Spelled } from './pitch'
 import { SCALES, spellFrom } from './scales'
+import type { RhythmPlan } from './rhythm/pour'
 
 /**
  * The Changes sheet's Pentatonic line (#284): under the Pentatonic overlay, the Line's 7th Chords slot plays each
@@ -95,7 +96,8 @@ function pentatonicCells(tones: readonly Spelled[], dir: ArpDirection, range: Ra
 
 /**
  * the Pentatonic line's voice for chords in time order: each chord's pentatonic (roots: its written root by row, as
- * its label shows it) as cells (cellVoices); a chord with none plays its 7th chord arpeggio in the line's pattern
+ * its label shows it) as cells (cellVoices); a chord with none plays its 7th chord arpeggio in the line's pattern;
+ * rhythm: poured into its attacks
  */
 export function pentatonicVoices(
   chords: readonly GuideInput[],
@@ -104,10 +106,11 @@ export function pentatonicVoices(
   keySig: string | null,
   line: PentatonicLine,
   roots: ReadonlyMap<number, Spelled>,
+  rhythm?: RhythmPlan,
 ): { bars: ReadonlyMap<number, readonly GuideNote[]>; missing: readonly string[] } {
   const range = rangeOf(part)
   return cellVoices(chords, part, beats, keySig, (c) => {
     const root = roots.get(c.row)
     return root ? pentatonicCells(pentatonicCell(root, line.leave), line.dir, range) : arpeggioCells(part, c, line.arpeggio)
-  })
+  }, undefined, 'none', rhythm)
 }

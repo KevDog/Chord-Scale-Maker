@@ -7,7 +7,7 @@ import { type Directive, type Layout, sectionLayout } from './layout'
 import { barAt, barLength, barStart, type Clock } from './metre'
 import { type HexPick, livePick, type PentPick, pickTarget, type QuartPick } from './chordPicks'
 import type { Approach } from './approaches'
-import { arpeggioVoices, isArpeggioPattern, type SheetLine } from './arpeggios'
+import { arpeggioTones, arpeggioVoices, isArpeggioPattern, type SheetLine } from './arpeggios'
 import { type GuideInput, type GuideNote, guideVoices } from './guideTones'
 import { keySignature } from './keySignature'
 import { type CellsLine, cellsVoices } from './cells'
@@ -22,7 +22,7 @@ import { abbreviateScale } from './scales'
 import { type QuartalNotesChoice, type QuartalStack, rankedStacks } from './quartal'
 import { type QuartalLine, quartalVoices } from './quartalLine'
 import { chunk, orNull } from './util'
-import { layRhythm, rhythmCaption, type RhythmId, type RhythmNote, rhythmNotes, targetBeats } from './rhythm'
+import { layRhythm, markTargets, phrasingCaption, rhythmCaption, type RhythmId, type RhythmNote, rhythmNotes, type RhythmPlan, type RhythmStart, targetBeats } from './rhythm'
 
 /**
  * The Changes sheet (docs/plan-changes.md): the chart as a study lead sheet. Bars of slashes in the chart's metre
@@ -217,17 +217,18 @@ function areaLadder(name: string, part: Part): Readonly<{ ladder: readonly Penta
  * Changes lines on a printed page, one rule a line:
  * - no guide line: 8, or 7 with numerals, scales and pentatonics all shown;
  * - a guide tone or arpeggio line, or a rhythm line (rhythm spec §8): 5 with all three rows, 6 with any row, 7 with none.
+ * A rhythm poured into a Line (rhythm-on-lines spec §9, `poured`) takes one line fewer: 4 with all three rows, 5 with any row, 6 with none.
  * Notes, stems and the label row take more height. Measured over the library in every transposition at letter width,
  * with a page's tallest lines (an ending raised over the stems); the 5 and 7 were measured on Stardust (tuba, From
  * 7th), the documented worst case, and print.spec checks it. With Pentatonics plus Numerals or Scales, 8 and 6 hold
  * (measured with the contour band #265 drew, since removed: #277).
  */
-export function changesLinesPerPage(line: ChangesLineChoice, rows: Readonly<{ numerals: boolean; scales: boolean; pentatonics?: boolean; hexatonics?: boolean; quartals?: boolean }>, rhythm = false): number {
+export function changesLinesPerPage(line: ChangesLineChoice, rows: Readonly<{ numerals: boolean; scales: boolean; pentatonics?: boolean; hexatonics?: boolean; quartals?: boolean }>, rhythm = false, poured = false): number {
   const overlay = !!(rows.pentatonics || rows.hexatonics || rows.quartals) // the hexatonic and quartal rows take the pentatonic row's place and height
   const all = overlay && rows.numerals && rows.scales
   if (line === 'off' && !rhythm) return all ? 7 : 8
-  if (all) return 5
-  return 6 + (!rows.numerals && !rows.scales && !overlay ? 1 : 0)
+  const voiced = all ? 5 : 6 + (!rows.numerals && !rows.scales && !overlay ? 1 : 0)
+  return poured && line !== 'off' ? voiced - 1 : voiced // a poured rhythm's ties, tuplets and target marks stand taller (rhythm-on-lines spec §9)
 }
 
 const STANDARD: ScaleView = { level: 'standard', seed: 0 }
@@ -455,8 +456,15 @@ export function changesSections(doc: ChartDoc): readonly ChangesSection[] {
   return drawnBlocks(layout, t, sectionsWithEndingsOf(layout)).map((b) => ({ key: b.section, marker: b.marker, part: b.part }))
 }
 
-/** view: the level the sheet plays blank cells at (resolve.ts); the guide tones read the chords only; overlay: the row under the chords, the pentatonics' rungs by section or the hexatonics (null: no row); approach: the figure into the guide tone line's notes, and the 7th Chords and Cells lines' first note over each chord (#381); options: rhythm, the rhythm line over the bars as drawn, with the Line off (rhythm spec §8); targets, each bar's target beats (§7) */
-export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatures = false, line: ChangesLineChoice = 'off', view: ScaleView = STANDARD, overlay: OverlayPlan | null = null, approach: Approach = 'none', { rhythm = 'off', targets = false }: Readonly<{ rhythm?: RhythmId; targets?: boolean }> = {}): ChangesSheet {
+/** whether a Line plays the rhythm (rhythm-on-lines spec §1): every Line but Off, and a guide line only with Restate */
+export function takesRhythm(line: ChangesLineChoice, restate: boolean): boolean {
+  if (line === 'off') return false
+  if (line === 'third' || line === 'seventh') return restate
+  return true
+}
+
+/** view: the level the sheet plays blank cells at (resolve.ts); the guide tones read the chords only; overlay: the row under the chords, the pentatonics' rungs by section or the hexatonics (null: no row); approach: the figure into the guide tone line's notes, and the 7th Chords and Cells lines' first note over each chord (#381); options: rhythm, over the bars as drawn: the rhythm line with the Line off (rhythm spec §8), else poured into a Line that takes it (rhythm-on-lines spec §1); targets, each bar's target beats (§7); start, anticipate and restate, how a Line plays the rhythm (rhythm-on-lines spec §3, §2, §5), inert without one */
+export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatures = false, line: ChangesLineChoice = 'off', view: ScaleView = STANDARD, overlay: OverlayPlan | null = null, approach: Approach = 'none', { rhythm = 'off', targets = false, start = 'beat', anticipate = 0, restate = false }: Readonly<{ rhythm?: RhythmId; targets?: boolean; start?: RhythmStart; anticipate?: number; restate?: boolean }> = {}): ChangesSheet {
   const pentatonic = overlay?.kind === 'pentatonic' ? overlay : null
   const { layout, rows, beats, timeline, clock, t } = laidOut(doc)
   const { diagnostics } = timeline
@@ -693,24 +701,39 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
     }
   })
   const pentRoots = new Map([...pentAt].flatMap(([i, p]) => (p ? [[i, p.root] as const] : [])))
+  // the bars as drawn (a repeat drawn with repeat signs counts once), which the rhythm is laid over: their clock bars,
+  // lengths, and the breaks no tie runs into (a 2nd or later ending: the player jumps there from before the 1st)
+  const clockBars = blocks.flatMap((b) => Array.from({ length: Math.max(1, b.to - b.from + 1) }, (_, j) => b.from + j))
+  const lengths = clockBars.map((bar) => barLength(clock, bar))
+  const breaks = clockBars.flatMap((bar, d) => ((voltaAt.get(bar)?.n ?? 0) > 1 && voltaAt.get(bar)?.n !== voltaAt.get(clockBars[d - 1] ?? -1)?.n ? [d] : []))
+  const poured = rhythm !== 'off' && takesRhythm(line, restate)
+  const plan: RhythmPlan | undefined = poured ? { id: rhythm, start, anticipate, bars: lengths, clockBars, breaks } : undefined
   const voices: { bars: ReadonlyMap<number, readonly GuideNote[]>; labels: ReadonlyMap<number, string>; missing: readonly string[] } | null =
     line === 'off'
       ? null
       : typeof line === 'object'
         ? {
             ...(line.kind === 'pentatonic'
-              ? pentatonicVoices(drawn(), part, clock, keySig, line, pentRoots)
+              ? pentatonicVoices(drawn(), part, clock, keySig, line, pentRoots, plan)
               : line.kind === 'cells'
-                ? cellsVoices(drawn((i, row) => resolved.get(i)?.scale ?? qualityScale(row)), part, clock, keySig, line, approach) // the scale the sheet shows
+                ? cellsVoices(drawn((i, row) => resolved.get(i)?.scale ?? qualityScale(row)), part, clock, keySig, line, approach, plan) // the scale the sheet shows
                 : line.kind === 'quartal'
-                  ? quartalVoices(drawn(), part, clock, keySig, line, quartStacks)
-                  : triadPairVoices(drawn(), part, clock, keySig, line, hexPairs)),
+                  ? quartalVoices(drawn(), part, clock, keySig, line, quartStacks, plan)
+                  : triadPairVoices(drawn(), part, clock, keySig, line, hexPairs, plan)),
             labels: new Map(),
           }
         : isArpeggioPattern(line)
-          ? { ...arpeggioVoices(drawn(), part, clock, keySig, line, approach), labels: new Map() }
-          : guideVoices(drawn(), part, clock, keySig, line, approach)
+          ? { ...arpeggioVoices(drawn(), part, clock, keySig, line, approach, plan), labels: new Map() }
+          : guideVoices(drawn(), part, clock, keySig, line, approach, plan, restate)
 
+  // target beats colored by the chord sounding there: the last drawn chord starting at or before the note, as its
+  // arpeggio tones' pitch classes (not ChangesChord.scale, the written display label); null when it can't be read
+  const inputs = targets ? drawn() : []
+  const tonesAt = (bar: number) => (beat: number): readonly number[] | null => {
+    const at = barStart(clock, bar) + beat
+    const input = inputs.findLast((x) => x.start <= at)
+    return input ? (arpeggioTones(part, input.chord, input.scale)?.map(pcOf) ?? null) : null
+  }
   let lastKey = ''
   const lastForm = blocks.findLastIndex((b) => b.part === 'form')
   const lines = blocks.flatMap((block, k) => {
@@ -761,7 +784,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
         beats: barLength(clock, bar) as Beats,
         timeSignature: null,
         chords,
-        voice: voices?.bars.get(bar) ?? [],
+        voice: targets ? markTargets(voices?.bars.get(bar) ?? [], targetBeats(barLength(clock, bar)), tonesAt(bar)) : (voices?.bars.get(bar) ?? []),
         rhythm: [],
         targets: [],
         marker: j === 0 ? block.marker : '',
@@ -802,13 +825,11 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
   const counts = !!pentatonic && (pentatonic.counts || basis === 'chord' || flatChords(deduped).some((c) => c.pentatonic?.picked))
   const counted = counts ? deduped.map((l) => mapPentatonics(l, (p) => ({ ...p, label: `${p.label} ${p.shared}` }))) : deduped
   const pentatonicCaption = pentatonic && basis === 'key' ? pentatonicPathCaption(pentatonic.path ?? 'one', step) : null
-  // the rhythm, laid over the bars as drawn (a repeat drawn with repeat signs counts once), with the Line off
-  const drawnBars = counted.flatMap((l) => l.bars)
-  const lengths = drawnBars.map((b) => b.beats)
-  // no tie from a 1st ending into the 2nd (or later): the player jumps there from before the 1st
-  const breaks = drawnBars.flatMap((b, i) => ((b.volta?.n ?? 0) > 1 && b.volta?.n !== drawnBars[i - 1]?.volta?.n ? [i] : []))
-  const laid = line === 'off' ? layRhythm(rhythm, lengths, breaks) : null
-  const notes = laid ? rhythmNotes(laid) : []
+  // the rhythm over the bars as drawn: the rhythm line with the Line off, else captioned when a Line took it; its
+  // landings don't depend on forcing, so the caption reads the rhythm as laid
+  const laid = line === 'off' || poured ? layRhythm(rhythm, lengths, breaks) : null
+  const notes = laid && line === 'off' ? rhythmNotes(laid) : []
+  const caption = laid ? rhythmCaption(rhythm, laid, lengths) : null
   const firstOf = counted.reduce<number[]>((acc, l) => [...acc, acc.at(-1)! + l.bars.length], [0]) // each line's first bar, counted over the sheet
   const rhythmLines = counted.map((l, n): ChangesLine => ({
     ...l,
@@ -819,6 +840,6 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
     beats,
     diagnostics: voices ? [...diagnostics, ...voices.missing] : diagnostics,
     pentatonicCaption,
-    rhythmCaption: laid ? rhythmCaption(rhythm, laid, lengths) : null,
+    rhythmCaption: caption && poured ? phrasingCaption(caption, start, anticipate) : caption,
   }
 }

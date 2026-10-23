@@ -1,6 +1,7 @@
-import { type Approach, approachNotes } from './approaches'
+import { type Approach, approachNotes, scaleStepsBelow } from './approaches'
 import { isRest, parseChord, writtenChordRootLenient } from './chord'
-import { drawnLengths, type GuideInput, type GuideLine, type GuideNote, voiceAccidentals } from './guideTones'
+import type { GuideInput, GuideLine, GuideNote } from './guideTones'
+import { drawnLengths, voiceAccidentals } from './noteValues'
 import { barAt, barLength, barStart, type Metre } from './metre'
 import type { Range } from './instruments'
 import { type Part, rangeOf, writtenScale } from './part'
@@ -8,6 +9,9 @@ import { pcOf, type Spelled } from './pitch'
 import { baseQuality } from './qualities'
 import { spellFrom } from './scales'
 import { orNull } from './util'
+import { lineRhythm, type LineRhythm, type LineSpan, type RhythmPlan } from './rhythm/pour'
+import { restPieces, type RhythmNote, type RhythmValue } from './rhythm/notation'
+import { PULSE_PER_BEAT, type Pulse } from './rhythm/rhythm'
 
 /**
  * 7th chord arpeggios on the Changes sheet (docs/superpowers/specs/2026-10-12-seventh-chord-arpeggios-design.md):
@@ -219,7 +223,10 @@ export function arpeggioCells(part: Part, chord: GuideInput, pattern: ArpeggioPa
 /** a cell's notes, for what follows it (Follows) */
 const CELL_NOTES = 4
 
-type Segment = Readonly<{ chord: number; bar: number; beat: number; at: number; length: number }>
+/** where a cell's note goes: its bar (a clock bar, or under a rhythm a drawn bar), its beat in it and its length */
+type Slot = Readonly<{ bar: number; beat: number; beats: number }>
+/** a chord's part of one bar, or under a rhythm its whole span; slots: the notes it plays (none for a chord without cells) */
+type Segment = Readonly<{ chord: number; bar: number; beat: number; at: number; length: number; slots: readonly Slot[] }>
 /** a cell's notes the bar line cut, still to play in its chord's next bar; midi: the whole cell's; cell: its notes (none for a turn-back) */
 type Carried = Readonly<{ chord: number; notes: readonly NonNullable<GuideNote['pitch']>[]; midi: readonly number[]; cell?: readonly NonNullable<GuideNote['pitch']>[] }>
 
@@ -230,7 +237,8 @@ type Carried = Readonly<{ chord: number; notes: readonly NonNullable<GuideNote['
  * without cells rests and ends the run (rule 6); accidentals by the measure rule against keySig (null: C).
  * missing: a diagnostic per chord without cells. valueOf: a chord's note value from its whole length and its bar's
  * shortest segment (default: the bar's, noteValue). approach: a figure into each chord's first note in place of the
- * chord before's last notes (withApproach).
+ * chord before's last notes (withApproach). rhythm: pour the cells into a rhythm's attacks in place of the note
+ * values (rhythm-on-lines spec §4; pourVoices), each chord's span one segment counted by chord; Off: as without one.
  */
 export function cellVoices(
   chords: readonly GuideInput[],
@@ -240,6 +248,7 @@ export function cellVoices(
   cellsOf: (chord: GuideInput, index: number) => Cells | null,
   valueOf: (chordBeats: number, barShortest: number) => NoteValue = (_, shortest) => noteValue(shortest),
   approach: Approach = 'none',
+  rhythm?: RhythmPlan,
 ): { bars: ReadonlyMap<number, readonly GuideNote[]>; missing: readonly string[] } {
   const range = rangeOf(part)
   const missing: string[] = []
@@ -248,20 +257,8 @@ export function cellVoices(
     if (!found && !isRest(c.chord) && !missing.includes(noTonesFor(c.chord))) missing.push(noTonesFor(c.chord))
     return found
   })
-  const segments: Segment[] = chords.flatMap((c, chord) => {
-    const out: Segment[] = []
-    for (let at = c.start; at < c.start + c.beats; ) {
-      const bar = barAt(beats, at)
-      const from = barStart(beats, bar)
-      const length = Math.min(c.start + c.beats, from + barLength(beats, bar)) - at
-      out.push({ chord, bar, beat: at - from, at, length })
-      at += length
-    }
-    return out
-  })
-  const shortest = new Map<number, number>()
-  for (const s of segments) shortest.set(s.bar, Math.min(shortest.get(s.bar) ?? Infinity, s.length))
-  const values = segments.map((s) => (cells[s.chord] ? valueOf(chords[s.chord]?.beats ?? s.length, shortest.get(s.bar) ?? s.length) : 0)) // each played segment's note value
+  const poured = rhythm ? lineRhythm(rhythm.id, rhythm.bars, rhythm.breaks, lineSpans(chords, cells, beats, rhythm), rhythm.start, rhythm.anticipate) : null
+  const segments: readonly Segment[] = poured ? spanSegments(chords, poured) : barSegments(chords, cells, beats, valueOf)
 
   const played: Played[] = []
   let prev: number | null = null
@@ -274,8 +271,9 @@ export function cellVoices(
   for (const [si, s] of segments.entries()) {
     const c = cells[s.chord]
     if (!c) {
+      // under a rhythm, its attacks rest when the bars are built (pourVoices)
       let beat = s.beat
-      for (const piece of drawnLengths(s.length)) {
+      for (const piece of poured ? [] : drawnLengths(s.length)) {
         played.push({ chord: s.chord, bar: s.bar, note: { pitch: null, beat, beats: piece, tie: false, tiedIn: false, accidental: null } })
         beat += piece
       }
@@ -286,15 +284,18 @@ export function cellVoices(
       continue
     }
     const t = c.tones
-    const v = values[si] as NoteValue
-    const slots = Math.round(s.length / v)
-    const byChord = c.turn === 'chord' && Math.round(barLength(beats, s.bar) / v) % 4 === 0
+    const v = s.slots[0]?.beats ?? 1 // without a rhythm, every slot's note value
+    const slots = s.slots.length
+    const byChord = poured !== null || (c.turn === 'chord' && Math.round(barLength(beats, s.bar) / v) % 4 === 0)
     if (!byChord || wholeOf !== s.chord) whole = null
     wholeOf = s.chord
     const end = (chords[s.chord]?.start ?? 0) + (chords[s.chord]?.beats ?? 0)
     let k = 0
     const play = (notes: readonly NonNullable<GuideNote['pitch']>[]): void => {
-      for (const pitch of notes) played.push({ chord: s.chord, bar: s.bar, note: { pitch, beat: s.beat + k++ * v, beats: v, tie: false, tiedIn: false, accidental: null } })
+      for (const pitch of notes) {
+        const at = s.slots[k++] as Slot
+        played.push({ chord: s.chord, bar: at.bar, note: { pitch, beat: at.beat, beats: at.beats, tie: false, tiedIn: false, accidental: null } })
+      }
     }
     /** what follows a cell from slot k, left slots before it (CELL_NOTES each) */
     const followsAt = (k: number, left: number): Follows => {
@@ -305,7 +306,7 @@ export function cellVoices(
       if (rest > 0) return null // the bar line cuts the next cell
       if (s.at + s.length >= end) return 'chord'
       const on = segments[si + 1] // the chord's next bar
-      return on !== undefined && Math.round(on.length / (values[si + 1] ?? on.length)) >= CELL_NOTES ? 'cell' : null
+      return on !== undefined && on.slots.length >= CELL_NOTES ? 'cell' : null
     }
     const held: Carried | null = carried?.chord === s.chord ? carried : null
     carried = null
@@ -320,7 +321,7 @@ export function cellVoices(
       }
     }
     while (k < slots) {
-      const left = byChord ? Math.round((end - s.at - k * v) / v) : slots - k // slots left: the chord's, or the bar's
+      const left = byChord && !poured ? Math.round((end - s.at - k * v) / v) : slots - k // slots left: the chord's, or the bar's (under a rhythm, the chord's attacks)
       if (c.turn && whole && left < whole.length) {
         // the turn-back: not an arpeggio of its own, so the count and the chord's cells stay
         const back = whole.slice(0, -1).reverse().slice(0, left)
@@ -346,19 +347,150 @@ export function cellVoices(
       nth.set(s.chord, n + 1)
     }
   }
+  if (poured && rhythm) {
+    const all = [...played, ...pickups(poured, played, chords, part)]
+    return { bars: pourVoices(poured, rhythm, approach === 'none' ? all : withApproach(all, chords, part, approach), keySig), missing }
+  }
   const bars = new Map<number, GuideNote[]>()
   for (const { bar, note } of approach === 'none' ? played : withApproach(played, chords, part, approach)) bars.set(bar, [...(bars.get(bar) ?? []), note])
   for (const [bar, v] of bars) bars.set(bar, voiceAccidentals(v, keySig))
   return { bars, missing }
 }
 
-type Played = Readonly<{ chord: number; bar: number; note: GuideNote }>
+/** a chord's part of each bar it lasts into, its slots that bar's note value (valueOf) apart: the line without a rhythm */
+function barSegments(
+  chords: readonly GuideInput[],
+  cells: readonly (Cells | null)[],
+  beats: Metre,
+  valueOf: (chordBeats: number, barShortest: number) => NoteValue,
+): readonly Segment[] {
+  const bare = chords.flatMap((c, chord) => {
+    const out: Omit<Segment, 'slots'>[] = []
+    for (let at = c.start; at < c.start + c.beats; ) {
+      const bar = barAt(beats, at)
+      const from = barStart(beats, bar)
+      const length = Math.min(c.start + c.beats, from + barLength(beats, bar)) - at
+      out.push({ chord, bar, beat: at - from, at, length })
+      at += length
+    }
+    return out
+  })
+  const shortest = new Map<number, number>()
+  for (const s of bare) shortest.set(s.bar, Math.min(shortest.get(s.bar) ?? Infinity, s.length))
+  return bare.map((s) => {
+    if (!cells[s.chord]) return { ...s, slots: [] }
+    const v = valueOf(chords[s.chord]?.beats ?? s.length, shortest.get(s.bar) ?? s.length)
+    return { ...s, slots: Array.from({ length: Math.round(s.length / v) }, (_, k) => ({ bar: s.bar, beat: s.beat + k * v, beats: v })) }
+  })
+}
+
+/** each chord's start in sheet beats (its clock bar's drawn bar), and whether the line plays it (rhythm-on-lines spec §2) */
+function lineSpans(chords: readonly GuideInput[], cells: readonly (Cells | null)[], beats: Metre, rhythm: RhythmPlan): readonly LineSpan[] {
+  const before = (d: number): number => rhythm.bars.slice(0, d).reduce((a, b) => a + b, 0)
+  return chords.map((c, j) => {
+    const bar = barAt(beats, c.start)
+    const drawn = rhythm.clockBars.indexOf(bar)
+    // a chord in an undrawn bar has no sheet beats: an empty span where the next drawn bar starts
+    if (drawn < 0) {
+      const next = rhythm.clockBars.findIndex((b) => b > bar)
+      return { at: before(next < 0 ? rhythm.bars.length : next), sounds: false }
+    }
+    return { at: before(drawn) + c.start - barStart(beats, bar), sounds: cells[j] !== null && !isRest(c.chord) }
+  })
+}
+
+/** a rhythm value's length in beats (in a triplet, ⅔ of it) */
+const VALUE_BEATS: Readonly<Record<RhythmValue, number>> = { w: 4, hd: 3, h: 2, qd: 1.5, q: 1, '8d': 0.75, '8': 0.5, '16': 0.25 }
+const valueBeats = (n: RhythmNote): number => VALUE_BEATS[n.value] * (n.tuplet === null ? 1 : 2 / 3)
+
+/** under a rhythm, a segment a chord: its span's poured attacks (§3.3: owned, below 0), in order, in drawn bars */
+function spanSegments(chords: readonly GuideInput[], poured: LineRhythm): readonly Segment[] {
+  const slots = chords.map((): Slot[] => [])
+  poured.bars.forEach((bar, d) =>
+    bar.forEach((n, i) => {
+      const owner = poured.owners[d]?.[i]
+      if (owner && owner.below === 0 && !n.rest && !n.tiedIn) slots[owner.chord]?.push({ bar: d, beat: n.beat, beats: valueBeats(n) })
+    }),
+  )
+  return chords.map((c, chord) => ({ chord, bar: -1, beat: 0, at: c.start, length: c.beats, slots: slots[chord] ?? [] }))
+}
+
+/**
+ * the scale-below pick-ups (§3.4): each the m-th step below its chord's first poured pitch in the chord's shown scale,
+ * written for the part; none where there is no scale, no poured pitch, or the note is out of the part's range
+ */
+function pickups(poured: LineRhythm, played: readonly Played[], chords: readonly GuideInput[], part: Part): readonly Played[] {
+  const range = rangeOf(part)
+  return poured.bars.flatMap((bar, d) =>
+    bar.flatMap((n, i): Played[] => {
+      const owner = poured.owners[d]?.[i]
+      if (!owner || owner.below === 0 || n.rest || n.tiedIn) return []
+      const first = played.find((p) => p.chord === owner.chord && p.note.pitch)?.note.pitch
+      const c = chords[owner.chord]
+      const text = c?.shown ?? c?.scale
+      const scale = text ? orNull(() => writtenScale(part, text).notes) : null
+      const pitch = first ? scaleStepsBelow(first, owner.below, scale)?.[0] : undefined
+      if (!pitch || pitch.midi < range.lo || pitch.midi > range.hi) return []
+      return [{ chord: owner.chord, bar: d, pickup: true, note: { pitch, beat: n.beat, beats: valueBeats(n), tie: false, tiedIn: false, accidental: null } }]
+    }),
+  )
+}
+
+/**
+ * the poured line's voices by clock bar: each of the rhythm's notes with its attack's pitch (played, by drawn bar and
+ * beat), a tied-in piece its attack's, anything else a rest in the rhythm's own value; accidentals by the measure
+ */
+function pourVoices(poured: LineRhythm, rhythm: RhythmPlan, played: readonly Played[], keySig: string | null): ReadonlyMap<number, readonly GuideNote[]> {
+  const pitchAt = new Map(played.map((p) => [`${p.bar}:${p.note.beat}`, p.note.pitch]))
+  let held: GuideNote['pitch'] = null
+  const bars = new Map<number, readonly GuideNote[]>()
+  poured.bars.forEach((bar, d) => {
+    const voice = bar.map((n, i): GuideNote => {
+      if (!n.tiedIn) held = n.rest || !poured.owners[d]?.[i] ? null : (pitchAt.get(`${d}:${n.beat}`) ?? null)
+      const pitch = n.rest ? null : held
+      return { pitch, beat: n.beat, beats: valueBeats(n), tie: !!pitch && n.tie, tiedIn: !!pitch && n.tiedIn, accidental: null, mark: { value: n.value, tuplet: n.tuplet, beam: n.beam, accent: !!pitch && n.accent } }
+    })
+    const silent = voice.map((n, i) => !n.pitch && !poured.owners[d]?.[i])
+    bars.set(rhythm.clockBars[d] ?? d, voiceAccidentals(mergeSilence(voice, silent, poured.laid.pulse), keySig))
+  })
+  return bars
+}
+
+/**
+ * a bar's silences (its rhythm's rests and the attacks no chord plays, as under N.C.) merged within each beat and
+ * notated as a rest is (rhythm spec §6.2, §6.3), so a bar no chord plays under 16ths draws a rest a beat, not sixteen;
+ * a scale-below pick-up out of range keeps its own rest
+ */
+function mergeSilence(voice: readonly GuideNote[], silent: readonly boolean[], pulse: Pulse): readonly GuideNote[] {
+  const per = PULSE_PER_BEAT[pulse]
+  const pulseOf = (beat: number): number => Math.round(beat * per)
+  const runs = voice.reduce<GuideNote[][]>((out, n, i) => {
+    const last = out.at(-1)
+    const prev = voice[i - 1]
+    const joins = silent[i] && prev && silent[i - 1] && last && Math.floor(pulseOf(n.beat) / per) === Math.floor(pulseOf(last[0]!.beat) / per)
+    return joins ? [...out.slice(0, -1), [...last, n]] : [...out, [n]]
+  }, [])
+  return runs.flatMap((run) => {
+    const first = run[0]!
+    if (run.length === 1) return run
+    const at = pulseOf(first.beat)
+    const length = run.reduce((a, n) => a + pulseOf(n.beat + n.beats) - pulseOf(n.beat), 0)
+    return restPieces(at, length, per, pulse === '8t').map((p): GuideNote => {
+      const tuplet = p.triplet ? (first.mark?.tuplet ?? null) : null
+      return { ...first, beat: p.at / per, beats: VALUE_BEATS[p.value] * (tuplet === null ? 1 : 2 / 3), mark: { value: p.value, tuplet, beam: null, accent: false } }
+    })
+  })
+}
+
+/** a chord's played note: pickup, a scale-below pick-up (the Approach never touches it) */
+type Played = Readonly<{ chord: number; bar: number; note: GuideNote; pickup?: true }>
 
 /**
  * a line's notes with a figure into each chord's first note (#381) in place of the chord before's last notes, each
  * keeping that note's beat and length (the whole figure, though a note of it repeats the one before: the slots are
  * the line's); none for the first chord, after or into a rest, across a gap, where the chord before would keep none of its own notes,
- * the figure needs a scale the chord before doesn't have, or a note of it is out of the part's range
+ * the figure needs a scale the chord before doesn't have, or a note of it is out of the part's range; a scale-below
+ * pick-up is neither a target nor the chord before's own (rhythm-on-lines spec D24)
  */
 function withApproach(played: readonly Played[], chords: readonly GuideInput[], part: Part, approach: Approach): readonly Played[] {
   const range = rangeOf(part)
@@ -366,8 +498,8 @@ function withApproach(played: readonly Played[], chords: readonly GuideInput[], 
   chords.forEach((c, j) => {
     const before = chords[j - 1]
     if (!before || isRest(c.chord) || isRest(before.chord) || before.start + before.beats !== c.start) return
-    const target = out.find((p) => p.chord === j)?.note.pitch
-    const own = out.flatMap((p, i) => (p.chord === j - 1 && p.note.pitch ? [i] : []))
+    const target = out.find((p) => p.chord === j && !p.pickup)?.note.pitch
+    const own = out.flatMap((p, i) => (p.chord === j - 1 && p.note.pitch && !p.pickup ? [i] : []))
     if (!target) return
     const text = before.shown ?? before.scale
     const all = approachNotes(target, approach, text ? orNull(() => writtenScale(part, text).notes) : null)
@@ -391,6 +523,7 @@ export function arpeggioVoices(
   keySig: string | null,
   pattern: ArpeggioPattern,
   approach: Approach = 'none',
+  rhythm?: RhythmPlan,
 ): { bars: ReadonlyMap<number, readonly GuideNote[]>; missing: readonly string[] } {
-  return cellVoices(chords, part, beats, keySig, (c) => arpeggioCells(part, c, pattern), undefined, approach)
+  return cellVoices(chords, part, beats, keySig, (c) => arpeggioCells(part, c, pattern), undefined, approach, rhythm)
 }

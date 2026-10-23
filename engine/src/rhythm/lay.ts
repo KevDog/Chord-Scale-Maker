@@ -50,6 +50,10 @@ function segments(cells: readonly Cell[], breaks: ReadonlySet<number>): readonly
   }, [])
 }
 
+/** The cells with each forced pulse inside the sheet made an attack: `>x` stays accented, `.` and `_` become `x` (lines spec §3.2). */
+const forced = (cells: readonly Cell[], force: readonly number[]): readonly Cell[] =>
+  cells.map((c, i): Cell => (force.includes(i) && (c === '.' || c === '_') ? 'x' : c))
+
 /** A per-bar rhythm's cells over the sheet: each bar's own, then each run's attacks spilled past its barline (§3). */
 function perBarCells(
   bar: (beats: number) => readonly Cell[],
@@ -101,8 +105,9 @@ function barEvents(segs: readonly Segment[], start: number, length: number, stat
  * A rhythm laid over the drawn bars (each bar's length in beats, in sheet order), or null for Off or no bars.
  * breaks: the bars no tie runs into (a 2nd ending after the 1st): the stream keeps counting, but a note held into
  * one starts afresh there.
+ * force: stream pulses that sound as attacks whatever the rhythm has there (pulses outside the sheet are ignored).
  */
-export function layRhythm(id: RhythmId, bars: readonly number[], breaks: readonly number[] = []): Laid | null {
+export function layRhythm(id: RhythmId, bars: readonly number[], breaks: readonly number[] = [], force: readonly number[] = []): Laid | null {
   const r = rhythmOf(id)
   if (!r || bars.length === 0) return null
   const pulse = r.kind === 'repeat' ? r.rhythm.pulse : r.pulse
@@ -115,7 +120,7 @@ export function layRhythm(id: RhythmId, bars: readonly number[], breaks: readonl
     // a repeating rhythm as one stream: the cells, statement after statement, over the total of the bars' pulses;
     // then each note (an attack and its following '_') is cut at the barlines
     const unit = r.rhythm.cells.length
-    const segs = segments(range(total).map(i => r.rhythm.cells[i % unit]!), cut)
+    const segs = segments(forced(range(total).map(i => r.rhythm.cells[i % unit]!), force), cut)
     return {
       pulse,
       kind: 'repeat',
@@ -125,7 +130,7 @@ export function layRhythm(id: RhythmId, bars: readonly number[], breaks: readonl
       starts,
     }
   }
-  const segs = segments(perBarCells(r.bar, r.n, r.k, bars, lengths, starts, total), cut)
+  const segs = segments(forced(perBarCells(r.bar, r.n, r.k, bars, lengths, starts, total), force), cut)
   return {
     pulse,
     kind: 'bar',

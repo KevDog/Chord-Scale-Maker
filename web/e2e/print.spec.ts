@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test'
-import { arpeggiosDrawn, closePentatonicOptions, pentatonicLineDrawn, showPentatonicLine, chooseInstrument, chooseRhythm, chooseSuperimpose, chooseSheet, drawn, expect, guidesDrawn, hexatonicPreset, pentatonicPreset, pickOption, rankedAgainstChord, rhythmDrawn, showArpeggios, showTargets, showGuides, showPentatonics, staves, test, writeChart } from './fixtures'
+import { arpeggiosDrawn, closePentatonicOptions, pentatonicLineDrawn, showPentatonicLine, chooseInstrument, chooseRhythm, chooseStart, chooseTiming, chooseSuperimpose, chooseSheet, drawn, expect, guidesDrawn, hexatonicPreset, pentatonicPreset, pickOption, rankedAgainstChord, rhythmDrawn, showArpeggios, showTargets, showGuides, showPentatonics, staves, test, writeChart } from './fixtures'
 
 const pdfPages = (pdf: Buffer): number => (pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? []).length
 
@@ -259,6 +259,37 @@ for (const [what, open] of [
     await open(page)
     await chooseRhythm(page, '8ths', { In: 'In 5', Variation: 'syncopated' })
     await showTargets(page)
+    await rhythmDrawn(page)
+    const svgs = page.locator('svg[aria-label^="Bars:"]')
+    const sheetPages = await svgs.evaluateAll((els) => new Set(els.map((e) => e.closest('section'))).size)
+    expect(sheetPages).toBeGreaterThanOrEqual(2) // at least one full page
+    await page.emulateMedia({ media: 'print' })
+    await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden()
+    expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(sheetPages)
+  })
+}
+
+// a poured line (rhythm-on-lines spec §9) is a voiced line: the arpeggio line's ink plus the rhythm line's, within budget
+for (const [what, open, pour] of [
+  ['Stardust, 3-note pick-up and target beats', async (page: Page) => {
+    await page.goto('/song/stardust')
+    await chooseInstrument(page, 'Tuba')
+  }, async (page: Page) => {
+    await chooseRhythm(page, '8ths', { In: 'In 3', Variation: 'with accents' })
+    await chooseStart(page, '3-note pick-up')
+    await showTargets(page)
+  }],
+  ['a 5/4 chart, triplets anticipating', (page: Page) => writeChart(page, `title: F\nkey: C\ntime: 5/4\n\nsection: A\n${BARS_5_4}\n`), async (page: Page) => {
+    await chooseRhythm(page, 'Triplets', { In: 'In 4', Variation: 'with accents' })
+    await chooseTiming(page, 'Anticipate 1½ beats')
+  }],
+] as const) {
+  test(`prints the Changes with a poured line, a sheet page to a letter page (${what})`, async ({ page }) => {
+    await open(page)
+    await showArpeggios(page, 'Up · root')
+    await pour(page)
+    const numerals = page.getByRole('button', { name: 'Numerals' }) // a written chart has none to press
+    if (await numerals.count()) await expect(numerals).toHaveAttribute('aria-pressed', 'true')
     await rhythmDrawn(page)
     const svgs = page.locator('svg[aria-label^="Bars:"]')
     const sheetPages = await svgs.evaluateAll((els) => new Set(els.map((e) => e.closest('section'))).size)

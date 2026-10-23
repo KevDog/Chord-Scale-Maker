@@ -12,6 +12,7 @@ import { mod, pcOf, shiftBy, type Spelled } from './pitch'
 import { readChord } from './qualities'
 import { SCALES } from './scales'
 import { orNull } from './util'
+import type { RhythmPlan } from './rhythm/pour'
 
 /**
  * Melodic cells (#298, after Randy Vincent's Building Solo Lines From Cells): four notes written as degrees from the
@@ -320,7 +321,8 @@ function cellsOf(part: Part, chords: readonly GuideInput[], index: number, line:
 /**
  * the Cells line's voice for chords in time order: a cell per two beats (cellVoices, in CELL_VALUE's note value),
  * A then B for a system, each placed whole nearest the last note in the part's range; a chord whose cells have no
- * tones plays its 7th chord arpeggio up from the root; approach: a figure into each chord's first note (cellVoices)
+ * tones plays its 7th chord arpeggio up from the root; approach: a figure into each chord's first note (cellVoices);
+ * rhythm: poured into its attacks (cellVoices)
  */
 export function cellsVoices(
   chords: readonly GuideInput[],
@@ -329,8 +331,9 @@ export function cellsVoices(
   keySig: string | null,
   line: CellsLine,
   approach: Approach = 'none',
+  rhythm?: RhythmPlan,
 ): { bars: ReadonlyMap<number, readonly GuideNote[]>; missing: readonly string[] } {
   const range = rangeOf(part)
   const cellCounts = new Map<number, number>() // cells each row has played, as the line is drawn (cellsOf)
-  return cellVoices(chords, part, beats, keySig, (c, i) => cellsOf(part, chords, i, line, range, cellCounts) ?? arpeggioCells(part, c, 'up-root'), CELL_VALUE, approach)
+  return cellVoices(chords, part, beats, keySig, (c, i) => cellsOf(part, chords, i, line, range, cellCounts) ?? arpeggioCells(part, c, 'up-root'), CELL_VALUE, approach, rhythm)
 }

@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { isRest } from '../chord'
 import { describe, expect, it, vi } from 'vitest'
-import { breakLines, buildChanges, type ChangesLine, type ChangesSheet, changesLinesPerPage, changesSections, chordPositions, drawnChords, type PentatonicPlan, otherChords, pickTargets, showHexatonics, showPentatonics, showQuartals } from '../changes'
+import { breakLines, buildChanges, type ChangesBar, type ChangesLine, type ChangesLineChoice, type ChangesSheet, changesLinesPerPage, changesSections, chordPositions, drawnChords, type PentatonicPlan, otherChords, type OverlayPlan, pickTargets, showHexatonics, showPentatonics, showQuartals, takesRhythm } from '../changes'
 import { changesFor } from '../alternates'
 import { type ChartDoc, expandRowLines, parseChart } from '../chart'
 import { NO_PICKS, pickTarget, withPick } from '../chordPicks'
@@ -10,7 +10,7 @@ import { type GuideLine, type GuideNote, guideVoices } from '../guideTones'
 import { barLength } from '../metre'
 import { CONCERT, concertPc, type Part, partFor, rangeOf } from '../part'
 import { parseRoot, pcOf, rootName, type Spelled } from '../pitch'
-import type { PentatonicLine } from '../pentatonicLine'
+import { PENTATONIC_LEAVE, type PentatonicLine } from '../pentatonicLine'
 import type { TriadPairLine } from '../triadPairLine'
 import type { QuartalLine } from '../quartalLine'
 import { toVexKey } from '../sheet'
@@ -330,6 +330,10 @@ describe('the Changes sheet', () => {
     expect(changesLinesPerPage('seventh', { numerals: true, scales: false, pentatonics: true })).toBe(6)
     expect(changesLinesPerPage('off', { numerals: true, scales: true, pentatonics: true })).toBe(7)
     expect(changesLinesPerPage('off', { numerals: true, scales: false, pentatonics: true })).toBe(8)
+    // a poured rhythm (rhythm-on-lines spec §9) is a line taller still: one fewer
+    expect(changesLinesPerPage('up-root', { numerals: true, scales: true }, true, true)).toBe(5)
+    expect(changesLinesPerPage('up-root', { numerals: true, scales: true }, true, false)).toBe(6)
+    expect(changesLinesPerPage('off', { numerals: true, scales: true }, true, true)).toBe(6)
   })
 })
 
@@ -1234,6 +1238,14 @@ describe('otherChords', () => {
 describe('the rhythm line and target beats (rhythm spec §8)', () => {
   const eight = parseChart('key: C\n\nsection: A\nbars: 8\n1 | Dm7\n3 | G7\n5 | CMaj7\n7 | A7\n').value
   const bars = (sheet: ChangesSheet) => sheet.lines.flatMap((l) => l.bars)
+  const two = parseChart('key: C\n\nsection: A\n1 | CMaj7\n2 | Dm7\n').value
+  const letters = (b: ChangesBar) => b.voice.map((n) => (n.pitch ? rootName(n.pitch) : 'r'))
+  const LINES: [ChangesLineChoice, OverlayPlan | null][] = [
+    [{ kind: 'cells', id: '3rd-3rd' }, null],
+    [{ kind: 'pentatonic', leave: PENTATONIC_LEAVE, dir: 'up', arpeggio: 'up-root' }, one(0, 'flat')],
+    [{ kind: 'triad-pair', dir: 'up', arpeggio: 'up-root', shape: 'nearest' }, { kind: 'hexatonic' }],
+    [{ kind: 'quartal', dir: 'up', arpeggio: 'up-root' }, { kind: 'quartal' }],
+  ]
 
   it('lays a rhythm over the bars with the Line off, and captions its cycle', () => {
     const sheet = buildChanges(eight, CONCERT, 4, false, 'off', undefined, null, 'none', { rhythm: 'unit:8:5:accents' })
@@ -1242,10 +1254,67 @@ describe('the rhythm line and target beats (rhythm spec §8)', () => {
     expect(sheet.rhythmCaption).toBe('Rhythm: 8ths in 5, with accents · back on one every 5 bars')
   })
 
-  it('draws no rhythm with a Line on', () => {
+  it('a guide line without Restate draws no rhythm', () => {
     const sheet = buildChanges(eight, CONCERT, 4, false, 'third', undefined, null, 'none', { rhythm: 'unit:8:5:accents' })
     expect(bars(sheet).every((b) => b.rhythm.length === 0)).toBe(true)
     expect(sheet.rhythmCaption).toBeNull()
+    const g = buildChanges(two, CONCERT, 4, false, 'third', undefined, null, 'none', { rhythm: 'card:downbeats' })
+    expect(bars(g).map(letters)).toEqual([['E'], ['F']])
+    expect(g.rhythmCaption).toBeNull()
+  })
+
+  it('takesRhythm: every Line but a guide line without Restate (rhythm-on-lines spec §1)', () => {
+    const cases: [ChangesLineChoice, boolean, boolean][] = [['off', false, false], ['third', false, false], ['third', true, true], ['up-root', false, true], ...LINES.map(([l]): [ChangesLineChoice, boolean, boolean] => [l, false, true])]
+    expect(cases.map(([l, r]) => takesRhythm(l, r))).toEqual(cases.map(([, , want]) => want))
+  })
+
+  it('pours the rhythm into a Line, draws no slashes and captions the landings', () => {
+    const s = buildChanges(two, CONCERT, 4, false, 'up-root', undefined, null, 'none', { rhythm: 'unit:8:3:rests' })
+    expect(bars(s).every((b) => b.rhythm.length === 0)).toBe(true)
+    expect(letters(bars(s)[0]!)).toEqual(['C', 'r', 'r', 'E', 'r', 'G', 'r'])
+    expect(s.rhythmCaption).toBe('Rhythm: 8ths in 3, with rests · never back on one')
+  })
+
+  it("names the Start and the Timing in a Line's caption (D20)", () => {
+    expect(buildChanges(two, CONCERT, 4, false, 'up-root', undefined, null, 'none', { rhythm: 'unit:8:3:rests', start: 'pickup-2', anticipate: 1.5 }).rhythmCaption).toBe('Rhythm: 8ths in 3, with rests · never back on one · 2-note pick-ups · anticipate 1½ beats')
+  })
+
+  it('restates the guide line on every attack with Restate (§5)', () => {
+    const r = buildChanges(two, CONCERT, 4, false, 'third', undefined, null, 'none', { rhythm: 'card:downbeats', restate: true })
+    expect(bars(r).map(letters)).toEqual([['E', 'E', 'E', 'E'], ['F', 'F', 'F', 'F']])
+    expect(r.rhythmCaption).toBe('Rhythm: Downbeats')
+    expect(bars(r)[0]!.chords[0]!.guide).toBe('3')
+  })
+
+  it('pours the rhythm into the Cells, Pentatonic, Triad pair and Quartal lines', () => {
+    for (const [line, overlay] of LINES) expect(bars(buildChanges(two, CONCERT, 4, false, line, undefined, overlay, 'none', { rhythm: 'card:upbeats' })).every((b) => b.voice[0]?.pitch === null && b.voice.every((n) => n.mark))).toBe(true)
+  })
+
+  it('leaves Start and Timing inert without a rhythm (D9)', () => {
+    expect(buildChanges(two, CONCERT, 4, false, 'up-root', undefined, null, 'none', { start: 'pickup-3', anticipate: 2 })).toEqual(buildChanges(two, CONCERT, 4, false, 'up-root'))
+  })
+
+  it('keeps the chord symbol in place under a Timing', () => {
+    expect(bars(buildChanges(two, CONCERT, 4, false, 'up-root', undefined, null, 'none', { rhythm: 'card:downbeats', anticipate: 1 }))[1]!.chords[0]!.beat).toBe(0)
+  })
+
+  it('colors the Line on the target beats (rhythm-on-lines spec §6)', () => {
+    const m = buildChanges(two, CONCERT, 4, false, 'up-root', undefined, null, 'none', { rhythm: 'card:downbeats', anticipate: 2, targets: true })
+    expect(bars(m).map(letters)).toEqual([['C', 'E', 'D', 'F'], ['A', 'C', 'A', 'F']])
+    expect(bars(m).map((b) => b.voice.map((x) => x.target ?? null))).toEqual([['tone', null, 'other', null], ['tone', null, 'tone', null]])
+  })
+
+  it('colors the Line with Rhythm Off when Target beats are on (D18)', () => {
+    expect(bars(buildChanges(two, CONCERT, 4, false, 'up-root', undefined, null, 'none', { targets: true }))[0]!.voice.map((x) => x.target ?? null)).toEqual(['tone', null, 'tone', null])
+  })
+
+  it('never colors a tied piece', () => {
+    const tie = parseChart('key: C\n\nsection: A\n1 | CMaj7\n1 | Dm7\n').value
+    expect(bars(buildChanges(tie, CONCERT, 4, false, 'up-root', undefined, null, 'none', { rhythm: 'unit:8:3:tied', targets: true }))[0]!.voice.map((x) => x.target ?? null)).toEqual(['tone', null, null, null])
+  })
+
+  it('(guard) marks nothing without targets', () => {
+    for (const rhythm of ['off', 'card:downbeats'] as const) expect(bars(buildChanges(two, CONCERT, 4, false, 'up-root', undefined, null, 'none', { rhythm })).every((b) => b.voice.every((x) => x.target === undefined))).toBe(true)
   })
 
   it('has no rhythm and no targets by default', () => {

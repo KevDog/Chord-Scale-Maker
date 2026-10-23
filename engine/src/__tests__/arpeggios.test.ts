@@ -6,6 +6,8 @@ import { CONCERT, type Part, partFor } from '../part'
 import { INSTRUMENTS } from '../instruments'
 import { rootName } from '../pitch'
 import chordScales from '../../chord_scales.json'
+import type { Approach } from '../approaches'
+import type { RhythmId, RhythmPlan } from '../rhythm'
 import { toVexKey } from '../sheet'
 
 const TENOR: Part = { clef: 'treble', trans: 'Bb' }
@@ -352,5 +354,68 @@ describe('approaches (#381)', () => {
   it('sets the figure’s accidentals by the measure', () => {
     const led = line(seq(['CMaj7', 2], ['Em7', 2]), 'chromatic-below').get(0)!
     expect(led[3]).toMatchObject({ pitch: { letter: 1, acc: 1 }, accidental: '#' }) // D♯ into E
+  })
+})
+
+const plan = (id: RhythmId, bars: number[], more: Partial<RhythmPlan> = {}): RhythmPlan => ({ id, start: 'beat', anticipate: 0, bars, clockBars: bars.map((_, i) => i), breaks: [], ...more })
+// a range reaching F3 (piano's low end), so pick-ups below C4 fit; CMaj7 after a rest still sits at C4 (avg 65.5 nearer the centre 69 than C5's 77.5)
+const WIDE: Part = { ...CONCERT, range: { lo: 53, hi: 81, centre: 69 } }
+const poured = (cs: GuideInput[], m: Metre, p: RhythmPlan, approach: Approach = 'none', part: Part = CONCERT) => arpeggioVoices(cs, part, m, null, 'up-root', approach, p).bars
+const letters = (v: readonly GuideNote[] | undefined) => (v ?? []).map((n) => (n.pitch ? rootName(n.pitch) : 'r'))
+
+describe('a rhythm poured into the line (rhythm-on-lines spec §4)', () => {
+  it('pours each worked example of §4\'s table', () => {
+    const u = poured(seq(['CMaj7', 4]), 4, plan('unit:8:3:accents', [4])).get(0)!
+    expect(letters(u)).toEqual(['C', 'E', 'G', 'B', 'C', 'E', 'G', 'B'])
+    expect(u.map((n) => n.mark?.beam)).toEqual([0, 0, 0, 1, 1, 1, 2, 2])
+    expect(u.flatMap((n, i) => (n.mark?.accent ? [i] : []))).toEqual([0, 3, 6])
+    expect(letters(poured(seq(['CMaj7', 4]), 4, plan('unit:8:3:rests', [4])).get(0))).toEqual(['C', 'r', 'r', 'E', 'r', 'G', 'r'])
+    const t = poured(seq(['CMaj7', 4]), 4, plan('unit:8:3:tied', [4])).get(0)!
+    expect(letters(t)).toEqual(['C', 'E', 'E', 'G'])
+    expect(t.map((n) => n.tiedIn)).toEqual([false, false, true, false])
+    expect(poured(seq(['CMaj7', 2], ['Dm7', 2]), 4, plan('card:downbeats', [4])).get(0)!.map((n) => n.mark?.value)).toEqual(['q', 'q', 'q', 'q'])
+    expect(letters(poured(seq(['CMaj7', 3]), 3, plan('unit:8:2:accents', [3])).get(0))).toEqual(['C', 'E', 'G', 'B', 'G', 'E'])
+    const p1 = poured(seq(['CMaj7', 4], ['Dm7', 4]), 4, plan('card:downbeats', [4, 4], { start: 'pickup-1' }))
+    expect(letters(p1.get(0))).toEqual(['C', 'E', 'G', 'B', 'G'])
+    expect(p1.get(0)!.map((n) => n.mark?.value)).toEqual(['q', 'q', 'q', '8', '8'])
+    expect(letters(p1.get(1))).toEqual(['D', 'F', 'A', 'C'])
+    const nc = seq(['N.C.', 4], ['CMaj7', 4]).map((c, i) => (i === 1 ? { ...c, scale: 'C Ionian' } : c))
+    const p3 = poured(nc, 4, plan('card:downbeats', [4, 4], { start: 'pickup-3' }), 'none', WIDE)
+    expect(letters(p3.get(0))).toEqual(['r', 'r', 'r', 'G', 'A', 'B'])
+    expect(p3.get(0)!.slice(3).map((n) => n.pitch!.midi)).toEqual([55, 57, 59])
+    expect(p3.get(1)![0]!.pitch!.midi).toBe(60)
+    // the same in the concert treble range (lo C4): G3 A3 B3 are out of range and rest (§3.4)
+    expect(letters(poured(nc, 4, plan('card:downbeats', [4, 4], { start: 'pickup-3' })).get(0))).toEqual(['r', 'r', 'r', 'r', 'r', 'r'])
+    const ant = poured(seq(['CMaj7', 4], ['Dm7', 4]), 4, plan('card:downbeats', [4, 4], { anticipate: 1 }))
+    expect([letters(ant.get(0)), letters(ant.get(1))]).toEqual([['C', 'E', 'G', 'D'], ['F', 'A', 'C', 'A']])
+    const late = poured(seq(['CMaj7', 4], ['Dm7', 4]), 4, plan('card:downbeats', [4, 4], { anticipate: -1 }))
+    expect([letters(late.get(0)), letters(late.get(1))]).toEqual([['C', 'E', 'G', 'B'], ['G', 'D', 'F', 'A']])
+  })
+  it('cuts a cell at its chord\'s last attack: C E D F', () => {
+    expect(letters(poured(seq(['CMaj7', 2], ['Dm7', 2]), 4, plan('card:downbeats', [4])).get(0))).toEqual(['C', 'E', 'D', 'F'])
+  })
+  it('counts by chord across the barline, turning back at the chord\'s end (D15)', () => {
+    const over = poured(seq(['CMaj7', 6]), 3, plan('card:downbeats', [3, 3]))
+    expect([letters(over.get(0)), letters(over.get(1))]).toEqual([['C', 'E', 'G'], ['B', 'G', 'E']])
+  })
+  it('holds a tied attack into the next chord\'s span: C E E D', () => {
+    expect(letters(poured(seq(['CMaj7', 2], ['Dm7', 2]), 4, plan('unit:8:3:tied', [4])).get(0))).toEqual(['C', 'E', 'E', 'D'])
+  })
+  it('approaches each chord\'s poured target, never a scale-below pick-up', () => {
+    const nc = seq(['N.C.', 4], ['CMaj7', 4]).map((c, i) => (i === 1 ? { ...c, scale: 'C Ionian' } : c))
+    const ap = poured([...nc, { row: 2, chord: 'Dm7', start: 8, beats: 4 }], 4, plan('card:downbeats', [4, 4, 4], { start: 'pickup-1' }), 'chromatic-below', WIDE)
+    expect(letters(ap.get(0))).toEqual(['r', 'r', 'r', 'r', 'B'])
+    expect(ap.get(2)![0]!.pitch!.midi - ap.get(1)!.at(-1)!.pitch!.midi).toBe(1)
+  })
+  it('merges the rests of a bar no chord plays within each beat: no sixteen 16th rests under N.C.', () => {
+    const nc = seq(['N.C.', 4], ['CMaj7', 4])
+    const marks = (v: readonly GuideNote[] | undefined) => (v ?? []).map((n) => [n.beat, n.beats, n.mark?.value, n.mark?.tuplet, n.mark?.accent])
+    expect(marks(poured(nc, 4, plan('unit:16:4:accents', [4, 4])).get(0))).toEqual([0, 1, 2, 3].map((b) => [b, 1, 'q', null, false]))
+    expect(marks(poured(nc, 4, plan('unit:8t:4:accents', [4, 4])).get(0))).toEqual([0, 1, 2, 3].map((b) => [b, 1, 'q', null, false]))
+    expect(letters(poured(nc, 4, plan('unit:16:4:accents', [4, 4])).get(1))).toHaveLength(16) // the played bar keeps its 16ths
+  })
+  it('(guard) a plan whose rhythm is off gives the voices of no plan', () => {
+    const cs = seq(['CMaj7', 4], ['Dm7', 4])
+    expect(arpeggioVoices(cs, CONCERT, 4, null, 'up-root', 'none', plan('off', [4, 4]))).toEqual(arpeggioVoices(cs, CONCERT, 4, null, 'up-root'))
   })
 })

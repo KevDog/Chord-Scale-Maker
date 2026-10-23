@@ -1,5 +1,5 @@
 import type { Locator, Page } from '@playwright/test'
-import { chooseInstrument, chooseInterface, chooseRhythm, chooseSheet, closePanel, type Drawn, drawn, expect, openPanel, GLYPH, arpeggiosDrawn, guidesDrawn, openEditor, rhythmDrawn, sheetChord, showArpeggios, showApproach, showCell, showGuides, showOrder, test, writeChart } from './fixtures'
+import { chooseInstrument, chooseInterface, chooseRhythm, chooseSheet, chooseStart, closePanel, type Drawn, drawn, expect, openPanel, GLYPH, arpeggiosDrawn, guidesDrawn, openEditor, restateOn, rhythmDrawn, sheetChord, showArpeggios, showApproach, showCell, showGuides, showOrder, test, writeChart } from './fixtures'
 
 const lines = (page: Page) => page.locator('svg[aria-label^="Bars:"]')
 /** the sheet itself, not the controls above it (whose menus name the same scales) */
@@ -732,5 +732,141 @@ test.describe('the rhythm line', () => {
     await expect(visitor.getByRole('button', { name: 'Rhythm', exact: true })).toHaveText('Rhythm: Upbeats')
     await rhythmDrawn(visitor)
     await other.close()
+  })
+})
+
+// a rhythm poured into the Line (rhythm-on-lines spec §8): Rhythm, Start, Timing and Target beats set in storage before load
+test.describe('a rhythm on the Lines', () => {
+  const CHART = 'title: T\nkey: C\n\nsection: A\n1 | CMaj7\n2 | Dm7\n3 | G7\n4 | CMaj7\n'
+  const poured = async (page: Page, prefs: Readonly<Record<string, string>>) => {
+    await page.addInitScript((p) => Object.entries(p).forEach(([k, v]) => localStorage.setItem(k, v)), prefs)
+    await writeChart(page, CHART)
+    await chooseInstrument(page, 'Piano')
+    await showArpeggios(page, 'Up · root')
+    await arpeggiosDrawn(page)
+  }
+
+  test('8ths in 3 with rests: each attack plays the arpeggio, the rests rest, and the label names the rhythm', async ({ page }) => {
+    await poured(page, { 'csm-rhythm': 'unit:8:3:rests', 'csm-rhythm-start': 'beat', 'csm-anticipate': '0' })
+    const line = lines(page).first()
+    await expect(line).toHaveAttribute('aria-label', /7th chords: C\S* rest rest E\S* rest G\S* rest /)
+    await expect(line).toHaveAttribute('aria-label', /; rhythm: 8ths in 3, with rests/)
+  })
+
+  test('Target beats under Downbeats, anticipating 2 beats: a chord tone on a target beat is colored, any other note dimmed', async ({ page }) => {
+    await poured(page, { 'csm-rhythm': 'card:downbeats', 'csm-rhythm-start': 'beat', 'csm-anticipate': '2', 'csm-targets': 'on' })
+    const line = lines(page).first()
+    await expect(line.locator('.vf-dimmed')).toHaveCount(3) // C E D F | A C G B | D F C E | G B G E: beat 3's D, G and C
+    await expect(line.locator('.vf-selected')).toHaveCount(5)
+  })
+
+  test('8th triplets in 4 with accents: a triplet bracket and accents on the Line', async ({ page }) => {
+    await poured(page, { 'csm-rhythm': 'unit:8t:4:accents', 'csm-rhythm-start': 'beat', 'csm-anticipate': '0' })
+    const line = lines(page).first()
+    await expect(line.locator('.vf-tuplet').first()).toBeAttached()
+    await expect(line.locator('text', { hasText: String.fromCodePoint(0xe4a0) }).first()).toBeAttached() // Bravura's accent above
+  })
+
+  test('Rhythm Off, Target beats on: the quarters on beats 1 and 3 are chord tones, colored', async ({ page }) => {
+    await poured(page, { 'csm-rhythm': 'off', 'csm-targets': 'on' })
+    const line = lines(page).first()
+    await expect(line.locator('.vf-selected')).toHaveCount(8)
+    await expect(line.locator('.vf-dimmed')).toHaveCount(0)
+  })
+})
+
+// Start, Timing and Restate (rhythm-on-lines spec §10): in Line options, under the rhythm's detail
+test.describe('Start, Timing and Restate', () => {
+  const stored = (page: Page, prefs: Readonly<Record<string, string>>) => page.addInitScript((p) => Object.entries(p).forEach(([k, v]) => localStorage.setItem(k, v)), prefs)
+  const listbox = (page: Page, name: string) => page.getByRole('button', { name, exact: true })
+  /** the page's share link */
+  const shareLink = async (page: Page): Promise<string> => {
+    await page.getByRole('button', { name: 'Share' }).click()
+    const box = page.getByRole('dialog').getByLabel('Link')
+    await expect(box).toHaveValue(/\/song#s=[A-Za-z0-9_-]+$/)
+    return box.inputValue()
+  }
+
+  test('Guide Tones with a rhythm: the Rhythm names Restate, and Restate pours the guide tones into the rhythm', async ({ page }) => {
+    await page.goto('/song/f-jazz-blues')
+    await showGuides(page, 'From 3rd')
+    await guidesDrawn(page)
+    await chooseRhythm(page, '8ths')
+    await openPanel(page, 'Line options')
+    await expect(listbox(page, 'Rhythm')).toHaveAccessibleDescription("Guide tones hold each chord's note. Turn on Restate to play it in the rhythm.")
+    await closePanel(page, 'Line options')
+    await restateOn(page)
+    await openPanel(page, 'Line options')
+    await expect(listbox(page, 'Rhythm')).not.toHaveAttribute('aria-describedby')
+    await expect(page.getByText('Turn on Restate to play it in the rhythm.')).toHaveCount(0)
+    await expect(lines(page).first()).toHaveAttribute('aria-label', /; rhythm: /)
+  })
+
+  test('7th Chords and 8ths in 3, at Everything: Start and Timing show', async ({ page }) => {
+    await page.goto('/song/f-jazz-blues')
+    await showArpeggios(page, 'Up · root')
+    await chooseRhythm(page, '8ths', { In: 'In 3' })
+    await openPanel(page, 'Line options')
+    await expect(listbox(page, 'Start')).toHaveText('Start: On the beat')
+    await expect(listbox(page, 'Timing')).toHaveText('On time')
+  })
+
+  test.describe('at Intermediate', () => {
+    test.use({ interfaceLevel: 'intermediate' })
+
+    test('Start and Timing are hidden, and a link that sets the Start says the sheet uses Everything settings', async ({ page, browser }) => {
+      await stored(page, { 'csm-line': 'arpeggio', 'csm-arpeggio': 'up-root', 'csm-rhythm': 'unit:8:3:accents', 'csm-rhythm-start': 'pickup-1' })
+      await page.goto('/song/f-jazz-blues')
+      await rhythmDrawn(page)
+      await openPanel(page, 'Line options')
+      await expect(listbox(page, 'Rhythm')).toHaveText('Rhythm: 8ths')
+      await expect(listbox(page, 'Start')).toHaveCount(0)
+      await expect(listbox(page, 'Timing')).toHaveCount(0)
+      await closePanel(page, 'Line options')
+      const link = await shareLink(page)
+      const other = await browser.newContext()
+      await chooseInterface(other, 'intermediate')
+      const visitor = await other.newPage()
+      await visitor.goto(link)
+      await expect(visitor.getByRole('status').filter({ hasText: 'This sheet uses Everything settings' })).toBeVisible()
+      await other.close()
+    })
+  })
+
+  test('a 3-note pick-up into CMaj7 after N.C.: bar 1 ends G A B, from C Lydian below C in the Piano’s range', async ({ page }) => {
+    await stored(page, { 'csm-rhythm': 'unit:8:3:accents' })
+    await writeChart(page, 'title: T\nkey: C\n\nsection: A\n1 | N.C.\n2 | CMaj7\n')
+    await chooseInstrument(page, 'Piano')
+    await showArpeggios(page, 'Up · root')
+    await chooseStart(page, '3-note pick-up')
+    await expect(lines(page).first()).toHaveAttribute('aria-label', /7th chords: rest rest rest G\S* A\S* B\S* \|/)
+  })
+
+  test('a share link carries the Start and the Timing: the listboxes and the caption read them', async ({ page, browser }) => {
+    await stored(page, { 'csm-line': 'arpeggio', 'csm-arpeggio': 'up-root', 'csm-rhythm': 'card:downbeats', 'csm-rhythm-start': 'pickup-2', 'csm-anticipate': '1.5' })
+    await page.goto('/song/f-jazz-blues')
+    await rhythmDrawn(page)
+    const link = await shareLink(page)
+    const other = await browser.newContext() // fresh storage: on the beat, on time
+    await chooseInterface(other, 'everything')
+    const visitor = await other.newPage()
+    await visitor.goto(link)
+    await rhythmDrawn(visitor)
+    await expect(visitor.locator('section header p').first()).toHaveText(/ · 2-note pick-ups · anticipate 1½ beats$/)
+    await openPanel(visitor, 'Line options')
+    await expect(listbox(visitor, 'Start')).toHaveText('Start: 2-note pick-up')
+    await expect(listbox(visitor, 'Timing')).toHaveText('Anticipate 1½ beats')
+    await other.close()
+  })
+
+  test('with the Line Off, Start and Timing are hidden and the rhythm line draws', async ({ page }) => {
+    await page.goto('/song/f-jazz-blues')
+    await chooseRhythm(page, '8ths', { In: 'In 3' })
+    await rhythmDrawn(page)
+    await expect(lines(page).first()).toHaveAttribute('aria-label', /; rhythm: 8ths in 3/)
+    await expect(lines(page).first()).not.toHaveAttribute('aria-label', /7th chords/)
+    await openPanel(page, 'Line options')
+    await expect(listbox(page, 'Start')).toHaveCount(0)
+    await expect(listbox(page, 'Timing')).toHaveCount(0)
   })
 })

@@ -141,3 +141,24 @@ describe('layRhythm events', () => {
     expect(a.bars[0]!.filter(e => e.accent).map(e => e.at)).toEqual([0, 3, 6])
   })
 })
+
+describe('layRhythm forced attacks (lines spec §3.2)', () => {
+  const ats = (l: ReturnType<typeof layRhythm>, b = 0) => l!.bars[b]!.filter(e => !e.rest).map(e => [e.at, e.length])
+
+  it('makes an attack of a rest', () => {
+    expect(layRhythm('card:upbeats', [4], [], [0])!.bars[0]!.filter(e => !e.rest).map(e => e.at)).toEqual([0, 1, 3, 5, 7])
+    expect(layRhythm('unit:8:3:rests', [4], [], [1])!.bars[0]!.find(e => e.at === 1)).toMatchObject({ rest: false, accent: false, length: 1 })
+  })
+
+  it('makes an attack of a hold, so the tie after it holds the new note', () => {
+    expect(ats(layRhythm('unit:8:3:tied', [4], [], [1]))).toEqual([[0, 1], [1, 2], [3, 3], [6, 2]])
+  })
+
+  it('keeps an accent (guard)', () => {
+    expect(layRhythm('unit:8:3:accents', [4], [], [3])!.bars[0]!.find(e => e.at === 3)?.accent).toBe(true)
+  })
+
+  it('ignores pulses outside the sheet (guard)', () => {
+    expect(layRhythm('unit:8:3:tied', [4], [], [-1, 99])).toEqual(layRhythm('unit:8:3:tied', [4]))
+  })
+})

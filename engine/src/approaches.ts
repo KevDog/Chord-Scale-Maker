@@ -69,3 +69,18 @@ export function approachNotes(target: Pitched, figure: Approach, scale: readonly
   }
   return notes
 }
+
+/**
+ * the n scale notes below the target, each a step of the scale below the one after it, in time order (lowest first):
+ * into C of C Ionian, 3 is G A B; null with no scale
+ */
+export function scaleStepsBelow(target: Pitched, n: number, scale: readonly Spelled[] | null): readonly Pitched[] | null {
+  const out: Pitched[] = []
+  let at: Pitched | null = target
+  for (let i = 0; i < n; i++) {
+    at = at && diatonic(at, scale, -1)
+    if (!at) return null
+    out.unshift(at)
+  }
+  return out
+}

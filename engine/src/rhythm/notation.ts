@@ -66,6 +66,10 @@ function tripletPieces(at: number, length: number): readonly Piece[] {
   return pieces
 }
 
+/** A silence's notation from `at` for `length` pulses, as a rest event's (§6.2, §6.3): each piece's start, value and whether it is in a triplet. */
+export const restPieces = (at: number, length: number, per: number, triplets: boolean): readonly Readonly<{ at: number; value: RhythmValue; triplet: boolean }>[] =>
+  triplets ? tripletPieces(at, length) : straightPieces(at, length, per)
+
 type Split = Readonly<{ note: Omit<RhythmNote, 'beam' | 'bracket'>; at: number; statement: number }>
 
 /**

@@ -252,9 +252,8 @@
             <div>
               <dt class="font-semibold text-zinc-950 dark:text-white">Rhythm</dt>
               <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
-                In the Line's options, <strong class="font-semibold">Rhythm</strong> is Off or a rhythm from one of three families. A rhythm
-                draws only while the Line is Off; with a Line on, the control says <UiCode>Turn Line off to see the rhythm.</UiCode>
-                The pulse is quarters, 8ths, triplets or 16ths.
+                In the Line's options, <strong class="font-semibold">Rhythm</strong> is Off or a rhythm from one of three families. With a Line on,
+                the Line plays in the rhythm. The pulse is quarters, 8ths, triplets or 16ths.
               </dd>
             </div>
             <div>
@@ -289,11 +288,49 @@
               </dd>
             </div>
             <div>
+              <dt id="rhythm-pour" class="scroll-mt-6 font-semibold text-zinc-950 dark:text-white">Rhythm on a Line</dt>
+              <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
+                With a Line on, the Line's notes are poured into the rhythm: one note an attack, rests skipped, a tie holding the note before it.
+                A chord with more notes than attacks is cut off at its end. With fewer, its line starts the next cell or turns back.
+                Poured Lines print one line fewer per page.
+              </dd>
+            </div>
+            <div>
+              <dt id="rhythm-pickups" class="scroll-mt-6 font-semibold text-zinc-950 dark:text-white">Start</dt>
+              <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
+                In the Line's options (Everything interface), <strong class="font-semibold">Start</strong> is On the beat or a 1-, 2- or 3-note pick-up.
+                It follows Hal Galper's <em>Forward Motion: From Bach to Bebop</em> (pp. 169–172). Each chord's target, its first note on a beat, is struck even where the
+                rhythm rests, and so is each pick-up note before it. The pick-up's notes are the chord before's; after a rest they are the scale's
+                notes just below the target, and a note outside your range rests. The sheet's first bar has no pick-up, and a 2nd ending starts on its beat.
+              </dd>
+            </div>
+            <div>
+              <dt id="rhythm-anticipate" class="scroll-mt-6 font-semibold text-zinc-950 dark:text-white">Timing</dt>
+              <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
+                Also Everything. <strong class="font-semibold">Timing</strong> begins each chord's notes early (Anticipate) or late (Resolve late), after
+                Jerry Bergonzi's <em>Inside Improvisation, Vol. 4: Melodic Rhythms</em> (p. 119). The chord symbols stay put. With Target beats on, the target
+                color is judged against the chart's chord at that beat, so under Anticipate or Resolve late a note can be judged against the chord before or after the one it plays.
+              </dd>
+            </div>
+            <div>
+              <dt id="rhythm-restate" class="scroll-mt-6 font-semibold text-zinc-950 dark:text-white">Restate</dt>
+              <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
+                In the Line's options (Intermediate), shown with Guide Tones. Guide Tones hold each chord's note unless <strong class="font-semibold">Restate</strong> is on,
+                which plays it again on every attack of the rhythm.
+              </dd>
+            </div>
+            <div>
               <dt id="rhythm-targets" class="scroll-mt-6 font-semibold text-zinc-950 dark:text-white">Target beats</dt>
               <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
                 In the Changes sheet's Analysis group, a toggle that puts a dot over each strong beat of a bar: the first beat, and the third in
                 4/4 (1 in 2/4 and 3/4; 1 and 3 in 4/4; 1 and 4 in 5/4 and 6/4; 1 and 5 in 7/4). It follows Hal Galper's <em>Forward Motion: From Bach to Bebop</em> (pp. 47–49, 67): the on-beats are where a line releases, the off-beats where it builds tension, and chord tones belong on the dots. Aim a chord tone at each dot. The dots show on the
                 slashes and on a rhythm alike.
+              </dd>
+            </div>
+            <div>
+              <dt id="rhythm-target-tones" class="scroll-mt-6 font-semibold text-zinc-950 dark:text-white">Target tones</dt>
+              <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
+                On a Line with Target beats on, a chord tone on a dot is lit and any other note on a dot is gray (Galper, pp. 47–49). Nothing moves a note onto a dot.
               </dd>
             </div>
           </dl>
