@@ -390,7 +390,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   `csm-spell` (`root`, `key` or a note; the old `csm-start` is ignored). Share links carry `mode` and, for a picked
   note, `start` (from without a start: the key). The engine still supports `both`.
 - **Subtitles** (`pageSubtitle`): "Subtitle – Tenor Sax (Bb) (Spelled from C)".
-- **Rhythm card** (flag `rhythmSheets`, off; [spec](superpowers/specs/2026-10-22-rhythm-scales-arpeggios-design.md) §1,
+- **Rhythm card** (flag `rhythmSheets`, on; [spec](superpowers/specs/2026-10-22-rhythm-scales-arpeggios-design.md) §1,
   §7, §8): with the shared Rhythm (`csm-rhythm`) not Off, the Scales rail's Rhythm group puts a card under each staff
   (`StaffModel.card`, from `cardBars`): the rhythm's cycle up to four bars, then "…" (`cut`). `drawRhythmCard`
   (`web/app/utils/changesDrawing.ts`) draws it as a one-line slash stave per bar (each a quarter of the staff's notes
@@ -448,7 +448,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   builds the model; the components only draw it.
 - **Preferences and links:** `csm-arp-notes` (`seventh` | `extended`), `csm-arp-dir` (`up` | `down` | `up-down`); share
   links carry `sheet: 'arpeggios'`, `arpNotes`, `arpDir`, and open on the sheet.
-- **Rhythm** (flag `rhythmSheets`, off; [spec](superpowers/specs/2026-10-22-rhythm-scales-arpeggios-design.md) §4, §6,
+- **Rhythm** (flag `rhythmSheets`, on; [spec](superpowers/specs/2026-10-22-rhythm-scales-arpeggios-design.md) §4, §6,
   §7, §8, D11, D12): the Scales sheet's Rhythm group shows here too (the shared `csm-rhythm`; share links carry `rhythm`),
   except under Triad pairs' Block, which plays chords and takes none (`sheetRhythm` reads Off there and on the Patterns
   sheet). With a Rhythm, each staff's notes (`arpeggioLine`'s, unchanged) are poured into it, every attack kept
