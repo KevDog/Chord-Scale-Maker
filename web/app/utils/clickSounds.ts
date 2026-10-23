@@ -1,7 +1,7 @@
 import type { ClickKind } from '@chord-scale-maker/engine'
 
 /**
- * The click's sounds (#254) and Hear line's lead (#507), synthesized: no samples, so nothing to fetch and no CSP change. The only file that builds
+ * The click's sounds (#254), Hear line's lead (#507) and Hear rhythm's rim (#521), synthesized: no samples, so nothing to fetch and no CSP change. The only file that builds
  * audio nodes; useClick books through a ClickAudio, which tests replace with a fake.
  */
 export type ClickSound = 'wood' | 'beep'
@@ -13,6 +13,8 @@ export type ClickAudio = Readonly<{
   play: (kind: ClickKind, time: number, sound: ClickSound) => void
   /** Hear line's lead: a note at midi (concert pitch), from time for length seconds; call what it returns to stop it */
   note: (midi: number, time: number, length: number) => () => void
+  /** Hear rhythm's rim: an attack of the rhythm at time, louder accented */
+  hit: (time: number, accent: boolean) => void
   resume: () => Promise<void>
   suspend: () => Promise<void>
   close: () => Promise<void>
@@ -66,6 +68,23 @@ export function playClick(ctx: AudioContext, out: AudioNode, kind: ClickKind, ti
   osc.stop(time + DECAY + 0.02)
 }
 
+const RIM = { length: 0.025, centre: 1800, q: 8, accent: 0.7, beat: 0.45 } as const
+
+/** Hear rhythm's rim (#521): the hat's noise through a narrow band-pass, a short knock unlike either click */
+export function playRim(ctx: AudioContext, out: AudioNode, time: number, accent: boolean): void {
+  const noise = ctx.createBufferSource()
+  noise.buffer = noiseFor(ctx)
+  const filter = ctx.createBiquadFilter()
+  filter.type = 'bandpass'
+  filter.frequency.value = RIM.centre
+  filter.Q.value = RIM.q
+  const env = ctx.createGain()
+  env.gain.setValueAtTime(accent ? RIM.accent : RIM.beat, time)
+  env.gain.exponentialRampToValueAtTime(0.001, time + RIM.length)
+  noise.connect(filter).connect(env).connect(out)
+  noise.start(time)
+}
+
 const LEAD = { peak: 0.35, attack: 0.01, release: 0.06, held: 0.9, cutoff: 2400 } as const
 
 /**
@@ -111,6 +130,7 @@ export function webAudio(): ClickAudio | null {
       now: () => ctx.currentTime,
       play: (kind, time, sound) => playClick(ctx, out, kind, time, sound),
       note: (midi, time, length) => playNote(ctx, out, midi, time, length),
+      hit: (time, accent) => playRim(ctx, out, time, accent),
       resume: () => ctx.resume(),
       suspend: () => ctx.suspend(),
       close: () => ctx.close(),

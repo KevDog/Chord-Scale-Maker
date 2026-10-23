@@ -104,8 +104,8 @@ describe('useClick', () => {
   it('keeps its settings in this browser', () => {
     localStorage.clear()
     const c = useClick(chart(), ref(undefined), { audio: fakeAudio })
-    c.settings.value = { hat: true, countIn: 2, sound: 'beep', folded: true, hear: true }
-    expect(useClick(chart(), ref(undefined), { audio: fakeAudio }).settings.value).toEqual({ hat: true, countIn: 2, sound: 'beep', folded: true, hear: true })
+    c.settings.value = { hat: true, countIn: 2, sound: 'beep', folded: true, hear: true, hearRhythm: false }
+    expect(useClick(chart(), ref(undefined), { audio: fakeAudio }).settings.value).toEqual({ hat: true, countIn: 2, sound: 'beep', folded: true, hear: true, hearRhythm: false })
   })
 
   it('back from a hidden tab, books no beat twice', async () => {
@@ -206,6 +206,33 @@ describe('useClick', () => {
     expect(useClick(ref({ ...c4.value }), ref('autumn-leaves'), { audio: fakeAudio }).pattern.value).toBe('3')
   })
 
+  it('Swing: two thirds until moved, then the chart remembers it, clamped', () => {
+    localStorage.clear()
+    const c = useClick(chart(), ref('autumn-leaves'), { audio: fakeAudio })
+    expect(c.swing.value).toBeCloseTo(2 / 3)
+    expect(localStorage.getItem('csm-click:autumn-leaves')).toBeNull() // not moved, not stored
+    c.swing.value = 0.6
+    expect(JSON.parse(localStorage.getItem('csm-click:autumn-leaves')!)).toEqual({ swing: 0.6 })
+    expect(useClick(chart(), ref('autumn-leaves'), { audio: fakeAudio }).swing.value).toBe(0.6)
+    localStorage.setItem('csm-click:autumn-leaves', JSON.stringify({ swing: 0.9 }))
+    expect(useClick(chart(), ref('autumn-leaves'), { audio: fakeAudio }).swing.value).toBe(0.75)
+  })
+
+  it('puts the skip note where the swing dial says', async () => {
+    const audio = fakeAudio()
+    const t = timers()
+    const c = useClick(ref({ beats: 4 as const, style: 'Ballad', metreChanges: false }), ref(undefined), { audio: () => audio, ...t }) // 66 bpm, swing
+    c.swing.value = 0.75
+    await c.start()
+    audio.clock.t = 0
+    t.tick()
+    for (let at = 0; at < 1; at += 0.05) {
+      audio.clock.t = at
+      t.tick()
+    }
+    expect(audio.played.find((p) => p.kind === 'sub')?.time).toBeCloseTo(0.75 * (60 / 66))
+  })
+
   it('on 2 and 4 plays those beats alone and still lights the beat', async () => {
     const audio = fakeAudio()
     const t = timers()
@@ -218,6 +245,52 @@ describe('useClick', () => {
       if (at === 0) expect(c.beat.value).toBe(0)
     }
     expect(audio.played.map((p) => p.kind)).toEqual(['beat', 'beat']) // 160 bpm: beats 2 and 4 at 0.375 s and 1.125 s
+  })
+
+  describe('Hear rhythm', () => {
+    const rhythm = { hits: [{ bar: 0, at: 0, accent: true }, { bar: 0, at: 2, accent: false }, { bar: 1, at: 1, accent: false }], bars: 2 }
+    async function hearing(hearRhythm: boolean) {
+      const audio = fakeAudio()
+      const t = timers()
+      const c = useClick(ref({ beats: 4 as const, style: 'Ballad', metreChanges: false }), ref(undefined), { audio: () => audio, ...t })
+      c.settings.value = { ...c.settings.value, hearRhythm }
+      c.setRhythm(rhythm)
+      await c.start()
+      for (let at = 0; at < 8; at += 0.05) {
+        audio.clock.t = at
+        t.tick()
+      }
+      return { audio, c, t }
+    }
+
+    it('starts on, and is remembered in this browser', () => {
+      localStorage.removeItem('csm-click')
+      const c = useClick(chart(), ref(undefined), { audio: fakeAudio })
+      expect(c.settings.value.hearRhythm).toBe(true)
+      c.settings.value = { ...c.settings.value, hearRhythm: false }
+      expect(useClick(chart(), ref(undefined), { audio: fakeAudio }).settings.value.hearRhythm).toBe(false)
+    })
+
+    it('taps the rhythm with the click, bar by bar, looping the form', async () => {
+      const { audio } = await hearing(true) // Ballad: 66 bpm, a beat is 0.909 s
+      const beat = 60 / 66
+      expect(audio.hits.map((h) => h.accent)).toEqual([true, false, false, true])
+      expect(audio.hits[1]?.time).toBeCloseTo(2 * beat)
+      expect(audio.hits[2]?.time).toBeCloseTo(5 * beat)
+    })
+
+    it('stays quiet with Hear rhythm off', async () => {
+      expect((await hearing(false)).audio.hits).toEqual([])
+    })
+
+    it('says whether there is a rhythm to hear', () => {
+      const c = useClick(chart(), ref(undefined), { audio: fakeAudio })
+      expect(c.hasRhythm.value).toBe(false)
+      c.setRhythm(rhythm)
+      expect(c.hasRhythm.value).toBe(true)
+      c.setRhythm({ hits: [], bars: 4 })
+      expect(c.hasRhythm.value).toBe(false)
+    })
   })
 
   describe('Hear line', () => {
@@ -299,6 +372,14 @@ describe('useClick', () => {
       t.end()
       expect(c.playing.value).toBe(null)
       expect(audio.suspended.n).toBe(1)
+    })
+
+    it('swings as far as the dial says', async () => {
+      const { audio, c } = player()
+      c.feel.value = 'swing'
+      c.swing.value = 0.75
+      await c.play('a', phrase)
+      expect(audio.notes[1]!.time - audio.notes[0]!.time).toBeCloseTo((60 / 160) * 0.75)
     })
 
     it('with the click running, starts on its next bar', async () => {

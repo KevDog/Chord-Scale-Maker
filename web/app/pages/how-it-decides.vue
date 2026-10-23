@@ -680,12 +680,29 @@
 
         <DecisionSection v-if="hearLineOn" id="hear.swing">
           <UiText>
-            With the click's feel on <strong :class="EM">Swing</strong>, Hear line swings the Line's 8ths: an 8th off the beat
-            plays two thirds through the beat, where the click's skip note is, and the note before it holds until then.
-            Triplets, 16ths and the rest play as drawn. Straight and Quarters play every note as drawn.
+            With the click's feel on <strong :class="EM">Swing</strong>, the click's skip note, Hear line, Hear rhythm and a
+            staff's Play swing the 8ths: an 8th off the beat plays as far through the beat as the
+            <strong :class="EM">Swing</strong> dial says, from 50% (straight) to 75% (a dotted 8th and a 16th), two thirds (a
+            triplet's feel) until you move it; the note before it holds until then. A beat that holds a 16th, a dotted 8th's
+            end or a tuplet plays as drawn, so a hard swing never lands an 8th on a 16th. Straight and Quarters play every note
+            as drawn.
           </UiText>
           <UiText>
-            <strong :class="EM">What you can change:</strong> the click's feel.
+            <strong :class="EM">What you can change:</strong> the click's feel, and the Swing dial under its ⋯. The chart
+            remembers the dial once you move it.
+          </UiText>
+        </DecisionSection>
+
+        <DecisionSection v-if="hearLineOn" id="hear.rhythm">
+          <UiText>
+            <strong :class="EM">Hear rhythm</strong> taps the Changes sheet's rhythm on a rim, a short knock unlike the click,
+            at the attacks drawn: the rhythm line's with the Line off, or the Line's with a Line poured into the rhythm, so the
+            two always agree. Accented notes sound louder; a rest, or a note tied over from the one before, strikes nothing. A
+            guide tone line without Restate takes no rhythm, so there is nothing to tap. It swings as Hear line does.
+          </UiText>
+          <UiText>
+            <strong :class="EM">What you can change:</strong> Hear rhythm, under the click's ⋯ (on until you turn it off), and the
+            rhythm itself.
           </UiText>
         </DecisionSection>
 

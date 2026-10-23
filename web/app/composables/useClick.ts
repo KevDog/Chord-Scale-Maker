@@ -1,19 +1,22 @@
 import type { InjectionKey, Ref } from 'vue'
-import { type Beats, type ClickFeel, type ClickPattern, type ClickPlan, type ClickState, type Feel, type PhraseNote, type TimedClick, type VoiceNote, CLICK_PATTERNS, clampTempo, defaultFeel, defaultPattern, defaultTempo, scheduleClicks, scheduleVoice, tapTempo, timePhrase } from '@chord-scale-maker/engine'
+import { type Beats, type ClickFeel, type ClickPattern, type ClickPlan, type ClickState, type Feel, type PhraseNote, type RhythmHit, type TimedClick, type VoiceNote, CLICK_PATTERNS, clampSwing, clampTempo, defaultFeel, defaultPattern, defaultTempo, SWING, scheduleClicks, scheduleRhythm, scheduleVoice, tapTempo, timePhrase } from '@chord-scale-maker/engine'
 import { type ClickAudio, type ClickSound, CLICK_SOUNDS, webAudio } from '~/utils/clickSounds'
 import { readStored, writeStored } from '~/utils/storage'
 
 /**
  * The click (#254, docs/superpowers/specs/2026-10-21-metronome-design.md): one per song page. The engine says which
  * clicks fall in each lookahead window; this books them on the AudioContext's clock, so a busy page never makes it
- * drift, and lights the beat that is sounding. Tempo, feel and Click on are remembered per chart, the rest in this browser.
- * With Hear line on, the Changes sheet's Line (setLine) sounds with it, from the same clock (#507); a staff's Play
+ * drift, and lights the beat that is sounding. Tempo, feel, Click on and the swing dial are remembered per chart, the rest in this browser.
+ * With Hear line on, the Changes sheet's Line (setLine) sounds with it, from the same clock (#507), and with Hear
+ * rhythm on its rhythm's attacks (setRhythm) on a rim (#521); a staff's Play
  * (play) sounds its phrase at the click's tempo and feel, on the click's next bar while it runs, else at once.
  */
-/** folded: the bar shows only Start/Stop, the tempo and the lights; hear: Hear line, the Line sounds with the click */
-export type ClickSettings = Readonly<{ hat: boolean; countIn: 0 | 1 | 2; sound: ClickSound; folded: boolean; hear: boolean }>
+/** folded: the bar shows only Start/Stop, the tempo and the lights; hear: Hear line, the Line sounds with the click; hearRhythm: Hear rhythm, its rhythm taps with it */
+export type ClickSettings = Readonly<{ hat: boolean; countIn: 0 | 1 | 2; sound: ClickSound; folded: boolean; hear: boolean; hearRhythm: boolean }>
 /** the Line to hear: its notes and the drawn bars it loops over */
 export type ClickLine = Readonly<{ notes: readonly VoiceNote[]; bars: number }>
+/** the rhythm to hear: its attacks and the drawn bars it loops over */
+export type ClickRhythm = Readonly<{ hits: readonly RhythmHit[]; bars: number }>
 /** rhythmFeel: the sheet's Feel, which Click on follows until it's set (in 4 when left out) */
 export type ClickChart = Readonly<{ beats: Beats; style: string; metreChanges: boolean; rhythmFeel?: Feel }>
 export type ClickDeps = Readonly<{
@@ -32,7 +35,7 @@ const PHRASE_LEAD = 0.05
 export const LOOKAHEAD = { interval: 25, ahead: 0.1, hiddenAhead: 1.2 } as const
 
 const SETTINGS_KEY = 'csm-click'
-const DEFAULT_SETTINGS: ClickSettings = { hat: false, countIn: 0, sound: 'wood', folded: false, hear: false }
+const DEFAULT_SETTINGS: ClickSettings = { hat: false, countIn: 0, sound: 'wood', folded: false, hear: false, hearRhythm: true }
 
 function parseSettings(raw: string | null): ClickSettings {
   try {
@@ -43,15 +46,16 @@ function parseSettings(raw: string | null): ClickSettings {
       sound: CLICK_SOUNDS.includes(v.sound as ClickSound) ? (v.sound as ClickSound) : DEFAULT_SETTINGS.sound,
       folded: typeof v.folded === 'boolean' ? v.folded : DEFAULT_SETTINGS.folded,
       hear: typeof v.hear === 'boolean' ? v.hear : DEFAULT_SETTINGS.hear,
+      hearRhythm: typeof v.hearRhythm === 'boolean' ? v.hearRhythm : DEFAULT_SETTINGS.hearRhythm,
     }
   } catch {
     return DEFAULT_SETTINGS
   }
 }
 
-type Chosen = Readonly<{ tempo?: number; feel?: ClickFeel; pattern?: ClickPattern }>
+type Chosen = Readonly<{ tempo?: number; feel?: ClickFeel; pattern?: ClickPattern; swing?: number }>
 
-/** a chart's remembered tempo, feel and Click on, if any */
+/** a chart's remembered tempo, feel, Click on and swing, if any */
 function readChart(key: string | undefined): Chosen {
   if (!key) return {}
   try {
@@ -60,6 +64,7 @@ function readChart(key: string | undefined): Chosen {
       tempo: typeof v.tempo === 'number' ? clampTempo(v.tempo) : undefined,
       feel: v.feel === 'quarters' || v.feel === 'swing' || v.feel === 'straight' ? v.feel : undefined,
       pattern: CLICK_PATTERNS.includes(v.pattern as ClickPattern) ? (v.pattern as ClickPattern) : undefined,
+      swing: typeof v.swing === 'number' ? clampSwing(v.swing) : undefined,
     }
   } catch {
     return {}
@@ -87,10 +92,12 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
   const feel = ref<ClickFeel>(stored.feel ?? defaultFeel(chart.value.style))
   const rhythmFeel = (): Feel => chart.value.rhythmFeel ?? 4
   const pattern = ref<ClickPattern>(stored.pattern ?? defaultPattern(rhythmFeel()))
+  const swing = ref(stored.swing ?? SWING.fallback)
   // only what the player sets is stored: a tempo and feel still the style's follow the style as it's edited, and a
   // Click on still the Feel's follows the Feel
   let chosen = stored.tempo !== undefined || stored.feel !== undefined
   let patternChosen = stored.pattern !== undefined
+  let swingChosen = stored.swing !== undefined
   let following = false // the style's or the Feel's own values being applied, not the player's
   function follow(set: () => void): void {
     following = true
@@ -103,10 +110,12 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
       const s = readChart(key)
       chosen = s.tempo !== undefined || s.feel !== undefined
       patternChosen = s.pattern !== undefined
+      swingChosen = s.swing !== undefined
       follow(() => {
         tempo.value = s.tempo ?? defaultTempo(style)
         feel.value = s.feel ?? defaultFeel(style)
         pattern.value = s.pattern ?? defaultPattern(rhythmFeel())
+        swing.value = s.swing ?? SWING.fallback
       })
     } else if (!chosen)
       follow(() => {
@@ -119,7 +128,11 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
   })
   function store(): void {
     if (!storageKey.value) return
-    const v: Chosen = { ...(chosen ? { tempo: tempo.value, feel: feel.value } : {}), ...(patternChosen ? { pattern: pattern.value } : {}) }
+    const v: Chosen = {
+      ...(chosen ? { tempo: tempo.value, feel: feel.value } : {}),
+      ...(patternChosen ? { pattern: pattern.value } : {}),
+      ...(swingChosen ? { swing: clampSwing(swing.value) } : {}),
+    }
     writeStored(`${SETTINGS_KEY}:${storageKey.value}`, JSON.stringify(v))
   }
   watch(
@@ -140,10 +153,19 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
     },
     { flush: 'sync' },
   )
+  watch(
+    swing,
+    () => {
+      if (following) return
+      swingChosen = true
+      store()
+    },
+    { flush: 'sync' },
+  )
 
   const plan = computed(
     (): ClickPlan => ({
-      options: { beats: chart.value.beats, feel: feel.value, hat: settings.value.hat, pattern: pattern.value },
+      options: { beats: chart.value.beats, feel: feel.value, hat: settings.value.hat, pattern: pattern.value, swing: clampSwing(swing.value) },
       tempo: clampTempo(tempo.value),
       countIn: settings.value.countIn,
     }),
@@ -154,6 +176,12 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
   /** the Changes sheet's Line, or null with none drawn (another sheet, the Line off) */
   const setLine = (l: ClickLine | null): void => {
     line.value = l
+  }
+  const rhythm = shallowRef<ClickRhythm | null>(null)
+  const hasRhythm = computed(() => !!rhythm.value?.hits.length)
+  /** the Changes sheet's rhythm as drawn, or null with none */
+  const setRhythm = (r: ClickRhythm | null): void => {
+    rhythm.value = r
   }
 
   let audio: ClickAudio | null = null
@@ -180,6 +208,7 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
     const next = scheduleClicks(plan.value, state, from, until)
     for (const e of next.events) if (e.kind !== 'tick') audio.play(e.kind, e.time, settings.value.sound)
     if (settings.value.hear && line.value) for (const n of scheduleVoice(line.value.notes, line.value.bars, plan.value, state, from, until)) audio.note(n.midi, n.time, n.length)
+    if (settings.value.hearRhythm && rhythm.value) for (const h of scheduleRhythm(rhythm.value.hits, rhythm.value.bars, plan.value, state, from, until)) audio.hit(h.time, h.accent)
     state = next.state
     booked = Math.max(booked, until) // a shorter lookahead (the tab shown again) mustn't reopen what's booked
     const beats = next.events.filter((e) => e.kind !== 'hat' && e.kind !== 'sub') // a pattern's ticks light the beats it leaves silent
@@ -259,7 +288,7 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
     const bar = (plan.value.options.beats * 60) / plan.value.tempo
     const next = state.barStart > now ? state.barStart : state.barStart + bar
     const start = running.value ? next : now + PHRASE_LEAD
-    const notes = timePhrase(phrase, plan.value.tempo, feel.value, start)
+    const notes = timePhrase(phrase, plan.value.tempo, feel.value, start, plan.value.options.swing)
     const a = audio
     phraseStops = notes.map((n) => a.note(n.midi, n.time, n.length))
     const end = Math.max(...notes.map((n) => n.time + n.length), start)
@@ -309,7 +338,7 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
     audio = null
   }
 
-  return { shown, running, unavailable, tempo, feel, pattern, settings, beat, counting, hasLine, setLine, playing, play, stopPhrase, start, stop, toggle, tap, show, hide, dispose }
+  return { shown, running, unavailable, tempo, feel, pattern, swing, settings, beat, counting, hasLine, setLine, hasRhythm, setRhythm, playing, play, stopPhrase, start, stop, toggle, tap, show, hide, dispose }
 }
 
 export type Click = ReturnType<typeof useClick>

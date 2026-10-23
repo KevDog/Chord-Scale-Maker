@@ -474,8 +474,11 @@
               <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
                 With a Line on the Changes sheet, <strong class="font-semibold">Hear line</strong> on the click plays it with the
                 click: the notes on the sheet, in their rhythm, at concert pitch (<DecisionLink id="hear.pitch">where</DecisionLink>),
-                from the top again at the end. With the click on Swing, its 8ths swing (<DecisionLink id="hear.swing">how</DecisionLink>).
+                from the top again at the end. With the click on Swing, its 8ths swing, as far as the Swing dial under the click's ⋯ says
+                (<DecisionLink id="hear.swing">how</DecisionLink>).
                 Listen first, then play it with the sound, then turn it off and play it alone.
+                With a rhythm on the sheet, <strong class="font-semibold">Hear rhythm</strong> (under the click's ⋯) taps it on a rim
+                with the click, with the Line or without one (<DecisionLink id="hear.rhythm">what it taps</DecisionLink>).
               </dd>
             </div>
             <div v-if="hearLineOn">

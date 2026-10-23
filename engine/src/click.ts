@@ -30,10 +30,15 @@ export const patternFits = (p: ClickPattern, beats: number): boolean => p === 'a
 /** the Feel's click (decision click.pattern): every beat in 4, the hat's 2 and 4 in 2, 4 alone in 1 */
 export const defaultPattern = (feel: Feel): ClickPattern => (feel === 4 ? 'all' : feel === 2 ? '2-4' : '4')
 
-/** hat: on 2 and 4, in 4/4 only; pattern: every beat when left out */
-export type ClickOptions = Readonly<{ beats: Beats; feel: ClickFeel; hat: boolean; pattern?: ClickPattern }>
+/** hat: on 2 and 4, in 4/4 only; pattern: every beat when left out; swing: the dial, where Swing's 8th falls in its beat (two thirds when left out) */
+export type ClickOptions = Readonly<{ beats: Beats; feel: ClickFeel; hat: boolean; pattern?: ClickPattern; swing?: number }>
 
 export const CLICK_TEMPO = { min: 40, max: 300, fallback: 120 } as const
+/** the swing dial (decision hear.swing): an 8th off the beat from halfway (straight) to three quarters (a dotted 8th and a 16th) */
+export const SWING = { min: 0.5, max: 0.75, fallback: 2 / 3 } as const
+
+/** the dial in 50–75%, to the hundredth; not a number: two thirds */
+export const clampSwing = (n: number): number => (Number.isNaN(n) ? SWING.fallback : Math.min(SWING.max, Math.max(SWING.min, Math.round(n * 100) / 100)))
 
 const byTime = (a: ClickEvent, b: ClickEvent): number => a.at - b.at
 
@@ -46,7 +51,7 @@ const onBeat = (n: number): ClickEvent => ({ at: n, kind: n === 0 ? 'accent' : '
  */
 export function clickBar(o: ClickOptions): readonly ClickEvent[] {
   const beats = Array.from({ length: o.beats }, (_, n) => n)
-  const sub = o.feel === 'swing' ? 2 / 3 : o.feel === 'straight' ? 1 / 2 : null
+  const sub = o.feel === 'swing' ? (o.swing ?? SWING.fallback) : o.feel === 'straight' ? 1 / 2 : null
   const pattern = o.pattern ?? 'all'
   const hat = o.hat && o.beats === 4 ? [1, 3].map((n): ClickEvent => ({ at: n, kind: 'hat' })) : []
   if (pattern === 'all' || !patternFits(pattern, o.beats))
