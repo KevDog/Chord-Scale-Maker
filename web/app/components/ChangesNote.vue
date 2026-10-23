@@ -1,7 +1,8 @@
 <template>
   <!-- a numeral or scale on the Changes sheet; a click or tap opens why the analysis chose it, with the rule behind it.
        A dotted underline in the accent color says it opens (not printed) -->
-  <HPopover class="relative inline-block max-w-full">
+  <span v-if="paged" class="inline-block max-w-full"><span :class="wrap ? 'whitespace-normal' : 'truncate'" class="block max-w-full text-left"><slot /></span></span>
+  <HPopover v-else class="relative inline-block max-w-full">
     <HPopoverButton
       :class="wrap ? 'whitespace-normal' : 'truncate'"
       class="hit-target block max-w-full cursor-pointer rounded-sm text-left underline decoration-note-500/60 decoration-dotted underline-offset-[3px] hover:bg-note-50 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-note-500 dark:decoration-note-300/60 dark:hover:bg-white/5 print:no-underline"
@@ -11,7 +12,7 @@
     </HPopoverButton>
     <HPopoverPanel
       role="dialog"
-      :style="{ left: `${shift}px`, ...(pageZoom !== 1 ? { zoom: 1 / pageZoom } : {}) }"
+      :style="{ left: `${shift}px` }"
       :aria-label="`Why: ${chord}`"
       class="absolute top-full left-0 z-20 mt-2 w-72 rounded-lg max-sm:w-[calc(100vw-2rem)] bg-white p-3 text-left text-sm/6 font-normal text-zinc-700 shadow-lg ring-1 ring-zinc-950/10 dark:bg-zinc-800 dark:text-zinc-200 dark:ring-white/10 print:hidden"
     >
@@ -48,7 +49,7 @@
 import { Popover as HPopover, PopoverButton as HPopoverButton, PopoverPanel as HPopoverPanel } from '@headlessui/vue'
 import { type ChangesChord, ruleParts } from '@chord-scale-maker/engine'
 import { panelShift } from '~/utils/notePlacement'
-import { PAGE_ZOOM } from '~/utils/sheetPaged'
+import { SHEET_PAGED } from '~/utils/sheetPaged'
 import { ISSUE_CONTEXT, ISSUE_TEXT_KEY, issueText, issueTitle, issueUrl } from '~/utils/issueReport'
 
 /**
@@ -63,9 +64,8 @@ const props = withDefaults(
   { problem: '', wrap: false, pinned: false, slash: false, levelNote: '' },
 )
 const shift = ref(0)
-/** in focus mode's zoomed page, the panel undoes the zoom, to read at full size */
-const pageZoomRef = inject(PAGE_ZOOM, ref(1))
-const pageZoom = computed(() => pageZoomRef.value)
+/** focus mode: the label as plain text, as its zoomed rows are too close for a 24px target (#488); picks are made off focus mode */
+const paged = inject(SHEET_PAGED, ref(false))
 /**
  * on a click that opens the panel (keyboard activation clicks too): measure it, then move it so it stays on the
  * screen, on a phone and near the sheet's right edge (it opens at its numeral's left edge)

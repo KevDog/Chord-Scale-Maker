@@ -41,7 +41,7 @@
 </template>
 
 <script setup lang="ts" generic="T extends { subtitle: string }">
-import { FOCUS_BAR_HEIGHT, PAGE_HEIGHT, PAGE_WIDTH, PAGE_ZOOM, pageZoom, SHEET_PAGED } from '~/utils/sheetPaged'
+import { FOCUS_BAR_HEIGHT, PAGE_HEIGHT, PAGE_WIDTH, pageZoom, SHEET_PAGED } from '~/utils/sheetPaged'
 
 /** a sheet's printed pages: continuous on screen, one letter page each in print */
 const props = defineProps<{
@@ -62,7 +62,6 @@ const sections = useTemplateRef<HTMLElement[]>('sections')
 const tallest = ref(0)
 const room = ref({ width: 0, height: 0 })
 const zoom = computed(() => pageZoom(room.value, tallest.value))
-provide(PAGE_ZOOM, computed(() => (paged.value ? zoom.value : 1)))
 // focus mode's chrome above and below a page, past its top bar (measured: Exit, and the click): the bar's margin
 // (24), the space above the paper (16) and below it (32), and a little for the paper's shadow
 const FOCUS_CHROME = 76

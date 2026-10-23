@@ -270,8 +270,7 @@ for (const theme of ['light', 'dark'] as const) {
       await page.keyboard.press('Escape')
       await page.getByRole('button', { name: 'Focus', exact: true }).click()
       await expect(page.getByRole('dialog', { name: 'Focus mode' }).getByRole('toolbar', { name: 'Click' })).toBeVisible()
-      // the click alone: focus mode's own known violations (its Esc hint, the zoomed sheet’s chord buttons) are #488
-      await expectAccessible(page, '[aria-label="Focus mode"] [role=toolbar][aria-label=Click]')
+      await expectAccessible(page, '[aria-label="Focus mode"]') // all of focus mode: its Esc hint and the zoomed sheet too (#488)
     })
 
     test('the library’s Import iReal link… dialog', async ({ page }) => {

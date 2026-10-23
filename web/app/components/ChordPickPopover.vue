@@ -1,13 +1,14 @@
 <template>
   <!-- a chord's pick (#303): a label or caption that opens its choices, the sheet's first; a pick sets the chord's bars -->
-  <HPopover class="relative inline-block max-w-full">
+  <span v-if="paged" class="inline-block max-w-full"><span :class="['block text-left', triggerClass]">{{ text }}</span></span>
+  <HPopover v-else class="relative inline-block max-w-full">
     <HPopoverButton
       :aria-label="label"
       :class="['hit-target block cursor-pointer rounded-sm text-left underline underline-offset-[3px]', picked ? 'decoration-solid decoration-note-600 dark:decoration-note-300' : 'decoration-dotted decoration-note-500/60 dark:decoration-note-300/60', triggerClass]"
       class="hover:bg-note-50 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-note-500 dark:hover:bg-white/5 print:no-underline"
       @click="place"
     >{{ text }}</HPopoverButton>
-    <HPopoverPanel v-slot="{ close }" role="dialog" :style="{ left: `${shift}px`, ...(pageZoom !== 1 ? { zoom: 1 / pageZoom } : {}) }" :aria-labelledby="headerId" class="absolute top-full z-20 mt-2 w-72 rounded-paper bg-raised p-1.5 text-left text-sm shadow-raised max-sm:w-[calc(100vw-2rem)] print:hidden">
+    <HPopoverPanel v-slot="{ close }" role="dialog" :style="{ left: `${shift}px` }" :aria-labelledby="headerId" class="absolute top-full z-20 mt-2 w-72 rounded-paper bg-raised p-1.5 text-left text-sm shadow-raised max-sm:w-[calc(100vw-2rem)] print:hidden">
       <p :id="headerId" class="px-2 pt-1 pb-2 text-xs/4 font-medium text-zinc-500 dark:text-zinc-400">{{ header }}</p>
       <ul class="border-y border-zinc-950/5 py-1 dark:border-white/10">
         <li><button type="button" data-sheet-choice :aria-current="picked ? undefined : 'true'" :class="rowClass(!picked)" @click="clear(close)">Sheet’s choice ({{ sheetChoice }})</button></li>
@@ -24,7 +25,7 @@
 <script setup lang="ts">
 import { Popover as HPopover, PopoverButton as HPopoverButton, PopoverPanel as HPopoverPanel } from '@headlessui/vue'
 import { panelShift } from '~/utils/notePlacement'
-import { PAGE_ZOOM } from '~/utils/sheetPaged'
+import { SHEET_PAGED } from '~/utils/sheetPaged'
 
 /** current: the row the chord plays; marked only under a pick (with none, the sheet's choice is the one current); group: a heading the row and those after it with the same group sit under (#432) */
 export type ChoiceRow = Readonly<{ id: string; label: string; current: boolean; group?: string }>
@@ -34,9 +35,8 @@ const emit = defineEmits<{ choose: [id: string]; clear: [] }>()
 const label = computed(() => `${props.triggerLabel}${props.picked ? ', your pick' : ''}. Show the choices`)
 const headerId = useId()
 const shift = ref(0)
-/** in focus mode's zoomed page, the panel undoes the zoom, to read at full size */
-const pageZoomRef = inject(PAGE_ZOOM, ref(1))
-const pageZoom = computed(() => pageZoomRef.value)
+/** focus mode: the label as plain text, as its zoomed rows are too close for a 24px target (#488); picks are made off focus mode */
+const paged = inject(SHEET_PAGED, ref(false))
 /** on a click that opens the panel: measure it, then move it so it stays on the screen (it opens at its trigger's left edge) */
 async function place(e: MouseEvent): Promise<void> {
   const anchor = (e.currentTarget as HTMLElement | null)?.parentElement // read before the await: currentTarget is cleared after dispatch
