@@ -70,5 +70,21 @@ test.describe('the Scales sheet’s rhythm', () => {
     await expect(page.locator('[data-slot=scale-staff]:not(:has([data-slot=rhythm-card]))')).toHaveCount(0)
     await expect(page.locator('[data-slot=rhythm-card]')).toHaveCount(count)
     await expect(page.locator('section header p').first()).toContainText('Rhythm: 8ths in 5, with accents')
+    // drawn: four bars of the five-bar cycle, "…", Saindon's bracket, the label; a time signature on every staff
+    const cards = page.locator('[data-slot=rhythm-card] svg')
+    await expect(cards).toHaveCount(count)
+    for (const card of await cards.all()) {
+      await expect(card.locator('[data-rhythm-bar]')).toHaveCount(4)
+      await expect(card.locator('text', { hasText: '…' })).toHaveCount(1)
+      await expect(card.locator('[data-rhythm-bracket]')).not.toHaveCount(0)
+      await expect(card).toHaveAttribute('aria-label', 'Rhythm card: 8ths in 5, with accents, 4 bars, continues')
+    }
+    await expect(page.locator('[data-slot=scale-staff] svg[data-time-sig="4/4"]:not([data-slot=rhythm-card] svg)')).toHaveCount(count)
+    // Off: today's staves, no card and no time signature
+    await chooseRhythm(page, 'Off')
+    await expect(page.locator('[data-slot=rhythm-card]')).toHaveCount(0)
+    await expect(page.locator('svg[data-time-sig]')).toHaveCount(0)
+    await expect(page.locator('[data-rhythm-bar]')).toHaveCount(0)
+    await expect(staves(page)).toHaveCount(count)
   })
 })

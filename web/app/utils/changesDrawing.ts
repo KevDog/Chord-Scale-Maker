@@ -1,5 +1,5 @@
-import { accText, barKey, type ChangesBar, type ChangesLine, type GuideNote, type NoteBeats, type Pitched, type RhythmNote, signatureAccidentals, toVexKey } from '@chord-scale-maker/engine'
-import { BAR_UNITS, cropBand, fitSvg, headCentre, inkStave, signatureLead, STAVE_Y, svgContext, TIME_SPACE, type VexFlowModule } from './vexflow'
+import { accText, barKey, type ChangesBar, type ChangesLine, type GuideNote, type NoteBeats, type Pitched, type RhythmCardModel, type RhythmNote, signatureAccidentals, toVexKey } from '@chord-scale-maker/engine'
+import { BAR_UNITS, cropBand, fitSvg, headCentre, inkStave, signatureLead, STAFF_WIDTH, STAVE_Y, svgContext, TIME_SPACE, type VexFlowModule } from './vexflow'
 
 /**
  * Drawing a Changes line (engine/src/changes.ts) with VexFlow: one stave, one slash a beat (each bar in its own metre),
@@ -459,6 +459,36 @@ const inkTips = (notes: readonly StaveNote[], accented: ReadonlySet<StaveNote>, 
   ...tuplets.map((t) => t.getYPosition() - TUPLET_RISE),
 ]
 
+type Context = ReturnType<typeof svgContext>
+type RhythmBar = Readonly<{ rhythm: readonly RhythmNote[]; ticks: readonly StaveNote[] }>
+
+/** a rhythm's ties, one chain across its bars: open at its end, and a half-tie in where it starts tied */
+function rhythmTies(vf: VexFlowModule, ctx: Context, bars: readonly RhythmBar[]): void {
+  const chain = bars.flatMap((l) => l.rhythm.map((m, i) => ({ m, t: l.ticks[i] ?? null })))
+  const tie = (firstNote: StaveNote | null, lastNote: StaveNote | null): void => {
+    new vf.StaveTie({ firstNote, lastNote, firstIndexes: [0], lastIndexes: [0] }).setContext(ctx).draw()
+  }
+  chain.forEach(({ m, t }, i) => {
+    if (m.rest || !t) return
+    if (i === 0 && m.tiedIn) tie(null, t)
+    if (m.tie) tie(t, chain[i + 1]?.t ?? null)
+  })
+}
+
+/** Saindon's bracket in a bar (data-rhythm-bracket: key): from its first note's head to its last's, at under, feet up */
+function saindonBracket(ctx: Context, rhythm: readonly RhythmNote[], ticks: readonly StaveNote[], under: number, key: string): void {
+  const from = rhythm.findIndex((m) => m.bracket === 'start' || m.bracket === 'both')
+  if (from < 0) return
+  const to = rhythm[from]?.bracket === 'both' ? from : rhythm.findIndex((m, i) => i > from && m.bracket === 'end')
+  const a = ticks[from]
+  const b = ticks[to < 0 ? ticks.length - 1 : to]
+  if (!a || !b) return
+  const group: unknown = ctx.openGroup('rhythm-bracket')
+  if (group instanceof Element) group.setAttribute('data-rhythm-bracket', key)
+  ctx.beginPath().moveTo(a.getNoteHeadBeginX(), under - BRACKET_FOOT).lineTo(a.getNoteHeadBeginX(), under).lineTo(b.getNoteHeadEndX(), under).lineTo(b.getNoteHeadEndX(), under - BRACKET_FOOT).stroke()
+  ctx.closeGroup()
+}
+
 type RhythmLaid = Readonly<{
   bar: ChangesBar
   stave: Stave
@@ -515,31 +545,9 @@ function drawRhythmLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, o
   laid.forEach((l) => l.beams.forEach((b) => b.setContext(ctx).draw()))
   laid.forEach((l) => l.tuplets.forEach((t) => t.setContext(ctx).draw()))
 
-  // ties, one chain across the line: open at its end, and a half-tie in where the line starts tied
-  const chain = laid.flatMap((l) => l.bar.rhythm.map((m, i) => ({ m, t: l.ticks[i] ?? null })))
-  const tie = (firstNote: StaveNote | null, lastNote: StaveNote | null): void => {
-    new vf.StaveTie({ firstNote, lastNote, firstIndexes: [0], lastIndexes: [0] }).setContext(ctx).draw()
-  }
-  chain.forEach(({ m, t }, i) => {
-    if (m.rest || !t) return
-    if (i === 0 && m.tiedIn) tie(null, t)
-    if (m.tie) tie(t, chain[i + 1]?.t ?? null)
-  })
-
-  // Saindon's bracket: from its first note's head to its last's, under the staff, feet up
+  rhythmTies(vf, ctx, laid.map((l) => ({ rhythm: l.bar.rhythm, ticks: l.ticks })))
   const under = (first?.getBottomLineY() ?? 120) + BRACKET_DROP
-  laid.forEach((l) => {
-    const from = l.bar.rhythm.findIndex((m) => m.bracket === 'start' || m.bracket === 'both')
-    if (from < 0) return
-    const to = l.bar.rhythm[from]?.bracket === 'both' ? from : l.bar.rhythm.findIndex((m, i) => i > from && m.bracket === 'end')
-    const a = l.ticks[from]
-    const b = l.ticks[to < 0 ? l.ticks.length - 1 : to]
-    if (!a || !b) return
-    const group: unknown = ctx.openGroup('rhythm-bracket')
-    if (group instanceof Element) group.setAttribute('data-rhythm-bracket', barKey(l.bar.at))
-    ctx.beginPath().moveTo(a.getNoteHeadBeginX(), under - BRACKET_FOOT).lineTo(a.getNoteHeadBeginX(), under).lineTo(b.getNoteHeadEndX(), under).lineTo(b.getNoteHeadEndX(), under - BRACKET_FOOT).stroke()
-    ctx.closeGroup()
-  })
+  laid.forEach((l) => saindonBracket(ctx, l.bar.rhythm, l.ticks, under, barKey(l.bar.at)))
 
   const xs = laid.map((l) => {
     const starts = new Map<number, number>()
@@ -553,4 +561,64 @@ function drawRhythmLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, o
   const { band, at } = withTargets(voicedBand([...heads, ...tips, ...(hasBracket ? [under] : [])], bracket === null ? null : bracket + shift), row)
   fitSvg(el, band, total, barsLabel(line) + rhythmAria(opts.rhythmCaption ?? null) + targetsAria(line))
   return { xs, ends: endsOf(widths, total), scales, fits, dots: at }
+}
+
+/** the rhythm card's aria-label (rhythm-scales-arpeggios spec §1): the rhythm, its bars, and ", continues" when cut */
+export function cardAria(label: string, card: RhythmCardModel): string {
+  const n = card.bars.length
+  return `Rhythm card: ${label}, ${n} bar${n === 1 ? '' : 's'}${card.cut ? ', continues' : ''}`
+}
+
+const CARD_BARS = 4 // a card bar is a quarter of the staff's notes width (D14), as many as the card has
+const CARD_LINE = 2 // the one line a card shows: the middle one, where the slashes sit
+const ELLIPSIS_ROOM = 64 // after a card's bars: the "…" of a cut cycle
+const ELLIPSIS_SIZE = 32
+
+/**
+ * the rhythm card under a Scales staff (rhythm-scales-arpeggios spec §1, §7): a one-line stave per bar (each a quarter
+ * of width, the staff's notes width, ending under the staff's end; data-rhythm-bar: its bar from 1), the rhythm's slash
+ * notes with their tuplets, beams, accents and ties, the time signature on the first bar, Saindon's bracket under the
+ * line, and "…" after the last barline when the cycle was cut; label: its aria-label (cardAria)
+ */
+export function drawRhythmCard(vf: VexFlowModule, el: HTMLElement, card: RhythmCardModel, width: number, label = ''): void {
+  const ctx = svgContext(vf, el, STAFF_WIDTH)
+  const barWidth = (width - ELLIPSIS_ROOM) / CARD_BARS
+  const left = STAFF_WIDTH - 1 - width
+  const laid = card.bars.map((rhythm, b) => {
+    const x = left + b * barWidth
+    const stave = inkStave(vf, x, STAVE_Y, barWidth)
+    stave.setConfigForLines(Array.from({ length: stave.getNumLines() }, (_, l) => ({ visible: l === CARD_LINE })))
+    if (b === 0) stave.addTimeSignature(`${card.beats}/4`)
+    const ticks = rhythm.map((n) => rhythmTick(vf, n, 'treble'))
+    ticks.forEach((t) => t.setStave(stave))
+    const tuplets = tripletsOf(vf, ticks, (i) => rhythm[i]?.tuplet ?? null)
+    const voice = voiceOf(vf, card.beats, ticks)
+    const beams = groupsOf(ticks, (i) => rhythm[i]?.beam ?? null).filter((g) => g.length > 1).map((notes) => new vf.Beam(notes))
+    new vf.Formatter().joinVoices([voice]).format([voice], room(stave, x, barWidth))
+    beams.forEach((beam) => beam.postFormat())
+    return { rhythm, stave, ticks, voice, beams, tuplets }
+  })
+  laid.forEach((l, b) => {
+    const group: unknown = ctx.openGroup('rhythm-bar')
+    if (group instanceof Element) group.setAttribute('data-rhythm-bar', String(b + 1))
+    l.stave.setContext(ctx).draw()
+    l.voice.draw(ctx, l.stave)
+    l.beams.forEach((beam) => beam.setContext(ctx).draw())
+    l.tuplets.forEach((t) => t.setContext(ctx).draw())
+    ctx.closeGroup()
+  })
+  rhythmTies(vf, ctx, laid)
+  const first = laid[0]?.stave
+  const line = first?.getYForLine(CARD_LINE) ?? 100
+  const under = line + (first?.getSpacingBetweenLines() ?? 10) + BRACKET_DROP // under the slash heads on the line
+  laid.forEach((l, b) => saindonBracket(ctx, l.rhythm, l.ticks, under, String(b + 1)))
+  if (card.cut) ctx.setFont('serif', ELLIPSIS_SIZE).fillText('…', left + CARD_BARS * barWidth + 12, line)
+  const struck = laid.flatMap((l) => l.ticks.filter((t, i) => !t.isRest() && l.rhythm[i]))
+  const accented = new Set(laid.flatMap((l) => l.ticks.filter((_, i) => l.rhythm[i]?.accent)))
+  const tips = inkTips(struck, accented, laid.flatMap((l) => l.tuplets))
+  const hasBracket = card.bars.some((bar) => bar.some((m) => m.bracket))
+  // the barlines span the hidden lines: the band holds them, the stems, accents and triplets, and the bracket
+  const top = first?.getYForLine(0) ?? 80
+  const bottom = first?.getYForLine(first.getNumLines() - 1) ?? 120
+  fitSvg(el, { top: Math.min(top, ...tips) - 4, bottom: Math.max(bottom, hasBracket ? under : bottom) + 4 }, STAFF_WIDTH, label)
 }

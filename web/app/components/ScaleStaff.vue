@@ -30,8 +30,6 @@
     </div>
     <div v-else>
       <div ref="el" class="text-zinc-900 dark:text-zinc-100 print:text-black" />
-      <!-- the rhythm card (rhythm-scales-arpeggios spec §1): drawn under the staff -->
-      <div v-if="staff.card" data-slot="rhythm-card" />
       <!-- on screen only, so print keeps its 12 staves a page -->
       <p v-if="intervals && staff.intervals && xs.length" class="relative h-4 text-xs/4 text-zinc-600 tabular-nums dark:text-zinc-400 print:hidden">
         <span class="sr-only">Intervals from the chord root:</span>
@@ -42,17 +40,19 @@
           :style="{ left: `${(xs[i] ?? 0) * 100}%` }"
         >{{ glyphs(label) }}</span>
       </p>
+      <!-- the rhythm card (rhythm-scales-arpeggios spec §1): drawn under the staff and its intervals -->
+      <div v-if="staff.card" ref="card" data-slot="rhythm-card" class="text-zinc-900 dark:text-zinc-100 print:text-black" />
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { type ChordAt, glyphs, hexatonicCaption, hexatonicChoices, type Part, PENTATONIC_DEGREE_LABELS, pentatonicCaption, pentatonicChoices, pickBars, pickHeading, type PickKind, quartalCaption, rootName, type StaffModel } from '@chord-scale-maker/engine'
+import { type ChordAt, glyphs, hexatonicCaption, hexatonicChoices, type Part, PENTATONIC_DEGREE_LABELS, pentatonicCaption, pentatonicChoices, pickBars, pickHeading, type PickKind, quartalCaption, type RhythmId, rhythmLabel, rootName, type StaffModel } from '@chord-scale-maker/engine'
 import { choiceId, hexChoiceRows, pickFooter, pickHeader } from '~/utils/chordPicks'
 import type { ChoiceRow } from './ChordPickPopover.vue'
 
-/** intervals: label each note against the chord root (b9, #11…); part and pickable: the caption picks for every bar it covers (#303); quartal: the Quartal preset is on, so its caption shows (#432) */
-const props = defineProps<{ staff: StaffModel; clef: 'treble' | 'bass'; intervals?: boolean; part?: Part; pickable?: boolean; quartal?: boolean }>()
+/** rhythm: the sheet's, for the card's label; intervals: label each note against the chord root (b9, #11…); part and pickable: the caption picks for every bar it covers (#303); quartal: the Quartal preset is on, so its caption shows (#432) */
+const props = defineProps<{ staff: StaffModel; clef: 'treble' | 'bass'; intervals?: boolean; part?: Part; pickable?: boolean; quartal?: boolean; rhythm?: RhythmId }>()
 const emit = defineEmits<{ pick: [kind: PickKind, positions: readonly ChordAt[], value: number | readonly [number, number] | null] }>()
 
 const kind = computed((): PickKind | null => (props.staff.pentatonic ? 'pentatonic' : props.staff.second ? 'hexatonic' : null))
@@ -87,6 +87,7 @@ function choose(id: string): void {
   else if (kind.value === 'hexatonic' && h) emit('pick', 'hexatonic', props.staff.positions, h.roots)
 }
 const el = useTemplateRef<HTMLDivElement>('el')
+const cardEl = useTemplateRef<HTMLDivElement>('card')
 const drawError = ref<string | null>(null)
 const xs = ref<number[]>([])
 const rendering = useRendering()
@@ -98,6 +99,7 @@ async function draw(): Promise<void> {
     const vf = await loadVexFlow()
     if (!el.value) return // still showing a previous draw error; keep it
     xs.value = drawStaff(vf, el.value, props.staff, props.clef)
+    if (props.staff.card && cardEl.value) drawRhythmCard(vf, cardEl.value, props.staff.card, staffNotesWidth(vf, props.staff, props.clef), cardAria(rhythmLabel(props.rhythm ?? 'off'), props.staff.card))
     drawError.value = null
   } catch (e) {
     drawError.value = `Couldn't draw this staff (${e instanceof Error ? e.message : String(e)})`

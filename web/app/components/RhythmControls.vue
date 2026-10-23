@@ -49,8 +49,9 @@
 </template>
 
 <script setup lang="ts">
-import { formatRhythm, LIBRARY_IDS, parseRhythm, parseRhythmId, positionLabel, type Pulse, PULSE_LABELS, type Rhythm, type RhythmId, rhythmLabel, RUN_ATTACKS, runPositions, UNIT_GROUPS, unitRhythm, type Variation, VARIATION_LABELS, VARIATIONS } from '@chord-scale-maker/engine'
+import { formatRhythm, LIBRARY_IDS, parseRhythmId, positionLabel, type Pulse, PULSE_LABELS, type RhythmId, rhythmLabel, RUN_ATTACKS, runPositions, UNIT_GROUPS, unitRhythm, type Variation, VARIATION_LABELS, VARIATIONS } from '@chord-scale-maker/engine'
 import type { FunctionalComponent } from 'vue'
+import { customRhythmId, RHYTHM_TEXT, useRhythmText } from '~/composables/useRhythmText'
 import { rhythmTextError } from '~/utils/rhythmText'
 import RailPopover from './RailPopover.vue'
 
@@ -89,28 +90,9 @@ const familyLabel = (f: RhythmFamily): string => {
   return kind === 'unit' ? PULSE_LABELS[pulse] : `Runs of ${PULSE_LABELS[pulse].toLowerCase()}`
 }
 const parsedRhythm = computed(() => parseRhythmId(rhythm.value))
-/** Your rhythm… chosen: its text plays while it's valid, Off while it isn't */
-const rhythmCustom = ref(parsedRhythm.value?.kind === 'custom')
-const rhythmText = ref(parsedRhythm.value?.kind === 'custom' ? formatRhythm(parsedRhythm.value.rhythm) : '')
-const customId = (r: Rhythm): RhythmId => `custom:${formatRhythm(r).replace(': ', ':')}`
+/** Your rhythm…: chosen, and its text; the owner's (PreviewControls), so text that doesn't read survives the panel closing */
+const { custom: rhythmCustom, text: rhythmText } = inject(RHYTHM_TEXT, () => useRhythmText(rhythm, () => shows('rhythm')), true)
 const rhythmError = computed(() => rhythmTextError(rhythmText.value))
-watch(rhythmText, (text) => {
-  if (!rhythmCustom.value) return
-  const r = parseRhythm(text)
-  rhythm.value = r ? customId(r) : 'off'
-})
-// the stored rhythm changed from outside (a share link, a reset): the listbox follows
-watch(rhythm, (id) => {
-  const p = parsedRhythm.value
-  const typed = parseRhythm(rhythmText.value)
-  if (p?.kind === 'custom' && (!typed || formatRhythm(typed) !== formatRhythm(p.rhythm))) rhythmText.value = formatRhythm(p.rhythm) // not typed here: the box follows
-  rhythmCustom.value = p?.kind === 'custom' || (id === 'off' && rhythmCustom.value && !parseRhythm(rhythmText.value)) // invalid text plays Off, still Your rhythm…
-})
-// a reset comes from the hidden-settings notice, with these controls hidden; it sets an Off rhythm to Off, which no
-// watch sees, so text that doesn't read stops holding Your rhythm… once the controls hide: they come back on Off
-watch(() => shows('rhythm'), (shown) => {
-  if (!shown && rhythm.value === 'off') rhythmCustom.value = false
-})
 const rhythmFamily = computed<RhythmFamily>({
   get: () => (rhythmCustom.value ? 'custom' : familyOf(rhythm.value)),
   set: (f) => {
@@ -119,8 +101,7 @@ const rhythmFamily = computed<RhythmFamily>({
     if (f === 'custom') {
       // start from the unit in force, as text to edit
       if (was?.kind === 'unit' && !rhythmText.value) rhythmText.value = formatRhythm(unitRhythm(was.pulse, was.group, was.variation))
-      const r = parseRhythm(rhythmText.value)
-      rhythm.value = r ? customId(r) : 'off'
+      rhythm.value = customRhythmId(rhythmText.value)
     } else if (f === 'off' || f.startsWith('card:')) {
       rhythm.value = f as RhythmId
     } else {

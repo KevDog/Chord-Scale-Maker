@@ -3,7 +3,7 @@
     <template v-if="$slots.status" #status><slot name="status" /></template>
     <template #default="{ page }">
       <div class="space-y-1 print:space-y-2">
-        <ScaleStaff v-for="s in page.staves" :key="s.id" :staff="s" :clef="part.clef" :intervals="intervals" :part="part" :pickable="pickable" :quartal="isQuartalSelection(practice ?? null)" @pick="(...a) => emit('pick', ...a)" />
+        <ScaleStaff v-for="s in page.staves" :key="s.id" :staff="s" :clef="part.clef" :intervals="intervals" :part="part" :pickable="pickable" :quartal="isQuartalSelection(practice ?? null)" :rhythm="rhythm" @pick="(...a) => emit('pick', ...a)" />
       </div>
     </template>
   </SheetPages>

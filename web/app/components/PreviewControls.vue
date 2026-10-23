@@ -294,6 +294,7 @@
     import { type Overlay, OVERLAY_CHOICES, OVERLAY_TITLE, overlayLabel } from '~/utils/overlay'
     import { type Spell, spellLabel, SPELLS } from '~/utils/scaleChoices'
     import type { SheetKind } from '~/utils/sheets'
+    import { RHYTHM_TEXT, useRhythmText } from '~/composables/useRhythmText'
     import type { FunctionalComponent } from 'vue'
     import { AdjustmentsHorizontalIcon } from '@heroicons/vue/16/solid'
     import ControlsDialog from './ControlsDialog.vue'
@@ -462,6 +463,8 @@
 
     /** the rhythm line and target beats (rhythm spec §9) */
     const rhythm = defineModel<RhythmId>('rhythm', { default: 'off' })
+    // Your rhythm…'s text lives here, not in RhythmControls, so text that doesn't read survives Line options closing
+    provide(RHYTHM_TEXT, useRhythmText(rhythm, () => shows('rhythm')))
     const targets = defineModel<boolean>('targets', { default: false })
     const rhythmOn = useFeature('rhythm')
     /** the Rhythm on the Scales and Arpeggios sheets (rhythm-scales-arpeggios spec D7) */

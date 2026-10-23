@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import type { ChangesBar, ChangesChord, ChangesLine, GuideNote, Letter, Pitched } from '@chord-scale-maker/engine'
-import { arpeggioAria, beamRuns, beatXs, DURATIONS, fitBars, guideAria, mergeNames, restatedAccidental, rhythmAria, targetsAria, SLASH_TARGET_ROW, targetRow, voicedBand, voltaShift, withTargets } from '~/utils/changesDrawing'
+import type { ChangesBar, ChangesChord, ChangesLine, GuideNote, Letter, Pitched, RhythmCardModel, RhythmNote } from '@chord-scale-maker/engine'
+import { arpeggioAria, beamRuns, beatXs, cardAria, DURATIONS, fitBars, guideAria, mergeNames, restatedAccidental, rhythmAria, targetsAria, SLASH_TARGET_ROW, targetRow, voicedBand, voltaShift, withTargets } from '~/utils/changesDrawing'
 
 const chord = (beat: number, text: string, guide: string): ChangesChord => ({
   beat,
@@ -262,5 +262,14 @@ describe('beamRuns (rhythm-on-lines spec §8)', () => {
   it('beams runs of two or more pitched notes sharing a mark beam; a rest splits a run', () => {
     expect(beamRuns([n(0), n(0, false), n(0), n(1), n(1), n(1)])).toEqual([[3, 4, 5]])
     expect(beamRuns([n(0), n(0), n(null), n(2), n(2)])).toEqual([[0, 1], [3, 4]])
+  })
+})
+
+describe('cardAria (rhythm-scales-arpeggios spec §1)', () => {
+  const q: RhythmNote = { beat: 0, value: 'q', rest: false, accent: false, tie: false, tiedIn: false, tuplet: null, beam: null, bracket: null }
+  const card = (bars: number, cut: boolean): RhythmCardModel => ({ bars: Array.from({ length: bars }, () => [q, q, q, q]), cut, beats: 4 })
+  it('names the rhythm and its bars, and says a cut card continues', () => {
+    expect(cardAria('8ths in 5, with accents', card(4, true))).toBe('Rhythm card: 8ths in 5, with accents, 4 bars, continues')
+    expect(cardAria('Downbeats', card(1, false))).toBe('Rhythm card: Downbeats, 1 bar')
   })
 })

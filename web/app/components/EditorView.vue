@@ -268,7 +268,7 @@
             :instrument-label="instrumentLabel(prefs.instrument.value)"
             :start="start"
             :mode="mode"
-            :per-page="PER_PAGE"
+            :per-page="sheetRhythm === 'off' ? PER_PAGE : CARD_PER_PAGE"
             :intervals="prefs.intervals.value"
             :practice="selection"
             :home-key="homeKey"
@@ -410,6 +410,7 @@ const props = defineProps<{ initialText: string; practiceKey?: string; saveTarge
 const emit = defineEmits<{ created: [id: string]; reload: [] }>()
 
 const PER_PAGE = 12
+const CARD_PER_PAGE = 10 // a Scales sheet with a rhythm card under each staff: 12 overflow a letter page (rhythm-scales-arpeggios spec §8)
 
 /** the level is a view preference: a blank cell plays the analysis at it, and nothing is written */
 const scaleLevel = useScaleLevel(props.practiceKey, props.shared)
