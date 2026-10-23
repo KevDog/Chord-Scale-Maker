@@ -2,7 +2,7 @@ import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
 import { flushPromises } from '@vue/test-utils'
 import { ref } from 'vue'
-import { PAGE_ZOOM } from '~/utils/sheetPaged'
+import { SHEET_PAGED } from '~/utils/sheetPaged'
 import PentatonicLadder from '~/components/PentatonicLadder.vue'
 import { buildChanges, CONCERT, type ChangesPentatonic, parseChart, type PentatonicPlan, showPentatonics } from '@chord-scale-maker/engine'
 
@@ -59,17 +59,10 @@ describe('the pentatonic ladder popover', () => {
     picked.unmount()
   })
 
-  it('undoes the zoom of a zoomed page, and not otherwise', async () => {
-    const panelStyle = async (zoom?: number) => {
-      const w = await mountSuspended(PentatonicLadder, { props, attachTo: document.body, ...(zoom ? { global: { provide: { [PAGE_ZOOM as symbol]: ref(zoom) } } } : {}) })
-      await w.find('button').trigger('click')
-      await flushPromises()
-      const style = w.find('[role=dialog]').attributes('style') ?? ''
-      w.unmount()
-      return style
-    }
-    expect(await panelStyle(0.5)).toContain('zoom: 2')
-    expect(await panelStyle()).not.toContain('zoom')
+  it('in focus mode is plain text: no button, no ladder (#488)', async () => {
+    const w = await mountSuspended(PentatonicLadder, { props, global: { provide: { [SHEET_PAGED as symbol]: ref(true) } } })
+    expect(w.find('button').exists()).toBe(false)
+    expect(w.text()).toBe(KEY.label)
   })
 })
 

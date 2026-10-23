@@ -91,7 +91,7 @@
           <!-- the click (#254): its controls in this bar, or a button to show them -->
           <ClickBar v-if="metronomeOn && click.shown.value" home="focus" :chart="clickChart" class="mr-auto min-w-0 flex-1" />
           <UiButton v-else-if="metronomeOn" outline class="mr-auto" :title="CLICK_TITLE" @click="click.show()"><MusicalNoteIcon data-slot="icon" />Click</UiButton>
-          <UiButton outline data-exit-focus @click="focus.exit"><XMarkIcon data-slot="icon" />Exit focus<kbd class="ml-1 font-sans text-xs text-zinc-500 dark:text-zinc-400">Esc</kbd></UiButton>
+          <UiButton outline data-exit-focus @click="focus.exit"><XMarkIcon data-slot="icon" />Exit focus<kbd class="ml-1 font-sans text-xs text-zinc-600 dark:text-zinc-400">Esc</kbd></UiButton>
         </div>
         <!-- display: contents, so the rail inside sticks over the whole section (the paper's top margin stands in for this
              box's own, which a contents box doesn't have) -->

@@ -1,7 +1,9 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
 import { afterEach, describe, expect, it, vi } from 'vitest'
+import { ref } from 'vue'
 import ChangesNote from '~/components/ChangesNote.vue'
+import { SHEET_PAGED } from '~/utils/sheetPaged'
 import { ISSUE_CONTEXT } from '~/utils/issueReport'
 
 const M4_PROPS = { reason: 'ii of the ii–V to C', heardIn: 'C major', keyFrom: 'found' as const, rule: 'm4', fallback: false, chord: 'Dm7', concert: 'Dm7', numeral: 'ii7', scale: 'D Dorian' }
@@ -242,5 +244,13 @@ describe('ChangesNote’s links to How it decides', () => {
     await v.find('button').trigger('click')
     expect(v.find('[role=dialog]').text()).not.toContain('Blues scale')
     v.unmount()
+  })
+})
+
+describe('ChangesNote in focus mode', () => {
+  it('is plain text: no button, no Why (#488)', async () => {
+    const w = await mountSuspended(ChangesNote, { props: base, slots: { default: () => 'D Dorian' }, global: { provide: { [ISSUE_CONTEXT as symbol]: CONTEXT, [SHEET_PAGED as symbol]: ref(true) } } })
+    expect(w.find('button').exists()).toBe(false)
+    expect(w.text()).toBe('D Dorian')
   })
 })

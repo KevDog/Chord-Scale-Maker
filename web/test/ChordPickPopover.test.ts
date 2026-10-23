@@ -1,7 +1,9 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
 import { flushPromises } from '@vue/test-utils'
+import { ref } from 'vue'
 import ChordPickPopover from '~/components/ChordPickPopover.vue'
+import { SHEET_PAGED } from '~/utils/sheetPaged'
 
 const base = {
   text: 'Dm♪',
@@ -99,5 +101,13 @@ describe('the chord pick popover’s footer', () => {
     const w = await open()
     expect(w.find('[role=dialog] a[href="/how-it-decides#pick.order"]').text()).toBe('Why this order?')
     w.unmount()
+  })
+})
+
+describe('ChordPickPopover in focus mode', () => {
+  it('is plain text: no button, no choices (#488)', async () => {
+    const w = await mountSuspended(ChordPickPopover, { props: base, global: { provide: { [SHEET_PAGED as symbol]: ref(true) } } })
+    expect(w.find('button').exists()).toBe(false)
+    expect(w.text()).toBe('Dm♪')
   })
 })
