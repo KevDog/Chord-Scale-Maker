@@ -154,6 +154,23 @@ describe('the Rhythm controls (rhythm spec §9)', () => {
       expect(w.find('#gears-error').text()).toContain('Pulses from 4, 8')
       expect(w.find('[aria-label="Gears"]').text()).toContain('Your list…')
     })
+
+    it('keeps Your list…’s text that doesn’t read, in Groups and Gears, when Line options closes and opens again (#553)', async () => {
+      const w = await at('unit:8:3:accents')
+      await choose(w, 'Groups', 'Your list…')
+      await w.find('input[aria-label="Your groups"]').setValue('3 9')
+      await choose(w, 'Gears', 'Your list…')
+      await w.find('input[aria-label="Your gears"]').setValue('8 32')
+      await nextTick()
+      await w.findAll('button').find((b) => b.attributes('aria-label') === 'Line options')!.trigger('click') // close
+      await nextTick()
+      expect(w.find('input[aria-label="Your groups"]').exists()).toBe(false)
+      await openPanel(w, 'Line options')
+      expect(w.find('[aria-label="Groups"]').text()).toContain('Your list…')
+      expect((w.find('input[aria-label="Your groups"]').element as HTMLInputElement).value).toBe('3 9')
+      expect(w.find('[aria-label="Gears"]').text()).toContain('Your list…')
+      expect((w.find('input[aria-label="Your gears"]').element as HTMLInputElement).value).toBe('8 32')
+    })
   })
 
   it('ties the Start and Timing help to their buttons, for a screen reader (#505)', async () => {
