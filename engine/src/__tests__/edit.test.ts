@@ -59,6 +59,12 @@ describe('chord changes and comparing charts', () => {
     expect(rowOf(setRowChord(doc('1 | Cm7 | C Dorian\n'), 1, 'Cm7#5#9x'))).toMatchObject({ scale: 'C Dorian' }) // unknown: kept
   })
 
+  it('drops a written function the new chord no longer plays (#492), and keeps it when the chord plays as before', () => {
+    expect(rowOf(setRowChord(doc('1 | A7 |  | V7/ii\n'), 1, 'Eb7'))).not.toHaveProperty('function')
+    expect(rowOf(setRowChord(doc('1 | Cm7 |  | ii\n'), 1, 'C7'))).not.toHaveProperty('function')
+    expect(rowOf(setRowChord(doc('1 | Cm7 |  | ii\n'), 1, 'Cm9'))).toMatchObject({ chord: 'Cm9', function: 'ii' })
+  })
+
   it('follows a default written on an enharmonic root to the new chord (R18: F# Whole-Half on Gbdim7)', () => {
     expect(rowOf(setRowChord(doc('1 | Gbdim7 | F# Whole-Half Diminished\n'), 1, 'Cm7'))).toMatchObject({ chord: 'Cm7', scale: 'C Dorian' })
     expect(rowOf(setRowChord(doc('1 | Gbdim7 | G Whole-Half Diminished\n'), 1, 'Cm7'))).toMatchObject({ scale: 'G Whole-Half Diminished' })
