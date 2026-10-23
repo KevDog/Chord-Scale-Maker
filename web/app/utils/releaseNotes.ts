@@ -10,6 +10,8 @@ export const RELEASE_NOTES: readonly ReleaseNote[] = [
   {
     date: '2026-10-23',
     items: [
+      { text: 'Hear what you practise. Under the click’s ⋯, Hear line plays the Changes sheet’s Line with the click, at concert pitch, and Hear rhythm taps its rhythm on a rim; both follow the form as written (repeats, endings, D.S. and D.C., to the Coda or Fine), each bar in its own meter, then go round again. The Swing dial sets how far the 8ths swing, from straight to a dotted 8th and a 16th; the chart remembers it.', pr: 571 },
+      { text: 'Play, by each Scales and Arpeggios staff’s label and each pentatonic on a Changes label’s ladder, sounds it at the click’s tempo: a scale up and down (only your Practice notes, with Practice on), an arpeggio as drawn. With the click running, it comes in on the next bar.', pr: 571 },
       { text: 'A chord page’s link now previews with its own card when shared: the chord on C, its name, formula and notes, and the scales that play over it.', pr: 566 },
       { text: 'In Focus, the sheet’s scale, numeral and pentatonic labels are plain text: the fitted pages set them too close together to tap reliably. Pick a scale or open a chord’s Why before going into Focus. And Exit focus’s Esc hint is darker, to read on the stand’s background.', pr: 565 },
       { text: 'Click on, in the click’s settings (after Bergonzi): the click can sound every beat, 2 and 4, 1 and 3, 3 only, 4 only, or the and of 2 and 4, leaving the other beats to you; the lights still follow every beat. It starts from the rhythm’s Feel (in 2: 2 and 4; in 1: 4 only), and the chart remembers it.', pr: 558 },
