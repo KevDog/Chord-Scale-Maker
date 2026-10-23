@@ -1,6 +1,6 @@
 import { isSheetLine, type SheetLine } from './arpeggios'
 import { type Approach, isApproach } from './approaches'
-import { isAnticipate, isNotesPerBar, isRhythmId, isRhythmPath, isRhythmStart, type NotesPerBar, type Pulse, RHYTHM_PATH_OFF, type RhythmId, type RhythmStart, type RhythmStep } from './rhythm'
+import { isAnticipate, isFeel, isNotesPerBar, isRhythmId, isRhythmPath, isRhythmStart, type NotesPerBar, type Pulse, RHYTHM_PATH_OFF, type RhythmId, type RhythmStart, type RhythmStep } from './rhythm'
 import { isPentatonicStep } from './pentatonics'
 import { type CellId, isCellId, isSystemId } from './cells'
 import { type CellOrder, isCellOrder } from './cellOrder'
@@ -78,6 +78,8 @@ export type ShareView = Readonly<{
   restate?: true
   /** the Changes sheet's rhythm path (Phase 4 spec §7): Groups, Gears and the Step; written only with a path on */
   rhythmPath?: ShareRhythmPath
+  /** the Changes sheet's Feel (Phase 4 spec §7): in 2 or in 1; absent: in 4 */
+  feel?: 2 | 1
   /** the Scales sheet's Notes per bar (rhythm-scales-arpeggios spec §9); absent: Whole notes */
   notesPerBar?: Exclude<NotesPerBar, 'whole'>
   sheet?: ShareSheet
@@ -185,6 +187,7 @@ export function shareViewFrom(v: unknown): ShareView | undefined {
     ...(isAnticipate(o.anticipate) && o.anticipate !== 0 ? { anticipate: o.anticipate } : {}),
     ...(o.restate === true ? { restate: true as const } : {}),
     ...(rhythmPath ? { rhythmPath } : {}),
+    ...(isFeel(o.feel) && o.feel !== 4 ? { feel: o.feel } : {}),
     ...(isNotesPerBar(o.notesPerBar) && o.notesPerBar !== 'whole' ? { notesPerBar: o.notesPerBar } : {}),
     ...(o.sheet === 'scales' || o.sheet === 'changes' || o.sheet === 'arpeggios' || o.sheet === 'patterns' ? { sheet: o.sheet } : {}),
     ...(isArpNotes(o.arpNotes) ? { arpNotes: o.arpNotes } : {}),

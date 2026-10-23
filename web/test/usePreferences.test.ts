@@ -174,6 +174,24 @@ describe('usePreferences', () => {
     }
   })
 
+  it('reads Feel (Phase 4 spec §7): 4, 2 or 1, else 4; 4 with the rhythmGears flag off, keeping it stored (D8)', async () => {
+    expect(prefs().feel.value).toBe(4)
+    localStorage.setItem('csm-feel', '1')
+    expect(prefs().feel.value).toBe(1)
+    flags.rhythmGears = false
+    expect(prefs().feel.value).toBe(4)
+    expect(localStorage.getItem('csm-feel')).toBe('1')
+    flags.rhythmGears = true
+    for (const bad of ['3', 'in 2', '', ' 2', '2.0']) {
+      localStorage.setItem('csm-feel', bad)
+      expect(prefs().feel.value).toBe(4)
+    }
+    const p = prefs()
+    p.feel.value = 2
+    await nextTick()
+    expect(localStorage.getItem('csm-feel')).toBe('2')
+  })
+
   it('reads Notes per bar (rhythm-scales-arpeggios spec §9): 1 to 7, else Whole notes; Whole notes with the rhythmSheets flag off, keeping it stored', async () => {
     expect(prefs().notesPerBar.value).toBe('whole')
     localStorage.setItem('csm-notes-per-bar', '5')
@@ -317,6 +335,14 @@ describe('linkPreferences', () => {
     expect(linkRhythmPath({ sheet: 'changes' })).toEqual(RHYTHM_PATH_OFF)
     flags.rhythmGears = false
     expect(linkRhythmPath({ rhythmPath: { groups: [3, 4] } })).toEqual(RHYTHM_PATH_OFF)
+  })
+
+  it('shows the Feel a link was sent with, in 4 without one, and ignores it with the rhythmGears flag off (Phase 4 spec §7, D8)', () => {
+    localStorage.setItem('csm-feel', '2')
+    expect(linked({ sheet: 'changes', feel: 1 }).feel.value).toBe(1)
+    expect(linked({ sheet: 'changes' }).feel.value).toBe(4)
+    flags.rhythmGears = false
+    expect(linked({ sheet: 'changes', feel: 1 }).feel.value).toBe(4)
   })
 
   it('writes a rhythm path for a link without its One lists, and reads it back', () => {

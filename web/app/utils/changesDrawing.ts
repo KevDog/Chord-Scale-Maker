@@ -1,4 +1,4 @@
-import { accText, barKey, type ChangesBar, type ChangesLine, type GuideNote, type NoteBeats, type Pitched, PULSE_LABELS, PULSE_SHORT_LABELS, type RhythmCardModel, type RhythmNote, signatureAccidentals, toVexKey } from '@chord-scale-maker/engine'
+import { accText, barKey, type ChangesBar, type Feel, type ChangesLine, type GuideNote, type NoteBeats, type Pitched, PULSE_LABELS, PULSE_SHORT_LABELS, type RhythmCardModel, type RhythmNote, signatureAccidentals, toVexKey } from '@chord-scale-maker/engine'
 import { BAR_UNITS, cropBand, fitSvg, headCentre, inkStave, signatureLead, STAFF_WIDTH, STAVE_Y, svgContext, TIME_SPACE, type VexFlowModule } from './vexflow'
 
 /**
@@ -36,7 +36,8 @@ type Clef = 'treble' | 'bass'
 /** first: the sheet's first line, which starts with the clef */
 /** rhythmCaption: the sheet's rhythm caption, for the aria-label of a line with a rhythm (rhythm spec §8) */
 /** fromBar: the line's first bar, counted from the sheet's first (1), for the step marks' aria-label (Phase 4 spec §6) */
-type Opts = Readonly<{ first: boolean; barsPerLine: number; clef?: Clef; names?: readonly (readonly NamedBeat[])[]; arpeggio?: boolean; lineName?: string; rhythmCaption?: string | null; fromBar?: number }>
+/** feel: the sheet's Feel, marked over its first bar (first) in 2 and in 1 (Phase 4 spec §6, D21); undefined: in 4 */
+type Opts = Readonly<{ first: boolean; barsPerLine: number; clef?: Clef; names?: readonly (readonly NamedBeat[])[]; arpeggio?: boolean; lineName?: string; rhythmCaption?: string | null; fromBar?: number; feel?: Feel }>
 type Band = Readonly<{ top: number; bottom: number }>
 type Beam = InstanceType<VexFlowModule['Beam']>
 type Stave = InstanceType<VexFlowModule['Stave']>
@@ -55,6 +56,8 @@ const DOT_RISE = 12 // a target dot's center over the highest ink: the staff, a 
 const DOT_ROOM = 6 // the crop's room over a dot's center
 /** a slash line's target dots: in the staff's top space, over the slashes (which reach only the lines either side of the middle), so no line grows and the page budgets hold */
 export const SLASH_TARGET_ROW = STAFF_TOP + 5
+/** a slash line's Feel mark (Phase 4 spec §6): over the staff, in the clef's headroom on the sheet's first line (CLEF_BAND's top, 64), its glyphs about 69 to 76 */
+const SLASH_FEEL_ROW = STAFF_TOP - 8
 
 /** the target dots' row (rhythm spec §7), in drawing units: over the staff and the line's ink tops */
 export function targetRow(inkTops: readonly number[], staffTop = STAFF_TOP): number {
@@ -228,6 +231,17 @@ export function stepAria(line: ChangesLine, fromBar: number): string {
   return line.bars.map((b, i) => (b.step ? `, from bar ${fromBar + i}: ${stepWords(b.step)}` : '')).join('')
 }
 
+/** the Feel mark's words over the sheet's first bar (Phase 4 spec D21): "in 2" or "in 1"; null in 4 */
+export const feelMark = (feel: Feel | undefined): string | null => (feel === 2 || feel === 1 ? `in ${feel}` : null)
+
+/** the Feel mark the line draws: its words on the sheet's first line (opts.first), else null */
+const lineFeel = (opts: Opts): string | null => (opts.first ? feelMark(opts.feel) : null)
+
+/** the aria-label's Feel mark: "; feel in 2" on the line that draws it; '' without */
+export function feelAria(mark: string | null): string {
+  return mark ? `; feel ${mark}` : ''
+}
+
 const hasTargets = (line: ChangesLine): boolean => line.bars.some((b) => b.targets.length > 0)
 /** a line with a step mark to draw: a numeral, a gear's name or both */
 const stepped = (line: ChangesLine): boolean => line.bars.some((b) => b.step !== null)
@@ -340,11 +354,32 @@ function setVolta(vf: VexFlowModule, stave: Stave, bar: ChangesBar, y: number): 
   stave.setVoltaType(t, v.start ? `${v.n}.` : '', y)
 }
 
-function slashes(vf: VexFlowModule, beats: number): StaveNote[] {
-  return Array.from({ length: beats }, () => {
-    const note = new vf.StaveNote({ keys: ['b/4'], duration: 'q', type: 's', autoStem: false })
+/**
+ * a bar's plain slashes (Phase 4 spec D18): one a beat in 4; in 2 and in 1 one a group, its half or whole slash
+ * hollow (VexFlow's slash heads at h and w), dotted where needed, and a group longer than a whole note in tied pieces
+ */
+function slashes(vf: VexFlowModule, marks: ChangesBar['slashes']): StaveNote[] {
+  return marks.map((m) => {
+    const note = marked(vf, new vf.StaveNote({ keys: ['b/4'], duration: m.value, type: 's', autoStem: false }), m.value, false)
     note.setStemStyle({ strokeStyle: 'transparent', fillStyle: 'transparent' }) // slashes without stems
     return note
+  })
+}
+
+/** a ghost a beat where a bar's slashes don't fall one a beat (Feel in 2 or 1), so each beat still has its x; else none */
+const slashGrid = (vf: VexFlowModule, bar: ChangesBar): GhostNote[] => (bar.slashes.length === bar.beats ? [] : Array.from({ length: bar.beats }, () => new vf.GhostNote('q')))
+
+/** each beat's x in a bar of plain slashes, as a fraction of total: its slash's head centre, else its ghost's (slashGrid) */
+function slashXs(bar: ChangesBar, notes: readonly StaveNote[], grid: readonly GhostNote[], total: number): number[] {
+  if (!grid.length) return notes.map((n) => headCentre(n, total))
+  const starts = new Map(bar.slashes.flatMap((m, i) => (notes[i] ? [[m.beat, headCentre(notes[i], total)] as const] : [])))
+  return beatXs(starts, grid.map((g) => g.getAbsoluteX()), total)
+}
+
+/** the ties between a bar's slash pieces (D18: a group longer than a whole note) */
+function slashTies(vf: VexFlowModule, ctx: Context, bar: ChangesBar, notes: readonly StaveNote[]): void {
+  bar.slashes.forEach((m, i) => {
+    if (m.tie && notes[i] && notes[i + 1]) new vf.StaveTie({ firstNote: notes[i], lastNote: notes[i + 1], firstIndexes: [0], lastIndexes: [0] }).setContext(ctx).draw()
   })
 }
 
@@ -426,16 +461,22 @@ export function drawChangesLine(vf: VexFlowModule, el: HTMLElement, line: Change
     const stave = staveFor(vf, bar, b === 0, x, width, clef)
     setVolta(vf, stave, bar, VOLTA_Y)
     stave.setContext(ctx).draw()
-    const notes = slashes(vf, bar.beats)
-    const voice = voiceOf(vf, bar.beats, notes)
-    new vf.Formatter().joinVoices([voice]).format([voice], staveRoom(stave, x, width))
-    voice.draw(ctx, stave)
-    xs.push(notes.map((n) => headCentre(n, total)))
+    const notes = slashes(vf, bar.slashes)
+    const grid = slashGrid(vf, bar)
+    const voices = [notes, grid].filter((l) => l.length).map((l) => voiceOf(vf, bar.beats, l))
+    new vf.Formatter().joinVoices(voices).format(voices, staveRoom(stave, x, width))
+    voices.forEach((v) => v.draw(ctx, stave))
+    slashTies(vf, ctx, bar, notes)
+    xs.push(slashXs(bar, notes, grid, total))
     x += width
   })
   const plain = clef ? CLEF_BAND : BAND
   const { band, at } = withTargets(line.bars.some((b) => b.volta) ? { top: VOLTA_BAND.top, bottom: plain.bottom } : plain, hasTargets(line) ? SLASH_TARGET_ROW : null)
-  fitSvg(el, band, total, barsLabel(line) + targetsAria(line))
+  const feel = lineFeel(opts)
+  // the Feel mark over the staff, in the headroom the first line's clef keeps (CLEF_BAND), so no line grows; under it
+  // the slash line's target dots sit in the staff's top space (SLASH_TARGET_ROW), clear of it
+  if (feel && line.bars[0]) drawFeelMark(ctx, line.bars[0], (xs[0] ?? []).map((x) => x * total), widths[0] ?? 0, feel, clef ? SLASH_FEEL_ROW : SLASH_TARGET_ROW, !clef && hasTargets(line)) // no clef, no headroom: in the top space, after a dot
+  fitSvg(el, band, total, barsLabel(line) + feelAria(feel) + targetsAria(line))
   return { xs, ends: endsOf(widths, total), scales, fits, split: null, dots: at }
 }
 
@@ -446,7 +487,7 @@ type Laid = Readonly<{
   model: readonly GuideNote[]
   ticks: readonly StaveNote[]
   grid: readonly GhostNote[] // a ghost a beat, formatted with the notes: where each beat falls
-  plain: readonly StaveNote[] // slashes, for a bar without guide tones
+  plain: readonly StaveNote[] // slashes, for a bar without guide tones (their grid: a ghost a beat where they don't fall one a beat)
   all: readonly Voice[]
   beams: readonly Beam[] // eighths and sixteenths of an arpeggio line, grouped by the beat; a poured bar's by its marks
   tuplets: readonly InstanceType<VexFlowModule['Tuplet']>[] // a poured bar's tuplets
@@ -477,9 +518,9 @@ function guideVoices(vf: VexFlowModule, bar: ChangesBar, first: boolean, stave: 
   const ticks = model.map((n, i) => tickFor(vf, n, noteClef, first && i === 0 ? restatedAccidental(n, bar.keySig) : null))
   const poured = model.some((n) => n.mark)
   const tuplets = tupletsOf(vf, ticks, (i) => model[i]?.mark)
-  const grid = ticks.length ? Array.from({ length: bar.beats }, () => new vf.GhostNote('q')) : []
-  const plain = ticks.length ? [] : slashes(vf, bar.beats)
-  const lists: readonly (readonly Tick[])[] = ticks.length ? [ticks, grid] : [plain]
+  const grid = ticks.length ? Array.from({ length: bar.beats }, () => new vf.GhostNote('q')) : slashGrid(vf, bar)
+  const plain = ticks.length ? [] : slashes(vf, bar.slashes)
+  const lists: readonly (readonly Tick[])[] = (ticks.length ? [ticks, grid] : [plain, grid]).filter((l) => l.length)
   const all = lists.map((ticks) => {
     ticks.forEach((t) => t.setStave(stave))
     return voiceOf(vf, bar.beats, ticks)
@@ -526,7 +567,8 @@ function drawGuideLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, op
   const bracket = first && line.bars.some((b) => b.volta) ? first.getYForTopText(first.getNumLines()) + VOLTA_Y : null
   const tops = [...tips, ...heads.map((y) => y - ACCIDENTAL_RISE)]
   const row = hasTargets(line) ? targetRow([...tips, ...heads]) : null // a dot sits over its head's center, clear of the accidental to its left
-  const marks = stepped(line) ? targetRow([...tips, ...heads]) : null // a poured Line's step marks share the dots' row
+  const feel = lineFeel(opts)
+  const marks = stepped(line) || feel ? targetRow([...tips, ...heads]) : null // a poured Line's step marks and the Feel mark share the dots' row
   const shift = first && bracket !== null ? voltaShift([...tops, ...[row ?? marks].flatMap((r) => (r === null ? [] : [r - DOT_ROOM]))], bracket + 1.5 * first.getSpacingBetweenLines()) : 0
   laid.forEach((l) => {
     setVolta(vf, l.stave, l.bar, VOLTA_Y + shift)
@@ -536,6 +578,7 @@ function drawGuideLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, op
   laid.forEach((l) => l.beams.forEach((b) => b.setContext(ctx).draw()))
   unbracketCrowded(laid.flatMap((l) => l.tuplets))
   laid.forEach((l) => l.tuplets.forEach((t) => t.setContext(ctx).draw()))
+  laid.forEach((l) => slashTies(vf, ctx, l.bar, l.plain))
   // target tones (rhythm-on-lines spec §6): colored as Practice highlighting colors a scale's notes
   laid.forEach((l) => l.model.forEach((m, i) => m.target && l.ticks[i]?.getSVGElement()?.classList.add(m.target === 'tone' ? 'vf-selected' : 'vf-dimmed')))
 
@@ -551,7 +594,7 @@ function drawGuideLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, op
   })
 
   const xs = laid.map((l) => {
-    if (!l.ticks.length) return l.plain.map((n) => headCentre(n, total))
+    if (!l.ticks.length) return slashXs(l.bar, l.plain, l.grid, total)
     const starts = new Map<number, number>()
     l.model.forEach((m, i) => {
       const t = l.ticks[i]
@@ -561,8 +604,8 @@ function drawGuideLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, op
   })
   const { band, at } = withTargets(voicedBand([...heads, ...tips], bracket === null ? null : bracket + shift), row)
   const poured = line.bars.some((b) => b.voice.some((n) => n.mark))
-  if (marks !== null) drawStepMarks(ctx, laid, stepRow(marks, band.top), row === null ? null : xs.map((bar) => bar.map((x) => x * total)))
-  fitSvg(el, band, total, barsLabel(line) + (opts.arpeggio ? arpeggioAria(line, opts.lineName) : guideAria(line)) + (poured ? rhythmAria(opts.rhythmCaption ?? null) + stepAria(line, opts.fromBar ?? 1) : '') + targetsAria(line))
+  if (marks !== null) drawMarks(ctx, laid, stepRow(marks, band.top), xs.map((bar) => bar.map((x) => x * total)), row !== null, feel)
+  fitSvg(el, band, total, barsLabel(line) + (opts.arpeggio ? arpeggioAria(line, opts.lineName) : guideAria(line)) + (poured && opts.rhythmCaption ? '' : feelAria(feel)) + (poured ? rhythmAria(opts.rhythmCaption ?? null) + stepAria(line, opts.fromBar ?? 1) : '') + targetsAria(line))
   return { xs, ends: endsOf(widths, total), scales, fits, split, dots: at }
 }
 
@@ -676,15 +719,17 @@ const GEAR_MARK_MIN = 7 // the smallest it shrinks to, to fit its room, before i
 const GEAR_MARK_GAP = 3 // from the numeral (as measured) to the gear's name
 const GEAR_MARK_CLEAR = 10 // from the gear's name's end to the next target dot's centre, or to the barline
 
+const STEP_MARK_MIN = 8 // the smallest a numeral shrinks to, to fit its room (a numeral is never cut)
+
 /**
- * a gear's name at the size that fits room (drawing units): GEAR_MARK_SIZE, else shrunk as far as GEAR_MARK_MIN,
- * else cut short with an ellipsis; the context's font is left at the size returned
+ * italic words (a gear's name, the Feel mark) at the size that fits room (drawing units): size, else shrunk as far
+ * as GEAR_MARK_MIN, else cut short with an ellipsis; the context's font is left at the size returned
  */
-function fitGearName(ctx: Context, name: string, room: number): Readonly<{ text: string; size: number }> {
+function fitItalic(ctx: Context, name: string, room: number, fullSize = GEAR_MARK_SIZE): Readonly<{ text: string; size: number }> {
   const width = (text: string, size: number): number => ctx.setFont('serif', size, 'normal', 'italic').measureText(text).width
-  const full = width(name, GEAR_MARK_SIZE)
-  if (full <= room) return { text: name, size: GEAR_MARK_SIZE }
-  const size = Math.max(GEAR_MARK_MIN, (GEAR_MARK_SIZE * room) / full)
+  const full = width(name, fullSize)
+  if (full <= room) return { text: name, size: fullSize }
+  const size = Math.max(GEAR_MARK_MIN, (fullSize * room) / full)
   if (width(name, size) <= room) return { text: name, size }
   const cut = [...name].findLastIndex((_, k) => k > 0 && width(`${name.slice(0, k).trimEnd()}…`, size) <= room)
   return { text: `${name.slice(0, Math.max(1, cut)).trimEnd()}…`, size }
@@ -695,10 +740,11 @@ function fitGearName(ctx: Context, name: string, room: number): Readonly<{ text:
  * already clear of the crop's top): the circled numeral where the group changes, then the pulse's short name in small
  * italics where the pulse changes; the mark starts centred on the note's head (its numeral, or its name's first
  * letter), or just right of a target dot over it. dots: each bar's target dots' x by beat, in drawing units (null:
- * the line draws none); the name keeps clear of the next dot and of the barline (fitGearName). data-rhythm-step: the
- * group and pulse
+ * the line draws none); the mark keeps clear of the next dot and of the barline: the numeral shrinks as far as
+ * STEP_MARK_MIN (on the sheet's first bar it may start after the Feel mark: after), the name shrinks or is cut short
+ * (fitItalic). data-rhythm-step: the group and pulse
  */
-export function drawStepMarks(ctx: Context, bars: readonly Readonly<{ bar: ChangesBar; ticks: readonly StaveNote[]; stave: Stave }>[], row: number, dots: readonly (readonly number[])[] | null): void {
+export function drawStepMarks(ctx: Context, bars: readonly MarkedBar[], row: number, dots: readonly (readonly number[])[] | null, after: number | null = null): void {
   bars.forEach(({ bar, ticks, stave }, b) => {
     const first = ticks[0]
     if (!bar.step || !first) return
@@ -706,19 +752,64 @@ export function drawStepMarks(ctx: Context, bars: readonly Readonly<{ bar: Chang
     const lead = group !== null ? STEP_MARK_SIZE * STEP_MARK_WIDTH : GEAR_MARK_SIZE * 0.6 // the mark's first glyph, to centre
     const centre = (first.getNoteHeadBeginX() + first.getNoteHeadEndX()) / 2
     const dotXs = dots ? bar.targets.flatMap((beat) => (dots[b]?.[beat] === undefined ? [] : [dots[b]![beat]!])) : []
-    const left = dots && bar.targets.includes(0) ? centre + STEP_MARK_GAP : centre - lead / 2
+    const own = dots && bar.targets.includes(0) ? centre + STEP_MARK_GAP : centre - lead / 2
+    const left = b === 0 && after !== null ? Math.max(own, after + FEEL_MARK_GAP) : own // after the Feel mark on the sheet's first bar
     const g: unknown = ctx.openGroup('rhythm-step')
     if (g instanceof Element) g.setAttribute('data-rhythm-step', [group, pulse].filter((v) => v !== null).join(' '))
-    const numeral = group === null ? 0 : ctx.setFont('serif', STEP_MARK_SIZE).measureText(stepNumeral(group)).width
+    const endFrom = (x: number): number => Math.min(stave.getX() + stave.getWidth(), ...dotXs.filter((d) => d > x)) - GEAR_MARK_CLEAR
+    const numeral = group === null ? 0 : fitNumeral(ctx, stepNumeral(group), endFrom(left) - left)
     if (group !== null) ctx.fillText(stepNumeral(group), left, row + STEP_MARK_SIZE * 0.35) // its baseline, so its middle sits on the row
     if (pulse !== null) {
       const x = group !== null ? left + numeral + GEAR_MARK_GAP : left
-      const end = Math.min(stave.getX() + stave.getWidth(), ...dotXs.filter((d) => d > x)) - GEAR_MARK_CLEAR
-      const { text, size } = fitGearName(ctx, PULSE_SHORT_LABELS[pulse], end - x)
+      const { text, size } = fitItalic(ctx, PULSE_SHORT_LABELS[pulse], endFrom(x) - x)
       ctx.fillText(text, x, row + size * 0.35)
     }
     ctx.closeGroup()
   })
+}
+
+/** a numeral at STEP_MARK_SIZE, else shrunk to fit room as far as STEP_MARK_MIN; the context's font is left at that size; returns its width */
+function fitNumeral(ctx: Context, numeral: string, room: number): number {
+  const full = ctx.setFont('serif', STEP_MARK_SIZE).measureText(numeral).width
+  if (full <= room) return full
+  return ctx.setFont('serif', Math.max(STEP_MARK_MIN, (STEP_MARK_SIZE * room) / full)).measureText(numeral).width
+}
+
+const FEEL_MARK_SIZE = 10 // the Feel mark: small italics, as a gear's name, so it keeps to the target dots' band
+const FEEL_MARK_GAP = 5 // from the Feel mark's end to a step mark on the same bar
+
+/** the room (drawing units) the Feel mark leaves on the first bar for its step mark: the numeral and a gear's name at their least */
+const stepReserve = (step: ChangesBar['step']): number =>
+  step === null ? 0 : FEEL_MARK_GAP + (step.group !== null ? STEP_MARK_MIN * STEP_MARK_WIDTH : 0) + (step.pulse !== null ? GEAR_MARK_GAP + GEAR_MARK_MIN * 2 : 0)
+
+type MarkedBar = Readonly<{ bar: ChangesBar; ticks: readonly StaveNote[]; stave: Stave }>
+
+/**
+ * the Feel mark over the sheet's first bar (Phase 4 spec §6, D21) on row (drawing units): "in 2" or "in 1" in small
+ * italics, its first letter centred on the bar's first beat (xs: its beats' x, in drawing units), or just right of a
+ * target dot on it (dotted: the line draws dots), as a step mark starts; it keeps clear of the next dot and of the
+ * barline (right), leaving room for a step mark on the bar (stepReserve), shrunk or cut short as a gear's name is
+ * (fitItalic). Returns its right edge: a step mark on the same bar follows it. data-feel-mark: its words
+ */
+function drawFeelMark(ctx: Context, bar: ChangesBar, xs: readonly number[], right: number, text: string, row: number, dotted: boolean): number {
+  const x = xs[0] ?? 0
+  const left = dotted && bar.targets.includes(0) ? x + STEP_MARK_GAP : x - FEEL_MARK_SIZE * 0.15
+  const dots = dotted ? bar.targets.flatMap((beat) => (xs[beat] === undefined ? [] : [xs[beat]])) : []
+  const end = Math.min(right, ...dots.filter((d) => d > left)) - GEAR_MARK_CLEAR - stepReserve(bar.step)
+  const fit = fitItalic(ctx, text, end - left, FEEL_MARK_SIZE)
+  const g: unknown = ctx.openGroup('feel-mark')
+  if (g instanceof Element) g.setAttribute('data-feel-mark', text)
+  ctx.fillText(fit.text, left, row + fit.size * 0.35) // its baseline, so its middle sits on the row
+  ctx.closeGroup()
+  return left + ctx.measureText(fit.text).width
+}
+
+/** a voiced or rhythm line's marks on the dots' row (xs: each bar's beats' x, in drawing units; dotted: the line draws target dots): the Feel mark (feel: its words, on the sheet's first line) first, then the step marks after it */
+function drawMarks(ctx: Context, bars: readonly MarkedBar[], row: number, xs: readonly (readonly number[])[], dotted: boolean, feel: string | null): void {
+  const first = bars[0]
+  const after = feel && first && xs[0] ? drawFeelMark(ctx, first.bar, xs[0], first.stave.getX() + first.stave.getWidth(), feel, row, dotted) : null
+  const dots = dotted ? xs : null
+  drawStepMarks(ctx, bars, row, dots, after)
 }
 
 /** the row the step marks sit on, in a crop whose top is top: the target dots' row, brought down as withTargets brings a dot */
@@ -736,9 +827,10 @@ type RhythmLaid = Readonly<{
 
 type RhythmVoices = Readonly<{ ticks: readonly StaveNote[]; tuplets: readonly Tuplet[]; grid: readonly GhostNote[]; all: readonly Voice[]; beams: readonly Beam[] }>
 
-/** a rhythm bar's notes on its stave (slashes with none), their tuplets and beams, and a ghost a beat: where each beat falls */
-function rhythmVoices(vf: VexFlowModule, rhythm: readonly RhythmNote[], beats: number, stave: Stave, clef: Clef): RhythmVoices {
-  const ticks = rhythm.length ? rhythm.map((n) => rhythmTick(vf, n, clef)) : slashes(vf, beats)
+/** a rhythm bar's notes on its stave (its plain slashes with none), their tuplets and beams, and a ghost a beat: where each beat falls */
+function rhythmVoices(vf: VexFlowModule, bar: ChangesBar, stave: Stave, clef: Clef): RhythmVoices {
+  const { rhythm, beats } = bar
+  const ticks = rhythm.length ? rhythm.map((n) => rhythmTick(vf, n, clef)) : slashes(vf, bar.slashes)
   const tuplets = tupletsOf(vf, ticks, (i) => rhythm[i])
   const grid = Array.from({ length: beats }, () => new vf.GhostNote('q'))
   const all = [ticks, grid].map((list) => {
@@ -756,7 +848,7 @@ function rhythmVoices(vf: VexFlowModule, rhythm: readonly RhythmNote[], beats: n
  */
 function drawRhythmLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, opts: Opts): ChangesLayout {
   const noteClef: Clef = opts.clef ?? 'treble'
-  const notesOf: NotesOf = (bar, _, stave) => rhythmVoices(vf, bar.rhythm, bar.beats, stave, noteClef).all[0]!
+  const notesOf: NotesOf = (bar, _, stave) => rhythmVoices(vf, bar, stave, noteClef).all[0]!
   const rooms = lineRooms(vf, line, opts, notesOf)
   const { clef, total, widths, scales, fits, notes } = geometry(vf, line, opts, rooms)
   const split = notes < line.bars.length ? crowdedSplit(vf, line, opts, notesOf) : null
@@ -767,8 +859,8 @@ function drawRhythmLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, o
   const laid = line.bars.map((bar, b): RhythmLaid => {
     const width = widths[b] ?? 0
     const stave = staveFor(vf, bar, b === 0, x, width, clef)
-    const { tight } = notesFit(vf, stave, () => rhythmVoices(vf, bar.rhythm, bar.beats, stave, noteClef).all[0]!)
-    const { ticks, tuplets, grid, all, beams } = rhythmVoices(vf, bar.rhythm, bar.beats, stave, noteClef)
+    const { tight } = notesFit(vf, stave, () => rhythmVoices(vf, bar, stave, noteClef).all[0]!)
+    const { ticks, tuplets, grid, all, beams } = rhythmVoices(vf, bar, stave, noteClef)
     formatVoices(vf, all, staveRoom(stave, x, width), tight)
     beams.forEach((beam) => beam.postFormat())
     x += width
@@ -783,7 +875,8 @@ function drawRhythmLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, o
   const first = laid[0]?.stave
   const bracket = first && line.bars.some((b) => b.volta) ? first.getYForTopText(first.getNumLines()) + VOLTA_Y : null
   const row = hasTargets(line) ? targetRow(tips) : null
-  const marks = stepped(line) ? targetRow(tips) : null // the step marks share the dots' row
+  const feel = lineFeel(opts)
+  const marks = stepped(line) || feel ? targetRow(tips) : null // the step marks and the Feel mark share the dots' row
   const shift = first && bracket !== null ? voltaShift([...tips, ...[row ?? marks].flatMap((r) => (r === null ? [] : [r - DOT_ROOM]))], bracket + 1.5 * first.getSpacingBetweenLines()) : 0
   laid.forEach((l) => {
     setVolta(vf, l.stave, l.bar, VOLTA_Y + shift)
@@ -795,6 +888,9 @@ function drawRhythmLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, o
   laid.forEach((l) => l.tuplets.forEach((t) => t.setContext(ctx).draw()))
 
   rhythmTies(vf, ctx, laid.map((l) => ({ rhythm: l.bar.rhythm, ticks: l.ticks })))
+  laid.forEach((l) => {
+    if (!l.bar.rhythm.length) slashTies(vf, ctx, l.bar, l.ticks) // a bar the rhythm leaves empty: its plain slashes
+  })
   const under = (first?.getBottomLineY() ?? 120) + BRACKET_DROP
   laid.forEach((l) => saindonBracket(ctx, l.bar.rhythm, l.ticks, under, barKey(l.bar.at)))
 
@@ -808,8 +904,8 @@ function drawRhythmLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, o
   })
   const hasBracket = line.bars.some((b) => b.rhythm.some((m) => m.bracket))
   const { band, at } = withTargets(voicedBand([...heads, ...tips, ...(hasBracket ? [under] : [])], bracket === null ? null : bracket + shift), row)
-  if (marks !== null) drawStepMarks(ctx, laid, stepRow(marks, band.top), row === null ? null : xs.map((bar) => bar.map((x) => x * total)))
-  fitSvg(el, band, total, barsLabel(line) + rhythmAria(opts.rhythmCaption ?? null) + stepAria(line, opts.fromBar ?? 1) + targetsAria(line))
+  if (marks !== null) drawMarks(ctx, laid, stepRow(marks, band.top), xs.map((bar) => bar.map((x) => x * total)), row !== null, feel)
+  fitSvg(el, band, total, barsLabel(line) + (opts.rhythmCaption ? '' : feelAria(feel)) + rhythmAria(opts.rhythmCaption ?? null) + stepAria(line, opts.fromBar ?? 1) + targetsAria(line))
   return { xs, ends: endsOf(widths, total), scales, fits, split, dots: at }
 }
 

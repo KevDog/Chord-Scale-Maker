@@ -1,5 +1,5 @@
 import type { Locator, Page } from '@playwright/test'
-import { chooseGears, chooseGroups, chooseRhythm, chooseSheet, chooseStart, closePanel, closePentatonicOptions, expect, openPanel, pentatonicPreset, pickOption, rhythmDrawn, showApproach, showArpeggios, showCell, showPentatonics, showTargets, staves, test } from '../fixtures'
+import { chooseFeel, chooseGears, chooseGroups, chooseRhythm, chooseSheet, chooseStart, closePanel, closePentatonicOptions, expect, openPanel, pentatonicPreset, pickOption, rhythmDrawn, showApproach, showArpeggios, showCell, showPentatonics, showTargets, staves, test } from '../fixtures'
 import { expectAccessible } from './axe'
 
 const SONG = '/song/autumn-leaves'
@@ -165,6 +165,17 @@ for (const theme of ['light', 'dark'] as const) {
       await expect(page.locator('[data-rhythm-step]').first()).toHaveText('③♩ triplets')
       await openPanel(page, 'Line options') // the Groups, Gears and Step listboxes, scanned too
       await expect(page.getByRole('button', { name: 'Step', exact: true })).toBeVisible()
+      await expectAccessible(page)
+    })
+
+    test('the Changes in 1, its mark and the Feel listbox (Phase 4 spec §6, §7; flag rhythmGears)', async ({ page }) => {
+      await page.goto(SONG)
+      if (theme === 'dark') await darkMode(page)
+      await chooseFeel(page, 'In 1')
+      await showTargets(page)
+      await expect(page.locator('[data-feel-mark]')).toHaveText(['in 1'])
+      await openPanel(page, 'Line options') // the Feel listbox, scanned too
+      await expect(page.getByRole('button', { name: 'Feel', exact: true })).toHaveText('Feel: In 1')
       await expectAccessible(page)
     })
 

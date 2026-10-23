@@ -1,5 +1,5 @@
 import type { Ref, WritableComputedRef } from 'vue'
-import { type Approach, type ArpDirection, type CellId, type CellOrder, CHROMATIC_CELLS, fitRange, formatPattern, isCellId, parsePattern, type PatternNotes, type ArpeggioPattern, type ArpNotes, type InstrumentName, INSTRUMENTS, isApproach, isArpDirection, isArpeggioPattern, isArpNotes, isCellOrder, isInstrumentName, isAnticipate, isRhythmStart, type RhythmStart, isPairLineShape, isPairShape, isPatternNotes, isPentatonicLeave, isNotesPerBar, isRhythmId, type NotesPerBar, type RhythmId, type HexatonicBasis, type PairLineShape, type PairShape, type QuartalNotesChoice, type PentatonicBasis, PENTATONIC_LEAVE, type PentatonicLeave, type PentatonicDegree, pentatonicDegreeFrom, type PentatonicSide, type Range, RHYTHM_PATH_OFF, type RhythmPath, type ShareRhythmPath, type ShareView } from '@chord-scale-maker/engine'
+import { type Approach, type ArpDirection, type Feel, type CellId, type CellOrder, CHROMATIC_CELLS, fitRange, formatPattern, isCellId, parsePattern, type PatternNotes, type ArpeggioPattern, type ArpNotes, type InstrumentName, INSTRUMENTS, isApproach, isArpDirection, isArpeggioPattern, isArpNotes, isCellOrder, isInstrumentName, isAnticipate, isRhythmStart, type RhythmStart, isPairLineShape, isPairShape, isPatternNotes, isPentatonicLeave, isNotesPerBar, isRhythmId, type NotesPerBar, type RhythmId, type HexatonicBasis, type PairLineShape, type PairShape, type QuartalNotesChoice, type PentatonicBasis, PENTATONIC_LEAVE, type PentatonicLeave, type PentatonicDegree, pentatonicDegreeFrom, type PentatonicSide, type Range, RHYTHM_PATH_OFF, type RhythmPath, type ShareRhythmPath, type ShareView } from '@chord-scale-maker/engine'
 import { type GuideFrom, type LineMode, lineChoiceOf } from '~/utils/sheetLine'
 import { FUNCTIONS_KEYS } from '~/utils/functionsKey'
 import { isSpell, type Spell } from '~/utils/scaleChoices'
@@ -75,6 +75,8 @@ export function usePreferences() {
   const rhythmOn = useFeature('rhythm')
   const gearsOn = useFeature('rhythmGears')
   const rhythm = storedRef<RhythmId>('csm-rhythm', (s) => (isRhythmId(s) && rhythmOn && (gearsOn || !isGearsRhythm(s)) ? s : undefined), 'off')
+  // the Changes sheet's Feel (Phase 4 spec §7): in 4 until chosen, global like the rhythm; with the rhythmGears flag off a stored one reads as 4 but stays stored
+  const feel = storedRef<Feel>('csm-feel', (s) => (gearsOn && (s === '4' || s === '2' || s === '1') ? (Number(s) as Feel) : undefined), 4, String)
   const targets = storedRef<boolean>('csm-targets', (s) => (rhythmOn && (s === 'on' || s === 'off') ? s === 'on' : undefined), false, (v) => (v ? 'on' : 'off'))
   // where the rhythm starts, its timing and Restate (rhythm spec §10): on the beat, on time and off until chosen
   const rhythmStart = storedRef<RhythmStart>('csm-rhythm-start', (s) => (isRhythmStart(s) && rhythmOn ? s : undefined), 'beat')
@@ -118,7 +120,7 @@ export function usePreferences() {
   const source = storedRef<boolean>('csm-source', (s) => s === 'on', false, (v) => (v ? 'on' : 'off'))
   // the /functions page's key: C major until another is picked
   const functionsKey = storedRef<string>('csm-functions-key', (s) => (FUNCTIONS_KEYS.includes(s) ? s : undefined), 'C')
-  return { instrument, range: rangeRef(instrument), spell, intervals, showEditor, numerals, scaleNames, lineMode, guideLine, approach, rhythm, targets, rhythmStart, anticipate, restate, notesPerBar, arpeggio, cells, cellsOrder, cellsPhrase, arpNotes, arpDir, arpShape, pattern, patternNotes, patternDir, overlay, pentRung, pentSide, pentBasis, pentDegree, pentLeave, pairLine, hexBasis, quartNotes, quartPerfect, source, functionsKey }
+  return { instrument, range: rangeRef(instrument), spell, intervals, showEditor, numerals, scaleNames, lineMode, guideLine, approach, rhythm, feel, targets, rhythmStart, anticipate, restate, notesPerBar, arpeggio, cells, cellsOrder, cellsPhrase, arpNotes, arpDir, arpShape, pattern, patternNotes, patternDir, overlay, pentRung, pentSide, pentBasis, pentDegree, pentLeave, pairLine, hexBasis, quartNotes, quartPerfect, source, functionsKey }
 }
 
 /** a share link's rhythm path (Phase 4 spec §7), for the visit (useRhythmPath's initial): a list it leaves out is One, its step Section; off with the rhythmGears flag off */
@@ -153,6 +155,7 @@ export function linkPreferences(view: ShareView) {
     guideLine: ref<GuideFrom>(choice.guide ?? own.guideLine.value),
     approach: ref<Approach>(useFeature('approaches') ? (view.approach ?? 'none') : 'none'), // a link shows what it was sent with: none without
     rhythm: ref<RhythmId>(useFeature('rhythm') && (useFeature('rhythmGears') || !isGearsRhythm(view.rhythm ?? 'off')) ? (view.rhythm ?? 'off') : 'off'), // a link shows what it was sent with: off without (or at a tuplet pulse, the rhythmGears flag off)
+    feel: ref<Feel>(useFeature('rhythmGears') ? (view.feel ?? 4) : 4), // a link shows what it was sent with: in 4 without (Phase 4 spec §7, D8)
     targets: ref<boolean>(useFeature('rhythm') ? (view.targets ?? false) : false),
     rhythmStart: ref<RhythmStart>(useFeature('rhythm') ? (view.rhythmStart ?? 'beat') : 'beat'),
     anticipate: ref<number>(useFeature('rhythm') ? (view.anticipate ?? 0) : 0),

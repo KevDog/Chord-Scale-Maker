@@ -257,7 +257,7 @@ export function cellVoices(
     if (!found && !isRest(c.chord) && !missing.includes(noTonesFor(c.chord))) missing.push(noTonesFor(c.chord))
     return found
   })
-  const poured = rhythm ? lineRhythm(rhythm.id, rhythm.bars, rhythm.breaks, lineSpans(chords, cells, beats, rhythm), rhythm.start, rhythm.anticipate) : null
+  const poured = rhythm ? lineRhythm(rhythm.id, rhythm.bars, rhythm.breaks, lineSpans(chords, cells, beats, rhythm), rhythm.start, rhythm.anticipate, rhythm.feel) : null
   const segments: readonly Segment[] = poured ? spanSegments(chords, poured, beats) : barSegments(chords, cells, beats, valueOf)
 
   const played: Played[] = []

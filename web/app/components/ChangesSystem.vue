@@ -302,6 +302,7 @@ import {
   type ChordPreview,
   CONCERT,
   concertPc,
+  type Feel,
   glyphs,
   type GridPos,
   hexatonicChoices,
@@ -340,6 +341,7 @@ const props = defineProps<{
   lineName?: string // that arpeggio line's name in the aria-label: 'pentatonic' (#284), 'triad pair' (#325), 'quartal' (#432); else 7th chords
   rhythmCaption?: string | null // the sheet's rhythm caption, for the aria-label of a line with a rhythm (rhythm spec §8)
   fromBar?: number // the line's first bar, counted from the sheet's first, for its step marks' aria-label (Phase 4 spec §6); undefined: 1
+  feel?: Feel // the sheet's Feel, marked over its first bar (the first line) in 2 and in 1 (Phase 4 spec §6); undefined: in 4
   editable?: boolean // each chord a button that asks to edit it
   selectedLine?: number | null // the chart line of the chord the editor is on, outlined
   doc?: ChartDoc // the chart (the set played, #469), for the sheet editor's field
@@ -617,7 +619,7 @@ async function draw(): Promise<void> {
     await document.fonts?.ready // names measured in their own font
     const names = measureNames()
     drawn = key(names)
-    const layout = drawChangesLine(vf, el.value, props.line, { first: props.first, barsPerLine: props.barsPerLine, ...(props.clef ? { clef: props.clef } : {}), ...(props.arpeggio ? { arpeggio: true } : {}), ...(props.lineName ? { lineName: props.lineName } : {}), ...(props.rhythmCaption ? { rhythmCaption: props.rhythmCaption } : {}), ...(props.fromBar ? { fromBar: props.fromBar } : {}), ...(names ? { names } : {}) })
+    const layout = drawChangesLine(vf, el.value, props.line, { first: props.first, barsPerLine: props.barsPerLine, ...(props.clef ? { clef: props.clef } : {}), ...(props.arpeggio ? { arpeggio: true } : {}), ...(props.lineName ? { lineName: props.lineName } : {}), ...(props.rhythmCaption ? { rhythmCaption: props.rhythmCaption } : {}), ...(props.fromBar ? { fromBar: props.fromBar } : {}), ...(props.feel ? { feel: props.feel } : {}), ...(names ? { names } : {}) })
     xs.value = layout.xs
     ends.value = layout.ends
     dotsAt.value = layout.dots
@@ -652,5 +654,5 @@ onBeforeUnmount(() => {
   observer?.disconnect()
   clearTimeout(resized)
 })
-watch(() => [props.line, props.first, props.barsPerLine, props.clef, props.arpeggio, props.lineName, props.rhythmCaption, props.fromBar, props.others], () => nextTick(draw))
+watch(() => [props.line, props.first, props.barsPerLine, props.clef, props.arpeggio, props.lineName, props.rhythmCaption, props.fromBar, props.feel, props.others], () => nextTick(draw))
 </script>

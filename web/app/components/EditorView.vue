@@ -137,6 +137,7 @@
             v-model:anticipate="prefs.anticipate.value"
             v-model:restate="prefs.restate.value"
             v-model:targets="prefs.targets.value"
+            v-model:feel="prefs.feel.value"
             v-model:arpeggio="prefs.arpeggio.value"
             v-model:cells="prefs.cells.value"
             v-model:cells-order="prefs.cellsOrder.value"
@@ -235,6 +236,7 @@
             :rhythm="prefs.rhythm.value"
             :rhythm-path="rhythmPath.path.value"
             :targets="prefs.targets.value"
+            :feel="prefs.feel.value"
             :rhythm-start="prefs.rhythmStart.value"
             :anticipate="prefs.anticipate.value"
             :restate="prefs.restate.value"
@@ -684,7 +686,7 @@ const picksInForce = computed((): boolean => {
 const approachShown = computed(() => (approachApplies(prefs.lineMode.value, prefs.overlay.value) ? prefs.approach.value : 'none'))
 /** settings in force whose controls this Interface level hides (a share link, a stored preference): the notice offers to show them or reset them */
 const hidden = computed(() =>
-  hiddenSettings(ui.level.value, { sheet: sheet.value, scaleLevel: scaleLevel.level.value, numerals: showNumerals.value, scaleNames: showScaleNames.value, lineMode: prefs.lineMode.value, spell: prefs.spell.value, practice: selection.value, overlay: prefs.overlay.value, picks: picksInForce.value, approach: approachShown.value, rhythm: sheetRhythm.value, targets: prefs.targets.value, rhythmStart: prefs.rhythmStart.value, anticipate: prefs.anticipate.value, rhythmLine: lineTakesRhythm.value, notesPerBar: sheetNotesPerBar.value, rhythmPath: rhythmPath.path.value }),
+  hiddenSettings(ui.level.value, { sheet: sheet.value, scaleLevel: scaleLevel.level.value, numerals: showNumerals.value, scaleNames: showScaleNames.value, lineMode: prefs.lineMode.value, spell: prefs.spell.value, practice: selection.value, overlay: prefs.overlay.value, picks: picksInForce.value, approach: approachShown.value, rhythm: sheetRhythm.value, targets: prefs.targets.value, rhythmStart: prefs.rhythmStart.value, anticipate: prefs.anticipate.value, rhythmLine: lineTakesRhythm.value, notesPerBar: sheetNotesPerBar.value, rhythmPath: rhythmPath.path.value, feel: prefs.feel.value }),
 )
 /** each reset, given the mode in force before any of them ran (resetting the spelling changes the mode) */
 const RESETS: Readonly<Record<HiddenSetting, (inForce: Mode) => void>> = {
@@ -710,6 +712,7 @@ const RESETS: Readonly<Record<HiddenSetting, (inForce: Mode) => void>> = {
     if (isGearsRhythm(prefs.rhythm.value)) prefs.rhythm.value = 'off'
     rhythmPath.reset()
   },
+  feel: () => (prefs.feel.value = 4), // Phase 4 spec §7
   spell: () => (prefs.spell.value = 'key'),
   practice: (inForce) => practice.setSelection(inForce, null),
   pentatonics: () => {
@@ -998,6 +1001,7 @@ async function shareUrl(): Promise<string> {
     ...(sheet.value === 'changes' && prefs.rhythm.value !== 'off' && prefs.anticipate.value !== 0 ? { anticipate: prefs.anticipate.value } : {}), // absent: on time
     ...(sheet.value === 'changes' && prefs.rhythm.value !== 'off' && prefs.restate.value ? { restate: true as const } : {}), // absent: off
     ...(sheet.value === 'changes' && prefs.targets.value ? { targets: true } : {}), // target beats; absent: off
+    ...(sheet.value === 'changes' && prefs.feel.value !== 4 ? { feel: prefs.feel.value } : {}), // Phase 4 spec §7; absent: in 4
     ...(sheet.value === 'changes' && rhythmPathActs.value ? { rhythmPath: shareRhythmPath(rhythmPath.path.value) } : {}), // Phase 4 spec §7; absent: no path
     ...(sheet.value === 'patterns' ? { pattern: prefs.pattern.value, patternNotes: prefs.patternNotes.value, patternDir: prefs.patternDir.value } : {}),
     ...(sheet.value === 'arpeggios' ? { arpNotes: prefs.arpNotes.value, arpDir: prefs.arpDir.value, ...(prefs.arpNotes.value === 'pairs' ? { arpShape: prefs.arpShape.value } : {}) } : {}),

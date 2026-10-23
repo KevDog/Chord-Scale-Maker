@@ -93,7 +93,8 @@ Everything is a view preference, and nothing is written into chart rows.
     unit's statement (Saindon), and tuplet beams by their group, don't change.
 20. **Feel's target beats:** in 4 and in 2, today's `targetBeats` (1 and 3 in 4/4). In 1, the downbeat only.
 21. **Feel's mark:** "in 2" or "in 1" shows in italics over the sheet's first bar, and "in 4" shows nothing. The
-    rhythm caption gains ` · in 2` or ` · in 1`.
+    rhythm caption gains ` · feel in 2` or ` · feel in 1` ("feel" so it can't be read as a grouping next to a Groups
+    path's "in 3 → 4 → 5").
 22. **Tiers:** a new id, `rhythm-gears` (Everything), covers the new pulse families in the Rhythm listbox and the
     Groups, Gears and Step controls. A second new id, `feel` (Everything), covers Feel. A stored id at a new pulse
     still plays at a lower tier, and the hidden-settings notice lists it under `rhythm-gears`.
@@ -277,7 +278,7 @@ function feelGroups(beats: number, feel: Feel): readonly number[]   // each grou
 | 4/4 slashes | q q q q | h h | w |
 | 3/4 slashes | q q q | hd | hd |
 | 5/4 slashes | q ×5 | hd h | w tied q |
-| 4/4 `run:8:4:0` beams | (8 8)(8 8) r h | (8 8 8 8) r h | (8 8 8 8) r h |
+| 4/4 `run:8:4:0` beams | (8 8)(8 8) r r | (8 8 8 8) r r | (8 8 8 8) r r (rests as today: Feel doesn't change them) |
 | 4/4 `card:downbeats` | q q q q (no beams; unchanged) | same | same |
 | 4/4 `unit:8:3:accents` | beams by statement (unchanged) | same | same |
 | 4/4 target beats | 1, 3 | 1, 3 | 1 |
@@ -321,7 +322,7 @@ The drawing changes are in `web/app/utils/changesDrawing.ts`:
   - **Step** (aria-label "Step"), shown when either path is on.
 
   *Your list…* reveals a text field validated as the custom rhythm field is, with an error under it.
-- **Feel:** a listbox on the Changes rail's Rhythm group (aria-label "Feel", options *In 4*, *In 2*, *In 1*, title
+- **Feel:** a listbox in Line options, under the rhythm (the Changes rhythm controls' home; the rail has no Rhythm group) (aria-label "Feel", options *In 4*, *In 2*, *In 1*, title
   "Group the beats in 4, in 2 (half time) or in 1"), with the flag on and `shows('feel')`. It is shown with or
   without a rhythm, because it changes the plain slashes and the target beats too.
 - **Preferences:**

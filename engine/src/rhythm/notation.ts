@@ -2,6 +2,7 @@
  * Notation (rhythm spec §6): each bar's events split into drawable notes, with their tuplets, beams and brackets.
  * Pure TypeScript, so the sheet only maps these notes onto its drawing.
  */
+import { feelGroups, type Feel } from './feel'
 import { statementAt, type Laid, type RhythmEvent } from './lay'
 import { PULSE_GRID, pulseBeat, type Pulse, type PulseGrid, type RhythmValue } from './rhythm'
 
@@ -156,18 +157,23 @@ function brackets(splits: readonly Split[], statement: number | null): readonly 
   return splits.map((_, i) => (i === first && i === last ? 'both' : i === first ? 'start' : i === last ? 'end' : null))
 }
 
-/** Each bar's drawable notes, one array a bar (§6). */
-export function rhythmNotes(laid: Laid): readonly (readonly RhythmNote[])[] {
+/**
+ * Each bar's drawable notes, one array a bar (§6). `feel` regroups a per-bar rhythm's straight beams (Phase 4 spec
+ * D19): by the beat in 4, by the group in 2, by the bar in 1.
+ */
+export function rhythmNotes(laid: Laid, feel: Feel = 4): readonly (readonly RhythmNote[])[] {
   return laid.bars.map((events, b) => {
     const pulse = laid.pulses[b]!
     const tuplets = PULSE_GRID[pulse].tuplet !== null
     const beatOf = (at: number): number => Math.floor(pulseBeat(pulse, at))
+    const groups = feelGroups(Math.round(pulseBeat(pulse, events.reduce((n, e) => n + e.length, 0))), feel)
+    const feelGroup = (at: number): number => groups.findLastIndex(g => g <= beatOf(at))
     // a repeating rhythm's statements are counted per step (Phase 4 spec §3)
     const statement = laid.kind === 'repeat' ? statementAt(laid, b) : beatOf
     const splits = events.flatMap(e => splitEvent(e, pulse, statement))
     const tupletOf = renumber(splits.map(s => s.note.tuplet))
-    // tuplet notes beam by their group (Phase 4 spec §2), a per-bar rhythm's by the beat (a straight pulse's group)
-    const group = (s: Split): number => (tuplets || laid.kind === 'bar' ? tupletGroup(pulse, s.at) : s.statement)
+    // tuplet notes beam by their group (Phase 4 spec §2), a per-bar rhythm's by its Feel's group (D19)
+    const group = (s: Split): number => (tuplets ? tupletGroup(pulse, s.at) : laid.kind === 'bar' ? feelGroup(s.at) : s.statement)
     const beamOf = beams(splits, group)
     // the sheet's first statement in bar 0, and the statement starting each later landing bar
     const bracketed = laid.kind === 'repeat' && laid.landings.includes(b) ? (b === 0 ? 0 : events[0]!.statement) : null

@@ -23,7 +23,7 @@ import { abbreviateScale } from './scales'
 import { type QuartalNotesChoice, type QuartalStack, rankedStacks } from './quartal'
 import { type QuartalLine, quartalVoices } from './quartalLine'
 import { chunk, orNull } from './util'
-import { layRhythm, markTargets, phrasingCaption, type Pulse, rhythmCaption, type RhythmId, type RhythmNote, rhythmNotes, type RhythmPath, type RhythmPlan, type RhythmStart, rhythmStepMarks, rhythmSteps, targetBeats } from './rhythm'
+import { type Feel, type FeelSlash, feelSlashes, feelTargets, layRhythm, markTargets, phrasingCaption, type Pulse, rhythmCaption, type RhythmId, type RhythmNote, rhythmNotes, type RhythmPath, type RhythmPlan, type RhythmStart, rhythmStepMarks, rhythmSteps } from './rhythm'
 
 /**
  * The Changes sheet (docs/plan-changes.md): the chart as a study lead sheet. Bars of slashes in the chart's metre
@@ -150,7 +150,9 @@ export type ChangesBar = Readonly<{
   voice: readonly GuideNote[]
   /** the rhythm line's notes in place of the slashes (rhythm spec §8); [] with the rhythm off or a Line on */
   rhythm: readonly RhythmNote[]
-  /** its target beats, from 0 (rhythm spec §7); [] with target beats off */
+  /** the plain slashes, drawn with no rhythm line and no Line: one a group of the Feel (Phase 4 spec D18), a quarter a beat in 4 */
+  slashes: readonly FeelSlash[]
+  /** its target beats, from 0 (rhythm spec §7), the Feel's (Phase 4 spec D20); [] with target beats off */
   targets: readonly number[]
   /** over a rhythm path's step's first bar, the group and the pulse where they change (Phase 4 spec D17); null elsewhere, and with no path or no rhythm drawn */
   step: Readonly<{ group: number | null; pulse: Pulse | null }> | null
@@ -482,8 +484,8 @@ export function takesRhythm(line: ChangesLineChoice, restate: boolean): boolean 
   return true
 }
 
-/** view: the level the sheet plays blank cells at (resolve.ts); the guide tones read the chords only; overlay: the row under the chords, the pentatonics' rungs by section or the hexatonics (null: no row); approach: the figure into the guide tone line's notes, and the 7th Chords and Cells lines' first note over each chord (#381); options: rhythm, over the bars as drawn: the rhythm line with the Line off (rhythm spec §8), else poured into a Line that takes it (rhythm-on-lines spec §1); targets, each bar's target beats (§7); start, anticipate and restate, how a Line plays the rhythm (rhythm-on-lines spec §3, §2, §5), inert without one; rhythmPath, the Groups and Gears paths the rhythm steps through, with their marks and caption (Phase 4 spec §3) */
-export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatures = false, line: ChangesLineChoice = 'off', view: ScaleView = STANDARD, overlay: OverlayPlan | null = null, approach: Approach = 'none', { rhythm = 'off', targets = false, start = 'beat', anticipate = 0, restate = false, rhythmPath }: Readonly<{ rhythm?: RhythmId; targets?: boolean; start?: RhythmStart; anticipate?: number; restate?: boolean; rhythmPath?: RhythmPath }> = {}): ChangesSheet {
+/** view: the level the sheet plays blank cells at (resolve.ts); the guide tones read the chords only; overlay: the row under the chords, the pentatonics' rungs by section or the hexatonics (null: no row); approach: the figure into the guide tone line's notes, and the 7th Chords and Cells lines' first note over each chord (#381); options: rhythm, over the bars as drawn: the rhythm line with the Line off (rhythm spec §8), else poured into a Line that takes it (rhythm-on-lines spec §1); targets, each bar's target beats (§7); start, anticipate and restate, how a Line plays the rhythm (rhythm-on-lines spec §3, §2, §5), inert without one; rhythmPath, the Groups and Gears paths the rhythm steps through, with their marks and caption (Phase 4 spec §3); feel, in 4, 2 or 1: the slashes, beat-grouped beams, target beats and caption (Phase 4 spec §4), display only */
+export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatures = false, line: ChangesLineChoice = 'off', view: ScaleView = STANDARD, overlay: OverlayPlan | null = null, approach: Approach = 'none', { rhythm = 'off', targets = false, start = 'beat', anticipate = 0, restate = false, rhythmPath, feel = 4 }: Readonly<{ rhythm?: RhythmId; targets?: boolean; start?: RhythmStart; anticipate?: number; restate?: boolean; rhythmPath?: RhythmPath; feel?: Feel }> = {}): ChangesSheet {
   const pentatonic = overlay?.kind === 'pentatonic' ? overlay : null
   const { layout, rows, beats, timeline, clock, t } = laidOut(doc)
   const { diagnostics } = timeline
@@ -702,7 +704,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
   const poured = rhythm !== 'off' && takesRhythm(line, restate)
   // the rhythm path's plan: one id per run of drawn bars, by its own step's units over the same drawn blocks (Phase 4 spec §3)
   const steps = rhythmPath ? rhythmSteps(rhythm, rhythmPath, unitsBy(rhythmPath.step).ofDrawnBar) : rhythm
-  const plan: RhythmPlan | undefined = poured ? { id: steps, start, anticipate, bars: lengths, clockBars, breaks } : undefined
+  const plan: RhythmPlan | undefined = poured ? { id: steps, start, anticipate, bars: lengths, clockBars, breaks, feel } : undefined
   const voices: { bars: ReadonlyMap<number, readonly GuideNote[]>; labels: ReadonlyMap<number, string>; missing: readonly string[] } | null =
     line === 'off'
       ? null
@@ -787,8 +789,9 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
         beats: barLength(clock, bar) as Beats,
         timeSignature: null,
         chords,
-        voice: targets ? markTargets(voices?.bars.get(bar) ?? [], targetBeats(barLength(clock, bar)), tonesAt(bar)) : (voices?.bars.get(bar) ?? []),
+        voice: targets ? markTargets(voices?.bars.get(bar) ?? [], feelTargets(barLength(clock, bar), feel), tonesAt(bar)) : (voices?.bars.get(bar) ?? []),
         rhythm: [],
+        slashes: feelSlashes(barLength(clock, bar), feel),
         targets: [],
         step: null,
         marker: j === 0 ? block.marker : '',
@@ -832,14 +835,14 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
   // the rhythm over the bars as drawn: the rhythm line with the Line off, else captioned when a Line took it; its
   // landings don't depend on forcing, so the caption reads the rhythm as laid
   const laid = line === 'off' || poured ? layRhythm(steps, lengths, breaks) : null
-  const notes = laid && line === 'off' ? rhythmNotes(laid) : []
-  const caption = laid ? rhythmCaption(rhythm, laid, rhythmPath) : null
+  const notes = laid && line === 'off' ? rhythmNotes(laid, feel) : []
+  const caption = laid ? rhythmCaption(rhythm, laid, rhythmPath, feel) : null
   const marks = laid && typeof steps !== 'string' ? rhythmStepMarks(rhythm, rhythmPath, steps, lengths.length) : []
   const firstOf = counted.reduce<number[]>((acc, l) => [...acc, acc.at(-1)! + l.bars.length], [0]) // each line's first bar, counted over the sheet
   // lines, then their bars: the rhythm's notes are laid over the whole sheet, so each bar finds its own by its line's first bar plus its place in the line
   const rhythmLines = counted.map((l, n): ChangesLine => ({
     ...l,
-    bars: l.bars.map((b, j): ChangesBar => ({ ...b, rhythm: notes[firstOf[n]! + j] ?? [], targets: targets ? targetBeats(b.beats) : [], step: marks[firstOf[n]! + j] ?? null })),
+    bars: l.bars.map((b, j): ChangesBar => ({ ...b, rhythm: notes[firstOf[n]! + j] ?? [], targets: targets ? feelTargets(b.beats, feel) : [], step: marks[firstOf[n]! + j] ?? null })),
   }))
   return {
     lines: rhythmLines,

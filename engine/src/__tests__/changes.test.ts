@@ -1502,3 +1502,43 @@ describe('rowBarBeats', () => {
     expect(rows.map((_, i) => rowBarBeats(doc).get(i))).toEqual(rows.map(() => 4))
   })
 })
+
+describe('buildChanges: Feel (Phase 4 spec §4)', () => {
+  const bars = (sheet: ChangesSheet) => sheet.lines.flatMap((l) => l.bars)
+  const doc = parseChart('key: C\n\nsection: A\n1 | CMaj7\n2 | Dm7\n').value
+  const five = parseChart('time: 5/4\nkey: C\n\nsection: A\n1 | CMaj7\n').value
+  const values = (b: ChangesBar) => b.slashes.map((s) => `${s.value}${s.tie ? '~' : ''}`)
+  const build = (d: ChartDoc, options: Parameters<typeof buildChanges>[8] = {}) => buildChanges(d, CONCERT, 4, false, 'off', undefined, null, 'none', options)
+
+  it('slashes a quarter a beat with no feel, unchanged otherwise', () => {
+    expect(bars(build(doc)).map(values)).toEqual([['q', 'q', 'q', 'q'], ['q', 'q', 'q', 'q']])
+    expect(bars(build(doc)).map((b) => b.slashes.map((s) => s.beat))).toEqual([[0, 1, 2, 3], [0, 1, 2, 3]])
+    expect(build(doc, { rhythm: 'run:8:4:0', targets: true, feel: 4 })).toEqual(build(doc, { rhythm: 'run:8:4:0', targets: true }))
+  })
+
+  it('slashes by the group in 2 and the bar in 1', () => {
+    expect(bars(build(doc, { feel: 2 })).map(values)).toEqual([['h', 'h'], ['h', 'h']])
+    expect(bars(build(doc, { feel: 1 })).map(values)).toEqual([['w'], ['w']])
+    expect(bars(build(five, { feel: 2 })).map(values)).toEqual([['hd', 'h']])
+    expect(bars(build(five, { feel: 1 })).map(values)).toEqual([['w~', 'q']])
+  })
+
+  it('targets the downbeat alone in 1', () => {
+    expect(bars(build(doc, { targets: true, feel: 2 })).map((b) => b.targets)).toEqual([[0, 2], [0, 2]])
+    expect(bars(build(doc, { targets: true, feel: 1 })).map((b) => b.targets)).toEqual([[0], [0]])
+    expect(bars(buildChanges(doc, CONCERT, 4, false, 'up-root', undefined, null, 'none', { targets: true, feel: 1 }))[0]!.voice.map((x) => x.target ?? null)).toEqual(['tone', null, null, null])
+  })
+
+  it('beams the rhythm line by the group, and captions the feel', () => {
+    expect(bars(build(doc, { rhythm: 'run:8:4:0', feel: 2 }))[0]!.rhythm.map((n) => n.beam)).toEqual([0, 0, 0, 0, null, null])
+    expect(build(doc, { rhythm: 'run:8:4:0', feel: 2 }).rhythmCaption).toBe('Rhythm: 4 8ths from 1 · feel in 2')
+    expect(build(doc, { rhythm: 'run:8:4:0', feel: 4 }).rhythmCaption).toBe('Rhythm: 4 8ths from 1')
+  })
+
+  it('beams a poured Line by the group, the phrasing after the feel', () => {
+    const sheet = buildChanges(doc, CONCERT, 4, false, 'up-root', undefined, null, 'none', { rhythm: 'run:8:4:0', feel: 1, start: 'pickup-1' })
+    // the pick-up into Dm7 on beat 4& stands alone after the rest
+    expect(bars(sheet)[0]!.voice.filter((n) => n.pitch !== null).map((n) => n.mark?.beam ?? null)).toEqual([0, 0, 0, 0, null])
+    expect(sheet.rhythmCaption).toBe('Rhythm: 4 8ths from 1 · feel in 1 · 1-note pick-ups')
+  })
+})
