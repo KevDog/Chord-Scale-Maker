@@ -1,5 +1,5 @@
 import type { InjectionKey, Ref } from 'vue'
-import { type Beats, type ClickFeel, type ClickPattern, type ClickPlan, type ClickState, type Feel, type PhraseNote, type RhythmHit, type TimedClick, type VoiceNote, CLICK_PATTERNS, clampSwing, clampTempo, defaultFeel, defaultPattern, defaultTempo, SWING, scheduleClicks, scheduleRhythm, scheduleVoice, tapTempo, timePhrase } from '@chord-scale-maker/engine'
+import { type Beats, type ClickFeel, type ClickForm, type ClickPattern, type ClickPlan, type ClickState, type Feel, type PhraseNote, type RhythmHit, type TimedClick, type VoiceNote, CLICK_PATTERNS, clampSwing, clampTempo, defaultFeel, defaultPattern, defaultTempo, formBar, SWING, scheduleClicks, scheduleRhythm, scheduleVoice, tapTempo, timePhrase } from '@chord-scale-maker/engine'
 import { type ClickAudio, type ClickSound, CLICK_SOUNDS, webAudio } from '~/utils/clickSounds'
 import { readStored, writeStored } from '~/utils/storage'
 
@@ -8,7 +8,8 @@ import { readStored, writeStored } from '~/utils/storage'
  * clicks fall in each lookahead window; this books them on the AudioContext's clock, so a busy page never makes it
  * drift, and lights the beat that is sounding. Tempo, feel, Click on and the swing dial are remembered per chart, the rest in this browser.
  * With Hear line on, the Changes sheet's Line (setLine) sounds with it, from the same clock (#507), and with Hear
- * rhythm on its rhythm's attacks (setRhythm) on a rim (#521); a staff's Play
+ * rhythm on its rhythm's attacks (setRhythm) on a rim (#521), both following the form as played, each bar in its own
+ * meter (setForm, #559); a staff's Play
  * (play) sounds its phrase at the click's tempo and feel, on the click's next bar while it runs, else at once.
  */
 /** folded: the bar shows only Start/Stop, the tempo and the lights; hear: Hear line, the Line sounds with the click; hearRhythm: Hear rhythm, its rhythm taps with it */
@@ -163,11 +164,19 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
     { flush: 'sync' },
   )
 
+  const form = shallowRef<ClickForm | null>(null)
+  const hasForm = computed(() => !!form.value?.order.length)
+  /** the Changes sheet's form as played (playOrder), or null with none: every bar the main meter */
+  const setForm = (f: ClickForm | null): void => {
+    form.value = f
+  }
+
   const plan = computed(
     (): ClickPlan => ({
       options: { beats: chart.value.beats, feel: feel.value, hat: settings.value.hat, pattern: pattern.value, swing: clampSwing(swing.value) },
       tempo: clampTempo(tempo.value),
       countIn: settings.value.countIn,
+      ...(form.value ? { form: form.value } : {}),
     }),
   )
 
@@ -285,7 +294,7 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
       if (mine !== phraseRun) return
     }
     const now = audio.now()
-    const bar = (plan.value.options.beats * 60) / plan.value.tempo
+    const bar = (formBar(plan.value, state.bar).beats * 60) / plan.value.tempo
     const next = state.barStart > now ? state.barStart : state.barStart + bar
     const start = running.value ? next : now + PHRASE_LEAD
     const notes = timePhrase(phrase, plan.value.tempo, feel.value, start, plan.value.options.swing)
@@ -338,7 +347,7 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
     audio = null
   }
 
-  return { shown, running, unavailable, tempo, feel, pattern, swing, settings, beat, counting, hasLine, setLine, hasRhythm, setRhythm, playing, play, stopPhrase, start, stop, toggle, tap, show, hide, dispose }
+  return { shown, running, unavailable, tempo, feel, pattern, swing, settings, beat, counting, hasLine, setLine, hasRhythm, setRhythm, hasForm, setForm, playing, play, stopPhrase, start, stop, toggle, tap, show, hide, dispose }
 }
 
 export type Click = ReturnType<typeof useClick>

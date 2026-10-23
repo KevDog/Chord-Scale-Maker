@@ -2,7 +2,7 @@
  * Hear line (#507, docs/superpowers/specs/2026-10-23-hear-line-design.md): the Changes sheet's Line as notes to sound,
  * booked from the click's clock (click.ts) so the two never drift. Pure: the app plays them (web/app/composables/useClick.ts).
  */
-import { type ClickFeel, type ClickPlan, type ClickState, SWING } from './click'
+import { type ClickFeel, type ClickPlan, type ClickState, formBar, SWING } from './click'
 import type { GuideNote } from './guideTones'
 import { CLEF_ROOT_LOW, type Transposition, TRANSPOSITIONS } from './instruments'
 import type { Part, Pitched } from './part'
@@ -95,10 +95,13 @@ export function timePhrase(phrase: readonly PhraseNote[], tempo: number, feel: C
   return phrase.map((n) => ({ time: start + swing(n.at) * beat, length: (swing(n.at + n.beats) - swing(n.at)) * beat, midi: n.midi }))
 }
 
-/** each bar the click plays in [barStart, until) past the count-in: its start (s) and the drawn bar it plays (the form loops) */
-function* eachBar(bars: number, plan: ClickPlan, state: ClickState, until: number): Generator<Readonly<{ start: number; bar: number }>> {
-  const length = (plan.options.beats * 60) / plan.tempo
-  for (let start = state.barStart, n = state.bar; start < until; start += length, n += 1) if (n >= plan.countIn) yield { start, bar: (n - plan.countIn) % bars }
+/** each bar the click plays in [barStart, until) past the count-in: its start (s), the drawn bar it plays (the plan's form, else bar n mod bars: the form loops) and its beats */
+function* eachBar(bars: number, plan: ClickPlan, state: ClickState, until: number): Generator<Readonly<{ start: number; bar: number; beats: number }>> {
+  for (let start = state.barStart, n = state.bar; start < until; n += 1) {
+    const { drawn, beats } = formBar(plan, n)
+    if (n >= plan.countIn) yield { start, bar: drawn ?? (n - plan.countIn) % bars, beats }
+    start += (beats * 60) / plan.tempo
+  }
 }
 
 /** the plan's swing: a time moved by the dial under Swing, unless kept straight */
@@ -109,7 +112,7 @@ const swingOf =
 
 /**
  * the notes to book in [from, until), from the click's plan and the state it is scheduled from: bar n after the
- * count-in plays drawn bar n mod bars (the form loops). A note before from is skipped, never booked late; one starting
+ * count-in plays the form's next drawn bar (with none, drawn bar n mod bars: the form loops). A note before from is skipped, never booked late; one starting
  * past the click's bar (a longer metre's bar) is left out.
  */
 export function scheduleVoice(notes: readonly VoiceNote[], bars: number, plan: ClickPlan, state: ClickState, from: number, until: number): TimedNote[] {
@@ -117,9 +120,9 @@ export function scheduleVoice(notes: readonly VoiceNote[], bars: number, plan: C
   const beat = 60 / plan.tempo
   const swing = swingOf(plan)
   const out: TimedNote[] = []
-  for (const { start, bar } of eachBar(bars, plan, state, until))
+  for (const { start, bar, beats } of eachBar(bars, plan, state, until))
     for (const v of notes) {
-      if (v.bar !== bar || v.at >= plan.options.beats) continue
+      if (v.bar !== bar || v.at >= beats) continue
       const time = start + swing(v.at, v.straight) * beat
       if (time >= from && time < until) out.push({ time, length: (swing(v.at + v.beats, v.straightEnd) - swing(v.at, v.straight)) * beat, midi: v.midi })
     }
@@ -155,9 +158,9 @@ export function scheduleRhythm(hits: readonly RhythmHit[], bars: number, plan: C
   const beat = 60 / plan.tempo
   const swing = swingOf(plan)
   const out: TimedHit[] = []
-  for (const { start, bar } of eachBar(bars, plan, state, until))
+  for (const { start, bar, beats } of eachBar(bars, plan, state, until))
     for (const h of hits) {
-      if (h.bar !== bar || h.at >= plan.options.beats) continue
+      if (h.bar !== bar || h.at >= beats) continue
       const time = start + swing(h.at, h.straight) * beat
       if (time >= from && time < until) out.push({ time, accent: h.accent })
     }

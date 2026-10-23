@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { CLICK_PATTERNS, clampSwing, clampTempo, clickBar, countIn, defaultFeel, defaultPattern, defaultTempo, patternFits, scheduleClicks, tapTempo } from '../click'
+import { CLICK_PATTERNS, clampSwing, clampTempo, clickBar, countIn, defaultFeel, defaultPattern, defaultTempo, formBar, patternFits, scheduleClicks, tapTempo } from '../click'
 
 describe('clampSwing', () => {
   it('keeps the swing dial in 50–75%, to the hundredth; not a number: two thirds', () => {
@@ -177,6 +177,26 @@ describe('tapTempo', () => {
   })
 })
 
+describe('formBar', () => {
+  const plan = { options: { beats: 4, feel: 'quarters', hat: false }, tempo: 120, countIn: 1 } as const
+  it('past the count-in, plays the form’s order, looping, each bar its own meter', () => {
+    const form = { order: [0, 1, 0, 2], beats: [4, 3, 2] }
+    expect([1, 2, 3, 4, 5].map((n) => formBar({ ...plan, form }, n))).toEqual([
+      { drawn: 0, beats: 4 },
+      { drawn: 1, beats: 3 },
+      { drawn: 0, beats: 4 },
+      { drawn: 2, beats: 2 },
+      { drawn: 0, beats: 4 },
+    ])
+  })
+  it('a count-in bar is no drawn bar, in the main meter', () => {
+    expect(formBar({ ...plan, form: { order: [0], beats: [3] } }, 0)).toEqual({ drawn: null, beats: 4 })
+  })
+  it('with no form, every bar the main meter, no drawn bar', () => {
+    expect(formBar(plan, 3)).toEqual({ drawn: null, beats: 4 })
+  })
+})
+
 describe('scheduleClicks', () => {
   const plan = { options: { beats: 4, feel: 'quarters', hat: false }, tempo: 120, countIn: 0 } as const
   it('books the clicks inside the window, in order', () => {
@@ -207,5 +227,11 @@ describe('scheduleClicks', () => {
   it('a tempo change applies from the next click', () => {
     const slow = scheduleClicks({ ...plan, tempo: 60 }, { barStart: 10, bar: 0 }, 10.6, 11.1)
     expect(slow.events).toEqual([{ time: 11, kind: 'beat', beat: 1 }])
+  })
+  it('with a form, each bar plays its drawn bar’s meter; the count-in the main meter', () => {
+    const form = { order: [0, 1], beats: [4, 3] }
+    const { events } = scheduleClicks({ ...plan, tempo: 60, countIn: 1, form }, { barStart: 0, bar: 0 }, 0, 15.5)
+    expect(events.filter((e) => e.kind === 'accent').map((e) => e.time)).toEqual([4, 8, 11, 15])
+    expect(events.filter((e) => e.kind === 'count')).toHaveLength(4)
   })
 })

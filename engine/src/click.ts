@@ -101,24 +101,37 @@ export function tapTempo(taps: readonly number[]): number | null {
 export type TimedClick = Readonly<{ time: number; kind: ClickKind; beat: number }>
 /** the bar being scheduled: its start, in seconds, and its number from 0 (count-in bars first) */
 export type ClickState = Readonly<{ barStart: number; bar: number }>
-export type ClickPlan = Readonly<{ options: ClickOptions; tempo: number; countIn: 0 | 1 | 2 }>
+/** the form as played (playOrder, decision hear.form): the drawn bars in order, and each drawn bar's beats */
+export type ClickForm = Readonly<{ order: readonly number[]; beats: readonly number[] }>
+/** form: the bars the click follows past the count-in, looping; with none, every bar the main meter */
+export type ClickPlan = Readonly<{ options: ClickOptions; tempo: number; countIn: 0 | 1 | 2; form?: ClickForm }>
+
+/** the click's bar n (count-in bars first): the drawn bar it plays (null in a count-in, or with no form) and its beats */
+export function formBar(plan: ClickPlan, n: number): Readonly<{ drawn: number | null; beats: number }> {
+  const order = plan.form?.order ?? []
+  if (n < plan.countIn || !order.length) return { drawn: null, beats: plan.options.beats }
+  const drawn = order[(n - plan.countIn) % order.length]!
+  return { drawn, beats: plan.form?.beats[drawn] ?? plan.options.beats }
+}
 
 /**
  * the clicks to book in [from, until) on the audio clock, and the bar to carry on from. A click before `from` is
  * skipped, never booked late (a tab back from the background doesn't burst); a tempo change applies from the next
- * click, its bar's beats measured from the bar's start at the new tempo.
+ * click, its bar's beats measured from the bar's start at the new tempo. With a form, each bar clicks its drawn bar's
+ * meter (the count-in the main meter).
  */
 export function scheduleClicks(plan: ClickPlan, state: ClickState, from: number, until: number): Readonly<{ events: readonly TimedClick[]; state: ClickState }> {
   const beat = 60 / plan.tempo
-  const bar = clickBar(plan.options)
   const counts = countIn(plan.options.beats, 1)
   const events: TimedClick[] = []
   let { barStart, bar: n } = state
   for (;;) {
-    const times = (n < plan.countIn ? counts : bar).map((e) => ({ time: barStart + e.at * beat, kind: e.kind, beat: Math.floor(e.at) }))
+    const { beats } = formBar(plan, n)
+    const bar = n < plan.countIn ? counts : clickBar({ ...plan.options, beats: beats as Beats })
+    const times = bar.map((e) => ({ time: barStart + e.at * beat, kind: e.kind, beat: Math.floor(e.at) }))
     events.push(...times.filter((e) => e.time >= from && e.time < until))
     if (times.some((e) => e.time >= until)) return { events, state: { barStart, bar: n } }
-    barStart += plan.options.beats * beat
+    barStart += beats * beat
     n += 1
   }
 }

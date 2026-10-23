@@ -148,6 +148,16 @@ describe('scheduleVoice', () => {
     ])
   })
 
+  it('follows the form’s order, each bar its drawn bar’s meter', () => {
+    const form = { order: [1, 0, 1], beats: [4, 3] }
+    expect(scheduleVoice(line, 2, plan({ form }), { barStart: 0, bar: 0 }, 0, 10).map((n) => [n.time, n.midi])).toEqual([
+      [0, 64],
+      [3, 60],
+      [5.5, 62],
+      [7, 64],
+    ])
+  })
+
   it('waits out the count-in', () => {
     expect(scheduleVoice(line, 2, plan({ countIn: 1 }), { barStart: 0, bar: 0 }, 0, 5).map((n) => n.time)).toEqual([4])
   })
@@ -276,6 +286,10 @@ describe('scheduleRhythm', () => {
       [5, false],
       [8, true],
     ])
+  })
+
+  it('follows the form’s order', () => {
+    expect(scheduleRhythm(hits, 2, plan({ form: { order: [1, 0], beats: [4, 4] } }), { barStart: 0, bar: 0 }, 0, 6).map((h) => h.time)).toEqual([1, 4])
   })
 
   it('waits out the count-in', () => {

@@ -137,6 +137,9 @@ describe('ClickBar', () => {
   it('notes metre changes and says when sound is unavailable', async () => {
     const { w, click } = await mountBar({ ...chart4, metreChanges: true })
     expect(w.text()).toContain('meter changes play the main meter')
+    click.setForm({ order: [0], beats: [3] })
+    await nextTick()
+    expect(w.text()).not.toContain('meter changes') // the form plays each bar's meter (#559)
     click.unavailable.value = true
     await nextTick()
     expect(w.text()).toContain('Sound isn’t available in this browser')

@@ -215,8 +215,10 @@ describe('ChangesSheet and Hear line (#507)', () => {
         global: { provide: { [CLICK as symbol]: click } },
       })
       expect(click.hasLine.value).toBe(true)
+      expect(click.hasForm.value).toBe(true)
       w.unmount()
       expect(click.hasLine.value).toBe(false)
+      expect(click.hasForm.value).toBe(false)
     } finally {
       Object.assign(features, was)
     }

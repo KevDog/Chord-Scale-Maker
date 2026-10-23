@@ -247,6 +247,29 @@ describe('useClick', () => {
     expect(audio.played.map((p) => p.kind)).toEqual(['beat', 'beat']) // 160 bpm: beats 2 and 4 at 0.375 s and 1.125 s
   })
 
+  describe('the form (#559)', () => {
+    it('clicks each bar in its drawn bar’s meter, and the Line in the form’s order', async () => {
+      const audio = fakeAudio()
+      const t = timers()
+      const c = useClick(ref({ beats: 4 as const, style: 'Ballad', metreChanges: true }), ref(undefined), { audio: () => audio, ...t })
+      c.feel.value = 'quarters'
+      c.settings.value = { ...c.settings.value, hear: true }
+      c.setLine({ notes: [{ bar: 0, at: 0, beats: 1, midi: 60 }, { bar: 1, at: 0, beats: 1, midi: 62 }], bars: 2 })
+      c.setForm({ order: [1, 0, 1], beats: [4, 3] })
+      expect(c.hasForm.value).toBe(true)
+      await c.start()
+      for (let at = 0; at < 9.5 * (60 / 66); at += 0.05) {
+        audio.clock.t = at
+        t.tick()
+      }
+      const beat = 60 / 66
+      expect(audio.played.filter((p) => p.kind === 'accent').map((p) => p.time / beat)).toEqual([0, 3, 7].map((n) => expect.closeTo(n, 5)))
+      expect(audio.notes.map((n) => n.midi)).toEqual([62, 60, 62])
+      c.setForm(null)
+      expect(c.hasForm.value).toBe(false)
+    })
+  })
+
   describe('Hear rhythm', () => {
     const rhythm = { hits: [{ bar: 0, at: 0, accent: true }, { bar: 0, at: 2, accent: false }, { bar: 1, at: 1, accent: false }], bars: 2 }
     async function hearing(hearRhythm: boolean) {

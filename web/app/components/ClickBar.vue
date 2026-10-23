@@ -134,7 +134,7 @@ const SOUNDS: readonly { value: ClickSound; label: string }[] = [
 ]
 
 const metreText = computed(() =>
-  [[`${props.chart.beats}/4`, props.chart.style].filter(Boolean).join(' · '), props.chart.metreChanges ? 'meter changes play the main meter' : '']
+  [[`${props.chart.beats}/4`, props.chart.style].filter(Boolean).join(' · '), props.chart.metreChanges && !click.hasForm.value ? 'meter changes play the main meter' : '']
     .filter(Boolean)
     .join(' · '),
 )
