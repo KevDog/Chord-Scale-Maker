@@ -67,3 +67,37 @@ describe('lineRhythm (rhythm-on-lines spec §2–3)', () => {
     expect(who(lineRhythm('unit:8:3:tied', [4], [], [S(0), S(2)], 'beat', 0)!, 0)).toEqual([0, 0, 0, 1])
   })
 })
+
+describe('lineRhythm by steps (Phase 4 spec §3 "Lines", D14)', () => {
+  const pattern = (r: LineRhythm, b: number) => r.laid.bars[b]!.map(e => (e.rest ? '.' : 'x').repeat(e.rest ? e.length : 1) + (e.rest ? '' : '_'.repeat(e.length - 1))).join('')
+
+  it('forces no pick-up back across a step boundary, as across a break', () => {
+    const chords = [S(0), S(4), S(8)]
+    // the bare rhythm forces the 2 pick-ups into bar 3's chord at the end of bar 2
+    expect(pattern(lineRhythm('unit:8:4:rests', [4, 4, 4], [], chords, 'pickup-2', 0)!, 1)).toBe('x...x.xx')
+    const steps = [
+      { from: 0, id: 'unit:8:4:rests' },
+      { from: 2, id: 'unit:8:3:rests' },
+    ] as const
+    const r = lineRhythm(steps, [4, 4, 4], [], chords, 'pickup-2', 0)!
+    expect(pattern(r, 1)).toBe('x...x...')
+    expect(who(r, 1).filter(o => typeof o === 'string' && o.startsWith('2<'))).toEqual([])
+    expect(pattern(r, 2)).toBe('x..x..x.')
+  })
+
+  it('reads each bar at its step\'s pulse (Gears)', () => {
+    const r = lineRhythm(
+      [
+        { from: 0, id: 'unit:8:4:accents' },
+        { from: 1, id: 'unit:16:4:accents' },
+      ],
+      [4, 4],
+      [],
+      [S(0), S(4)],
+      'beat',
+      0,
+    )!
+    expect(who(r, 0)).toEqual(Array(8).fill(0))
+    expect(who(r, 1)).toEqual(Array(16).fill(1))
+  })
+})

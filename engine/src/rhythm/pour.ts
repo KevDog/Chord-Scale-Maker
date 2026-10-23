@@ -2,9 +2,10 @@
  * The rhythm on a Line (rhythm-on-lines spec §2–3): each chord's span after the Timing, its target and pick-ups
  * forced into the rhythm, and who plays each of the laid notes. Pure TypeScript; the line builders pick the pitches.
  */
-import { layRhythm, type Laid } from './lay'
+import { layRhythm, pulseOf, stepsOf, type Laid } from './lay'
 import { rhythmOf, type RhythmId } from './library'
 import { rhythmNotes, type RhythmNote } from './notation'
+import type { RhythmSteps } from './path'
 import { pickupNotes, type RhythmStart } from './phrasing'
 import { barPulse, PULSE_GRID, pulsesIn } from './rhythm'
 
@@ -25,7 +26,7 @@ export type LineRhythm = Readonly<{
 
 /** What a line builder needs to pour: the rhythm and how drawn bars map to clock bars. */
 export type RhythmPlan = Readonly<{
-  id: RhythmId
+  id: RhythmId | RhythmSteps
   start: RhythmStart
   anticipate: number
   bars: readonly number[]
@@ -56,30 +57,34 @@ type Forced = Readonly<{ chord: number; target: number; pickups: readonly (numbe
 /**
  * The rhythm laid over the drawn bars (lengths in beats) for a Line, with each chord's target and pick-ups forced
  * (§3.2) and each note's owner (§3.3); null for Off or no bars.
+ * id: a rhythm or a plan (Phase 4 spec §3), whose step boundaries join `breaks` (D14).
  * breaks: the bars no tie runs into (a 2nd ending); chords: in sheet order.
  */
 export function lineRhythm(
-  id: RhythmId,
+  id: RhythmId | RhythmSteps,
   bars: readonly number[],
   breaks: readonly number[],
   chords: readonly LineSpan[],
   start: RhythmStart,
   anticipate: number,
 ): LineRhythm | null {
-  const r = rhythmOf(id)
-  if (!r || bars.length === 0) return null
-  const pulse = r.kind === 'repeat' ? r.rhythm.pulse : r.pulse
+  const steps = stepsOf(id, bars.length)
+  const rs = steps.map(s => rhythmOf(s.id))
+  if (bars.length === 0 || steps[0]?.from !== 0 || !rs.every(r => r !== null)) return null
+  // each bar's rhythm pulse, its step's; a step's first bar is a break (once, if it is a break already)
+  const pulses = bars.map((_, d) => pulseOf(rs[steps.findLastIndex(s => s.from <= d)]!))
+  const cuts = [...new Set([...breaks, ...steps.map(s => s.from).filter(f => f > 0)])].sort((a, b) => a - b)
   const total = bars.reduce((a, b) => a + b, 0)
   const before = (d: number): number => bars.slice(0, d).reduce((a, b) => a + b, 0)
   // each bar's pulse, first beat and first stream pulse (Phase 4 spec §1): sheet beats to stream pulses bar by bar
-  const grids = bars.map(b => PULSE_GRID[barPulse(pulse, b)])
+  const grids = bars.map((b, d) => PULSE_GRID[barPulse(pulses[d]!, b)])
   const beatStarts = bars.map((_, d) => before(d))
-  const pulseStarts = bars.map((_, d) => bars.slice(0, d).reduce((a, b) => a + pulsesIn(pulse, b), 0))
+  const pulseStarts = bars.map((_, d) => bars.slice(0, d).reduce((a, b, k) => a + pulsesIn(pulses[k]!, b), 0))
   const toPulse = (beat: number): number => {
     const d = Math.max(0, beatStarts.findLastIndex(s => s <= beat))
     return pulseStarts[d]! + ((beat - beatStarts[d]!) * grids[d]!.n) / grids[d]!.beats
   }
-  const breakBeats = breaks.filter(b => b >= 0 && b < bars.length).map(before) // each break bar's first beat
+  const breakBeats = cuts.filter(b => b >= 0 && b < bars.length).map(before) // each break bar's first beat
   const breakPulses = breakBeats.map(toPulse)
   const bounds = boundaries(chords, anticipate, breakBeats, total)
   const end = (j: number): number => bounds[j + 1] ?? total
@@ -99,7 +104,7 @@ export function lineRhythm(
         })
   const force = forced.flatMap(f => [f.target, ...f.pickups.filter((p): p is number => p !== null)])
 
-  const laid = layRhythm(id, bars, breaks, force)!
+  const laid = layRhythm(id, bars, cuts, force)!
   const notes = rhythmNotes(laid)
 
   const spanOf = (pulse: number): number =>
