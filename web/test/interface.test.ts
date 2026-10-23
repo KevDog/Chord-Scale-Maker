@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { RHYTHM_PATH_OFF } from '@chord-scale-maker/engine'
 import { CONTROL_TIERS, hiddenSettings, initialLevel, INTERFACE_LEVELS, isInterfaceLevel, levelLabel, shows, type ViewSettings } from '~/utils/interface'
 
-const DEFAULTS: ViewSettings = { sheet: 'changes', scaleLevel: 'standard', numerals: true, scaleNames: true, lineMode: 'off', spell: 'key', practice: null, overlay: 'off', picks: false, approach: 'none', rhythm: 'off', targets: false, rhythmStart: 'beat', anticipate: 0, rhythmLine: false, notesPerBar: 'whole', rhythmPath: RHYTHM_PATH_OFF }
+const DEFAULTS: ViewSettings = { sheet: 'changes', scaleLevel: 'standard', numerals: true, scaleNames: true, lineMode: 'off', spell: 'key', practice: null, overlay: 'off', picks: false, approach: 'none', rhythm: 'off', targets: false, rhythmStart: 'beat', anticipate: 0, rhythmLine: false, notesPerBar: 'whole', rhythmPath: RHYTHM_PATH_OFF, feel: 4 }
 
 describe('interface levels', () => {
   it('orders the levels and names them', () => {
@@ -26,6 +26,7 @@ describe('interface levels', () => {
       'notes-per-bar': 'intermediate',
       'rhythm-phrasing': 'everything',
       'rhythm-gears': 'everything',
+      feel: 'everything',
       'scale-choice': 'intermediate',
       'form-editing': 'intermediate',
       why: 'intermediate',
@@ -122,6 +123,15 @@ describe('hiddenSettings', () => {
     expect(hiddenSettings('intermediate', { ...DEFAULTS, rhythm: 'run:8:4:0', rhythmPath: up })).toBeNull() // nor on a per-bar rhythm
     expect(hiddenSettings('intermediate', { ...DEFAULTS, rhythm: 'off', rhythmPath: up })).toBeNull()
     expect(hiddenSettings('intermediate', { ...DEFAULTS, sheet: 'scales', rhythm: 'unit:8:3:accents', rhythmPath: up })).toBeNull() // paths are the Changes' (D13)
+  })
+
+  it('lists Feel in 2 or in 1 under feel, at Everything, on the Changes only, with or without a rhythm (Phase 4 spec §7, D13)', () => {
+    expect(hiddenSettings('intermediate', { ...DEFAULTS, feel: 2 })).toEqual({ settings: ['feel'], needs: 'everything' })
+    expect(hiddenSettings('essentials', { ...DEFAULTS, feel: 1, rhythm: 'unit:8:3:accents' })).toEqual({ settings: ['rhythm', 'feel'], needs: 'everything' })
+    expect(hiddenSettings('intermediate', { ...DEFAULTS, lineMode: 'guide', feel: 1 })).toEqual({ settings: ['feel'], needs: 'everything' })
+    expect(hiddenSettings('everything', { ...DEFAULTS, feel: 2 })).toBeNull()
+    expect(hiddenSettings('intermediate', { ...DEFAULTS, feel: 4 })).toBeNull()
+    expect(hiddenSettings('intermediate', { ...DEFAULTS, sheet: 'scales', feel: 2 })).toBeNull() // Feel is the Changes' (D13)
   })
 
   it('lists Notes per bar on the Scales sheet only (rhythm-scales-arpeggios spec §9)', () => {

@@ -185,6 +185,14 @@ describe('share links', () => {
     expect(shareViewFrom({ ...base, rhythmPath: { groups: [3], step: { unit: 'chord', bars: 4 } } })).toEqual({ ...base, rhythmPath: { groups: [3] } })
   })
 
+  it('carries Feel in 2 or in 1 (Phase 4 spec §7), dropping 4 (the default) and what is not a Feel', async () => {
+    for (const feel of [2, 1] as const) {
+      const view = { sheet: 'changes', feel } as const
+      expect(await decodeShare(await encodeShare({ chart: CHART, view }))).toEqual({ chart: CHART, view })
+    }
+    for (const bad of [4, 3, 0, '2', null, 1.5]) expect(shareViewFrom({ sheet: 'changes', feel: bad })).toEqual({ sheet: 'changes' })
+  })
+
   it("carries the Changes sheet's Approach (#298), dropping an unknown one", async () => {
     for (const approach of ['enclosure', 'chromatic-below', 'none'] as const) {
       const view = { sheet: 'changes', line: 'third', approach } as const
