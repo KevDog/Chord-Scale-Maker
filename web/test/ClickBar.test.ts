@@ -146,6 +146,7 @@ describe('ClickBar', () => {
     const features = useRuntimeConfig().public.features as Record<string, unknown>
     const was = { ...features }
     try {
+      Object.assign(features, { hearLine: false })
       const off = await mountBar()
       off.click.setLine({ notes: [{ bar: 0, at: 0, beats: 4, midi: 65 }], bars: 1 })
       await nextTick()
@@ -168,6 +169,7 @@ describe('ClickBar', () => {
     const was = { ...features }
     const rhythm = { hits: [{ bar: 0, at: 0, accent: true }], bars: 1 }
     try {
+      Object.assign(features, { hearLine: false })
       const off = await mountBar()
       off.click.setRhythm(rhythm)
       await off.button('Click settings')!.trigger('click')
@@ -188,6 +190,7 @@ describe('ClickBar', () => {
     const features = useRuntimeConfig().public.features as Record<string, unknown>
     const was = { ...features }
     try {
+      Object.assign(features, { hearLine: false })
       const off = await mountBar()
       await off.button('Click settings')!.trigger('click')
       expect(off.w.find('input[aria-label=Swing]').exists()).toBe(false) // the flag off
