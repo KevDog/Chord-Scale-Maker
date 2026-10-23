@@ -1,6 +1,7 @@
 import { isSheetLine, type SheetLine } from './arpeggios'
 import { type Approach, isApproach } from './approaches'
-import { isAnticipate, isNotesPerBar, isRhythmId, isRhythmStart, type NotesPerBar, type RhythmId, type RhythmStart } from './rhythm'
+import { isAnticipate, isNotesPerBar, isRhythmId, isRhythmPath, isRhythmStart, type NotesPerBar, type Pulse, RHYTHM_PATH_OFF, type RhythmId, type RhythmStart, type RhythmStep } from './rhythm'
+import { isPentatonicStep } from './pentatonics'
 import { type CellId, isCellId, isSystemId } from './cells'
 import { type CellOrder, isCellOrder } from './cellOrder'
 import { type ArpDirection, type ArpNotes, isArpDirection, isArpNotes } from './arpeggioSheet'
@@ -37,6 +38,20 @@ export function cellsShareLine(id: CellId, order: CellOrder, phrase: boolean): S
   const suffix = [...(order === 'as-written' ? [] : [order]), ...(phrase || !isSystemId(id) ? [] : ['free'])].join('~')
   return suffix ? `cells:${id}~${suffix}` : `cells:${id}`
 }
+/** a link's rhythm path (Phase 4 spec §7): its valid lists (at least one) and its step if valid; else undefined */
+export type ShareRhythmPath = Readonly<{ groups?: readonly number[]; gears?: readonly Pulse[]; step?: RhythmStep }>
+function rhythmPathFrom(x: unknown): ShareRhythmPath | undefined {
+  if (!x || typeof x !== 'object' || Array.isArray(x)) return undefined
+  const o = x as Record<string, unknown>
+  // a list is valid where a path holding it alone is (1–8 entries, each a group 2–7 or a pulse)
+  const valid = (key: 'groups' | 'gears'): boolean => Array.isArray(o[key]) && isRhythmPath({ ...RHYTHM_PATH_OFF, [key]: o[key] })
+  const lists = {
+    ...(valid('groups') ? { groups: [...(o.groups as number[])] } : {}),
+    ...(valid('gears') ? { gears: [...(o.gears as Pulse[])] } : {}),
+  }
+  if (!Object.keys(lists).length) return undefined
+  return { ...lists, ...(isPentatonicStep(o.step) ? { step: { unit: o.step.unit, bars: o.step.bars } } : {}) }
+}
 const lineFrom = (x: unknown): ShareLine | undefined => {
   if (isSheetLine(x)) return x
   const cells = typeof x === 'string' ? cellsLineOf(x) : undefined
@@ -61,6 +76,8 @@ export type ShareView = Readonly<{
   rhythmStart?: RhythmStart
   anticipate?: number
   restate?: true
+  /** the Changes sheet's rhythm path (Phase 4 spec §7): Groups, Gears and the Step; written only with a path on */
+  rhythmPath?: ShareRhythmPath
   /** the Scales sheet's Notes per bar (rhythm-scales-arpeggios spec §9); absent: Whole notes */
   notesPerBar?: Exclude<NotesPerBar, 'whole'>
   sheet?: ShareSheet
@@ -151,6 +168,7 @@ export function shareViewFrom(v: unknown): ShareView | undefined {
   const picks = chordPicksFrom(Object.hasOwn(o, 'picks') ? o.picks : undefined)
   const instrument = o.instrument === 'concert' ? 'piano' : o.instrument // #332: links made before the concert choice was retired
   const line = lineFrom(o.line)
+  const rhythmPath = rhythmPathFrom(o.rhythmPath)
   const parsed = typeof o.pattern === 'string' ? parsePattern(o.pattern) : undefined
   const view: ShareView = {
     ...(typeof instrument === 'string' && isInstrumentName(instrument) ? { instrument } : {}),
@@ -166,6 +184,7 @@ export function shareViewFrom(v: unknown): ShareView | undefined {
     ...(isRhythmStart(o.rhythmStart) && o.rhythmStart !== 'beat' ? { rhythmStart: o.rhythmStart } : {}),
     ...(isAnticipate(o.anticipate) && o.anticipate !== 0 ? { anticipate: o.anticipate } : {}),
     ...(o.restate === true ? { restate: true as const } : {}),
+    ...(rhythmPath ? { rhythmPath } : {}),
     ...(isNotesPerBar(o.notesPerBar) && o.notesPerBar !== 'whole' ? { notesPerBar: o.notesPerBar } : {}),
     ...(o.sheet === 'scales' || o.sheet === 'changes' || o.sheet === 'arpeggios' || o.sheet === 'patterns' ? { sheet: o.sheet } : {}),
     ...(isArpNotes(o.arpNotes) ? { arpNotes: o.arpNotes } : {}),

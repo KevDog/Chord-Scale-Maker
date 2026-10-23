@@ -387,6 +387,7 @@ exports[`exports the same names 1`] = `
   "rhythmLabel",
   "rhythmNotes",
   "rhythmOf",
+  "rhythmPathCaption",
   "rhythmSteps",
   "rootName",
   "rowBarBeats",
