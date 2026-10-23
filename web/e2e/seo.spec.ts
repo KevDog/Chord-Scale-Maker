@@ -90,7 +90,7 @@ test('a retitled song moves to its new slug', async ({ request }) => {
   expect(res.headers().location).toMatch(/\/song\/yes-or-no$/)
 })
 
-test('every sitemap URL is a page: 200, its own canonical, indexable, its own title and a description', async ({ request }) => {
+test('every sitemap URL is a page: 200, its own canonical, indexable, its own title and its own description', async ({ request }) => {
   const sitemap = await request.get('/sitemap.xml')
   expect(sitemap.status()).toBe(200)
   const locs = Array.from((await sitemap.text()).matchAll(/<loc>([^<]+)<\/loc>/g), (m) => m[1] as string)
@@ -98,6 +98,7 @@ test('every sitemap URL is a page: 200, its own canonical, indexable, its own ti
   for (const slug of VERSIONS) expect(locs, slug).not.toContain(`${SITE_URL}${songPath(slug)}`)
 
   const titles = new Map<string, string>()
+  const descriptions = new Map<string, string>()
   for (const loc of locs) {
     expect(loc.startsWith(SITE_URL), loc).toBe(true)
     const res = await request.get(loc.slice(SITE_URL.length) || '/')
@@ -109,6 +110,8 @@ test('every sitemap URL is a page: 200, its own canonical, indexable, its own ti
     expect(description.length, loc).toBeGreaterThanOrEqual(70)
     expect(description.length, loc).toBeLessThanOrEqual(160)
     if (loc.includes('/song/')) expect(description, loc).toContain('lead-sheet')
+    expect(descriptions.get(description), `${loc} has the description of`).toBeUndefined()
+    descriptions.set(description, loc)
     const title = html.match(/<title>([^<]*)<\/title>/)?.[1]?.trim() ?? ''
     expect(title, loc).not.toBe('')
     expect(titles.get(title), `${loc} has the title of`).toBeUndefined()
