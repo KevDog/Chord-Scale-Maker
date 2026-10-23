@@ -118,6 +118,13 @@ describe('evenRun (§2)', () => {
     expect(run.bars).toHaveLength(8)
     expect(valuesOf(run.bars[7]!)).toEqual(['h', 'h'])
     expect(notesOf(run.bars[7]!)).toEqual([14, null])
+    expect(run.bars[7]!.notes.map(n => n.mark.rest)).toEqual([false, true])
+  })
+
+  it('4/4, 4 a bar, one note left: q, r(q), r(h), not r(hd)', () => {
+    const last = evenRun(13, 4, 4).bars.at(-1)!
+    expect(notesOf(last)).toEqual([12, null, null])
+    expect(last.notes.map(n => [n.mark.value, n.mark.beat, n.mark.rest])).toEqual([['q', 0, false], ['q', 1, true], ['h', 2, true]])
   })
 
   it('5/4, 1 a bar: a whole tied to a quarter', () => {
@@ -135,17 +142,24 @@ const custom = (text: string): RhythmId => `custom:${text.replace(': ', ':')}` a
 
 describe('pourRun (§3, §4)', () => {
   it('keeps the first n attacks a bar: unit:8:3:accents, 4 a bar', () => {
-    const bar = pourRun(15, 'unit:8:3:accents', 4, 4)!.bars[0]!
+    const run = pourRun(15, 'unit:8:3:accents', 4, 4)!
+    const [bar, bar2] = [run.bars[0]!, run.bars[1]!]
     expect(notesOf(bar)).toEqual([0, 1, 2, 3, null])
     expect(valuesOf(bar)).toEqual(['8', '8', '8', '8', 'h'])
     expect(bar.notes[4]!.mark).toMatchObject({ rest: true, beat: 2, accent: false })
+    expect(notesOf(bar2)).toEqual([4, 5, 6, 7, null])
+    expect(valuesOf(bar2)).toEqual(['8', '8', '8', '8', 'h'])
+    expect(bar2.notes[4]!.mark).toMatchObject({ rest: true, beat: 2 })
   })
 
   it('card:downbeats, 3 a bar: q q q and a quarter rest', () => {
     const run = pourRun(15, 'card:downbeats', 4, 3)!
     expect(run.bars).toHaveLength(5)
-    expect(notesOf(run.bars[0]!)).toEqual([0, 1, 2, null])
-    expect(valuesOf(run.bars[0]!)).toEqual(['q', 'q', 'q', 'q'])
+    for (const [b, bar] of run.bars.slice(0, 2).entries()) {
+      expect(notesOf(bar)).toEqual([3 * b, 3 * b + 1, 3 * b + 2, null])
+      expect(valuesOf(bar)).toEqual(['q', 'q', 'q', 'q'])
+      expect(bar.notes.map(n => n.mark.rest)).toEqual([false, false, false, true])
+    }
   })
 
   it('every attack with no n: unit:8:3:accents over 9 notes', () => {
@@ -153,6 +167,7 @@ describe('pourRun (§3, §4)', () => {
     expect(run.bars).toHaveLength(2)
     const accented = run.bars.flatMap(b => b.notes).filter(n => n.mark.accent).map(n => n.note)
     expect(accented).toEqual([0, 3, 6])
+    expect(run.bars[0]!.notes.map(n => n.mark.beam)).toEqual([0, 0, 0, 1, 1, 1, 2, 2])
     expect(notesOf(run.bars[1]!)).toEqual([8, null, null, null])
     expect(valuesOf(run.bars[1]!)).toEqual(['8', '8', 'q', 'h'])
     expect(run.bars[1]!.notes.map(n => n.mark.beat)).toEqual([0, 0.5, 1, 2])
@@ -171,8 +186,8 @@ describe('pourRun (§3, §4)', () => {
     const run = pourRun(9, 'card:downbeats', 4, null)!
     expect(run.bars.map(notesOf).slice(0, 2)).toEqual([[0, 1, 2, 3], [4, 5, 6, 7]])
     expect(run.bars).toHaveLength(3)
-    expect(run.bars[2]!.notes[0]!.note).toBe(8)
-    expect(run.bars[2]!.notes.slice(1).every(n => n.note === null && n.mark.rest)).toBe(true)
+    expect(notesOf(run.bars[2]!)).toEqual([8, null, null])
+    expect(run.bars[2]!.notes.map(n => [n.mark.value, n.mark.beat, n.mark.rest])).toEqual([['q', 0, false], ['q', 1, true], ['h', 2, true]])
   })
 
   it("a tied-in piece holds its attack's note, across the barline too", () => {
@@ -195,6 +210,8 @@ describe('pourRun (§3, §4)', () => {
 
   it('is null for off, an invalid id, or too few attacks in 64 bars', () => {
     expect(pourRun(9, 'off', 4, null)).toBeNull()
+    expect(pourRun(0, 'unit:8:3:accents', 4, null)).toBeNull()
+    expect(pourRun(-1, 'unit:8:3:accents', 4, null)).toBeNull()
     expect(pourRun(9, 'unit:8:9:accents', 4, null)).toBeNull()
     expect(pourRun(65, 'unit:8:3:accents', 4, 1)).toBeNull()
     expect(pourRun(64, 'unit:8:3:accents', 4, 1)!.bars).toHaveLength(64)

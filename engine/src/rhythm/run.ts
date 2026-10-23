@@ -204,7 +204,7 @@ const MAX_RUN_BARS = 64
  */
 export function pourRun(count: number, id: RhythmId, beats: number, perBar: number | null): StaffRun | null {
   const r = rhythmOf(id)
-  if (!r) return null
+  if (!r || count <= 0) return null
   const pulse = r.kind === 'repeat' ? r.rhythm.pulse : r.pulse
   const per = PULSE_PER_BEAT[pulse]
   for (let n = Math.min(MAX_RUN_BARS, Math.max(1, count)); ; n = Math.min(MAX_RUN_BARS, n * 2)) {
