@@ -183,4 +183,28 @@ describe('ClickBar', () => {
       Object.assign(features, was)
     }
   })
+
+  it('Swing: a dial in the settings under Swing feel, in percent, with the flag on', async () => {
+    const features = useRuntimeConfig().public.features as Record<string, unknown>
+    const was = { ...features }
+    try {
+      const off = await mountBar()
+      await off.button('Click settings')!.trigger('click')
+      expect(off.w.find('input[aria-label=Swing]').exists()).toBe(false) // the flag off
+      Object.assign(features, { hearLine: true })
+      const { w, click, button } = await mountBar()
+      click.feel.value = 'straight'
+      await button('Click settings')!.trigger('click')
+      expect(w.find('input[aria-label=Swing]').exists()).toBe(false)
+      click.feel.value = 'swing'
+      await nextTick()
+      const dial = w.find<HTMLInputElement>('input[aria-label=Swing]')
+      expect(w.text()).toContain('67%')
+      await dial.setValue('72')
+      expect(click.swing.value).toBe(0.72)
+      expect(w.text()).toContain('72%')
+    } finally {
+      Object.assign(features, was)
+    }
+  })
 })

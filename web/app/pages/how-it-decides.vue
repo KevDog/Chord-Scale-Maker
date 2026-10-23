@@ -680,12 +680,16 @@
 
         <DecisionSection v-if="hearLineOn" id="hear.swing">
           <UiText>
-            With the click's feel on <strong :class="EM">Swing</strong>, Hear line and Hear rhythm swing the 8ths: an 8th off the beat
-            plays two thirds through the beat, where the click's skip note is, and the note before it holds until then.
-            Triplets, 16ths and the rest play as drawn. Straight and Quarters play every note as drawn.
+            With the click's feel on <strong :class="EM">Swing</strong>, the click's skip note, Hear line, Hear rhythm and a
+            staff's Play swing the 8ths: an 8th off the beat plays as far through the beat as the
+            <strong :class="EM">Swing</strong> dial says, from 50% (straight) to 75% (a dotted 8th and a 16th), two thirds (a
+            triplet's feel) until you move it; the note before it holds until then. A beat that holds a 16th, a dotted 8th's
+            end or a tuplet plays as drawn, so a hard swing never lands an 8th on a 16th. Straight and Quarters play every note
+            as drawn.
           </UiText>
           <UiText>
-            <strong :class="EM">What you can change:</strong> the click's feel.
+            <strong :class="EM">What you can change:</strong> the click's feel, and the Swing dial under its ⋯. The chart
+            remembers the dial once you move it.
           </UiText>
         </DecisionSection>
 

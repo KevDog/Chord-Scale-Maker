@@ -157,6 +157,19 @@ test('Hear line shows with a Line on the Changes, and plays with the click (#507
   await expect(clickBar(page).getByRole('button', { name: 'Hear line' })).toHaveAttribute('aria-pressed', 'true') // remembered, with the Line
 })
 
+test('the Swing dial shows under Swing, and the chart remembers it (#521)', async ({ page }) => {
+  await page.goto('/song/autumn-leaves')
+  await clickUntil(page, page.getByRole('button', { name: 'Click', exact: true }), clickBar(page))
+  await clickBar(page).getByRole('button', { name: 'Click settings' }).click()
+  const dial = page.getByRole('dialog', { name: 'Click settings' }).getByRole('slider', { name: 'Swing' })
+  await expect(dial).toHaveValue('67')
+  await dial.fill('72')
+  await page.reload()
+  await clickUntil(page, page.getByRole('button', { name: 'Click', exact: true }), clickBar(page))
+  await clickBar(page).getByRole('button', { name: 'Click settings' }).click()
+  await expect(page.getByRole('dialog', { name: 'Click settings' }).getByRole('slider', { name: 'Swing' })).toHaveValue('72')
+})
+
 test.describe('Hear rhythm', () => {
   test.use({ interfaceLevel: 'intermediate' })
 

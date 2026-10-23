@@ -1,7 +1,19 @@
 import { describe, expect, it } from 'vitest'
-import { CLICK_PATTERNS, clampTempo, clickBar, countIn, defaultFeel, defaultPattern, defaultTempo, patternFits, scheduleClicks, tapTempo } from '../click'
+import { CLICK_PATTERNS, clampSwing, clampTempo, clickBar, countIn, defaultFeel, defaultPattern, defaultTempo, patternFits, scheduleClicks, tapTempo } from '../click'
+
+describe('clampSwing', () => {
+  it('keeps the swing dial in 50–75%, to the hundredth; not a number: two thirds', () => {
+    expect([0.4, 0.5, 0.6, 0.6666, 0.75, 0.9].map(clampSwing)).toEqual([0.5, 0.5, 0.6, 0.67, 0.75, 0.75])
+    expect(clampSwing(Number.NaN)).toBeCloseTo(2 / 3)
+  })
+})
 
 describe('clickBar', () => {
+  it('puts the swing skip note where the dial says', () => {
+    expect(clickBar({ beats: 2, feel: 'swing', hat: false, swing: 0.75 }).filter((e) => e.kind === 'sub').map((e) => e.at)).toEqual([0.75, 1.75])
+    expect(clickBar({ beats: 2, feel: 'straight', hat: false, swing: 0.75 }).filter((e) => e.kind === 'sub').map((e) => e.at)).toEqual([0.5, 1.5]) // Straight: halfway, whatever the dial
+  })
+
   it('in quarters, accents 1 and clicks the other beats', () => {
     expect(clickBar({ beats: 4, feel: 'quarters', hat: false })).toEqual([
       { at: 0, kind: 'accent' },
@@ -56,6 +68,9 @@ describe('clickBar with a pattern (Bergonzi 31)', () => {
   it('clicks 3 only, or 4 only', () => {
     expect(sounding('3')).toEqual([{ at: 2, kind: 'beat' }])
     expect(sounding('4')).toEqual([{ at: 3, kind: 'beat' }])
+  })
+  it('clicks the and of 2 and 4 where the swing dial puts its 8th', () => {
+    expect(clickBar({ beats: 4, feel: 'swing', hat: false, pattern: 'and-2-4', swing: 0.6 }).filter((e) => e.kind === 'beat').map((e) => e.at)).toEqual([1.6, 3.6])
   })
   it('clicks the and of 2 and 4 where the feel puts its 8th', () => {
     expect(sounding('and-2-4', 'swing').map((e) => e.at)).toEqual([1 + 2 / 3, 3 + 2 / 3])
