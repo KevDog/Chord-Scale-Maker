@@ -29,7 +29,10 @@
         @update:doc="emit('update:doc', $event)"
         @said="emit('said', $event)"
       />
-      <p v-if="about" class="mt-3 border-t border-zinc-950/5 pt-2 dark:border-white/5"><UiTextLink :href="about">About this scale</UiTextLink></p>
+      <p v-if="about || aboutChord" class="mt-3 flex gap-4 border-t border-zinc-950/5 pt-2 dark:border-white/5">
+        <UiTextLink v-if="about" :href="about">About this scale</UiTextLink>
+        <UiTextLink v-if="aboutChord" :href="aboutChord">About this chord</UiTextLink>
+      </p>
     </HPopoverPanel>
   </HPopover>
 </template>
@@ -40,6 +43,7 @@ import { MapPinIcon } from '@heroicons/vue/16/solid'
 import type { ChartDoc } from '@chord-scale-maker/engine'
 import ChordChoices from './ChordChoices.vue'
 import { panelShift } from '~/utils/notePlacement'
+import { chordPath } from '~/utils/chordPage'
 import { scalePath } from '~/utils/scalePage'
 
 /**
@@ -54,6 +58,7 @@ const props = defineProps<{ doc: ChartDoc; source?: ChartDoc; line: number; kind
 const emit = defineEmits<{ 'update:doc': [doc: ChartDoc]; said: [text: string] }>()
 
 const about = computed(() => (props.kind === 'scale' && props.scale ? scalePath(props.scale) : null))
+const aboutChord = computed(() => (props.kind === 'scale' ? chordPath(props.chord) : null))
 const guessed = computed(() => props.fallback && props.kind === 'numeral')
 const name = computed(() => `${props.kind === 'numeral' ? 'Function' : 'Scale'}: ${props.chord}`)
 const PANEL_WIDTH = 320 // w-80

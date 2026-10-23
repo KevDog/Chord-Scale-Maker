@@ -47,6 +47,10 @@ export const PAGE_HEAD = {
     title: 'Scales',
     description: 'Every scale Chord Scale Maker plays, by family: its formula, its notes, the chords it plays over and the jazz standards that use it.',
   },
+  chords: {
+    title: 'Chords',
+    description: 'Every chord quality Chord Scale Maker reads, by family: its formula, its notes, the scales that play over it and the jazz standards that use it.',
+  },
   composers: {
     title: 'Composers',
     description: 'The composers of the jazz standards in the library, by surname: each with their tunes, to practice with the scales, guide tones and arpeggios.',

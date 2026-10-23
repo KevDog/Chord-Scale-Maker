@@ -5,7 +5,6 @@
       <header>
         <p class="mb-2"><NuxtLink :to="SCALES_PATH" class="text-sm/6 font-medium text-accent hover:underline">Scales</NuxtLink><span class="text-sm/6 text-zinc-500 dark:text-zinc-400"> · {{ group }}</span></p>
         <UiHeading>{{ page.title }} scale</UiHeading>
-        <UiText class="mt-1">{{ intro }}</UiText>
         <PageIndex :sections="SECTIONS" />
       </header>
 
@@ -29,19 +28,10 @@
                 <UiLabel class="pl-3">Instrument</UiLabel>
                 <InstrumentPicker v-model="prefs.instrument.value" />
               </UiField>
-              <UiField>
-                <UiLabel class="pl-3">Spell Scale</UiLabel>
-                <div class="flex items-center gap-2">
-                  <UiListbox v-model="prefs.spell.value" class="w-40" aria-label="Where the scale starts">
-                    <template #selected="{ value }"><UiListboxLabel>{{ spellLabel(value, keyStartNote) }}</UiListboxLabel></template>
-                    <UiListboxOption v-for="s in SPELLS" :key="s" :value="s"><UiListboxLabel>{{ spellLabel(s, keyStartNote) }}</UiListboxLabel></UiListboxOption>
-                  </UiListbox>
-                </div>
-              </UiField>
             </template>
           </SheetRail>
           <div class="mt-4 rounded-paper bg-paper p-4 shadow-paper sm:p-6">
-            <ScaleStaff v-if="staff" :staff="staff" :clef="part.clef" :part="part" :intervals="prefs.intervals.value" />
+            <ScaleStaff v-if="staff" :staff="staff" :clef="part.clef" :part="part" :intervals="prefs.intervals.value" stacked />
           </div>
           <template #fallback><UiText>Loading the staff…</UiText></template>
         </ClientOnly>
@@ -52,7 +42,7 @@
         <template v-if="page.playsOver.length">
           <dl class="divide-y divide-zinc-950/5 dark:divide-white/5">
             <div v-for="o in page.playsOver" :key="`${o.quality}|${o.root}`" class="flex flex-wrap items-baseline gap-x-4 gap-y-1 py-2.5">
-              <dt class="w-20 font-display text-lg/7 font-semibold text-zinc-950 dark:text-white"><ChordSymbol :tokens="o.symbolOnC" /></dt>
+              <dt class="w-20 font-display text-lg/7 font-semibold text-zinc-950 dark:text-white"><UiTextLink :href="chordQualityPath(o.quality)" :aria-label="`${chordTitle(o.quality)} chord`"><ChordSymbol :tokens="o.symbolOnC" /></UiTextLink></dt>
               <dd class="flex flex-wrap items-baseline gap-2 text-sm/6 text-zinc-600 dark:text-zinc-400">
                 <span v-if="o.from">{{ o.from }}</span>
                 <UiBadge v-for="t in o.tags" :key="t" :color="t === 'default' ? 'note' : 'zinc'">{{ TAG_LABELS[t] }}</UiBadge>
@@ -79,8 +69,8 @@
 </template>
 
 <script setup lang="ts">
-import { buildSheet, keyStart, parseKey, partFor, type PlaysOverTag, type Row } from '@chord-scale-maker/engine'
-import { spellLabel, SPELLS, spellView } from '~/utils/scaleChoices'
+import { buildSheet, chordTitle, keyStart, parseKey, partFor, type PlaysOverTag, type Row } from '@chord-scale-maker/engine'
+import { chordQualityPath } from '~/utils/chordPage'
 import { scaleGroupOf } from '~/utils/scaleGroups'
 import { SCALES_PATH, scaleHead, scalePage } from '~/utils/scalePage'
 import { seoMeta } from '~/utils/site'
@@ -106,8 +96,6 @@ const TAG_LABELS: Readonly<Record<PlaysOverTag, string>> = { default: 'Default',
 
 const group = scaleGroupOf(page.key)
 const notes = page.notes.split(' ').map((note, i) => ({ note, degree: page.formula.split(' ')[i] ?? '' }))
-const COUNTS = ['', '', '', '', '', 'five', 'six', 'seven', 'eight', 'nine']
-const intro = `${notes.length === 8 ? 'An' : 'A'} ${COUNTS[notes.length] ?? notes.length}-note scale: its notes, a staff written for your instrument, the chords it plays over, and the library tunes that use it.`
 /** the staff's chord: a default seventh chord (C–7 over C–) where the scale has one */
 const staffChord = (page.playsOver.find((o) => o.tags.includes('default') && /\d/.test(o.chord)) ?? page.playsOver[0])?.chord ?? 'C'
 
@@ -115,10 +103,9 @@ const prefs = usePreferences()
 const part = computed(() => partFor(prefs.instrument.value))
 /** the written C for the part: the staff's "key" is the scale's own root */
 const keyStartNote = computed(() => keyStart(parseKey('C'), part.value))
-/** one staff, the scale on C over the first chord it plays over */
+/** one staff, the scale on C over the first chord it plays over, spelled from its root */
 const staff = computed(() => {
   const row: Row = { section: '', bar: '', chord: staffChord, scale: `C ${page.key}` }
-  const { mode, start } = spellView(prefs.spell.value, keyStartNote.value)
-  return buildSheet([row], part.value, mode, start, 1)[0]?.pages[0]?.[0] ?? null
+  return buildSheet([row], part.value, 'root', keyStartNote.value, 1)[0]?.pages[0]?.[0] ?? null
 })
 </script>

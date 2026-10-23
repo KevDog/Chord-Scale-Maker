@@ -60,7 +60,7 @@ test('dark mode toggles and survives a reload', async ({ page }) => {
 })
 
 test('a quote in the header, kept while navigating', async ({ page }) => {
-  await page.setViewportSize({ width: 1280, height: 800 })
+  await page.setViewportSize({ width: 1536, height: 800 }) // the quote shows from 2xl
   await page.goto('/library')
   const quote = page.locator('nav figure')
   await expect(quote).toBeVisible()

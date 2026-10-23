@@ -6,18 +6,18 @@ const lib = indexNowLibrary(libraryCharts())
 const site = (path: string): string => `https://www.chordscalemaker.com${path}`
 
 describe('urlsFor: the pages a deploy changed, for IndexNow', () => {
-  it('pings a changed chart’s song, its composers and its scales', () => {
+  it('pings a changed chart’s song, its composers, its scales and its chords', () => {
     const urls = urlsFor(['engine/charts/autumn-leaves.txt'], lib)
     expect(urls).toEqual(expect.arrayContaining([
-      site('/song/autumn-leaves'), site('/composers/joseph-kosma'), site('/scales/dorian'), site('/sitemap.xml'),
+      site('/song/autumn-leaves'), site('/composers/joseph-kosma'), site('/scales/dorian'), site('/chords/minor-7'), site('/sitemap.xml'),
     ]))
     expect(urls).not.toContain(site('/song/blue-bossa'))
   })
 
-  it('pings every song and scale when the engine or its scale data changes', () => {
+  it('pings every song, scale and chord when the engine or its scale data changes', () => {
     for (const path of ['engine/chord_scales.json', 'engine/src/scales.ts']) {
       const urls = urlsFor([path], lib)
-      expect(urls).toEqual(expect.arrayContaining([site('/song/autumn-leaves'), site('/song/blue-bossa'), site('/scales/lydian-dominant')]))
+      expect(urls).toEqual(expect.arrayContaining([site('/song/autumn-leaves'), site('/song/blue-bossa'), site('/scales/lydian-dominant'), site('/chords/altered-dominant')]))
       expect(urls.filter((u) => u.includes('/song/'))).toHaveLength(lib.slugs.length)
     }
   })
