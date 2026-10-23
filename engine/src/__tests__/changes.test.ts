@@ -1422,13 +1422,21 @@ describe("the rhythm's paths on the Changes sheet (Phase 4 spec §3, D17)", () =
     expect(rhythm[4]).toHaveLength(6) // 16ths in bars 5–6, 16 pulses in 3 after 24 + 24 pulses
   })
 
+  it('plays step 0 outside the form: the intro merges with it, a coda after step 1 starts it afresh (D15, D17)', () => {
+    const ro = ['1 | CMaj7', '3 | Am7']
+    const doc = parseChart(['key: C', ...['Intro', 'A', 'B', 'Coda'].flatMap((s) => ['', `section: ${s}`, 'bars: 4', ...ro])].join('\n') + '\n').value
+    const marks = bars(sheetOf(doc, 'unit:8:3:accents', { groups: [3, 4], gears: null, step: { unit: 'section', bars: 4 } })).map((b) => b.step)
+    expect(marks).toHaveLength(16)
+    expect(marks.map((m, d) => (m ? [d, m.group] : null)).filter(Boolean)).toEqual([[0, 3], [8, 4], [12, 3]])
+  })
+
   it('gives the step units the bars as drawn: a written-out repeat, a 2nd ending, a held bar', () => {
     const doc = parseChart(['key: C', '', 'section: A', '1 | Dm7', '2 | G7', '3 | CMaj7', '4 | A7', '@ending 1 3', '@ending 2 4', '', 'section: B', 'bars: 4', '1 | FMaj7', '3 | E7', '', 'section: A2', 'copy: A'].join('\n') + '\n').value
     vi.mocked(stepUnits).mockClear()
     const sheet = sheetOf(doc, 'unit:8:3:accents', { ...up, step: { unit: 'bars', bars: 2 } })
     const calls = vi.mocked(stepUnits).mock.calls
     const results = vi.mocked(stepUnits).mock.results
-    expect(calls.length).toBeGreaterThanOrEqual(1)
+    expect(calls.length).toBe(2)
     expect(calls.every(([blocks]) => blocks === calls[0]![0])).toBe(true) // one drawn-blocks array for both paths
     expect(results.map((r) => (r.value as ReturnType<typeof stepUnits>).ofDrawnBar.length)).toEqual(calls.map(() => bars(sheet).length))
     expect(bars(sheet).length).toBe(4 + 4 + 4)

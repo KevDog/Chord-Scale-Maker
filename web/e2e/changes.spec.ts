@@ -768,7 +768,8 @@ test.describe('the Groups path', () => {
     await expect(lines(page).nth(6)).toHaveAttribute('aria-label', /, from bar 25: in 6/)
     await expect(lines(page).nth(1)).not.toHaveAttribute('aria-label', /from bar/)
     await expect(page.locator('[data-rhythm-step]')).toHaveText(['③', '④', '⑤', '⑥'])
-    await expect(page.getByText(/Couldn.t draw/)).toHaveCount(0)  })
+    await expect(page.getByText(/Couldn.t draw/)).toHaveCount(0)
+  })
 
   test('a share link carries the path: it opens with the same marks', async ({ page, browser }) => {
     await upBySection(page)
