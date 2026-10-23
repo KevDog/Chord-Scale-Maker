@@ -649,6 +649,21 @@
             them, so a tune opens at the tempo you last practiced it at.
           </UiText>
         </DecisionSection>
+
+        <DecisionSection id="click.pattern">
+          <UiText>
+            <strong :class="EM">Click on</strong> (after Bergonzi) picks the beats the click sounds: every beat, 2 and 4, 1 and 3,
+            3 only, 4 only, or the and of 2 and 4, where the feel puts its eighth (two thirds through the beat in Swing, halfway
+            otherwise). With a pattern, the click plays nothing between the beats; the count-in still counts every beat, and the
+            lights still follow every beat, so you keep your place while you play the rest. Until you choose one, it follows the
+            rhythm's Feel: <strong :class="EM">in 4</strong> every beat, <strong :class="EM">in 2</strong> 2 and 4, the hi-hat of a
+            swing feel, and <strong :class="EM">in 1</strong> 4 alone, one click a bar. A bar too short for a pattern (2 and 4, 4
+            only and the and of 2 and 4 in 3/4) plays every beat.
+          </UiText>
+          <UiText>
+            <strong :class="EM">What you can change:</strong> Click on, under the click's ⋯. The chart remembers it.
+          </UiText>
+        </DecisionSection>
       </section>
     </article>
     <PageIndex :sections="SECTIONS" column :current="current" />

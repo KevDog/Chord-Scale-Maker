@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { clampTempo, clickBar, countIn, defaultFeel, defaultTempo, scheduleClicks, tapTempo } from '../click'
+import { CLICK_PATTERNS, clampTempo, clickBar, countIn, defaultFeel, defaultPattern, defaultTempo, patternFits, scheduleClicks, tapTempo } from '../click'
 
 describe('clickBar', () => {
   it('in quarters, accents 1 and clicks the other beats', () => {
@@ -35,6 +35,63 @@ describe('clickBar', () => {
   it('plays 5 and 6 beats a bar', () => {
     expect(clickBar({ beats: 5, feel: 'quarters', hat: false })).toHaveLength(5)
     expect(clickBar({ beats: 6, feel: 'quarters', hat: true })).toHaveLength(6)
+  })
+})
+
+describe('clickBar with a pattern (Bergonzi 31)', () => {
+  const sounding = (pattern: Parameters<typeof clickBar>[0]['pattern'], feel: 'quarters' | 'swing' | 'straight' = 'quarters', beats: 3 | 4 = 4) =>
+    clickBar({ beats, feel, hat: false, pattern }).filter((e) => e.kind !== 'tick')
+  it('clicks 2 and 4 alone', () => {
+    expect(sounding('2-4')).toEqual([
+      { at: 1, kind: 'beat' },
+      { at: 3, kind: 'beat' },
+    ])
+  })
+  it('accents 1 in 1 and 3', () => {
+    expect(sounding('1-3')).toEqual([
+      { at: 0, kind: 'accent' },
+      { at: 2, kind: 'beat' },
+    ])
+  })
+  it('clicks 3 only, or 4 only', () => {
+    expect(sounding('3')).toEqual([{ at: 2, kind: 'beat' }])
+    expect(sounding('4')).toEqual([{ at: 3, kind: 'beat' }])
+  })
+  it('clicks the and of 2 and 4 where the feel puts its 8th', () => {
+    expect(sounding('and-2-4', 'swing').map((e) => e.at)).toEqual([1 + 2 / 3, 3 + 2 / 3])
+    expect(sounding('and-2-4', 'straight').map((e) => e.at)).toEqual([1.5, 3.5])
+    expect(sounding('and-2-4', 'quarters').map((e) => e.at)).toEqual([1.5, 3.5])
+  })
+  it('drops the feel’s notes between the beats', () => {
+    expect(sounding('2-4', 'swing').some((e) => e.kind === 'sub')).toBe(false)
+  })
+  it('keeps the hat', () => {
+    expect(clickBar({ beats: 4, feel: 'quarters', hat: true, pattern: '4' }).filter((e) => e.kind === 'hat').map((e) => e.at)).toEqual([1, 3])
+  })
+  it('marks every beat with a silent tick, for the lights', () => {
+    expect(clickBar({ beats: 4, feel: 'quarters', hat: false, pattern: '3' }).filter((e) => e.kind === 'tick').map((e) => e.at)).toEqual([0, 1, 2, 3])
+    expect(clickBar({ beats: 4, feel: 'quarters', hat: false, pattern: 'all' }).some((e) => e.kind === 'tick')).toBe(false)
+  })
+  it('plays every beat where the bar is too short for the pattern', () => {
+    expect(sounding('2-4', 'quarters', 3)).toEqual(sounding('all', 'quarters', 3))
+    expect(sounding('1-3', 'quarters', 3).map((e) => e.at)).toEqual([0, 2])
+  })
+  it('is sorted by time', () => {
+    const bar = clickBar({ beats: 4, feel: 'swing', hat: true, pattern: 'and-2-4' })
+    expect(bar.map((e) => e.at)).toEqual([...bar.map((e) => e.at)].sort((a, b) => a - b))
+  })
+})
+
+describe('patternFits', () => {
+  it('needs a 4th beat for 2 and 4, 4 only and the and of 2 and 4', () => {
+    expect(CLICK_PATTERNS.filter((p) => patternFits(p, 3))).toEqual(['all', '1-3', '3'])
+    expect(CLICK_PATTERNS.every((p) => patternFits(p, 4))).toBe(true)
+  })
+})
+
+describe('defaultPattern', () => {
+  it('follows the Feel: every beat in 4, the hat’s 2 and 4 in 2, 4 alone in 1', () => {
+    expect([defaultPattern(4), defaultPattern(2), defaultPattern(1)]).toEqual(['all', '2-4', '4'])
   })
 })
 

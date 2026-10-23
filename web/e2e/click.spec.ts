@@ -50,6 +50,26 @@ test('a tempo typed out of range is clamped, and the chart remembers it', async 
   await expect(clickBar(page).getByRole('spinbutton', { name: 'Tempo' })).toHaveValue('300')
 })
 
+test('Click on is chosen in the click’s settings, which stay open, and the chart remembers it', async ({ page }) => {
+  await page.goto('/song/autumn-leaves')
+  await clickUntil(page, page.getByRole('button', { name: 'Click', exact: true }), clickBar(page))
+  const open = async (): Promise<Locator> => {
+    await clickBar(page).getByRole('button', { name: 'Click settings' }).click()
+    const settings = page.getByRole('dialog', { name: 'Click settings' })
+    await expect(settings).toBeVisible()
+    return settings
+  }
+  const settings = await open()
+  await expect(settings.getByRole('button', { name: 'Click on' })).toHaveText('Every beat')
+  await settings.getByRole('button', { name: 'Click on' }).click()
+  await page.getByRole('option', { name: '2 & 4', exact: true }).click()
+  await expect(settings.getByRole('button', { name: 'Click on' })).toHaveText('2 & 4')
+  await expect(settings).toBeVisible()
+  await page.reload()
+  await clickUntil(page, page.getByRole('button', { name: 'Click', exact: true }), clickBar(page))
+  await expect((await open()).getByRole('button', { name: 'Click on' })).toHaveText('2 & 4')
+})
+
 test('the docked bar’s room at the page’s foot doesn’t print', async ({ page }) => {
   await page.goto('/song/autumn-leaves')
   await clickUntil(page, page.getByRole('button', { name: 'Click', exact: true }), clickBar(page))

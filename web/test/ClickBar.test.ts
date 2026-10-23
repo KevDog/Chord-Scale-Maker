@@ -75,6 +75,21 @@ describe('ClickBar', () => {
     expect(four.w.text()).toContain('Hat on 2 & 4')
   })
 
+  it('Click on, under ⋯: every pattern in 4/4, those that fit in 3/4', async () => {
+    const options = async (m: Awaited<ReturnType<typeof mountBar>>) => {
+      await m.button('Click settings')!.trigger('click')
+      await m.w.find('button[aria-label="Click on"]').trigger('click')
+      return m.w.findAll('[role=option]')
+    }
+    const four = await mountBar()
+    const opts = await options(four)
+    expect(opts.map((o) => o.text())).toEqual(['Every beat', '2 & 4', '1 & 3', '3 only', '4 only', 'The & of 2 & 4'])
+    await opts[1]!.trigger('click')
+    expect(four.click.pattern.value).toBe('2-4')
+    const three = await mountBar({ beats: 3, style: 'Jazz waltz', metreChanges: false })
+    expect((await options(three)).map((o) => o.text())).toEqual(['Every beat', '1 & 3', '3 only'])
+  })
+
   it('one Feel on the bar: Quarters, Swing or Straight, and nothing more for it under ⋯', async () => {
     const { w, click, button } = await mountBar()
     const feel = w.find('fieldset')

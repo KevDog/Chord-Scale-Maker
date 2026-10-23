@@ -1,16 +1,17 @@
 import type { InjectionKey, Ref } from 'vue'
-import { type Beats, type ClickFeel, type ClickPlan, type ClickState, type TimedClick, clampTempo, defaultFeel, defaultTempo, scheduleClicks, tapTempo } from '@chord-scale-maker/engine'
+import { type Beats, type ClickFeel, type ClickPattern, type ClickPlan, type ClickState, type Feel, type TimedClick, CLICK_PATTERNS, clampTempo, defaultFeel, defaultPattern, defaultTempo, scheduleClicks, tapTempo } from '@chord-scale-maker/engine'
 import { type ClickAudio, type ClickSound, CLICK_SOUNDS, webAudio } from '~/utils/clickSounds'
 import { readStored, writeStored } from '~/utils/storage'
 
 /**
  * The click (#254, docs/superpowers/specs/2026-10-21-metronome-design.md): one per song page. The engine says which
  * clicks fall in each lookahead window; this books them on the AudioContext's clock, so a busy page never makes it
- * drift, and lights the beat that is sounding. Tempo and feel are remembered per chart, the rest in this browser.
+ * drift, and lights the beat that is sounding. Tempo, feel and Click on are remembered per chart, the rest in this browser.
  */
 /** folded: the bar shows only Start/Stop, the tempo and the lights */
 export type ClickSettings = Readonly<{ hat: boolean; countIn: 0 | 1 | 2; sound: ClickSound; folded: boolean }>
-export type ClickChart = Readonly<{ beats: Beats; style: string; metreChanges: boolean }>
+/** rhythmFeel: the sheet's Feel, which Click on follows until it's set (in 4 when left out) */
+export type ClickChart = Readonly<{ beats: Beats; style: string; metreChanges: boolean; rhythmFeel?: Feel }>
 export type ClickDeps = Readonly<{
   audio?: () => ClickAudio | null
   setInterval?: (fn: () => void, ms: number) => number
@@ -38,14 +39,17 @@ function parseSettings(raw: string | null): ClickSettings {
   }
 }
 
-/** a chart's remembered tempo and feel, if any */
-function readChart(key: string | undefined): Readonly<{ tempo?: number; feel?: ClickFeel }> {
+type Chosen = Readonly<{ tempo?: number; feel?: ClickFeel; pattern?: ClickPattern }>
+
+/** a chart's remembered tempo, feel and Click on, if any */
+function readChart(key: string | undefined): Chosen {
   if (!key) return {}
   try {
     const v = JSON.parse(readStored(`${SETTINGS_KEY}:${key}`) ?? '') as Record<string, unknown>
     return {
       tempo: typeof v.tempo === 'number' ? clampTempo(v.tempo) : undefined,
       feel: v.feel === 'quarters' || v.feel === 'swing' || v.feel === 'straight' ? v.feel : undefined,
+      pattern: CLICK_PATTERNS.includes(v.pattern as ClickPattern) ? (v.pattern as ClickPattern) : undefined,
     }
   } catch {
     return {}
@@ -69,13 +73,16 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
   const stored = readChart(storageKey.value)
   const tempo = ref(stored.tempo ?? defaultTempo(chart.value.style))
   const feel = ref<ClickFeel>(stored.feel ?? defaultFeel(chart.value.style))
-  // only what the player sets is stored: a tempo and feel still the style's follow the style as it's edited
+  const rhythmFeel = (): Feel => chart.value.rhythmFeel ?? 4
+  const pattern = ref<ClickPattern>(stored.pattern ?? defaultPattern(rhythmFeel()))
+  // only what the player sets is stored: a tempo and feel still the style's follow the style as it's edited, and a
+  // Click on still the Feel's follows the Feel
   let chosen = stored.tempo !== undefined || stored.feel !== undefined
-  let following = false // the style's own values being applied, not the player's
-  function follow(t: number, f: ClickFeel): void {
+  let patternChosen = stored.pattern !== undefined
+  let following = false // the style's or the Feel's own values being applied, not the player's
+  function follow(set: () => void): void {
     following = true
-    tempo.value = t
-    feel.value = f
+    set()
     following = false
   }
   // another chart (its key): its own, else its style's; the style edited: the style's, unless the player chose
@@ -83,22 +90,48 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
     if (key !== oldKey) {
       const s = readChart(key)
       chosen = s.tempo !== undefined || s.feel !== undefined
-      follow(s.tempo ?? defaultTempo(style), s.feel ?? defaultFeel(style))
-    } else if (!chosen) follow(defaultTempo(style), defaultFeel(style))
+      patternChosen = s.pattern !== undefined
+      follow(() => {
+        tempo.value = s.tempo ?? defaultTempo(style)
+        feel.value = s.feel ?? defaultFeel(style)
+        pattern.value = s.pattern ?? defaultPattern(rhythmFeel())
+      })
+    } else if (!chosen)
+      follow(() => {
+        tempo.value = defaultTempo(style)
+        feel.value = defaultFeel(style)
+      })
   })
+  watch(rhythmFeel, (f) => {
+    if (!patternChosen) follow(() => (pattern.value = defaultPattern(f)))
+  })
+  function store(): void {
+    if (!storageKey.value) return
+    const v: Chosen = { ...(chosen ? { tempo: tempo.value, feel: feel.value } : {}), ...(patternChosen ? { pattern: pattern.value } : {}) }
+    writeStored(`${SETTINGS_KEY}:${storageKey.value}`, JSON.stringify(v))
+  }
   watch(
     [tempo, feel],
-    ([t, f]) => {
+    () => {
       if (following) return
       chosen = true
-      if (storageKey.value) writeStored(`${SETTINGS_KEY}:${storageKey.value}`, JSON.stringify({ tempo: t, feel: f }))
+      store()
+    },
+    { flush: 'sync' },
+  )
+  watch(
+    pattern,
+    () => {
+      if (following) return
+      patternChosen = true
+      store()
     },
     { flush: 'sync' },
   )
 
   const plan = computed(
     (): ClickPlan => ({
-      options: { beats: chart.value.beats, feel: feel.value, hat: settings.value.hat },
+      options: { beats: chart.value.beats, feel: feel.value, hat: settings.value.hat, pattern: pattern.value },
       tempo: clampTempo(tempo.value),
       countIn: settings.value.countIn,
     }),
@@ -108,7 +141,7 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
   let timer: number | null = null
   let state: ClickState = { barStart: 0, bar: 0 }
   let booked = 0 // the audio clock's time booked up to
-  let recent: readonly TimedClick[] = [] // booked clicks the lights still need (the beats, not the hat or the note between them)
+  let recent: readonly TimedClick[] = [] // booked clicks the lights still need (the beats and ticks, not the hat or the note between them)
   let run = 0 // each start and stop: a start whose resume settles after another start or a stop gives way
 
   function lights(): void {
@@ -125,10 +158,10 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
     const hidden = typeof document !== 'undefined' && document.hidden
     const until = now + (hidden ? LOOKAHEAD.hiddenAhead : LOOKAHEAD.ahead)
     const next = scheduleClicks(plan.value, state, Math.max(booked, now), until)
-    for (const e of next.events) audio.play(e.kind, e.time, settings.value.sound)
+    for (const e of next.events) if (e.kind !== 'tick') audio.play(e.kind, e.time, settings.value.sound)
     state = next.state
     booked = Math.max(booked, until) // a shorter lookahead (the tab shown again) mustn't reopen what's booked
-    const beats = next.events.filter((e) => e.kind !== 'hat' && e.kind !== 'sub')
+    const beats = next.events.filter((e) => e.kind !== 'hat' && e.kind !== 'sub') // a pattern's ticks light the beats it leaves silent
     recent = [...recent.filter((e) => e.time > now - 2), ...beats]
     lights()
   }
@@ -202,7 +235,7 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
     audio = null
   }
 
-  return { shown, running, unavailable, tempo, feel, settings, beat, counting, start, stop, toggle, tap, show, hide, dispose }
+  return { shown, running, unavailable, tempo, feel, pattern, settings, beat, counting, start, stop, toggle, tap, show, hide, dispose }
 }
 
 export type Click = ReturnType<typeof useClick>

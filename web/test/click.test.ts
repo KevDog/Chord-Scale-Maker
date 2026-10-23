@@ -189,4 +189,34 @@ describe('useClick', () => {
     }
     expect(audio.played.slice(2).some((p) => p.kind === 'sub')).toBe(false)
   })
+
+  it('Click on follows the rhythm’s Feel until it’s set, then the chart remembers it', async () => {
+    localStorage.clear()
+    const c4 = ref({ beats: 4 as const, style: 'Medium up', metreChanges: false, rhythmFeel: 4 as 4 | 2 | 1 })
+    const c = useClick(c4, ref('autumn-leaves'), { audio: fakeAudio })
+    expect(c.pattern.value).toBe('all')
+    c4.value = { ...c4.value, rhythmFeel: 2 }
+    await nextTick()
+    expect(c.pattern.value).toBe('2-4')
+    expect(localStorage.getItem('csm-click:autumn-leaves')).toBeNull() // followed, not chosen
+    c.pattern.value = '3'
+    c4.value = { ...c4.value, rhythmFeel: 1 }
+    await nextTick()
+    expect(c.pattern.value).toBe('3')
+    expect(useClick(ref({ ...c4.value }), ref('autumn-leaves'), { audio: fakeAudio }).pattern.value).toBe('3')
+  })
+
+  it('on 2 and 4 plays those beats alone and still lights the beat', async () => {
+    const audio = fakeAudio()
+    const t = timers()
+    const c = useClick(chart(), ref(undefined), { audio: () => audio, ...t })
+    c.pattern.value = '2-4'
+    await c.start()
+    for (let at = 0; at < 1.45; at += 0.05) {
+      audio.clock.t = at
+      t.tick()
+      if (at === 0) expect(c.beat.value).toBe(0)
+    }
+    expect(audio.played.map((p) => p.kind)).toEqual(['beat', 'beat']) // 160 bpm: beats 2 and 4 at 0.375 s and 1.125 s
+  })
 })
