@@ -273,4 +273,65 @@ describe('useClick', () => {
       expect(c.hasLine.value).toBe(false)
     })
   })
+
+  describe('Play a staff', () => {
+    const phrase = [
+      { at: 0, beats: 0.5, midi: 60 },
+      { at: 0.5, beats: 1, midi: 62 },
+    ]
+    function player() {
+      const audio = fakeAudio()
+      const t = timers()
+      const c = useClick(chart(), ref(undefined), { audio: () => audio, ...t }) // 160 bpm, swing
+      c.feel.value = 'straight'
+      return { audio, c, t }
+    }
+
+    it('with the click stopped, plays at once at its tempo, then says it’s done and suspends', async () => {
+      const { audio, c, t } = player()
+      audio.clock.t = 5
+      await c.play('a', phrase)
+      expect(c.playing.value).toBe('a')
+      expect(c.running.value).toBe(false)
+      expect(audio.notes.map((n) => n.midi)).toEqual([60, 62])
+      expect(audio.notes[0]!.time).toBeGreaterThan(5)
+      expect(audio.notes[1]!.time - audio.notes[0]!.time).toBeCloseTo(60 / 160 / 2)
+      t.end()
+      expect(c.playing.value).toBe(null)
+      expect(audio.suspended.n).toBe(1)
+    })
+
+    it('with the click running, starts on its next bar', async () => {
+      const { audio, c, t } = player()
+      await c.start()
+      audio.clock.t = 0.5
+      t.tick()
+      await c.play('a', phrase)
+      expect(audio.notes[0]!.time).toBeCloseTo((4 * 60) / 160)
+      t.end()
+      expect(audio.suspended.n).toBe(0) // the click plays on
+    })
+
+    it('one at a time: another Play, Stop, or the click stopping silences it', async () => {
+      const { audio, c } = player()
+      await c.play('a', phrase)
+      await c.play('b', phrase)
+      expect(audio.notes.map((n) => n.stopped)).toEqual([true, true, false, false])
+      expect(c.playing.value).toBe('b')
+      c.stopPhrase()
+      expect(audio.notes.every((n) => n.stopped)).toBe(true)
+      expect(c.playing.value).toBe(null)
+      await c.play('a', phrase)
+      await c.start()
+      c.stop()
+      expect(c.playing.value).toBe(null)
+      expect(audio.notes.every((n) => n.stopped)).toBe(true)
+    })
+
+    it('is unavailable without WebAudio', async () => {
+      const c = useClick(chart(), ref(undefined), { audio: () => null })
+      await c.play('a', phrase)
+      expect([c.playing.value, c.unavailable.value]).toEqual([null, true])
+    })
+  })
 })

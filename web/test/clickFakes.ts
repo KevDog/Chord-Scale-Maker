@@ -1,28 +1,39 @@
 import type { ClickAudio } from '~/utils/clickSounds'
 
+/** a booked note: stopped, once its stop is called */
+export type FakeNote = { midi: number; time: number; length: number; stopped: boolean }
 /** a click's audio with a clock the test sets, recording what it is asked to play */
-export type FakeAudio = ClickAudio & { clock: { t: number }; played: { kind: string; time: number }[]; notes: { midi: number; time: number; length: number }[] }
+export type FakeAudio = ClickAudio & { clock: { t: number }; played: { kind: string; time: number }[]; notes: FakeNote[]; suspended: { n: number } }
 
 export function fakeAudio(): FakeAudio {
   const clock = { t: 0 }
   const played: { kind: string; time: number }[] = []
-  const notes: { midi: number; time: number; length: number }[] = []
+  const notes: FakeNote[] = []
+  const suspended = { n: 0 }
   return {
     clock,
     played,
     notes,
+    suspended,
     now: () => clock.t,
     play: (kind, time) => played.push({ kind, time }),
-    note: (midi, time, length) => notes.push({ midi, time, length }),
+    note: (midi, time, length) => {
+      const n = { midi, time, length, stopped: false }
+      notes.push(n)
+      return () => (n.stopped = true)
+    },
     resume: async () => {},
-    suspend: async () => {},
+    suspend: async () => {
+      suspended.n += 1
+    },
     close: async () => {},
   }
 }
 
-/** the scheduler's interval, run by hand with tick() */
+/** the scheduler's interval and the phrase's end, run by hand with tick() and end() */
 export function timers() {
   let tick: (() => void) | null = null
+  let ending: (() => void) | null = null
   return {
     setInterval: (fn: () => void): number => {
       tick = fn
@@ -31,7 +42,15 @@ export function timers() {
     clearInterval: (): void => {
       tick = null
     },
+    setTimeout: (fn: () => void): number => {
+      ending = fn
+      return 2
+    },
+    clearTimeout: (): void => {
+      ending = null
+    },
     raf: (): number => 0,
     tick: (): void => tick?.(),
+    end: (): void => ending?.(),
   }
 }

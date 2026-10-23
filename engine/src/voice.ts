@@ -2,9 +2,10 @@
  * Hear line (#507, docs/superpowers/specs/2026-10-23-hear-line-design.md): the Changes sheet's Line as notes to sound,
  * booked from the click's clock (click.ts) so the two never drift. Pure: the app plays them (web/app/composables/useClick.ts).
  */
-import type { ClickPlan, ClickState } from './click'
+import type { ClickFeel, ClickPlan, ClickState } from './click'
 import type { GuideNote } from './guideTones'
 import { type Transposition, TRANSPOSITIONS } from './instruments'
+import type { Pitched } from './part'
 
 /** a drawn bar's beats and its Line's voice (a ChangesBar's) */
 export type VoiceBar = Readonly<{ beats: number; voice: readonly GuideNote[] }>
@@ -38,6 +39,34 @@ export function voiceNotes(bars: readonly VoiceBar[], trans: Transposition): Voi
 
 /** swing (decision hear.swing): an 8th off the beat moves two thirds through it; other times stay */
 export const swingBeat = (at: number): number => (at - Math.floor(at) === 0.5 ? Math.floor(at) + 2 / 3 : at)
+
+/** a staff's Play (#507, part 2): at and beats from the phrase's start, midi at concert pitch */
+export type PhraseNote = Readonly<{ at: number; beats: number; midi: number }>
+
+/** concert midis in 8ths, the last a quarter */
+const eighths = (midis: readonly number[]): PhraseNote[] => midis.map((midi, i) => ({ at: i / 2, beats: i === midis.length - 1 ? 1 : 0.5, midi }))
+const concert = (notes: readonly Pitched[], trans: Transposition): number[] => notes.map((n) => n.midi - TRANSPOSITIONS[trans][1])
+
+/** a Scales staff up and down, the top once; with Practice on (selected), its selected notes alone */
+export function scalePhrase(notes: readonly Pitched[], selected: readonly boolean[] | null, trans: Transposition): PhraseNote[] {
+  const up = concert(selected ? notes.filter((_, i) => selected[i]) : notes, trans)
+  return eighths([...up, ...up.slice(0, -1).reverse()])
+}
+
+/** an Arpeggio staff's notes as drawn; Block: each beamed group one chord, a quarter each */
+export function arpeggioPhrase(notes: readonly Pitched[], groups: readonly number[], block: boolean, trans: Transposition): PhraseNote[] {
+  const midis = concert(notes, trans)
+  if (!block) return eighths(midis)
+  let start = 0
+  return groups.flatMap((g, i) => midis.slice(start, (start += g)).map((midi) => ({ at: i, beats: 1, midi })))
+}
+
+/** the phrase on the audio clock from start (s), swung as Hear line swings (decision hear.swing) */
+export function timePhrase(phrase: readonly PhraseNote[], tempo: number, feel: ClickFeel, start: number): TimedNote[] {
+  const beat = 60 / tempo
+  const swing = feel === 'swing' ? swingBeat : (at: number) => at
+  return phrase.map((n) => ({ time: start + swing(n.at) * beat, length: (swing(n.at + n.beats) - swing(n.at)) * beat, midi: n.midi }))
+}
 
 /**
  * the notes to book in [from, until), from the click's plan and the state it is scheduled from: bar n after the

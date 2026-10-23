@@ -39,3 +39,30 @@ parts of #507.
 - Scales: a play button per staff; Arpeggios: each cell's pattern (#507, later parts).
 - Repeats, endings and D.S. in the clock (#254's form-following stretch).
 - The rhythm track, and the swing slider (rhythm roadmap Phase 5, after #507).
+
+# Part 2: play a staff (#507)
+
+## What it does
+- Scales: each staff gets a **Play** button by its label. It sounds the scale up and down (the top note once), in
+  8ths at the click's tempo, swung with the click on Swing, the last note a quarter. With Practice on, only the
+  selected notes play, in the same order.
+- Arpeggios (and Patterns): each staff's Play button sounds its notes in drawn order, in 8ths, the last a quarter. A
+  Block triad pair sounds each beamed group as one chord, a quarter each.
+- Concert pitch and octaves as Hear line (decision `hear.pitch`); swing as `hear.swing`.
+- The button turns to **Stop** while it plays; another staff's Play stops it. It needs no click: with the click
+  stopped it starts at once on its own; with the click running it starts on the click's next bar, so it fits the
+  time. Stopping the click stops it too. The click bar needn't be open.
+- On the song page only (the scale reference pages have no click), behind the `hearLine` flag.
+
+## The notes (engine `voice.ts`, pure)
+- `PhraseNote = { at, beats, midi }`: beats from the phrase's start, concert pitch.
+- `scalePhrase(notes, selected, trans)`, `arpeggioPhrase(notes, groups, block, trans)`: the phrases above.
+- `timePhrase(phrase, tempo, feel, start)`: the phrase as `TimedNote`s from `start`, swung as `scheduleVoice` swings.
+
+## The player (`useClick`)
+- `play(id, phrase)`, `playing` (the id sounding, or null), `stopPhrase()`; one phrase at a time. The phrase is
+  booked at once; `ClickAudio.note` returns a stop for each note, which Stop calls. When it ends with the click
+  stopped, the audio suspends.
+
+## Not in this part
+- The Pentatonic overlay's rungs sounding their pentatonic (#507, part 3).

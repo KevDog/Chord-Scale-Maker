@@ -11,8 +11,8 @@ export type ClickAudio = Readonly<{
   /** the audio clock, in seconds */
   now: () => number
   play: (kind: ClickKind, time: number, sound: ClickSound) => void
-  /** Hear line's lead: a note at midi (concert pitch), from time for length seconds */
-  note: (midi: number, time: number, length: number) => void
+  /** Hear line's lead: a note at midi (concert pitch), from time for length seconds; call what it returns to stop it */
+  note: (midi: number, time: number, length: number) => () => void
   resume: () => Promise<void>
   suspend: () => Promise<void>
   close: () => Promise<void>
@@ -70,9 +70,9 @@ const LEAD = { peak: 0.35, attack: 0.01, release: 0.06, held: 0.9, cutoff: 2400 
 
 /**
  * Hear line's lead (#507): a triangle and a quieter sine an octave up through a low-pass, a short attack and release,
- * held for most of the note so a repeated note is heard again
+ * held for most of the note so a repeated note is heard again; what it returns fades it out at once (a Stop)
  */
-export function playNote(ctx: AudioContext, out: AudioNode, midi: number, time: number, length: number): void {
+export function playNote(ctx: AudioContext, out: AudioNode, midi: number, time: number, length: number): () => void {
   const freq = 440 * 2 ** ((midi - 69) / 12)
   const end = time + Math.max(length * LEAD.held, LEAD.attack + 0.02)
   const env = ctx.createGain()
@@ -93,6 +93,10 @@ export function playNote(ctx: AudioContext, out: AudioNode, midi: number, time: 
     osc.connect(gain).connect(filter)
     osc.start(time)
     osc.stop(end + LEAD.release + 0.02)
+  }
+  return () => {
+    env.gain.cancelScheduledValues(ctx.currentTime)
+    env.gain.setTargetAtTime(0, ctx.currentTime, 0.01)
   }
 }
 
