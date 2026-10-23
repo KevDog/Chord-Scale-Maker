@@ -110,14 +110,16 @@ const DEFAULT_BEATS = 4
  * bar widths that keep each chord's name clear of the next (a beat is a bar's width over its beats, each bar's own): bars that fit stay
  * even; a crowded bar takes what its names need and the others share the rest; a line that can't fit them all is
  * shared by need, and the names that still don't fit shrink. A slot past the line's last bar (null) gives up its room.
+ * rooms: each bar's notes' least share of the line (notesRoom), which a bar takes as its names'; notes don't shrink,
+ * so the line breaks after the leading bars whose rooms fit it whole
  */
-export function fitBars(barBeats: readonly number[], bars: readonly (readonly NamedBeat[] | null)[]): BarFit {
+export function fitBars(barBeats: readonly number[], bars: readonly (readonly NamedBeat[] | null)[], rooms: readonly number[] = []): BarFit {
   const floor = FLOOR / bars.length
   const needs = bars.map((chords, b) => {
     if (!chords) return 0
     const beats = barBeats[b] ?? DEFAULT_BEATS
     const s = spans(beats, chords)
-    return Math.max(floor, ...chords.map((c, i) => (c.width * beats) / (s[i] ?? beats)))
+    return Math.max(floor, rooms[b] ?? 0, ...chords.map((c, i) => (c.width * beats) / (s[i] ?? beats)))
   })
   const total = needs.reduce((a, b) => a + b, 0)
   const shares = total >= 1 ? needs.map((n) => n / total) : waterFill(needs)
@@ -129,7 +131,8 @@ export function fitBars(barBeats: readonly number[], bars: readonly (readonly Na
   })
   const present = bars.filter((b) => b !== null).length
   const sums = needs.map((_, b) => needs.slice(0, b + 1).reduce((a, n) => a + n, 0))
-  return { shares, scales, fits: Math.max(1, Math.min(present, sums.filter((n) => n * BREAK_SCALE <= 1 + 1e-9).length)) }
+  const roomed = rooms.map((_, b) => rooms.slice(0, b + 1).reduce((a, n) => a + n, 0)).filter((n) => n <= 1 + 1e-9).length
+  return { shares, scales, fits: Math.max(1, Math.min(present, rooms.length ? roomed : present, sums.filter((n) => n * BREAK_SCALE <= 1 + 1e-9).length)) }
 }
 
 /** each bar at least its need, the rest at one level, summing to 1 (the needs sum to less) */
@@ -230,16 +233,32 @@ type Geometry = Readonly<{ clef: Clef | undefined; total: number; widths: readon
  * signature; any bar with its time signature's room): even, so bars line up from line to line, unless the chords'
  * names crowd a bar (fitBars)
  */
-function geometry(vf: VexFlowModule, line: ChangesLine, opts: Opts): Geometry {
-  const clef = opts.first ? opts.clef : undefined // with signatures, the clef and key signature start the first line only
+function geometry(vf: VexFlowModule, line: ChangesLine, opts: Opts, rooms: readonly number[] = []): Geometry {
+  const clef = lineClef(opts)
   const leads = line.bars.map((bar, b) => (b === 0 && clef ? signatureLead(vf, clef, bar.keySig) : 0) + (bar.timeSignature ? TIME_SPACE : 0))
   const total = BAR_UNITS * opts.barsPerLine
   const area = total - 1 - leads.reduce((a, l) => a + l, 0)
   const slots = Array.from({ length: opts.barsPerLine }, (_, b) =>
     b < line.bars.length ? (opts.names?.[b] ?? []).map((c) => ({ beat: c.beat, width: (c.width * total) / area })) : null,
   )
-  const { shares, scales, fits } = fitBars(line.bars.map((bar) => bar.beats), slots)
+  const floors = rooms.map((r, b) => Math.max(0, r - (leads[b] ?? 0)) / area) // a bar's notes' room past its lead
+  const { shares, scales, fits } = fitBars(line.bars.map((bar) => bar.beats), slots, floors)
   return { clef, total, widths: line.bars.map((_, b) => area * (shares[b] ?? 0) + (leads[b] ?? 0)), scales, fits }
+}
+
+/** with signatures, the clef and key signature start the first line only */
+const lineClef = (opts: Opts): Clef | undefined => (opts.first ? opts.clef : undefined)
+
+/**
+ * each bar's room (notesRoom) on its own stave at the width the names give it, the line's first with its signatures
+ * (Task 3.2): what geometry widens a bar to, and where it breaks a line whose notes can't all fit
+ */
+function lineRooms(vf: VexFlowModule, line: ChangesLine, opts: Opts, notes: (bar: ChangesBar, b: number, stave: Stave) => Voice): number[] {
+  const { widths } = geometry(vf, line, opts)
+  return line.bars.map((bar, b) => {
+    const stave = staveFor(vf, bar, b === 0, 0, widths[b] ?? BAR_UNITS, lineClef(opts))
+    return notesRoom(vf, stave, notes(bar, b, stave))
+  })
 }
 
 /** each bar's right edge as a fraction of the line */
@@ -278,6 +297,18 @@ export const voiceOf = (vf: VexFlowModule, beats: number, ticks: readonly Tick[]
 
 /** room for the notes after the stave's modifiers */
 export const staveRoom = (stave: Stave, x: number, width: number): number => width - (stave.getNoteStartX() - x) - 20
+
+const NOTES_CLEAR = 10 // a bar's last note clears its barline by at least this (the formatter leaves about 15 when they fit)
+/**
+ * the width a bar needs for its notes (Task 3.2): formatted on its stave as drawn, to the last note's right edge, and
+ * NOTES_CLEAR. Notes that fit end short of the barline, so this is under the bar's width; notes the formatter can't
+ * squeeze (each glyph keeps its room) run on past it, under the next bar's notes and tuplets, and this is what they need
+ */
+function notesRoom(vf: VexFlowModule, stave: Stave, notes: Voice): number {
+  new vf.Formatter().joinVoices([notes]).format([notes], staveRoom(stave, stave.getX(), stave.getWidth()))
+  const last = notes.getTickables().at(-1)
+  return (last ? last.getAbsoluteX() + last.getWidth() : stave.getNoteStartX()) - stave.getX() + NOTES_CLEAR
+}
 
 /** a dot where the value ends in d (the engine's values are VexFlow's durations), and an accent */
 export function marked(vf: VexFlowModule, note: StaveNote, value: string, accent: boolean): StaveNote {
@@ -359,10 +390,37 @@ export function beamRuns(notes: readonly GuideNote[]): number[][] {
   ).filter((g) => g.length > 1)
 }
 
+/**
+ * a guide line bar's notes on its stave (its first voice: slashes for a bar without guide tones), their tuplets and
+ * beams (a poured bar's by its marks, an arpeggio line's by the beat), and a ghost a beat: where each beat falls
+ */
+function guideVoices(vf: VexFlowModule, bar: ChangesBar, first: boolean, stave: Stave, noteClef: Clef, arpeggio: boolean): Omit<Laid, 'bar' | 'stave' | 'model'> {
+  const model = bar.voice
+  const ticks = model.map((n, i) => tickFor(vf, n, noteClef, first && i === 0 ? restatedAccidental(n, bar.keySig) : null))
+  const poured = model.some((n) => n.mark)
+  const tuplets = tupletsOf(vf, ticks, (i) => model[i]?.mark)
+  const grid = ticks.length ? Array.from({ length: bar.beats }, () => new vf.GhostNote('q')) : []
+  const plain = ticks.length ? [] : slashes(vf, bar.beats)
+  const lists: readonly (readonly Tick[])[] = ticks.length ? [ticks, grid] : [plain]
+  const all = lists.map((ticks) => {
+    ticks.forEach((t) => t.setStave(stave))
+    return voiceOf(vf, bar.beats, ticks)
+  })
+  const beams = poured
+    ? beamRuns(model).map((run) => new vf.Beam(run.flatMap((i) => (ticks[i] ? [ticks[i]] : []))))
+    : arpeggio
+      ? vf.Beam.generateBeams(ticks, { groups: [new vf.Fraction(1, 4)] })
+      : []
+  return { ticks, tuplets, grid, plain, all, beams }
+}
+
 /** a line with guide tones: lay out every bar, place the brackets over the stem tips, then draw */
 function drawGuideLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, opts: Opts): ChangesLayout {
-  const { clef, total, widths, scales, fits } = geometry(vf, line, opts)
   const noteClef: Clef = opts.clef ?? 'treble'
+  // a poured rhythm's bars take their notes' room (Task 3.2): sextuplets and septuplets need more than a bar's share
+  const pouredLine = line.bars.some((b) => b.voice.some((n) => n.mark))
+  const rooms = pouredLine ? lineRooms(vf, line, opts, (bar, b, stave) => guideVoices(vf, bar, b === 0, stave, noteClef, !!opts.arpeggio).all[0]!) : []
+  const { clef, total, widths, scales, fits } = geometry(vf, line, opts, rooms)
   const ctx = svgContext(vf, el, total)
 
   // pass 1: every bar's stave and notes, formatted (not drawn), so the stem tips are known
@@ -371,22 +429,8 @@ function drawGuideLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, op
     const width = widths[b] ?? 0
     const stave = staveFor(vf, bar, b === 0, x, width, clef)
     const model = bar.voice
-    const ticks = model.map((n, i) => tickFor(vf, n, noteClef, b === 0 && i === 0 ? restatedAccidental(n, bar.keySig) : null))
-    const poured = model.some((n) => n.mark)
-    const tuplets = tupletsOf(vf, ticks, (i) => model[i]?.mark)
-    const grid = ticks.length ? Array.from({ length: bar.beats }, () => new vf.GhostNote('q')) : []
-    const plain = ticks.length ? [] : slashes(vf, bar.beats)
-    const lists: readonly (readonly Tick[])[] = ticks.length ? [ticks, grid] : [plain]
-    const all = lists.map((ticks) => {
-      ticks.forEach((t) => t.setStave(stave))
-      return voiceOf(vf, bar.beats, ticks)
-    })
-    const beams = poured
-      ? beamRuns(model).map((run) => new vf.Beam(run.flatMap((i) => (ticks[i] ? [ticks[i]] : []))))
-      : opts.arpeggio
-        ? vf.Beam.generateBeams(ticks, { groups: [new vf.Fraction(1, 4)] })
-        : []
-    new vf.Formatter().joinVoices(all).format(all, staveRoom(stave, x, width))
+    const { ticks, tuplets, grid, plain, all, beams } = guideVoices(vf, bar, b === 0, stave, noteClef, !!opts.arpeggio)
+    new vf.Formatter().joinVoices([...all]).format([...all], staveRoom(stave, x, width))
     beams.forEach((b) => b.postFormat()) // beamed stems change length here, before the crop and the bracket read their tips
     x += width
     return { bar, stave, model, ticks, grid, plain, all, beams, tuplets }
@@ -409,6 +453,7 @@ function drawGuideLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, op
   })
   laid.forEach((l) => l.all.forEach((v) => v.draw(ctx, l.stave)))
   laid.forEach((l) => l.beams.forEach((b) => b.setContext(ctx).draw()))
+  unbracketCrowded(laid.flatMap((l) => l.tuplets))
   laid.forEach((l) => l.tuplets.forEach((t) => t.setContext(ctx).draw()))
   // target tones (rhythm-on-lines spec §6): colored as Practice highlighting colors a scale's notes
   laid.forEach((l) => l.model.forEach((m, i) => m.target && l.ticks[i]?.getSVGElement()?.classList.add(m.target === 'tone' ? 'vf-selected' : 'vf-dimmed')))
@@ -481,6 +526,28 @@ export const tupletsOf = (vf: VexFlowModule, ticks: readonly StaveNote[], note: 
       { numNotes: notes, notesOccupied: of, location: 1, ratioed: false },
     )
   })
+
+const BRACKET_OVERHANG = 5 // VexFlow's tuplet bracket, past its first note's left and its last note's right
+
+/** whether any two brackets (their left and right x), in order along the line, cross */
+export function bracketsCross(spans: readonly Readonly<{ left: number; right: number }>[]): boolean {
+  const sorted = [...spans].sort((a, b) => a.left - b.left)
+  return sorted.some((s, i) => i > 0 && s.left < sorted[i - 1]!.right)
+}
+
+/**
+ * a line's tuplets, formatted: where two brackets would cross (Task 3.2: sextuplets and septuplets, their notes at
+ * their least room), each tuplet under one beam draws its number alone, as engravers set a beamed tuplet; elsewhere
+ * every tuplet keeps its bracket
+ */
+export function unbracketCrowded(tuplets: readonly Tuplet[]): void {
+  const spans = tuplets.map((t) => {
+    const notes = t.getNotes()
+    return { left: notes[0]!.getTieLeftX() - BRACKET_OVERHANG, right: notes.at(-1)!.getTieRightX() + BRACKET_OVERHANG }
+  })
+  if (!bracketsCross(spans)) return
+  tuplets.filter((t) => t.getNotes().every((n) => n.hasBeam())).forEach((t) => t.setBracketed(false))
+}
 
 /** a line's ink tops: its stem tips (an accent's over them) and its tuplets' numbers and brackets */
 export const inkTips = (notes: readonly StaveNote[], accented: ReadonlySet<StaveNote>, tuplets: readonly Tuplet[]): number[] => [
@@ -586,14 +653,30 @@ type RhythmLaid = Readonly<{
   tuplets: readonly InstanceType<VexFlowModule['Tuplet']>[]
 }>
 
+type RhythmVoices = Readonly<{ ticks: readonly StaveNote[]; tuplets: readonly Tuplet[]; grid: readonly GhostNote[]; all: readonly Voice[]; beams: readonly Beam[] }>
+
+/** a rhythm bar's notes on its stave (slashes with none), their tuplets and beams, and a ghost a beat: where each beat falls */
+function rhythmVoices(vf: VexFlowModule, rhythm: readonly RhythmNote[], beats: number, stave: Stave, clef: Clef): RhythmVoices {
+  const ticks = rhythm.length ? rhythm.map((n) => rhythmTick(vf, n, clef)) : slashes(vf, beats)
+  const tuplets = tupletsOf(vf, ticks, (i) => rhythm[i])
+  const grid = Array.from({ length: beats }, () => new vf.GhostNote('q'))
+  const all = [ticks, grid].map((list) => {
+    list.forEach((t) => t.setStave(stave))
+    return voiceOf(vf, beats, list)
+  })
+  const beams = groupsOf(ticks, (i) => rhythm[i]?.beam ?? null).filter((g) => g.length > 1).map((notes) => new vf.Beam(notes))
+  return { ticks, tuplets, grid, all, beams }
+}
+
 /**
  * a line with a rhythm (rhythm spec §8), in the guide line's two passes: each bar's notes in place of its slashes,
  * with its tuplets, beams and accents; then the brackets over the stem tips, the ties as one chain across the line,
  * and Saindon's bracket under the staff (data-rhythm-bracket: its bar)
  */
 function drawRhythmLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, opts: Opts): ChangesLayout {
-  const { clef, total, widths, scales, fits } = geometry(vf, line, opts)
   const noteClef: Clef = opts.clef ?? 'treble'
+  const rooms = lineRooms(vf, line, opts, (bar, _, stave) => rhythmVoices(vf, bar.rhythm, bar.beats, stave, noteClef).all[0]!)
+  const { clef, total, widths, scales, fits } = geometry(vf, line, opts, rooms)
   const ctx = svgContext(vf, el, total)
 
   // pass 1: every bar's stave and notes, formatted (not drawn), so the stem tips are known
@@ -601,15 +684,8 @@ function drawRhythmLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, o
   const laid = line.bars.map((bar, b): RhythmLaid => {
     const width = widths[b] ?? 0
     const stave = staveFor(vf, bar, b === 0, x, width, clef)
-    const ticks = bar.rhythm.length ? bar.rhythm.map((n) => rhythmTick(vf, n, noteClef)) : slashes(vf, bar.beats)
-    const tuplets = tupletsOf(vf, ticks, (i) => bar.rhythm[i])
-    const grid = Array.from({ length: bar.beats }, () => new vf.GhostNote('q'))
-    const all = [ticks, grid].map((list) => {
-      list.forEach((t) => t.setStave(stave))
-      return voiceOf(vf, bar.beats, list)
-    })
-    const beams = groupsOf(ticks, (i) => bar.rhythm[i]?.beam ?? null).filter((g) => g.length > 1).map((notes) => new vf.Beam(notes))
-    new vf.Formatter().joinVoices(all).format(all, staveRoom(stave, x, width))
+    const { ticks, tuplets, grid, all, beams } = rhythmVoices(vf, bar.rhythm, bar.beats, stave, noteClef)
+    new vf.Formatter().joinVoices([...all]).format([...all], staveRoom(stave, x, width))
     beams.forEach((beam) => beam.postFormat())
     x += width
     return { bar, stave, ticks, grid, all, beams, tuplets }
@@ -631,6 +707,7 @@ function drawRhythmLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, o
   })
   laid.forEach((l) => l.all.forEach((v) => v.draw(ctx, l.stave)))
   laid.forEach((l) => l.beams.forEach((b) => b.setContext(ctx).draw()))
+  unbracketCrowded(laid.flatMap((l) => l.tuplets))
   laid.forEach((l) => l.tuplets.forEach((t) => t.setContext(ctx).draw()))
 
   rhythmTies(vf, ctx, laid.map((l) => ({ rhythm: l.bar.rhythm, ticks: l.ticks })))
@@ -665,35 +742,63 @@ const ELLIPSIS_ROOM = 64 // after a cut card's bars: its "…"
 const ELLIPSIS_SIZE = 32
 
 /**
- * the rhythm card under a Scales staff (rhythm-scales-arpeggios spec §1, §7): a one-line stave per bar (each a quarter
- * of width, the staff's notes width, less the "…"'s room when cut; ending under the staff's end; data-rhythm-bar: its
- * bar from 1) with one-line barlines, the rhythm's slash notes with their tuplets, beams, accents and ties, the time
- * signature on the first bar, Saindon's bracket under the line, and "…" after the last barline when the cycle was cut;
- * drawn at CARD_SCALE; label: its aria-label (cardAria)
+ * a card's bar widths and how many of its leading bars it shows (Task 3.2): each bar at least its even width, wider
+ * where its notes need more (rooms); all of them when they fit `room`, else the leading bars that fit with `ellipsis`
+ * after them for the "…" (at least one)
  */
-export function drawRhythmCard(vf: VexFlowModule, el: HTMLElement, card: RhythmCardModel, width: number, label = ''): void {
+export function cardFit(rooms: readonly number[], even: number, room: number, ellipsis: number): Readonly<{ widths: readonly number[]; shown: number }> {
+  const widths = rooms.map((r) => Math.max(even, r))
+  const sums = widths.map((_, b) => widths.slice(0, b + 1).reduce((a, w) => a + w, 0))
+  const all = (sums.at(-1) ?? 0) <= room + 1e-9
+  return { widths, shown: all ? widths.length : Math.max(1, sums.filter((n) => n <= room - ellipsis + 1e-9).length) }
+}
+
+/** a card bar's one-line stave at x, the time signature on the first, and its slash notes with their tuplets and beams (not formatted) */
+function cardBar(vf: VexFlowModule, rhythm: readonly RhythmNote[], first: boolean, beats: number, x: number, width: number) {
+  const stave = inkStave(vf, x, STAVE_Y, width)
+  stave.setConfigForLines(Array.from({ length: stave.getNumLines() }, (_, l) => ({ visible: l === CARD_LINE })))
+  stave.setBegBarType(vf.BarlineType.NONE).setEndBarType(vf.BarlineType.NONE) // a five-line staff's: drawn below, one-line
+  if (first) stave.addTimeSignature(`${beats}/4`)
+  const ticks = rhythm.map((n) => rhythmTick(vf, n, 'treble'))
+  ticks.forEach((t) => t.setStave(stave))
+  const tuplets = tupletsOf(vf, ticks, (i) => rhythm[i])
+  const voice = voiceOf(vf, beats, ticks)
+  const beams = groupsOf(ticks, (i) => rhythm[i]?.beam ?? null).filter((g) => g.length > 1).map((notes) => new vf.Beam(notes))
+  return { rhythm, stave, ticks, voice, beams, tuplets }
+}
+
+/**
+ * the rhythm card under a Scales staff (rhythm-scales-arpeggios spec §1, §7): a one-line stave per bar (each a quarter
+ * of width, the staff's notes width, less the "…"'s room when cut; a bar whose notes need more is wider, and the card
+ * shows the bars that fit, cut, cardFit; ending under the staff's end; data-rhythm-bar: its bar from 1) with one-line
+ * barlines, the rhythm's slash notes with their tuplets, beams, accents and ties, the time signature on the first bar,
+ * Saindon's bracket under the line, and "…" after the last barline when the cycle was cut; drawn at CARD_SCALE;
+ * label: its aria-label for the card as shown (cardAria)
+ */
+export function drawRhythmCard(vf: VexFlowModule, el: HTMLElement, card: RhythmCardModel, width: number, label: (shown: RhythmCardModel) => string = () => ''): void {
   const total = STAFF_WIDTH / CARD_SCALE // the same SVG width as the staff's, in smaller units
   const ctx = svgContext(vf, el, total)
   const barWidth = (width - (card.cut ? ELLIPSIS_ROOM : 0)) / CARD_BARS / CARD_SCALE
   const left = (STAFF_WIDTH - 1 - width) / CARD_SCALE
-  const laid = card.bars.map((rhythm, b) => {
-    const x = left + b * barWidth
-    const stave = inkStave(vf, x, STAVE_Y, barWidth)
-    stave.setConfigForLines(Array.from({ length: stave.getNumLines() }, (_, l) => ({ visible: l === CARD_LINE })))
-    stave.setBegBarType(vf.BarlineType.NONE).setEndBarType(vf.BarlineType.NONE) // a five-line staff's: drawn below, one-line
-    if (b === 0) stave.addTimeSignature(`${card.beats}/4`)
-    const ticks = rhythm.map((n) => rhythmTick(vf, n, 'treble'))
-    ticks.forEach((t) => t.setStave(stave))
-    const tuplets = tupletsOf(vf, ticks, (i) => rhythm[i])
-    const voice = voiceOf(vf, card.beats, ticks)
-    const beams = groupsOf(ticks, (i) => rhythm[i]?.beam ?? null).filter((g) => g.length > 1).map((notes) => new vf.Beam(notes))
-    new vf.Formatter().joinVoices([voice]).format([voice], staveRoom(stave, x, barWidth))
-    beams.forEach((beam) => beam.postFormat())
-    return { rhythm, stave, ticks, voice, beams, tuplets }
+  const rooms = card.bars.map((rhythm, b) => {
+    const bar = cardBar(vf, rhythm, b === 0, card.beats, 0, barWidth)
+    return notesRoom(vf, bar.stave, bar.voice)
+  })
+  const fit = cardFit(rooms, barWidth, (width - (card.cut ? ELLIPSIS_ROOM : 0)) / CARD_SCALE, card.cut ? 0 : ELLIPSIS_ROOM / CARD_SCALE)
+  const shown: RhythmCardModel = { ...card, bars: card.bars.slice(0, fit.shown), cut: card.cut || fit.shown < card.bars.length }
+  const xs = fit.widths.map((_, b) => left + fit.widths.slice(0, b).reduce((a, w) => a + w, 0))
+  const laid = shown.bars.map((rhythm, b) => {
+    const x = xs[b] ?? left
+    const w = fit.widths[b] ?? barWidth
+    const bar = cardBar(vf, rhythm, b === 0, card.beats, x, w)
+    new vf.Formatter().joinVoices([bar.voice]).format([bar.voice], staveRoom(bar.stave, x, w))
+    bar.beams.forEach((beam) => beam.postFormat())
+    return bar
   })
   const first = laid[0]?.stave
   const line = first?.getYForLine(CARD_LINE) ?? 100
   const space = first?.getSpacingBetweenLines() ?? 10
+  unbracketCrowded(laid.flatMap((l) => l.tuplets))
   laid.forEach((l, b) => {
     const group: unknown = ctx.openGroup('rhythm-bar')
     if (group instanceof Element) group.setAttribute('data-rhythm-bar', String(b + 1))
@@ -708,13 +813,13 @@ export function drawRhythmCard(vf: VexFlowModule, el: HTMLElement, card: RhythmC
   rhythmTies(vf, ctx, laid)
   const under = line + space + BRACKET_DROP // under the slash heads on the line
   laid.forEach((l, b) => saindonBracket(ctx, l.rhythm, l.ticks, under, String(b + 1)))
-  if (card.cut) ctx.setFont('serif', ELLIPSIS_SIZE).fillText('…', left + CARD_BARS * barWidth + 12, line)
+  if (shown.cut) ctx.setFont('serif', ELLIPSIS_SIZE).fillText('…', (xs[fit.shown - 1] ?? left) + (fit.widths[fit.shown - 1] ?? 0) + 12, line)
   const struck = laid.flatMap((l) => l.ticks.filter((t) => !t.isRest()))
   const accented = new Set(laid.flatMap((l) => l.ticks.filter((_, i) => l.rhythm[i]?.accent)))
   const tips = inkTips(struck, accented, laid.flatMap((l) => l.tuplets))
-  const hasBracket = card.bars.some((bar) => bar.some((m) => m.bracket))
+  const hasBracket = shown.bars.some((bar) => bar.some((m) => m.bracket))
   // the band: the time signature (two spaces over and under the line), the stem tips, accents and tuplets, the bracket
   const top = line - 2 * space
   const bottom = line + 2 * space
-  fitSvg(el, { top: Math.min(top, ...tips) - 4, bottom: Math.max(bottom, hasBracket ? under : bottom) + 4 }, total, label)
+  fitSvg(el, { top: Math.min(top, ...tips) - 4, bottom: Math.max(bottom, hasBracket ? under : bottom) + 4 }, total, label(shown))
 }

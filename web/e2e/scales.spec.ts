@@ -69,6 +69,31 @@ test.describe('the Scales sheet’s tuplet pulses', () => {
     await expect(card.locator('.vf-tuplet')).toHaveCount(1)
     await expect(card.locator('.vf-tuplet text')).toHaveText(String.fromCodePoint(0xe885)) // Bravura's tuplet 5
   })
+
+  // Task 3.2: a quarter of the staff can't hold 24 sextuplet 16ths, which ran on under the next bar: a card bar takes
+  // its notes' room, and the card shows the bars that fit, then "…"
+  test('a sextuplet card in 7: wider bars, as many as fit, none running into the next, the tuplets apart', async ({ page }) => {
+    await page.addInitScript(() => localStorage.setItem('csm-rhythm', 'unit:16t:7:accents'))
+    await page.goto('/song/f-blues')
+    await chooseSheet(page, 'Scales')
+    const card = page.locator('[data-slot=rhythm-card] svg').first()
+    await expect(card).toHaveAttribute('aria-label', /^Rhythm card: Sextuplets in 7, with accents, [1-3] bars?, continues$/)
+    const bars = await card.locator('[data-rhythm-bar]').count()
+    await expect(card.locator('text', { hasText: '…' })).toHaveCount(1)
+    await expect(card.locator('.vf-tuplet')).toHaveCount(4 * bars)
+    const d = await card.evaluate((svg) => {
+      const rect = (e: Element) => e.getBoundingClientRect()
+      const groups = [...svg.querySelectorAll('[data-rhythm-bar]')]
+      const tuplets = [...svg.querySelectorAll('.vf-tuplet')].map(rect).sort((a, b) => a.left - b.left)
+      return {
+        overlaps: tuplets.slice(1).filter((t, i) => t.left < tuplets[i]!.right - 1).length,
+        // each bar's last note ends inside its own stave
+        inside: groups.map((g) => Math.max(...[...g.querySelectorAll('.vf-stavenote')].map((n) => rect(n).right)) <= rect(g.querySelector('.vf-stave')!).right),
+      }
+    })
+    expect(d.overlaps).toBe(0)
+    expect(d.inside).toEqual(Array(bars).fill(true))
+  })
 })
 
 // the Scales sheet's rhythm card (rhythm-scales-arpeggios spec §1, §6, §9; flag `rhythmSheets`)

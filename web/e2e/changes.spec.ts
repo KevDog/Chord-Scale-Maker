@@ -747,6 +747,50 @@ test.describe('the tuplet pulses', () => {
     await expect(line.locator('.vf-tuplet text')).toHaveText(Array(4).fill(String.fromCodePoint(0xe885))) // Bravura's tuplet 5
     await expect(page.getByText(/Couldn.t draw/)).toHaveCount(0)
   })
+
+  // Task 3.2: a bar of 28 septuplet 16ths can't fit a quarter of a line (each note keeps its glyph's room), so it ran on
+  // under the next bar, its tuplets over that bar's; now a bar takes its notes' room and the line breaks: two bars a line
+  for (const [what, open] of [
+    ['the rhythm line', async (page: Page) => {
+      await page.addInitScript(() => localStorage.setItem('csm-rhythm', 'unit:16s:7:accents'))
+      await page.goto('/song/f-jazz-blues')
+      await rhythmDrawn(page)
+    }],
+    ['a poured Line', async (page: Page) => {
+      await page.addInitScript(() => Object.entries({ 'csm-rhythm': 'unit:16s:7:accents', 'csm-rhythm-start': 'beat', 'csm-anticipate': '0' }).forEach(([k, v]) => localStorage.setItem(k, v)))
+      await writeChart(page, 'title: T\nkey: C\n\nsection: A\n1 | CMaj7\n2 | Dm7\n3 | G7\n4 | CMaj7\n')
+      await chooseInstrument(page, 'Piano')
+      await showArpeggios(page, 'Up · root')
+      await arpeggiosDrawn(page)
+    }],
+  ] as const) {
+    test(`septuplets in 7 on ${what}: a tuplet a beat, none overlapping, each bar's notes inside it`, async ({ page }) => {
+      await open(page)
+      const all = await lines(page).all()
+      expect(all.length).toBeGreaterThan(1)
+      for (const line of all) {
+        const d = await line.evaluate((svg) => {
+          const rect = (e: Element) => e.getBoundingClientRect()
+          const staves = [...svg.querySelectorAll('.vf-stave')].map(rect)
+          const notes = [...svg.querySelectorAll('.vf-stavenote')].map(rect)
+          const tuplets = [...svg.querySelectorAll('.vf-tuplet')].map(rect).sort((a, b) => a.left - b.left)
+          return {
+            bars: staves.length,
+            tuplets: tuplets.length,
+            // adjacent brackets meet where one beat's last note ends and the next's first starts: allow that pixel
+            overlaps: tuplets.slice(1).filter((t, i) => t.left < tuplets[i]!.right - 1).length,
+            // each bar holds its own 28 notes: none starts past its bar's right edge
+            inside: staves.map((s, b) => notes.filter((n) => n.left >= s.left && n.left < (staves[b + 1]?.left ?? s.right) && n.right <= s.right).length),
+          }
+        })
+        expect(d.bars).toBeLessThanOrEqual(2)
+        expect(d.tuplets).toBe(4 * d.bars)
+        expect(d.overlaps).toBe(0)
+        expect(d.inside).toEqual(Array(d.bars).fill(28))
+      }
+      await expect(page.getByText(/Couldn.t draw/)).toHaveCount(0)
+    })
+  }
 })
 
 // mixed phrasing (Phase 4 spec §3, §6, §7; flag `rhythmGears`): Groups Up by section on an AABA chart, 4 bars a line

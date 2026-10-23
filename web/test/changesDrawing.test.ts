@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import * as vf from 'vexflow/bravura'
 import type { ChangesBar, ChangesChord, ChangesLine, GuideNote, Letter, Pitched, RhythmCardModel, RhythmNote } from '@chord-scale-maker/engine'
-import { arpeggioAria, beamRuns, beatXs, cardAria, DURATIONS, fitBars, guideAria, mergeNames, restatedAccidental, rhythmAria, stepAria, stepNumeral, targetsAria, SLASH_TARGET_ROW, targetRow, tupletsOf, voicedBand, voltaShift, withTargets } from '~/utils/changesDrawing'
+import { arpeggioAria, beamRuns, beatXs, bracketsCross, cardAria, cardFit, DURATIONS, fitBars, guideAria, mergeNames, restatedAccidental, rhythmAria, stepAria, stepNumeral, targetsAria, SLASH_TARGET_ROW, targetRow, tupletsOf, voicedBand, voltaShift, withTargets } from '~/utils/changesDrawing'
 
 const chord = (beat: number, text: string, guide: string): ChangesChord => ({
   beat,
@@ -176,6 +176,17 @@ describe('fitBars', () => {
     expect(fit.scales[0]?.map((s) => +s.toFixed(3))).toEqual([0.6, +(2 / 2.25 / 4 / 0.25).toFixed(3), 1, 1])
     expect(fit.scales[1]).toEqual([1])
   })
+  // a bar's notes' room (Task 3.2): sextuplet and septuplet 16ths overflowed their bars, so the next bar's notes and tuplets drew over theirs
+  it("widens a bar to its notes' room, and breaks a line whose notes can't all fit (notes don't shrink as names do)", () => {
+    const none = [[], [], [], []]
+    const even = fitBars(FOUR, none)
+    expect(fitBars(FOUR, none, [0.2, 0.2, 0.2, 0.2])).toEqual(even)
+    expect(fitBars(FOUR, none, [0.4, 0.1, 0.1, 0.1]).shares.map((s) => +s.toFixed(6))).toEqual([0.4, 0.2, 0.2, 0.2])
+    expect(fitBars(FOUR, none, [0.45, 0.45, 0.45, 0.45]).fits).toBe(2)
+    expect(fitBars(FOUR, none, [0.39, 0.39, 0.39, 0.39]).fits).toBe(2) // 1.17 of the line: names at 0.8 would keep 3
+    expect(fitBars(FOUR, [[], [], null, null], [0.45, 0.45]).shares.map((s) => +s.toFixed(6))).toEqual([0.45, 0.45, 0.05, 0.05]) // a broken line's bars take the room past its end
+    expect(fitBars(FOUR, [[at(0, 0.3)], [], [], []], [0.1, 0.1, 0.1, 0.1]).shares.map((s) => +s.toFixed(6))).toEqual(fitBars(FOUR, [[at(0, 0.3)], [], [], []]).shares.map((s) => +s.toFixed(6)))
+  })
 })
 
 describe('DURATIONS', () => {
@@ -305,5 +316,31 @@ describe('tupletsOf (Phase 4 spec §2)', () => {
     expect(trip.map((t) => [t.getNoteCount(), t.getNotesOccupied()])).toEqual([[3, 2], [3, 2]])
     expect(tupletsFor(Array.from({ length: 7 }, () => tick('16', 0, { notes: 7, of: 4 }))).map((t) => [t.getNoteCount(), t.getNotesOccupied()])).toEqual([[7, 4]])
     expect(tupletsFor([tick('q', null, null), tick('q', null, null)])).toEqual([])
+  })
+})
+
+// Task 3.2: VexFlow draws a bracket 5 past its first and last notes, so beats of sextuplets or septuplets, set at
+// their notes' least room, cross brackets with the next beat's
+describe('bracketsCross', () => {
+  const span = (left: number, right: number) => ({ left, right })
+  it('is whether any two brackets, in order along the line, cross', () => {
+    expect(bracketsCross([span(0, 50), span(60, 110), span(120, 170)])).toBe(false)
+    expect(bracketsCross([span(0, 50), span(50, 100)])).toBe(false) // feet that meet
+    expect(bracketsCross([span(0, 50), span(44, 100)])).toBe(true)
+    expect(bracketsCross([span(60, 110), span(0, 61)])).toBe(true) // in any order
+    expect(bracketsCross([])).toBe(false)
+  })
+})
+
+// Task 3.2: a card bar is a quarter of the staff, too narrow for a bar of sextuplets or septuplets
+describe('cardFit', () => {
+  it('keeps every bar at its even width when its notes fit', () => {
+    expect(cardFit([200, 250, 250, 250], 250, 1000, 64)).toEqual({ widths: [250, 250, 250, 250], shown: 4 })
+  })
+  it("widens a bar to its notes' room, and shows the leading bars that fit with room for the ellipsis after them", () => {
+    expect(cardFit([400, 400, 400, 400], 250, 1000, 64)).toEqual({ widths: [400, 400, 400, 400], shown: 2 })
+    expect(cardFit([500], 250, 1000, 64)).toEqual({ widths: [500], shown: 1 })
+    expect(cardFit([900, 900], 250, 1000, 64)).toEqual({ widths: [900, 900], shown: 1 }) // at least one
+    expect(cardFit([400, 250, 250], 250, 1000, 64)).toEqual({ widths: [400, 250, 250], shown: 3 }) // all three fit: no ellipsis
   })
 })
