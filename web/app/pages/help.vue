@@ -330,7 +330,7 @@
             <div>
               <dt id="rhythm-target-tones" class="scroll-mt-6 font-semibold text-zinc-950 dark:text-white">Target tones</dt>
               <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
-                On a Line with Target beats on, a chord tone on a dot is lit and any other note on a dot is grey (Galper, pp. 47–49). Nothing moves a note onto a dot.
+                On a Line with Target beats on, a chord tone on a dot is lit and any other note on a dot is gray (Galper, pp. 47–49). Nothing moves a note onto a dot.
               </dd>
             </div>
           </dl>
