@@ -120,7 +120,7 @@ export function scaleRun(notes: readonly Pitched[]): Readonly<{ notes: readonly 
 const barNote = (n: Pitched) => ({ letter: n.letter, acc: n.acc, octave: octaveOf(n) })
 
 /** each run pitch's accidental at its attack: `accidentalsInBar` afresh in every bar, over its pitched notes */
-function runAccidentals(run: StaffRun, notes: readonly Pitched[], keySig: string | null): readonly (string | null)[] {
+export function runAccidentals(run: StaffRun, notes: readonly Pitched[], keySig: string | null): readonly (string | null)[] {
   const out = notes.map((): string | null => null)
   for (const bar of run.bars) {
     const played = bar.notes.filter((n): n is typeof n & { note: number } => n.note !== null)

@@ -255,6 +255,8 @@ export function buildPatternSheet(
       scale: orNull(() => (scale ? scaleLabel(part, scale) : null)),
       keySig,
       showClefAndKey: true,
+      run: null,
+      timeSig: null,
     }
     const played = patternLine(part, r.chord, scale, moves, notes, dir)
     if ('error' in played) return [{ ...base, id, last, notes: [], groups: [], accidentals: [], intervals: null, error: played.error }]

@@ -296,6 +296,7 @@
             :part="part"
             :instrument-label="instrumentLabel(prefs.instrument.value)"
             :per-page="PER_PAGE"
+            :rhythm-per-page="ARPEGGIO_RHYTHM_PER_PAGE"
             :notes="sheet === 'patterns' ? prefs.patternNotes.value : prefs.arpNotes.value"
             :moves="sheet === 'patterns' ? patternMoves : undefined"
             :dir="sheet === 'patterns' ? prefs.patternDir.value : prefs.arpDir.value"
@@ -307,6 +308,8 @@
             :picks="chordPicks.picks.value"
             :positions="positionsNow"
             :pickable="ui.shows('chord-picks')"
+            :rhythm="sheetRhythm"
+            :beats-of="beatsOf"
             @pick="onPick"
           >
             <template v-if="!focus.on.value && (statusText || copyError)" #status><SheetStatus :text="statusText" :failed="saveFailed" :error="copyError" /></template>
@@ -414,6 +417,7 @@ const props = defineProps<{ initialText: string; practiceKey?: string; saveTarge
 const emit = defineEmits<{ created: [id: string]; reload: [] }>()
 
 const PER_PAGE = 12
+const ARPEGGIO_RHYTHM_PER_PAGE = 11 // an Arpeggios sheet with a run poured into the rhythm (rhythm-scales-arpeggios spec §8): 12 of 7th chord runs, up & down, in triplets in 4 overflow a letter page
 const RHYTHM_PER_PAGE = 8 // a Scales sheet with a rhythm card or a run on a staff (rhythm-scales-arpeggios spec §8): 12 and 10 of the tallest card staves (trombone from B), and 12 of its runs at 7 a bar, overflow a letter page
 
 /** the level is a view preference: a blank cell plays the analysis at it, and nothing is written */

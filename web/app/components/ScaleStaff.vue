@@ -105,7 +105,8 @@ async function draw(): Promise<void> {
   try {
     const vf = await loadVexFlow()
     if (!el.value) return // still showing a previous draw error; keep it
-    xs.value = drawStaff(vf, el.value, props.staff, props.clef, props.stacked ? STACKED_WIDTH : undefined)
+    // a run poured into the rhythm names it in its label (spec §7); an even run (Rhythm Off) names none
+    xs.value = drawStaff(vf, el.value, props.staff, props.clef, props.stacked ? STACKED_WIDTH : undefined, props.rhythm && props.rhythm !== 'off' ? `Rhythm: ${rhythmLabel(props.rhythm)}` : null)
     // a card is drawn for the rhythm in force, which names it: none without one (a stacked reference staff takes no rhythm)
     if (props.staff.card && cardEl.value && props.rhythm && props.rhythm !== 'off') drawRhythmCard(vf, cardEl.value, props.staff.card, staffNotesWidth(vf, props.staff, props.clef), cardAria(rhythmLabel(props.rhythm), props.staff.card))
     drawError.value = null

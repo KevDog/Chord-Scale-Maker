@@ -258,9 +258,10 @@
                   </div>
                 </UiField>
               </Transition>
-              <!-- the Rhythm on the Scales sheet (rhythm-scales-arpeggios spec §9): the listbox, its detail behind Rhythm options -->
+              <!-- the Rhythm on the Scales and Arpeggios sheets (rhythm-scales-arpeggios spec §9): the listbox, its detail behind
+                   Rhythm options; not under Triad pairs' Block, which plays chords (D12), nor on the Patterns sheet -->
               <Transition name="ease-fade">
-                <UiField v-if="sheet === 'scales' && rhythmSheetsOn && shows('rhythm')">
+                <UiField v-if="(sheet === 'scales' || (sheet === 'arpeggios' && arpMotion !== 'block')) && rhythmSheetsOn && shows('rhythm')">
                   <UiLabel class="pl-3">Rhythm</UiLabel>
                   <RhythmControls v-model="rhythm" popover :inline="compact" />
                 </UiField>

@@ -342,6 +342,26 @@ for (const perBar of ['7 a bar', '1 a bar'] as const) {
   }
 }
 
+// the Arpeggios sheet with a Rhythm (rhythm-scales-arpeggios spec §8): Up & down, triplets in 4 with accents (triplet
+// brackets over accents), a sheet page to a letter page: Extended (§8's check) and 7th Chord (its longest runs: 12 of them
+// overflow, so a poured sheet prints 11 a page, §8's fallback), also trombone (bass clef, the tallest staves)
+for (const [notes, instrument, pages] of [['Extended', 'Piano', 2], ['Extended', 'Trombone', 2], ['7th Chord', 'Piano', 2], ['7th Chord', 'Trombone', 2]] as const) {
+  test(`prints the Arpeggios with a rhythm, a sheet page to a letter page (autumn-leaves, ${notes}, ${instrument})`, async ({ page }) => {
+    await page.goto('/song/autumn-leaves')
+    await chooseSheet(page, 'Arpeggios')
+    await chooseInstrument(page, instrument)
+    await page.locator('label', { hasText: notes }).click()
+    await pickOption(page, 'Arpeggio direction', 'Up & down')
+    await chooseRhythm(page, 'Triplets', { In: 'In 4', Variation: 'with accents' })
+    await expect(page.locator('svg[data-time-sig]')).toHaveCount(14)
+    const sheetPages = await staves(page).evaluateAll((els) => new Set(els.map((e) => e.closest('section'))).size)
+    expect(sheetPages).toBe(pages)
+    await page.emulateMedia({ media: 'print' })
+    await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden()
+    expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(sheetPages)
+  })
+}
+
 /** how many captions are taller than one line of their text */
 const wrappedCaptions = (page: Page, slot: 'hexatonic' | 'pentatonic' = 'hexatonic'): Promise<number> =>
   page.locator(`[data-slot="${slot}"]`).evaluateAll((els) => els.filter((el) => el.getBoundingClientRect().height > 1.5 * parseFloat(getComputedStyle(el).fontSize)).length)

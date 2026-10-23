@@ -382,6 +382,7 @@ exports[`exports the same names 1`] = `
   "rowKeys",
   "rowNotes",
   "ruleParts",
+  "runAccidentals",
   "runPositions",
   "sameChart",
   "sameFunction",

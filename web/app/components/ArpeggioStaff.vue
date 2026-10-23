@@ -43,12 +43,12 @@
 </template>
 
 <script setup lang="ts">
-import { type ArpeggioStaffModel, type ChordAt, glyphs, hexatonicChoices, pairCaption, pickBars, pickHeading, type Part, type PickKind } from '@chord-scale-maker/engine'
+import { type ArpeggioStaffModel, type ChordAt, glyphs, hexatonicChoices, pairCaption, pickBars, pickHeading, type Part, type PickKind, type RhythmId, rhythmLabel } from '@chord-scale-maker/engine'
 import { choiceId, hexChoiceRows, pickFooter, pickHeader } from '~/utils/chordPicks'
 import type { ChoiceRow } from './ChordPickPopover.vue'
 
-/** intervals: label each note against the chord root (b9, #11…); part and pickable: Triad pairs' caption picks for every bar it covers (#436) */
-const props = defineProps<{ staff: ArpeggioStaffModel; clef: 'treble' | 'bass'; intervals?: boolean; part?: Part; pickable?: boolean }>()
+/** intervals: label each note against the chord root (b9, #11…); part and pickable: Triad pairs' caption picks for every bar it covers (#436); rhythm: the sheet's, which a run is poured into, for its aria-label */
+const props = defineProps<{ staff: ArpeggioStaffModel; clef: 'treble' | 'bass'; intervals?: boolean; part?: Part; pickable?: boolean; rhythm?: RhythmId }>()
 const emit = defineEmits<{ pick: [kind: PickKind, positions: readonly ChordAt[], value: number | readonly [number, number] | null] }>()
 
 const pair = computed(() => props.staff.pair ?? null)
@@ -80,7 +80,7 @@ async function draw(): Promise<void> {
   try {
     const vf = await loadVexFlow()
     if (!el.value) return // still showing a previous draw error; keep it
-    xs.value = drawArpeggioStaff(vf, el.value, props.staff, props.clef)
+    xs.value = drawArpeggioStaff(vf, el.value, props.staff, props.clef, props.rhythm && props.rhythm !== 'off' ? `Rhythm: ${rhythmLabel(props.rhythm)}` : null)
     drawError.value = null
   } catch (e) {
     drawError.value = `Couldn't draw this staff (${e instanceof Error ? e.message : String(e)})`

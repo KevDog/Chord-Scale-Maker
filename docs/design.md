@@ -432,8 +432,8 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 
 ### Arpeggios sheet ([spec](superpowers/specs/2026-10-12-arpeggios-sheet-design.md))
 
-- **Lines:** exactly the Scales sheet's (`scaleLines`), in eighth notes, one stave each, no time signature. 12 lines a
-  printed page. Controls (Arpeggio group): 7th Chord · Extended, and a direction listbox Up · Down · Up & down
+- **Lines:** exactly the Scales sheet's (`scaleLines`), in eighth notes, one stave each, no time signature (but see the Rhythm below). 12 lines a
+  printed page (11 with a run). Controls (Arpeggio group): 7th Chord · Extended, and a direction listbox Up · Down · Up & down
   (`aria-label="Arpeggio direction"`); Show: Intervals as on the Scales; no Spell Scale, no practice panel.
 - **Notes:** the line's first chord's tones (`arpeggioTones`: 1 3 5 7). 7th Chord mode runs them over two octaves, closing
   on the root (1 3 5 7 1 3 5 7 1; a triad 1 3 5 1 3 5 1; #227), beamed a chord at a time with the top root alone. Extended
@@ -448,6 +448,18 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   builds the model; the components only draw it.
 - **Preferences and links:** `csm-arp-notes` (`seventh` | `extended`), `csm-arp-dir` (`up` | `down` | `up-down`); share
   links carry `sheet: 'arpeggios'`, `arpNotes`, `arpDir`, and open on the sheet.
+- **Rhythm** (flag `rhythmSheets`, off; [spec](superpowers/specs/2026-10-22-rhythm-scales-arpeggios-design.md) §4, §6,
+  §7, §8, D11, D12): the Scales sheet's Rhythm group shows here too (the shared `csm-rhythm`; share links carry `rhythm`),
+  except under Triad pairs' Block, which plays chords and takes none (`sheetRhythm` reads Off there and on the Patterns
+  sheet). With a Rhythm, each staff's notes (`arpeggioLine`'s, unchanged) are poured into it, every attack kept
+  (`ArpeggioStaffModel.run`, `pourRun` with no per-bar cap, over the line's metre from `beatsOf`; `timeSig`; accidentals
+  by bar, `runAccidentals`). `drawArpeggioStaff` then draws through the Scales run's path (`drawRunStaff` → `drawRun`):
+  a stave a bar, the time signature on the first, the rhythm's beams in place of the arpeggio's groups, its accents and
+  triplets, no Saindon bracket (P2 D19). The aria-label is the notes ("rest" for a rest) then `rhythmAria` ("; rhythm:
+  8ths in 3, with accents"), as a Scales run poured into a Rhythm also reads. The subtitle appends "· Rhythm: …" where a
+  staff pours it. Grouping (in 3 … 7) is no control of its own: it is the Rhythm 8ths in N, with accents (Help
+  `#rhythm-grouping`). A poured sheet prints 11 a page (`ArpeggioSheet`'s `rhythmPerPage`, §8's fallback: 12 of 7th
+  Chord, Up & down runs in triplets in 4 overflowed letter).
 
 ### Practice selection ([plan-practice.md](plan-practice.md))
 
@@ -979,7 +991,7 @@ paper and its focus-mode pages, the rail, the More menu, the header, the library
 - **Page:** `@page { size: letter; margin: 0.5in 10mm 10mm }`. The print stylesheet hides the editor and the
   toolbar, and each page of `SheetPages` breaks after itself with its own header. On screen the pages run
   together as one card, with "Page N" dividers marking the breaks.
-- **Scale sheets:** 12 staves a page, with 8px between staves. A full page fills
+- **Scale sheets:** 12 staves a page, with 8px between staves (except a Scales sheet with a rhythm card or a run, 8 a page, and an Arpeggios sheet with a run, 11). A full page fills
   about 9.6in, even when every note has ledger lines (e.g. trombone from B). Autumn Leaves prints on 2 pages.
 - **Changes:** 8 four-bar lines a page with guide tones off, so a 32-bar AABA prints on one page.
   - With a line on, `changesLinesPerPage` (`engine/src/changes.ts`) gives fewer: 6 with a line on and

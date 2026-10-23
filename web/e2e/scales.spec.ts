@@ -119,6 +119,18 @@ test.describe('the Scales sheet’s rhythm', () => {
     await expect(page.locator('svg[data-time-sig]')).toHaveCount(0)
   })
 
+  // a run poured into a Rhythm (spec §3, §7): its label names the rhythm after the notes; an evenly filled run's doesn't
+  test('a run poured into a Rhythm names it in its label', async ({ page }) => {
+    await page.goto('/song/f-blues')
+    await chooseSheet(page, 'Scales')
+    await pickOption(page, 'Notes per bar', '4 a bar')
+    const first = staves(page).first()
+    await expect(first).toHaveAttribute('data-time-sig', '4/4')
+    await expect(first).not.toHaveAttribute('aria-label', /; rhythm: /)
+    await chooseRhythm(page, '8ths', { In: 'In 3', Variation: 'with accents' })
+    await expect(first).toHaveAttribute('aria-label', /^[^;]+ rest; rhythm: 8ths in 3, with accents$/)
+  })
+
   test('a share link carries Notes per bar', async ({ page, browser }) => {
     await page.goto('/song/f-blues')
     await chooseSheet(page, 'Scales')

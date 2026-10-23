@@ -1,4 +1,4 @@
-import { chooseInterface, chooseSheet, expect, pickOption, staves, test } from './fixtures'
+import { chooseInterface, chooseRhythm, chooseSheet, expect, pickOption, staves, test } from './fixtures'
 
 const heads = (page: import('@playwright/test').Page) => page.locator('svg[role=img]').first().locator('.vf-stavenote')
 
@@ -70,4 +70,33 @@ test('Triad pairs writes each pair as six triads, arpeggiated or block, and its 
   await expect(visitor.getByRole('radio', { name: 'Triad pairs' })).toBeChecked()
   await expect(visitor.getByRole('button', { name: 'Arpeggio direction' })).toContainText('Block')
   await expect(heads(visitor)).toHaveCount(6)
+})
+
+// a Rhythm on the Arpeggios sheet (rhythm-scales-arpeggios spec §4, §6, §7, D12; flag `rhythmSheets`): each arpeggio
+// poured into it, bar by bar with a time signature; Grouping in 3 is 8ths in 3, with accents (D11)
+test.describe('the Arpeggios sheet’s rhythm', () => {
+  test.use({ interfaceLevel: 'intermediate' })
+
+  test('a Rhythm pours each arpeggio into it; Triad pairs’ Block takes none', async ({ page }) => {
+    await page.goto('/song/autumn-leaves')
+    await chooseSheet(page, 'Arpeggios')
+    await expect(staves(page)).toHaveCount(14)
+    await chooseRhythm(page, '8ths', { In: 'In 3', Variation: 'with accents' })
+    await expect(page.locator('svg[data-time-sig="4/4"]')).toHaveCount(14)
+    // Cm7, 7th Chord, Up: its nine notes, eight in the first bar, the last and its rests in the second (spec §4's table)
+    const first = staves(page).first()
+    await expect(first.locator('.vf-stave')).toHaveCount(2)
+    await expect(first).toHaveAttribute('aria-label', /; rhythm: 8ths in 3, with accents$/)
+    const names = ((await first.getAttribute('aria-label')) ?? '').split('; rhythm: ')[0]?.split(' ') ?? []
+    expect(names.filter((n) => n !== 'rest')).toHaveLength(9)
+    expect(names.slice(-3)).toEqual(['rest', 'rest', 'rest'])
+    await expect(page.locator('section header p').first()).toContainText('Rhythm: 8ths in 3, with accents')
+    // Triad pairs' Block plays chords: no Rhythm control, no time signature, no rhythm in the subtitle
+    await page.locator('label', { hasText: 'Triad pairs' }).click()
+    await expect(page.locator('svg[data-time-sig="4/4"]').first()).toBeVisible()
+    await pickOption(page, 'Arpeggio direction', 'Block')
+    await expect(page.getByRole('button', { name: 'Rhythm', exact: true })).toHaveCount(0)
+    await expect(page.locator('svg[data-time-sig]')).toHaveCount(0)
+    await expect(page.locator('section header p').first()).not.toContainText('Rhythm:')
+  })
 })
