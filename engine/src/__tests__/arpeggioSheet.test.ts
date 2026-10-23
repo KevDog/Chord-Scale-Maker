@@ -260,6 +260,11 @@ describe('buildArpeggioSheet: Triad pairs (#436)', () => {
     expect(block?.id).not.toBe(arp?.id)
   })
 
+  it('has no run for Block under a rhythm', () => {
+    const [block] = staves({ shape: 'block', rhythm: 'unit:8:3:accents' }, 'up')
+    expect(block).toMatchObject({ run: null, timeSig: null })
+  })
+
   it("plays a chord with no pair as its 7th chord arpeggio, captioned 'no triad pair'", () => {
     const [s] = buildArpeggioSheet([row('C6', 'C Major Pentatonic')], CONCERT, 12, 'pairs', 'up').pages.flat()
     expect(s?.pair?.hexatonic).toBeNull()
@@ -281,5 +286,52 @@ describe('buildArpeggioSheet: Triad pairs (#436)', () => {
     expect(pairCaption(p)).toBe('F/G · covers 4')
     expect(pairCaption({ ...p, varies: true })).toBe('F/G · covers 4 · varies')
     expect(pairCaption({ ...p, hexatonic: { ...p.hexatonic, offKey: true } })).toBe('F/G · covers 4 · off key')
+  })
+})
+
+describe('the run poured into the rhythm', () => {
+  const first = (rhythm?: Parameters<typeof buildArpeggioSheet>[7] extends infer O ? (O extends { rhythm?: infer R } ? R : never) : never, beats?: number) =>
+    buildArpeggioSheet([row('Cmaj7')], CONCERT, 12, 'seventh', 'up', undefined, undefined, { rhythm, ...(beats ? { beatsOf: () => beats } : {}) }).pages[0]![0]!
+
+  it('pours the nine notes as accents in 3 (Grouping in 3)', () => {
+    const s = first('unit:8:3:accents')
+    expect(s.timeSig).toBe('4/4')
+    const bars = s.run!.bars
+    expect(bars).toHaveLength(2)
+    const b0 = bars[0]!.notes
+    expect(b0.map((n) => n.note)).toEqual([0, 1, 2, 3, 4, 5, 6, 7])
+    expect(b0.map((n) => !!n.mark.accent)).toEqual([true, false, false, true, false, false, true, false])
+    expect(bars[1]!.notes[0]).toMatchObject({ note: 8 })
+    expect(bars[1]!.notes[0]!.mark.accent).toBeFalsy()
+    expect(bars[1]!.notes.slice(1).every((n) => n.note === null && n.mark.rest)).toBe(true)
+    expect(s.notes).toHaveLength(9)
+    expect(s.accidentals).toHaveLength(9)
+  })
+
+  it('pours rests until the 9th note', () => {
+    const run = first('unit:8:3:rests').run!
+    const played = run.bars.flatMap((b) => b.notes).filter((n) => n.note !== null)
+    expect(played.map((n) => n.note)).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8])
+    expect(run.bars[0]!.notes.some((n) => n.mark.rest)).toBe(true)
+  })
+
+  it('pours card:downbeats four then four then one', () => {
+    const run = first('card:downbeats').run!
+    expect(run.bars[0]!.notes.map((n) => n.note)).toEqual([0, 1, 2, 3])
+    expect(run.bars[1]!.notes.filter((n) => n.note !== null).map((n) => n.note)).toEqual([4, 5, 6, 7])
+    expect(run.bars[2]!.notes.filter((n) => n.note !== null).map((n) => n.note)).toEqual([8])
+  })
+
+  it('has no run on an error staff', () => {
+    const [bad] = buildArpeggioSheet([row('Xyz')], CONCERT, 12, 'seventh', 'up', undefined, undefined, { rhythm: 'unit:8:3:accents' }).pages.flat()
+    expect(bad).toMatchObject({ error: expect.any(String), run: null, timeSig: null })
+  })
+
+  it('(guard) leaves ids and groups as they were with no rhythm', () => {
+    const off = first(undefined)
+    const plain = buildArpeggioSheet([row('Cmaj7')], CONCERT, 12, 'seventh', 'up').pages[0]![0]!
+    expect(off).toMatchObject({ id: plain.id, groups: [4, 4, 1], run: null, timeSig: null })
+    expect(first('unit:8:3:accents').id).not.toBe(off.id)
+    expect(first('unit:8:3:accents', 3).id).not.toBe(first('unit:8:3:accents').id)
   })
 })

@@ -10,7 +10,8 @@ import { resolveQuality } from './qualities'
 import type { Resolved } from './resolve'
 import type { ChordAt } from './changes'
 import { type HexPair, hexatonicAuto, keyedPair, offKeyNote, type StaffHexatonic, writtenKeyPair } from './hexatonics'
-import { type Cover, lineCovers, type SheetPicks, scaleLines, staffPairs } from './sheet'
+import { type RhythmId, pourRun, type StaffRun } from './rhythm'
+import { type Cover, lineCovers, runAccidentals, type SheetPicks, scaleLines, staffPairs } from './sheet'
 import { type PairShape, triadPairFigure } from './triadPairSheet'
 import { chunk, orNull } from './util'
 
@@ -74,6 +75,8 @@ export type ArpeggioStaffModel = Readonly<{
   last: boolean
   pair?: ArpeggioPair // Triad pairs only
   block?: boolean // Triad pairs, Block: each beamed group is one chord
+  run: StaffRun | null // the notes poured into the Rhythm (indexes into notes); null: Off, Block, an error or too few attacks
+  timeSig: string | null // "4/4": drawn at the staff's start with a run
 }>
 export type ArpeggioSheetModel = Readonly<{ heading: string; pages: readonly (readonly ArpeggioStaffModel[])[] }>
 
@@ -136,8 +139,8 @@ function pairFor(part: Part, row: Row, scale: string | null, cover: Cover, keyNa
   return used && { pair: used, hexatonic: { name: used.name, link: used.link, picked: !!found, sheet: sheet?.name ?? '', offKey: keyName !== undefined && !keyed } }
 }
 
-/** Triad pairs: the shape (Arpeggiated or Block) and the chord picks (#303), as the Scales sheet takes them; keys: each row's key area (rowKeys), given when the Changes sheet's pairs rank against the key (#432) */
-export type PairOptions = Readonly<{ shape?: PairShape; picks?: SheetPicks; keys?: ReadonlyMap<number, string> }>
+/** Triad pairs: the shape (Arpeggiated or Block) and the chord picks (#303), as the Scales sheet takes them; keys: each row's key area (rowKeys), given when the Changes sheet's pairs rank against the key (#432); rhythm: poured over each staff's notes (spec §4), beatsOf: each line's beats per bar from its first row (4 by default) */
+export type PairOptions = Readonly<{ shape?: PairShape; picks?: SheetPicks; keys?: ReadonlyMap<number, string>; rhythm?: RhythmId; beatsOf?: (row: number) => number }>
 
 /**
  * the Arpeggios sheet: the Scales sheet's lines (scaleLines), each its arpeggio, in pages of perPage; never throws.
@@ -181,14 +184,21 @@ export function buildArpeggioSheet(
       }),
     }
     const played = used ? triadPairFigure(used.pair, shape, dir, range) : arpeggioLine(part, r.chord, scale, notes === 'pairs' ? 'seventh' : notes, dir)
-    if ('error' in played) return { ...base, notes: [], groups: [], accidentals: [], intervals: null, error: played.error }
+    if ('error' in played) return { ...base, notes: [], groups: [], accidentals: [], intervals: null, error: played.error, run: null, timeSig: null }
+    const beats = opts.beatsOf?.(l.row) ?? 4
+    const run = block || !opts.rhythm ? null : pourRun(played.notes.length, opts.rhythm, beats, null)
     return {
       ...base,
       ...played,
-      accidentals: accidentalsInBar(
-        played.notes.map((p) => ({ letter: p.letter, acc: p.acc, octave: octaveOf(p) })),
-        keySig,
-      ),
+      id: run ? `${id}|${opts.rhythm}|${beats}` : id,
+      run,
+      timeSig: run ? `${beats}/4` : null,
+      accidentals: run
+        ? runAccidentals(run, played.notes, keySig)
+        : accidentalsInBar(
+            played.notes.map((p) => ({ letter: p.letter, acc: p.acc, octave: octaveOf(p) })),
+            keySig,
+          ),
       intervals: block ? null : orNull(() => intervalLabels(writtenChordRootLenient(part, r.chord, scale), played.notes, resolveQuality(r.chord)?.quality ?? null)),
       error: null,
     }
