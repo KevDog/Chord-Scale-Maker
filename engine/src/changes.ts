@@ -15,6 +15,7 @@ import { type PentatonicLine, pentatonicVoices } from './pentatonicLine'
 import { type TriadPairLine, triadPairVoices } from './triadPairLine'
 import { concertPc, type Part, rangeOf, scaleLabel, writtenRoot, writtenScale } from './part'
 import { glyphs, mod, parseRoot, pcOf, rootName, type Spelled, shiftBy } from './pitch'
+import { stepUnits } from './steps'
 import { isPentatonicPreset, type PentatonicDegree, pentatonicDegreeFrom, PENTATONIC_HOME, PENTATONIC_STEP, pentatonicAt, pentatonicCycle, pentatonicPathCaption, type PentatonicPathName, type PentatonicStep, pentatonicLadder, pentatonicRanking, type RankedPentatonic, type PentatonicRung, type PentatonicView } from './pentatonics'
 import { baseQuality, readChord } from './qualities'
 import { bluesTonic, isBluesRule, type Resolved, resolveScales, type ScaleView } from './resolve'
@@ -569,34 +570,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
   // a preset's units over the form (#276), worked out once: each form block, each run of one key area, its bars as drawn
   const step = pentatonic?.step ?? PENTATONIC_STEP
   const preset = isPentatonicPreset(pentatonic?.path)
-  const formBlocks = blocks.flatMap((b, k) => (b.part === 'form' ? [k] : []))
-  const sectionUnit = new Map(formBlocks.map((k, n) => [k, n]))
-  const formStart = new Map<number, number>() // block → its first bar's index in the form
-  const areaUnit = new Map<number, number>() // row → its run of one key area
-  {
-    let formBars = 0
-    let run = 0
-    let key: string | undefined
-    for (const k of formBlocks) {
-      const b = blocks[k]!
-      formStart.set(k, formBars)
-      formBars += Math.max(1, b.to - b.from + 1)
-      for (const i of b.rows) {
-        const here = byRow.get(i)?.key.name
-        if (here !== undefined && key !== undefined && here !== key) run++
-        if (here !== undefined) key = here
-        areaUnit.set(i, run)
-      }
-    }
-  }
-  /** a chord's unit: its block k, its bar j in the block, its row i; null outside the form */
-  const unitOf = (k: number, j: number, i: number): number | null => {
-    const n = sectionUnit.get(k)
-    if (n === undefined) return null
-    if (step.unit === 'section') return n
-    if (step.unit === 'bars') return Math.floor(((formStart.get(k) ?? 0) + j) / step.bars)
-    return areaUnit.get(i) ?? 0
-  }
+  const unitOf = stepUnits(blocks, (i) => byRow.get(i)?.key.name, barOf, step).ofChord
   const ladders = new Map<string, ReturnType<typeof areaLadder>>()
   const pentatonicOf = (keyName: string | undefined, section: string, chord: ChordAt, written: string, scale: string | null, chordText: string, unit: number | null, target: string): ChangesPentatonic | null => {
     if (!pentatonic) return null

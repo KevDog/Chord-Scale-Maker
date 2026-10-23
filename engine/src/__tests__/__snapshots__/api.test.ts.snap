@@ -449,6 +449,7 @@ exports[`exports the same names 1`] = `
   "staffPairs",
   "startReference",
   "statedKeyAt",
+  "stepUnits",
   "takesRhythm",
   "tapTempo",
   "targetBeats",
