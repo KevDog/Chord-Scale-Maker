@@ -16,7 +16,7 @@
           </template>
         </UiNavbarSection>
         <UiNavbarSpacer />
-        <HeaderQuote class="max-w-xl max-xl:hidden" />
+        <HeaderQuote class="max-w-xl max-2xl:hidden" />
         <UiNavbarSection>
           <UiNavbarItem :aria-label="`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`" @click="toggle">
             <SunIcon v-if="theme === 'dark'" data-slot="icon" />
