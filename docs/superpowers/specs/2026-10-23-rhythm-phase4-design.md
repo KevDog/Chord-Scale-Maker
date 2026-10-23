@@ -277,7 +277,7 @@ function feelGroups(beats: number, feel: Feel): readonly number[]   // each grou
 | 4/4 slashes | q q q q | h h | w |
 | 3/4 slashes | q q q | hd | hd |
 | 5/4 slashes | q ×5 | hd h | w tied q |
-| 4/4 `run:8:4:0` beams | (8 8)(8 8) r h | (8 8 8 8) r h | (8 8 8 8) r h |
+| 4/4 `run:8:4:0` beams | (8 8)(8 8) r r | (8 8 8 8) r r | (8 8 8 8) r r (rests as today: Feel doesn't change them) |
 | 4/4 `card:downbeats` | q q q q (no beams; unchanged) | same | same |
 | 4/4 `unit:8:3:accents` | beams by statement (unchanged) | same | same |
 | 4/4 target beats | 1, 3 | 1, 3 | 1 |
