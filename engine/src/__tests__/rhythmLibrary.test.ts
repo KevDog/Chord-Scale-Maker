@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { PULSES, formatRhythm } from '../rhythm/rhythm'
+import { PULSES, formatRhythm, isPhase4Pulse } from '../rhythm/rhythm'
 import {
   LIBRARY_IDS,
   RUN_ATTACKS,
@@ -101,6 +101,25 @@ describe('rhythm library', () => {
       expect(rhythmOf(id), id).not.toBeNull()
       expect(rhythmLabel(id), id).not.toBe('')
     }
+  })
+})
+
+describe('the Phase 4 pulses in the library (Phase 4 spec §1)', () => {
+  it('has a unit for the new pulses, and 10 pulses x 6 groups x 5 variations of them', () => {
+    expect(LIBRARY_IDS).toContain('unit:16s:7:accents')
+    expect(LIBRARY_IDS.filter(id => id.startsWith('unit:')).length).toBe(10 * 6 * 5)
+  })
+
+  it('labels a quarter-note triplet unit', () => {
+    expect(rhythmLabel('unit:4t:3:accents')).toBe('Quarter-note triplets in 3, with accents')
+  })
+
+  it('keeps runs to RUN_PULSES', () => {
+    expect(parseRhythmId('run:4t:3:0')).toBeNull()
+  })
+
+  it('names the six new pulses', () => {
+    expect(PULSES.filter(isPhase4Pulse)).toEqual(['4t', '4q', '8q', '16q', '16t', '16s'])
   })
 })
 

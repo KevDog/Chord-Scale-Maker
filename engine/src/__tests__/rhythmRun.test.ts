@@ -203,6 +203,14 @@ describe('pourRun (§3, §4)', () => {
     expect(notesOf(run.bars[1]!).slice(1).every(n => n === null)).toBe(true)
   })
 
+  it('unit:8q:5:accents, 3 notes: a 5:4 group of two 8ths, its rest filling the group (Phase 4 spec §2)', () => {
+    const run = pourRun(3, 'unit:8q:5:accents', 4, 2)!
+    const bar = run.bars[0]!
+    expect(notesOf(bar)).toEqual([0, 1, null, null])
+    expect(valuesOf(bar)).toEqual(['8', '8', 'qd', 'h'])
+    expect(bar.notes.map(n => n.mark.ratio)).toEqual([{ notes: 5, of: 4 }, { notes: 5, of: 4 }, { notes: 5, of: 4 }, null])
+  })
+
   it("keeps a rhythm's empty bar and goes on (Review Focus 1)", () => {
     const run = pourRun(3, custom('8: x...............'), 4, null)!
     expect(run.bars.map(b => b.notes.find(n => n.note !== null)?.note ?? null)).toEqual([0, null, 1, null, 2])

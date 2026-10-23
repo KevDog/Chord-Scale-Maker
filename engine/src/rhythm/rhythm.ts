@@ -35,6 +35,9 @@ export const PULSE_GRID: Readonly<Record<Pulse, PulseGrid>> = {
   '16s': { n: 7, beats: 1, value: '16', tuplet: { notes: 7, of: 4 }, fallback: null },
 }
 
+/** The six pulses Phase 4 adds (tuplets over more than a beat, and quintuplets to septuplets), which sit behind the rhythmGears flag. */
+export const isPhase4Pulse = (p: Pulse): boolean => p === '4t' || p === '4q' || p === '8q' || p === '16q' || p === '16t' || p === '16s'
+
 /** Pulses in one beat for the four pulses with a whole number of them (a beat is a quarter note in every metre). */
 export const PULSE_PER_BEAT: Readonly<Record<'4' | '8' | '8t' | '16', number>> = { '4': 1, '8': 2, '8t': 3, '16': 4 }
 
