@@ -209,7 +209,7 @@ type RhythmPath = Readonly<{ groups: readonly number[] | null; gears: readonly P
 function, `stepUnits(blocks, byRow, step)`, which gives each drawn bar its unit, or null outside the form. Both the
 pentatonic path and the rhythm path call it. Moving it changes no pentatonic answer, and the golden test proves that.
 
-**The plan.** `rhythmPlan(id, path, units)` returns `RhythmPlan = readonly Readonly<{ from: number; id: RhythmId }>[]`.
+**The plan.** `rhythmSteps(id, path, units)` returns `RhythmSteps = readonly Readonly<{ from: number; id: RhythmId }>[]`.
 That is one entry per run of drawn bars with the same step, each entry's id being `id` with step *i*'s group and pulse
 put in. Some details:
 
@@ -218,7 +218,7 @@ put in. Some details:
 - With no path, or a per-bar `id`, the plan is `[{ from: 0, id }]`.
 - With a custom id, the Groups path is ignored and only the pulse changes (`custom:16:x.x` → `custom:8t:x.x`).
 
-**Laying.** `layRhythm` takes `RhythmId | RhythmPlan`, and a bare id is a one-entry plan, so every Phase 1–3 caller
+**Laying.** `layRhythm` takes `RhythmId | RhythmSteps`, and a bare id is a one-entry plan, so every Phase 1–3 caller
 is unchanged.
 
 - Each entry is laid over its own bars as today. Its first bar is a break (Decision 14), and its stream starts at
@@ -287,7 +287,7 @@ function feelGroups(beats: number, feel: Feel): readonly number[]   // each grou
 New in the engine's public API (the `api.test.ts` snapshot gains these):
 
 - **Pulses:** `PULSE_GRID`, `barPulse`.
-- **Paths:** `RhythmPath`, `RhythmStep`, `RhythmPlan`, `rhythmPlan`, `isRhythmPath`, `RHYTHM_GROUP_PRESETS`,
+- **Paths:** `RhythmPath`, `RhythmStep`, `RhythmSteps`, `rhythmSteps`, `isRhythmPath`, `RHYTHM_GROUP_PRESETS`,
   `RHYTHM_GEAR_PRESETS`.
 - **Shared step units:** `stepUnits`.
 - **Feel:** `Feel`, `FEELS`, `isFeel`, `feelGroups`.
@@ -370,7 +370,7 @@ when a path is on, and the spec's §8 records the measurement.
 - `parseRhythm` with the new spellings;
 - `rhythmNotes` against §2's table;
 - `stepUnits`, with the pentatonic path's existing tests unchanged;
-- `rhythmPlan` and `layRhythm` with a plan, against §3's table (cuts, fresh starts, marks);
+- `rhythmSteps` and `layRhythm` with steps, against §3's table (cuts, fresh starts, marks);
 - `lineRhythm` with a plan, where a pick-up doesn't cross a step boundary;
 - `rhythmCaption` with paths;
 - `feelGroups`, slashes, targets and beams against §4's table;
@@ -395,7 +395,7 @@ when a path is on, and the spec's §8 records the measurement.
 
 1. **Tuplet pulses:** the flag, `PULSE_GRID`, the six pulses, tuplet notation (§1, §2), drawing on all three
    sheets, the listbox families, Help, the golden update and a print check.
-2. **Mixed phrasing:** `stepUnits` moved out of `changes.ts`, plans in `layRhythm` and `lineRhythm`, the Groups path,
+2. **Mixed phrasing:** `stepUnits` moved out of `changes.ts`, steps in `layRhythm` and `lineRhythm`, the Groups path,
    step marks, caption, storage, controls and links.
 3. **Gears:** the Gears path on the same plan, the gear marks and the second print check.
 4. **Feel:** `feelGroups`, slashes, beams, targets, the control, preference, link and mark.
