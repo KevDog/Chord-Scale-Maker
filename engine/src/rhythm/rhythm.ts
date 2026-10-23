@@ -53,6 +53,9 @@ export function pulsesIn(p: Pulse, beats: number): number {
 /** Pulse `i` of a bar at pulse `p`, in beats from the bar's start. */
 export const pulseBeat = (p: Pulse, i: number): number => (i * PULSE_GRID[p].beats) / PULSE_GRID[p].n
 
+/** pulseBeat's inverse: the pulse at `beat` beats from a bar's start at pulse `p` (rounded, so a tuplet's beat finds its pulse). */
+export const pulseAt = (p: Pulse, beat: number): number => Math.round((beat * PULSE_GRID[p].n) / PULSE_GRID[p].beats)
+
 /** 0, 1, …, n − 1: the rhythm modules' pulse and beat indexes (not in the engine's API) */
 export const range = (n: number): number[] => Array.from({ length: n }, (_, i) => i)
 

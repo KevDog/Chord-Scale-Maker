@@ -42,12 +42,139 @@ describe('rhythmNotes: splitting (§6)', () => {
     const t = notes('custom:8t:x_x', [2])[0]!
     expect(vals(t)).toEqual(['q', '8', 'q', '8'])
     expect(t.map(n => n.tuplet)).toEqual([0, 0, 1, 1])
+    expect(t.every(n => n.ratio?.notes === 3 && n.ratio.of === 2)).toBe(true)
   })
 
   it('merges whole triplet beats of one held note', () => {
     const t = notes('custom:8t:x_____', [2])[0]!
     expect(vals(t)).toEqual(['h'])
     expect(t[0]!.tuplet).toBeNull()
+    expect(t[0]!.ratio).toBeNull()
+  })
+
+  it('gives straight notes no ratio', () => {
+    expect(notes('unit:8:3:accents', [4])[0]!.every(n => n.ratio === null)).toBe(true)
+  })
+})
+
+describe('rhythmNotes: tuplets at any pulse (Phase 4 spec §2)', () => {
+  const r = (notes: number, of: number) => ({ notes, of })
+  const bar1 = (id: RhythmId, bars: number[] = [4]) => {
+    const n = notes(id, bars)[0]!
+    return {
+      values: vals(n),
+      ratio: n.map(x => x.ratio),
+      tuplet: n.map(x => x.tuplet),
+      accent: n.map(x => x.accent),
+      tie: n.map(x => x.tie),
+    }
+  }
+  const times = <T>(k: number, xs: readonly T[]): T[] => Array.from({ length: k }, () => xs).flat()
+
+  it('unit:4t:3:accents', () => {
+    expect(bar1('unit:4t:3:accents')).toEqual({
+      values: times(6, ['q']),
+      ratio: times(6, [r(3, 2)]),
+      tuplet: [0, 0, 0, 1, 1, 1],
+      accent: times(2, [true, false, false]),
+      tie: times(6, [false]),
+    })
+  })
+
+  it('unit:4q:5:accents', () => {
+    expect(bar1('unit:4q:5:accents')).toEqual({
+      values: times(5, ['q']),
+      ratio: times(5, [r(5, 4)]),
+      tuplet: times(5, [0]),
+      accent: [true, false, false, false, false],
+      tie: times(5, [false]),
+    })
+  })
+
+  it('unit:4q:5:tied', () => {
+    expect(bar1('unit:4q:5:tied')).toEqual({ values: ['w'], ratio: [null], tuplet: [null], accent: [false], tie: [false] })
+  })
+
+  it('unit:8q:5:accents', () => {
+    expect(bar1('unit:8q:5:accents')).toEqual({
+      values: times(10, ['8']),
+      ratio: times(10, [r(5, 4)]),
+      tuplet: [...times(5, [0]), ...times(5, [1])],
+      accent: times(2, [true, false, false, false, false]),
+      tie: times(10, [false]),
+    })
+  })
+
+  it('custom:8q:x_x__', () => {
+    expect(bar1('custom:8q:x_x__')).toEqual({
+      values: ['q', 'qd', 'q', 'qd'],
+      ratio: times(4, [r(5, 4)]),
+      tuplet: [0, 0, 1, 1],
+      accent: times(4, [false]),
+      tie: times(4, [false]),
+    })
+  })
+
+  it('unit:16q:5:tied', () => {
+    expect(bar1('unit:16q:5:tied')).toEqual({
+      values: times(4, ['q']),
+      ratio: times(4, [null]),
+      tuplet: times(4, [null]),
+      accent: times(4, [false]),
+      tie: times(4, [false]),
+    })
+  })
+
+  it('unit:16t:3:rests', () => {
+    // the rests in each group merge as P1 §6.2's do: 16 r8 16 r8, one 6:4 a beat
+    expect(bar1('unit:16t:3:rests')).toEqual({
+      values: times(8, ['16', '8r']),
+      ratio: times(16, [r(6, 4)]),
+      tuplet: [0, 1, 2, 3].flatMap(t => times(4, [t])),
+      accent: times(16, [false]),
+      tie: times(16, [false]),
+    })
+  })
+
+  it('unit:16s:7:accents', () => {
+    expect(bar1('unit:16s:7:accents')).toEqual({
+      values: times(28, ['16']),
+      ratio: times(28, [r(7, 4)]),
+      tuplet: [0, 1, 2, 3].flatMap(t => times(7, [t])),
+      accent: times(4, [true, ...times(6, [false])]),
+      tie: times(28, [false]),
+    })
+  })
+
+  it('unit:4t:3:accents in 3/4 falls back to quarters', () => {
+    expect(bar1('unit:4t:3:accents', [3])).toEqual({
+      values: ['q', 'q', 'q'],
+      ratio: [null, null, null],
+      tuplet: [null, null, null],
+      accent: [true, false, false],
+      tie: [false, false, false],
+    })
+  })
+
+  it('unit:4q:5:accents over 4, 3, 4: a 5:4, three straight quarters, a 5:4', () => {
+    const [a, b, c] = notes('unit:4q:5:accents', [4, 3, 4])
+    expect(a!.map(n => n.ratio)).toEqual(times(5, [r(5, 4)]))
+    expect(vals(b!)).toEqual(['q', 'q', 'q'])
+    expect(b!.map(n => n.ratio)).toEqual([null, null, null])
+    expect(vals(c!)).toEqual(times(5, ['q']))
+    expect(c!.map(n => n.ratio)).toEqual(times(5, [r(5, 4)]))
+    expect(c!.map(n => n.tuplet)).toEqual(times(5, [0]))
+  })
+
+  it('splits an in-group piece as the longest value that fits, the rest tied', () => {
+    // 16s, L = 5: a quarter tied to a 16th; 8q, L = 3: a dotted quarter; 16t, L = 2: an 8th
+    expect(vals(notes('custom:16s:x____xx', [1])[0]!)).toEqual(['q~', '16', '16', '16'])
+    expect(vals(notes('custom:16t:x_xxxx', [1])[0]!)).toEqual(['8', '16', '16', '16', '16'])
+  })
+
+  it('beams tuplet notes by their group', () => {
+    expect(notes('unit:8q:5:accents', [4])[0]!.map(n => n.beam)).toEqual([...times(5, [0]), ...times(5, [1])])
+    expect(notes('unit:16t:3:accents', [2])[0]!.map(n => n.beam)).toEqual([...times(6, [0]), ...times(6, [1])])
   })
 })
 
