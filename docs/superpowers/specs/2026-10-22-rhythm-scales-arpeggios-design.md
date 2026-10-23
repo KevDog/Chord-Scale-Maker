@@ -236,7 +236,9 @@ accents · 4 a bar". The Arpeggios subtitle takes the rhythm only.
 - the Arpeggios sheet, Extended, Up & down, `unit:8t:4:accents`.
 
 **If one overflows,** `buildSheet`'s `perPage` drops to 10 for a sheet with a card or a run (`ScaleSheet`'s caller),
-and to the Arpeggios' own count less one for a poured Arpeggios sheet; only sheets with the new options change. If
+and to the Arpeggios' own count less one for a poured Arpeggios sheet; only sheets with the new options change.
+**Measured (PR 1):** with the card at 0.8 size and one-line barlines, 10 still overflowed for Autumn Leaves on
+trombone from B, so a Scales sheet where any staff has a card prints 8 a page. If
 Notes per bar 1 crowds its 15 bars so that a note's head and its neighbour's accidental collide, its run plays up
 only (K + 1 notes); the Help says so.
 
