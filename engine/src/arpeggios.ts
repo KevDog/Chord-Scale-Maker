@@ -1,6 +1,7 @@
 import { type Approach, approachNotes, scaleStepsBelow } from './approaches'
 import { isRest, parseChord, writtenChordRootLenient } from './chord'
-import { drawnLengths, type GuideInput, type GuideLine, type GuideNote, voiceAccidentals } from './guideTones'
+import type { GuideInput, GuideLine, GuideNote } from './guideTones'
+import { drawnLengths, voiceAccidentals } from './noteValues'
 import { barAt, barLength, barStart, type Metre } from './metre'
 import type { Range } from './instruments'
 import { type Part, rangeOf, writtenScale } from './part'

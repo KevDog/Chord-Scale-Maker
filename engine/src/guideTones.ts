@@ -1,11 +1,11 @@
 import { isRest, parseChord, writtenChordRootLenient } from './chord'
 import { type Approach, approachNotes } from './approaches'
 import { type Part, type Pitched, rangeOf, writtenScale } from './part'
-import { accidentalsInBar, octaveOf } from './keySignature'
 import { barAt, barLength, barStart, type Metre } from './metre'
 import { baseQuality } from './qualities'
 import { spellFrom } from './scales'
 import { orNull } from './util'
+import { drawnLengths, voiceAccidentals } from './noteValues'
 import { guideToneLine } from './guideToneLines'
 import type { Candidate, GuideTones } from './voiceLeading'
 import type { RhythmNote } from './rhythm/notation'
@@ -69,19 +69,7 @@ export function guideTonesFor(part: Part, chord: string, scale?: string): GuideT
 /** the guide tone line the Changes sheet shows, at most one: none, line A (from the 3rd) or line B (from the 7th) */
 export type GuideLine = 'off' | 'third' | 'seventh'
 
-/** the lengths a note can be drawn at, in beats: up to a dotted whole (6/4, #234) */
-export type NoteBeats = 0.25 | 0.5 | 1 | 2 | 3 | 4 | 6
-const NOTE_BEATS: readonly NoteBeats[] = [6, 4, 3, 2, 1, 0.5, 0.25]
-/** a length as notes that can be drawn, tied: 5 beats as 3 + 2, 7 as 4 + 3 (the 5/4 and 7/4 bars' groupings), else the longest first */
-export function drawnLengths(length: number): NoteBeats[] {
-  if (length <= 0) return []
-  const one = NOTE_BEATS.find((b) => b === length)
-  if (one) return [one]
-  if (length === 5) return [3, 2]
-  if (length === 7) return [4, 3]
-  const first = NOTE_BEATS.find((b) => b < length) ?? 0.25
-  return [first, ...drawnLengths(length - first)]
-}
+export { drawnLengths, type NoteBeats, voiceAccidentals } from './noteValues'
 
 /** a poured note's notation: its value, tuplet, beam group and accent */
 export type RhythmMark = Pick<RhythmNote, 'value' | 'tuplet' | 'beam' | 'accent'>
@@ -147,20 +135,6 @@ export function notesFor(c: Candidate | null, start: number, length: number, met
   return out
 }
 
-/** one bar's voice with its accidentals: the measure rule (accidentalsInBar) over its notes, rests left as they are */
-export function voiceAccidentals(voice: readonly GuideNote[], keySig: string | null): GuideNote[] {
-  const pitched = voice.flatMap((n, i) => (n.pitch ? [{ i, n, pitch: n.pitch }] : []))
-  const accs = accidentalsInBar(
-    pitched.map(({ n, pitch }) => ({ letter: pitch.letter, acc: pitch.acc, octave: octaveOf(pitch), tiedIn: n.tiedIn })),
-    keySig,
-  )
-  const out = [...voice]
-  pitched.forEach(({ i, n }, k) => {
-    out[i] = { ...n, accidental: accs[k] ?? null }
-  })
-  return out
-}
-
 /** an approach figure's notes are eighths */
 const APPROACH_BEATS = 0.5
 
@@ -206,11 +180,11 @@ export function guideVoices(
   })
   const range = rangeOf(part)
   const notes = guideToneLine(tones, range, line, chords.map((c) => c.block ?? 0))
+  chords.forEach((c, j) => {
+    const h = notes[j]
+    if (h) labels.set(c.row, guideLabel(h.label))
+  })
   if (restate && rhythm) {
-    notes.forEach((h, j) => {
-      const c = chords[j]
-      if (h && c) labels.set(c.row, guideLabel(h.label))
-    })
     const poured = cellVoices(chords, part, beats, keySig, (_, j) => oneNote(notes[j]), undefined, approach, rhythm)
     return { bars: poured.bars, labels, missing }
   }
@@ -230,7 +204,6 @@ export function guideVoices(
   const voice: { bar: number; note: GuideNote }[] = []
   chords.forEach((c, j) => {
     const h = notes[j] ?? null
-    if (h) labels.set(c.row, guideLabel(h.label))
     const figure = lead[j + 1] ?? []
     const here = notesFor(h, c.start, c.beats - figure.length * APPROACH_BEATS, beats)
     const before = voice.at(-1)
