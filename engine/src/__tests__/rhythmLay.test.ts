@@ -2,6 +2,8 @@ import { describe, expect, it } from 'vitest'
 import { layRhythm, rhythmCaption } from '../rhythm/lay'
 import type { RhythmId } from '../rhythm/library'
 import { rhythmNotes } from '../rhythm/notation'
+import { lineRhythm } from '../rhythm/pour'
+import { cardBars, pourRun } from '../rhythm/run'
 
 const cap = (id: RhythmId, bars: number[]) => rhythmCaption(id, layRhythm(id, bars)!)
 
@@ -176,5 +178,27 @@ describe('layRhythm forced attacks (lines spec §3.2)', () => {
 
   it('ignores pulses outside the sheet (guard)', () => {
     expect(layRhythm('unit:8:3:tied', [4], [], [-1, 99])).toEqual(layRhythm('unit:8:3:tied', [4]))
+  })
+})
+
+// recorded on the four-pulse code before the pulse grid (Phase 4 spec §1): the grid must not move the old pulses
+describe('the old pulses on the pulse grid (regression)', () => {
+  const ids: RhythmId[] = [
+    ...(['4', '8', '8t', '16'] as const).flatMap((p): RhythmId[] => [`unit:${p}:5:accents`, `unit:${p}:3:syncopated`, `custom:${p}:x.x_`]),
+    'run:8:4:2',
+    'card:halves',
+  ]
+  it.each(ids)('lays and notates %s as before', id => {
+    const laid = layRhythm(id, [4, 3, 4])!
+    const { pulses: _pulses, ...old } = laid as typeof laid & { pulses?: unknown }
+    const line = lineRhythm(id, [4, 3, 4], [], [{ at: 0, sounds: true }, { at: 5.5, sounds: true }, { at: 7, sounds: false }], 'pickup-2', 0.5)!
+    const { pulses: _linePulses, ...lineLaid } = line.laid as typeof line.laid & { pulses?: unknown }
+    expect({
+      laid: old,
+      notes: rhythmNotes(laid),
+      line: { ...line, laid: lineLaid },
+      card: cardBars(id, 3),
+      poured: pourRun(9, id, 4, null),
+    }).toMatchSnapshot()
   })
 })
