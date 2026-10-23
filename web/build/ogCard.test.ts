@@ -1,7 +1,8 @@
 import { existsSync, readFileSync, statSync } from 'node:fs'
 import { join } from 'node:path'
 import { describe, expect, it } from 'vitest'
-import { libraryCharts, ogCard, ogHash, OG_DIR } from './ogCard'
+import { CHORD_QUALITIES, chordSlug } from '@chord-scale-maker/engine'
+import { chordOgCard, libraryCharts, ogCard, ogHash, OG_DIR } from './ogCard'
 
 const chart = (slug: string): string => libraryCharts().find((c) => c.slug === slug)?.text ?? ''
 
@@ -29,13 +30,44 @@ describe('ogCard', () => {
   })
 })
 
+describe('chordOgCard', () => {
+  it('gives what a chord page’s preview shows: the chord on C, its name, formula, notes and first scales', () => {
+    expect(chordOgCard('minor-7')).toEqual({
+      symbol: [{ kind: 'text', text: 'C–7' }],
+      title: 'Minor 7th chord',
+      formula: '1 ♭3 5 ♭7',
+      notes: 'C E♭ G B♭',
+      scales: expect.stringMatching(/^C Dorian · /),
+    })
+  })
+
+  it('lists at most four scales, none outside', () => {
+    for (const q of CHORD_QUALITIES) expect(chordOgCard(chordSlug(q))!.scales.split(' · ').length, q).toBeLessThanOrEqual(4)
+  })
+
+  it('is null for an unknown slug', () => {
+    expect(chordOgCard('nope')).toBeNull()
+  })
+})
+
 describe('the song preview images (web/public/og/)', () => {
   const path = join(OG_DIR, 'manifest.json')
   const manifest = (existsSync(path) ? JSON.parse(readFileSync(path, 'utf8')) : {}) as Record<string, string>
   const charts = libraryCharts()
 
-  it('has one per library chart and no others', () => {
-    expect(Object.keys(manifest).toSorted(), 'run `make og`').toEqual(charts.map((c) => c.slug).toSorted())
+  const chords = CHORD_QUALITIES.map((q) => chordSlug(q))
+
+  it('has one per library chart and one per chord page (chords/<slug>), and no others', () => {
+    expect(Object.keys(manifest).toSorted(), 'run `make og`').toEqual([...charts.map((c) => c.slug), ...chords.map((c) => `chords/${c}`)].toSorted())
+  })
+
+  it.each(chords)('chords/%s: drawn from the chord as it is, 1200×630, at most 60 KB', (slug) => {
+    const file = join(OG_DIR, 'chords', `${slug}.png`)
+    expect(existsSync(file), 'run `make og`').toBe(true)
+    expect(manifest[`chords/${slug}`], 'stale: run `make og`').toBe(ogHash(chordOgCard(slug)!))
+    const png = readFileSync(file)
+    expect([png.readUInt32BE(16), png.readUInt32BE(20)]).toEqual([1200, 630])
+    expect(statSync(file).size).toBeLessThanOrEqual(60_000)
   })
 
   it.each(charts)('$slug: drawn from the chart as it is, 1200×630, at most 60 KB', ({ slug, text }) => {
