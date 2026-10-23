@@ -56,7 +56,7 @@
           <EaseReveal :show="pathsShown" inner-class="flex flex-col gap-2">
             <UiListbox v-model="gearsChoice" class="w-full" aria-label="Gears" title="Change the pulse at each step (after Bergonzi)">
               <template #selected="{ value }"><UiListboxLabel>Gears: {{ GEARS_LABELS[value] }}</UiListboxLabel></template>
-              <UiListboxOption v-for="g in LIST_CHOICES" :key="g" :value="g"><UiListboxLabel>{{ GEARS_LABELS[g] }}</UiListboxLabel></UiListboxOption>
+              <UiListboxOption v-for="g in LIST_CHOICES" :key="g" :value="g" :aria-label="GEARS_SPOKEN[g]"><UiListboxLabel>{{ GEARS_LABELS[g] }}</UiListboxLabel></UiListboxOption>
             </UiListbox>
             <EaseReveal :show="gearsChoice === 'custom'" inner-class="flex flex-col gap-2">
               <UiInput v-model="gearsText" aria-label="Your gears" placeholder="8 8t 16" :invalid="!!gearsError" :aria-describedby="gearsError ? 'gears-error' : undefined" @blur="lists.gears.commit" @keydown.enter="lists.gears.commit" />
@@ -168,6 +168,9 @@ const pathActs = computed(() => rhythmPathCaption(rhythm.value, path.value) !== 
 const withList = (name: string, list: readonly unknown[]): string => `${name} (${list.join(' ')})`
 const GROUPS_LABELS: Readonly<Record<ListChoice, string>> = { one: 'One', up: withList('Up', RHYTHM_GROUP_PRESETS.up), down: withList('Down', RHYTHM_GROUP_PRESETS.down), custom: 'Your list…' }
 const GEARS_LABELS: Readonly<Record<ListChoice, string>> = { one: 'One', up: withList('Up the gears', RHYTHM_GEAR_PRESETS.up), down: withList('Down the gears', RHYTHM_GEAR_PRESETS.down), custom: 'Your list…' }
+/** a gear preset's pulses in words, as Help #rhythm-gears names them, for a screen reader (its codes read as "4 t 8 8 t") */
+const spokenGears = (name: string, list: readonly Pulse[]): string => `${name} (${list.map((p) => PULSE_LABELS[p].replace(/^./, (x) => x.toLowerCase())).join(', ')})`
+const GEARS_SPOKEN: Readonly<Partial<Record<ListChoice, string>>> = { up: spokenGears('Up the gears', RHYTHM_GEAR_PRESETS.up), down: spokenGears('Down the gears', RHYTHM_GEAR_PRESETS.down) }
 /** Groups' and Gears' choices and Your list… text: the owner's (PreviewControls), so text that doesn't read survives the panel closing */
 const lists = inject(RHYTHM_PATH_LISTS, () => useRhythmPathLists(path), true)
 const { choice: groupsChoice, text: groupsText } = lists.groups

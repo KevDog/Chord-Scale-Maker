@@ -446,8 +446,14 @@ async function chooseInLineOptions(page: Page, name: string, option: string, sho
 /** with a unit on the Changes, choose its Groups path (Phase 4 spec §7): "One", "Up (3 4 5 6 7)", "Down (7 6 5 4 3)", by their labels */
 export const chooseGroups = (page: Page, label: string): Promise<void> => chooseInLineOptions(page, 'Groups', label, `Groups: ${label}`)
 
+/** the Gears presets' accessible names: their pulses in words, as Help says them (#553 review) */
+const GEAR_NAMES: Readonly<Record<string, string>> = {
+  'Up the gears (4t 8 8t 16 16t)': 'Up the gears (quarter-note triplets, 8ths, triplets, 16ths, sextuplets)',
+  'Down the gears (16t 16 8t 8 4t)': 'Down the gears (sextuplets, 16ths, triplets, 8ths, quarter-note triplets)',
+}
+
 /** with a unit or your rhythm on the Changes, choose its Gears path (Phase 4 spec §7): "One", "Up the gears (4t 8 8t 16 16t)", …, by their labels */
-export const chooseGears = (page: Page, label: string): Promise<void> => chooseInLineOptions(page, 'Gears', label, `Gears: ${label}`)
+export const chooseGears = (page: Page, label: string): Promise<void> => chooseInLineOptions(page, 'Gears', GEAR_NAMES[label] ?? label, `Gears: ${label}`)
 
 /** with a rhythm path on, choose its Step (Phase 4 spec §7): "By section", "By key area", "Every 2 bars", … */
 export const chooseRhythmStep = (page: Page, label: string): Promise<void> => chooseInLineOptions(page, 'Step', label, `Step: ${label}`)

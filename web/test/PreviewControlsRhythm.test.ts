@@ -144,6 +144,19 @@ describe('the Rhythm controls (rhythm spec §9)', () => {
       expect((await at('card:downbeats', { ...OFF, gears: ['8', '16'] })).find('[aria-label="Gears"]').exists()).toBe(false)
     })
 
+    it('names the Gears presets’ pulses in words to a screen reader, as Help does, their codes shown (#553 review)', async () => {
+      const w = await at('unit:8:3:accents')
+      await w.find('[aria-label="Gears"]').trigger('click')
+      const options = w.findAll('[role=option]')
+      expect(options.map((o) => o.text())).toEqual(['One', 'Up the gears (4t 8 8t 16 16t)', 'Down the gears (16t 16 8t 8 4t)', 'Your list…'])
+      expect(options.map((o) => o.attributes('aria-label'))).toEqual([
+        undefined,
+        'Up the gears (quarter-note triplets, 8ths, triplets, 16ths, sextuplets)',
+        'Down the gears (sextuplets, 16ths, triplets, 8ths, quarter-note triplets)',
+        undefined,
+      ])
+    })
+
     it('reads Gears’ Your list… by the pulses’ spellings, with an error under it', async () => {
       const w = await at('unit:8:3:accents')
       await choose(w, 'Gears', 'Your list…')
