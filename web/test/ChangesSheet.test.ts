@@ -1,5 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { nextTick } from 'vue'
+import { nextTick, ref } from 'vue'
+import { CLICK, useClick } from '~/composables/useClick'
 import { describe, expect, it } from 'vitest'
 import PentatonicLadder from '~/components/PentatonicLadder.vue'
 import ChangesSheet from '~/components/ChangesSheet.vue'
@@ -199,5 +200,25 @@ describe('ChangesSheet chord-basis tints (#272)', () => {
     const at = buildChanges(doc, CONCERT, 4, false, 'off', undefined, { ...base, basis: 'chord' }).lines[0]!.bars[0]!.chords[0]!.pentatonic!.chord
     const w = await mountPlan({ ...base, basis: 'key', picks: { [at]: { pc: 0 } } })
     expect(hasRungLabel(w)).toBe(true)
+  })
+})
+
+describe('ChangesSheet and Hear line (#507)', () => {
+  it('hands the click its Line at concert pitch, with the flag on, and takes it back when it goes', async () => {
+    const features = useRuntimeConfig().public.features as Record<string, unknown>
+    const was = { ...features }
+    Object.assign(features, { hearLine: true })
+    try {
+      const click = useClick(ref({ beats: 4 as const, style: '', metreChanges: false }), ref(undefined), { audio: () => null })
+      const w = await mountSuspended(ChangesSheet, {
+        props: { doc, title: 'T', subtitle: '', part: { clef: 'treble', trans: 'Bb' }, instrumentLabel: '', numerals: false, scales: false, line: 'third' },
+        global: { provide: { [CLICK as symbol]: click } },
+      })
+      expect(click.hasLine.value).toBe(true)
+      w.unmount()
+      expect(click.hasLine.value).toBe(false)
+    } finally {
+      Object.assign(features, was)
+    }
   })
 })

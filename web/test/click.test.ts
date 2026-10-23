@@ -104,8 +104,8 @@ describe('useClick', () => {
   it('keeps its settings in this browser', () => {
     localStorage.clear()
     const c = useClick(chart(), ref(undefined), { audio: fakeAudio })
-    c.settings.value = { hat: true, countIn: 2, sound: 'beep', folded: true }
-    expect(useClick(chart(), ref(undefined), { audio: fakeAudio }).settings.value).toEqual({ hat: true, countIn: 2, sound: 'beep', folded: true })
+    c.settings.value = { hat: true, countIn: 2, sound: 'beep', folded: true, hear: true }
+    expect(useClick(chart(), ref(undefined), { audio: fakeAudio }).settings.value).toEqual({ hat: true, countIn: 2, sound: 'beep', folded: true, hear: true })
   })
 
   it('back from a hidden tab, books no beat twice', async () => {
@@ -218,5 +218,59 @@ describe('useClick', () => {
       if (at === 0) expect(c.beat.value).toBe(0)
     }
     expect(audio.played.map((p) => p.kind)).toEqual(['beat', 'beat']) // 160 bpm: beats 2 and 4 at 0.375 s and 1.125 s
+  })
+
+  describe('Hear line', () => {
+    const line = { notes: [{ bar: 0, at: 0, beats: 4, midi: 65 }, { bar: 1, at: 0, beats: 4, midi: 64 }], bars: 2 }
+    async function hearing(hear: boolean) {
+      const audio = fakeAudio()
+      const t = timers()
+      const c = useClick(ref({ beats: 4 as const, style: 'Ballad', metreChanges: false }), ref(undefined), { audio: () => audio, ...t })
+      c.settings.value = { ...c.settings.value, hear }
+      c.setLine(line)
+      await c.start()
+      for (let at = 0; at < 8; at += 0.05) {
+        audio.clock.t = at
+        t.tick()
+      }
+      return { audio, c, t }
+    }
+
+    it('starts off, and is remembered in this browser', () => {
+      localStorage.removeItem('csm-click')
+      const c = useClick(chart(), ref(undefined), { audio: fakeAudio })
+      expect(c.settings.value.hear).toBe(false)
+      c.settings.value = { ...c.settings.value, hear: true }
+      expect(useClick(chart(), ref(undefined), { audio: fakeAudio }).settings.value.hear).toBe(true)
+    })
+
+    it('sounds the Line with the click, bar by bar, looping the form', async () => {
+      const { audio } = await hearing(true) // Ballad: 66 bpm, a bar is 3.64 s
+      expect(audio.notes.map((n) => n.midi)).toEqual([65, 64, 65])
+      expect(audio.notes[1]?.time).toBeCloseTo((4 * 60) / 66)
+      expect(audio.notes[0]?.length).toBeCloseTo((4 * 60) / 66)
+    })
+
+    it('stays quiet with Hear line off, or with no Line', async () => {
+      expect((await hearing(false)).audio.notes).toEqual([])
+      const { audio, c, t } = await hearing(true)
+      c.setLine(null)
+      const before = audio.notes.length
+      for (let at = 8; at < 12; at += 0.05) {
+        audio.clock.t = at
+        t.tick()
+      }
+      expect(c.hasLine.value).toBe(false)
+      expect(audio.notes).toHaveLength(before)
+    })
+
+    it('says whether there is a Line to hear', () => {
+      const c = useClick(chart(), ref(undefined), { audio: fakeAudio })
+      expect(c.hasLine.value).toBe(false)
+      c.setLine(line)
+      expect(c.hasLine.value).toBe(true)
+      c.setLine({ notes: [], bars: 4 })
+      expect(c.hasLine.value).toBe(false)
+    })
   })
 })

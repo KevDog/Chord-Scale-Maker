@@ -664,6 +664,30 @@
             <strong :class="EM">What you can change:</strong> Click on, under the click's ⋯. The chart remembers it.
           </UiText>
         </DecisionSection>
+
+        <DecisionSection v-if="hearLineOn" id="hear.pitch">
+          <UiText>
+            <strong :class="EM">Hear line</strong> plays the Line on the Changes sheet with the click, at concert pitch: a trumpet's
+            written D sounds as C. It leaves out the octave some instruments sound below what they read (tenor and bari sax,
+            guitar, bass), as the sheet does, so their Line sounds where a C instrument would read it. It plays the bars as
+            drawn, from the top again at the end; repeat signs, endings and D.S. aren't followed yet, and a bar longer than the
+            click's meter leaves out the notes past its beats.
+          </UiText>
+          <UiText>
+            <strong :class="EM">What you can change:</strong> the instrument changes the Line, and so what you hear.
+          </UiText>
+        </DecisionSection>
+
+        <DecisionSection v-if="hearLineOn" id="hear.swing">
+          <UiText>
+            With the click's feel on <strong :class="EM">Swing</strong>, Hear line swings the Line's 8ths: an 8th off the beat
+            plays two thirds through the beat, where the click's skip note is, and the note before it holds until then.
+            Triplets, 16ths and the rest play as drawn. Straight and Quarters play every note as drawn.
+          </UiText>
+          <UiText>
+            <strong :class="EM">What you can change:</strong> the click's feel.
+          </UiText>
+        </DecisionSection>
       </section>
     </article>
     <PageIndex :sections="SECTIONS" column :current="current" />
@@ -682,6 +706,7 @@ const phraseCellsOn = useFeature('phraseCells')
 const approachesOn = useFeature('approaches')
 const patternsOn = useFeature('patterns')
 const metronomeOn = useFeature('metronome')
+const hearLineOn = useFeature('hearLine')
 
 /** the ranking examples, from the engine as the sheets rank them */
 const PENT_EXAMPLE = pentatonicChoices('Cmaj7', 'C Ionian', CONCERT).slice(0, 3)
