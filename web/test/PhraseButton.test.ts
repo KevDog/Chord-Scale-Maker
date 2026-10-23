@@ -2,7 +2,8 @@ import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises } from '@vue/test-utils'
 import { ref } from 'vue'
-import { buildArpeggioSheet, buildSheet, CONCERT, partFor, type Row } from '@chord-scale-maker/engine'
+import { buildArpeggioSheet, buildChanges, buildSheet, CONCERT, parseChart, parseRoot, partFor, type PentatonicPlan, pentatonicPhrase, type Row, showPentatonics } from '@chord-scale-maker/engine'
+import PentatonicLadder from '~/components/PentatonicLadder.vue'
 import ArpeggioStaff from '~/components/ArpeggioStaff.vue'
 import ScaleStaff from '~/components/ScaleStaff.vue'
 import { CLICK, useClick } from '~/composables/useClick'
@@ -12,6 +13,7 @@ vi.mock('~/utils/vexflow', async (importOriginal) => ({ ...(await importOriginal
 mockNuxtImport('loadVexFlow', () => () => Promise.resolve({}))
 
 const row = (chord: string): Row => ({ section: 'A', bar: '1', chord, scale: '' })
+const PENT: PentatonicPlan = { kind: 'pentatonic', bySection: {}, fallback: { rung: 2, side: 'flat' }, counts: false }
 const dorian = (part = CONCERT) => buildSheet([row('Dm7')], part, 'root', 'C', 12)[0]!.pages.flat()[0]!
 
 describe('a staff’s Play (#507)', () => {
@@ -53,6 +55,21 @@ describe('a staff’s Play (#507)', () => {
     await w.find('[data-slot="phrase-play"]').trigger('click')
     await flushPromises()
     expect(audio.notes.map((n) => n.midi)).toEqual(staff.notes.map((n) => n.midi))
+  })
+
+  it('sounds a ladder rung’s pentatonic, without picking it (part 3)', async () => {
+    const { audio, global } = clicked()
+    const p = showPentatonics(buildChanges(parseChart('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Cmaj7').value, CONCERT, 4, false, 'off', undefined, PENT).lines)[0]!.bars[0]!.chords[0]!.pentatonic!
+    const w = await mountSuspended(PentatonicLadder, { props: { p, header: 'H', footer: 'F', part: CONCERT }, global, attachTo: document.body })
+    await w.find('button').trigger('click')
+    await flushPromises()
+    expect(w.findAll('[data-slot="phrase-play"]')).toHaveLength(12)
+    const play = w.findAll('[data-slot="phrase-play"]').find((b) => b.attributes('aria-label') === 'Play F♯ minor pentatonic')!
+    await play.trigger('click')
+    await flushPromises()
+    expect(audio.notes.map((n) => n.midi)).toEqual(pentatonicPhrase(parseRoot('F#'), CONCERT).map((n) => n.midi))
+    expect(w.emitted('pick')).toBeUndefined()
+    w.unmount()
   })
 
   it('shows only with a click (the song page) and the flag on', async () => {

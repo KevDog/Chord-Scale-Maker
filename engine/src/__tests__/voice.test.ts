@@ -4,7 +4,7 @@ import { parseChart } from '../chart'
 import type { ClickPlan } from '../click'
 import type { GuideNote } from '../guideTones'
 import { CONCERT, type Part, partFor } from '../part'
-import { arpeggioPhrase, scalePhrase, scheduleVoice, swingBeat, timePhrase, voiceNotes } from '../voice'
+import { arpeggioPhrase, pentatonicPhrase, scalePhrase, scheduleVoice, swingBeat, timePhrase, voiceNotes } from '../voice'
 
 const C4 = { letter: 'C', acc: 0, octave: 4, midi: 60 } as unknown as NonNullable<GuideNote['pitch']>
 const note = (beat: number, beats: number, midi: number | null, tie = false, tiedIn = false): GuideNote => ({
@@ -197,6 +197,21 @@ describe('scalePhrase', () => {
   it('is empty with no notes', () => {
     expect(scalePhrase([], null, 'C')).toEqual([])
     expect(scalePhrase(pitched(60), [false], 'C')).toEqual([])
+  })
+})
+
+describe('pentatonicPhrase', () => {
+  const A = { letter: 5, acc: 0 } as const
+  const E = { letter: 2, acc: 0 } as const
+
+  it('runs the minor pentatonic up to its octave and back, from the Scales root register', () => {
+    const phrase = pentatonicPhrase(A, CONCERT)
+    expect(phrase.map((n) => n.midi)).toEqual([69, 72, 74, 76, 79, 81, 79, 76, 74, 72, 69])
+    expect(phrase.at(-1)).toEqual({ at: 5, beats: 1, midi: 69 })
+  })
+
+  it('places the written root for the part and sounds at concert pitch', () => {
+    expect(pentatonicPhrase(E, partFor('tenor-sax'))[0]!.midi).toBe(64 - 2)
   })
 })
 

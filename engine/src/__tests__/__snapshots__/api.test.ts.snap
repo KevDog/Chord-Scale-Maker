@@ -344,6 +344,7 @@ exports[`exports the same names 1`] = `
   "pentatonicDegreeFrom",
   "pentatonicLadder",
   "pentatonicPathCaption",
+  "pentatonicPhrase",
   "pentatonicPick",
   "pentatonicRanking",
   "pentatonicStep",

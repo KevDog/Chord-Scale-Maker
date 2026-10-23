@@ -219,6 +219,7 @@
             v-else
             class="print:hidden"
             :p="m.p"
+            :part="partNow"
             :header="headerOf(m.p.source, m.p.run, glyphs(m.written))"
             :footer="pickFooter('changes', pickBars(m.p.run), false)"
             @pick="emit('pick', 'pentatonic', m.p.run, concertPc(partNow, $event))"

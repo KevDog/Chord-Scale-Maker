@@ -22,15 +22,17 @@
         </li>
         <li v-for="r in rows" :key="r.key" class="grid grid-cols-[4.5rem_1fr_1fr] items-center gap-1 px-2 py-1">
           <span class="text-xs text-zinc-500 tabular-nums dark:text-zinc-400">{{ r.head }}</span>
-          <button
-            v-for="x in r.picks"
-            :key="x.name"
-            type="button"
-            data-pent
-            :aria-current="isCurrent(x) ? 'true' : undefined"
-            :class="['rounded-control px-2 py-0.5 text-left font-display font-semibold text-zinc-900 hover:bg-note-50 dark:text-white dark:hover:bg-white/5', isCurrent(x) && 'bg-note-100 text-note-800 dark:bg-note-300/15 dark:text-note-200', r.picks.length === 1 && 'col-span-2']"
-            @click="pick(x, close)"
-          >{{ x.name }}</button>
+          <span v-for="x in r.picks" :key="x.name" :class="['flex items-center gap-0.5', r.picks.length === 1 && 'col-span-2']">
+            <button
+              type="button"
+              data-pent
+              :aria-current="isCurrent(x) ? 'true' : undefined"
+              :class="['flex-1 rounded-control px-2 py-0.5 text-left font-display font-semibold text-zinc-900 hover:bg-note-50 dark:text-white dark:hover:bg-white/5', isCurrent(x) && 'bg-note-100 text-note-800 dark:bg-note-300/15 dark:text-note-200']"
+              @click="pick(x, close)"
+            >{{ x.name }}</button>
+            <!-- #507, part 3: the rung's pentatonic up and back; shows only on the song page with Hear line on -->
+            <PhraseButton :id="`${headerId}-${x.name}`" :label="glyphs(`${rootName(x.root)} minor pentatonic`)" :phrase="() => pentatonicPhrase(x.root, part ?? CONCERT)" />
+          </span>
         </li>
       </ul>
       <p class="px-2 pt-2 pb-1 text-xs/4 text-zinc-600 dark:text-zinc-300">{{ footer }} <DecisionLink id="pick.order">Why this order?</DecisionLink></p>
@@ -42,10 +44,10 @@
 import { Popover as HPopover, PopoverButton as HPopoverButton, PopoverPanel as HPopoverPanel } from '@headlessui/vue'
 import { panelShift } from '~/utils/notePlacement'
 import { PAGE_ZOOM } from '~/utils/sheetPaged'
-import { glyphs, rootName, pcOf, type ChangesPentatonic, type PentatonicRung } from '@chord-scale-maker/engine'
+import { CONCERT, glyphs, rootName, pcOf, type ChangesPentatonic, type Part, pentatonicPhrase, type PentatonicRung } from '@chord-scale-maker/engine'
 
-/** a Key-basis Changes label and its popover: the chord's header, the sheet's choice, the key area's ladder (one row a rung, ♭ then ♯), then what a pick sets; a pick covers the label's run */
-const props = defineProps<{ p: ChangesPentatonic; header: string; footer: string }>()
+/** a Key-basis Changes label and its popover: the chord's header, the sheet's choice, the key area's ladder (one row a rung, ♭ then ♯), then what a pick sets; a pick covers the label's run; part: what the rungs are written for (their Play sounds concert) */
+const props = defineProps<{ p: ChangesPentatonic; header: string; footer: string; part?: Part }>()
 const emit = defineEmits<{ pick: [written: number]; reset: [] }>()
 const headerId = useId()
 const shift = ref(0)
