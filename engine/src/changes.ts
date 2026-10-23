@@ -7,7 +7,7 @@ import { type Directive, type Layout, sectionLayout } from './layout'
 import { barAt, barLength, barStart, type Clock } from './metre'
 import { type HexPick, livePick, type PentPick, pickTarget, type QuartPick } from './chordPicks'
 import type { Approach } from './approaches'
-import { arpeggioVoices, isArpeggioPattern, type SheetLine } from './arpeggios'
+import { arpeggioTones, arpeggioVoices, isArpeggioPattern, type SheetLine } from './arpeggios'
 import { type GuideInput, type GuideNote, guideVoices } from './guideTones'
 import { keySignature } from './keySignature'
 import { type CellsLine, cellsVoices } from './cells'
@@ -22,7 +22,7 @@ import { abbreviateScale } from './scales'
 import { type QuartalNotesChoice, type QuartalStack, rankedStacks } from './quartal'
 import { type QuartalLine, quartalVoices } from './quartalLine'
 import { chunk, orNull } from './util'
-import { layRhythm, phrasingCaption, rhythmCaption, type RhythmId, type RhythmNote, rhythmNotes, type RhythmPlan, type RhythmStart, targetBeats } from './rhythm'
+import { layRhythm, markTargets, phrasingCaption, rhythmCaption, type RhythmId, type RhythmNote, rhythmNotes, type RhythmPlan, type RhythmStart, targetBeats } from './rhythm'
 
 /**
  * The Changes sheet (docs/plan-changes.md): the chart as a study lead sheet. Bars of slashes in the chart's metre
@@ -725,6 +725,14 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
           ? { ...arpeggioVoices(drawn(), part, clock, keySig, line, approach, plan), labels: new Map() }
           : guideVoices(drawn(), part, clock, keySig, line, approach, plan, restate)
 
+  // target beats colored by the chord sounding there: the last drawn chord starting at or before the note, as its
+  // arpeggio tones' pitch classes (not ChangesChord.scale, the written display label); null when it can't be read
+  const inputs = targets ? drawn() : []
+  const tonesAt = (bar: number) => (beat: number): readonly number[] | null => {
+    const at = barStart(clock, bar) + beat
+    const input = inputs.findLast((x) => x.start <= at)
+    return input ? (arpeggioTones(part, input.chord, input.scale)?.map(pcOf) ?? null) : null
+  }
   let lastKey = ''
   const lastForm = blocks.findLastIndex((b) => b.part === 'form')
   const lines = blocks.flatMap((block, k) => {
@@ -775,7 +783,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
         beats: barLength(clock, bar) as Beats,
         timeSignature: null,
         chords,
-        voice: voices?.bars.get(bar) ?? [],
+        voice: targets ? markTargets(voices?.bars.get(bar) ?? [], targetBeats(barLength(clock, bar)), tonesAt(bar)) : (voices?.bars.get(bar) ?? []),
         rhythm: [],
         targets: [],
         marker: j === 0 ? block.marker : '',

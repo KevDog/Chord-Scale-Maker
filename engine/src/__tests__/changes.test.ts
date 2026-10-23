@@ -1294,6 +1294,25 @@ describe('the rhythm line and target beats (rhythm spec §8)', () => {
     expect(bars(buildChanges(two, CONCERT, 4, false, 'up-root', undefined, null, 'none', { rhythm: 'card:downbeats', anticipate: 1 }))[1]!.chords[0]!.beat).toBe(0)
   })
 
+  it('colors the Line on the target beats (rhythm-on-lines spec §6)', () => {
+    const m = buildChanges(two, CONCERT, 4, false, 'up-root', undefined, null, 'none', { rhythm: 'card:downbeats', anticipate: 2, targets: true })
+    expect(bars(m).map(letters)).toEqual([['C', 'E', 'D', 'F'], ['A', 'C', 'A', 'F']])
+    expect(bars(m).map((b) => b.voice.map((x) => x.target ?? null))).toEqual([['tone', null, 'other', null], ['tone', null, 'tone', null]])
+  })
+
+  it('colors the Line with Rhythm Off when Target beats are on (D18)', () => {
+    expect(bars(buildChanges(two, CONCERT, 4, false, 'up-root', undefined, null, 'none', { targets: true }))[0]!.voice.map((x) => x.target ?? null)).toEqual(['tone', null, 'tone', null])
+  })
+
+  it('never colors a tied piece', () => {
+    const tie = parseChart('key: C\n\nsection: A\n1 | CMaj7\n1 | Dm7\n').value
+    expect(bars(buildChanges(tie, CONCERT, 4, false, 'up-root', undefined, null, 'none', { rhythm: 'unit:8:3:tied', targets: true }))[0]!.voice.map((x) => x.target ?? null)).toEqual(['tone', null, null, null])
+  })
+
+  it('(guard) marks nothing without targets', () => {
+    for (const rhythm of ['off', 'card:downbeats'] as const) expect(bars(buildChanges(two, CONCERT, 4, false, 'up-root', undefined, null, 'none', { rhythm })).every((b) => b.voice.every((x) => x.target === undefined))).toBe(true)
+  })
+
   it('has no rhythm and no targets by default', () => {
     const sheet = buildChanges(eight, CONCERT)
     expect(bars(sheet).every((b) => b.rhythm.length === 0 && b.targets.length === 0)).toBe(true)

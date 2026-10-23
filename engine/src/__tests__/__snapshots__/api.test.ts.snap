@@ -263,6 +263,7 @@ exports[`exports the same names 1`] = `
   "litKeys",
   "livePick",
   "livePicks",
+  "markTargets",
   "matchKeyText",
   "metaValue",
   "migrateChart",
