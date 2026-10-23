@@ -93,7 +93,8 @@ Everything is a view preference, and nothing is written into chart rows.
     unit's statement (Saindon), and tuplet beams by their group, don't change.
 20. **Feel's target beats:** in 4 and in 2, today's `targetBeats` (1 and 3 in 4/4). In 1, the downbeat only.
 21. **Feel's mark:** "in 2" or "in 1" shows in italics over the sheet's first bar, and "in 4" shows nothing. The
-    rhythm caption gains ` · in 2` or ` · in 1`.
+    rhythm caption gains ` · feel in 2` or ` · feel in 1` ("feel" so it can't be read as a grouping next to a Groups
+    path's "in 3 → 4 → 5").
 22. **Tiers:** a new id, `rhythm-gears` (Everything), covers the new pulse families in the Rhythm listbox and the
     Groups, Gears and Step controls. A second new id, `feel` (Everything), covers Feel. A stored id at a new pulse
     still plays at a lower tier, and the hidden-settings notice lists it under `rhythm-gears`.
