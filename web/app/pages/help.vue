@@ -710,8 +710,9 @@
           </li>
           <li>
             <strong class="font-semibold text-zinc-950 dark:text-white">Focus</strong> hides everything but the sheet
-            music, for practicing from a tablet or laptop on the stand. Press <kbd class="font-sans font-semibold">Esc</kbd>
-            or <strong class="font-semibold">Exit focus</strong> to come back.
+            music, for practicing from a tablet or laptop on the stand. Its pages are fitted to the screen, so the sheet's
+            labels are plain text there: pick a scale or open a chord's Why before you go in. Press
+            <kbd class="font-sans font-semibold">Esc</kbd> or <strong class="font-semibold">Exit focus</strong> to come back.
           </li>
         </ul>
       </section>

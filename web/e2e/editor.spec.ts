@@ -261,11 +261,9 @@ test('on a phone, focus mode’s pages lay out as printed: four bars a line', as
   const dialog = page.getByRole('dialog', { name: 'Focus mode' })
   await expect(dialog.locator('svg[aria-label^="Bars:"]')).toHaveCount(6) // four a line, as printed
   await expect.poll(() => dialog.evaluate((d) => d.scrollWidth <= d.clientWidth)).toBe(true) // fitted to the width: no sideways scroll
-  // a chord's Why panel reads at full size, not the page's zoom
-  await dialog.getByRole('button', { name: 'C Dorian', exact: true }).first().click()
-  const why = page.getByRole('dialog', { name: /^Why:/ })
-  await expect(why).toBeVisible()
-  expect((await why.boundingBox())!.width).toBeGreaterThan(300)
+  // the zoomed sheet's labels are plain text: too close for a 24px target, and focus is for playing (#488)
+  await expect(dialog.getByText('C Dorian', { exact: true }).first()).toBeVisible()
+  await expect(dialog.getByRole('button', { name: 'C Dorian', exact: true })).toHaveCount(0)
 })
 
 /** the Scales sheet's staves, with their headings (chord and scale) */
