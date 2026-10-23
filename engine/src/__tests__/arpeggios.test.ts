@@ -428,8 +428,12 @@ describe('a rhythm poured into the line (rhythm-on-lines spec §4)', () => {
     expect(ratios('unit:8t:3:accents')).toEqual(Array(12).fill({ notes: 3, of: 2 }))
     expect(ratios('unit:8:3:accents')).toEqual(Array(8).fill(null))
     // merged silences keep the ratio of the group they sit in
-    const nc = poured(seq(['N.C.', 4], ['CMaj7', 4]), 4, plan('unit:16s:7:accents', [4, 4])).get(0) ?? []
-    expect(nc.every((n) => n.mark?.ratio === null || (n.mark?.ratio?.notes === 7 && n.mark.ratio.of === 4))).toBe(true)
+    // (a whole N.C. beat is a straight q with no ratio, so the silence starts mid-group: a chord ends 1.5 beats in)
+    const mid = poured(seq(['CMaj7', 1.5], ['N.C.', 2.5]), 4, plan('unit:16s:7:accents', [4])).get(0) ?? []
+    const rests = mid.filter((n) => !n.pitch).map((n) => [n.beat, n.mark?.value, n.mark?.ratio, n.mark?.tuplet])
+    // beat 1's group (7 sixteenths of 4/7 beat) plays 3 notes, then 3 sixteenths of silence merge to a dotted 8th at 7:4, in the notes' tuplet
+    expect(rests).toEqual([[expect.closeTo(11 / 7, 6), '8d', { notes: 7, of: 4 }, 1], [2, 'q', null, null], [3, 'q', null, null]])
+    expect(mid.filter((n) => n.pitch && n.beat >= 1).every((n) => n.mark?.tuplet === 1)).toBe(true)
   })
   it('(guard) a plan whose rhythm is off gives the voices of no plan', () => {
     const cs = seq(['CMaj7', 4], ['Dm7', 4])
