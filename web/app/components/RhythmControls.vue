@@ -42,6 +42,23 @@
             <UiInput v-model="rhythmText" aria-label="Your rhythm" placeholder="8: >xx.x_" :invalid="!!rhythmError" :aria-describedby="rhythmError ? 'rhythm-error' : undefined" />
             <p v-if="rhythmError" id="rhythm-error" class="text-sm/5 text-red-700 dark:text-red-400">{{ rhythmError }}</p>
           </EaseReveal>
+          <!-- the paths (Phase 4 spec §7): Groups for a unit, and the Step while a path acts; on the Changes only (paths) -->
+          <EaseReveal :show="pathsShown && parsedRhythm?.kind === 'unit'" inner-class="flex flex-col gap-2">
+            <UiListbox v-model="groupsChoice" class="w-full" aria-label="Groups" title="Change the grouping at each step (Saindon's mixed phrasing)">
+              <template #selected="{ value }"><UiListboxLabel>Groups: {{ GROUPS_LABELS[value] }}</UiListboxLabel></template>
+              <UiListboxOption v-for="g in GROUPS_CHOICES" :key="g" :value="g"><UiListboxLabel>{{ GROUPS_LABELS[g] }}</UiListboxLabel></UiListboxOption>
+            </UiListbox>
+            <EaseReveal :show="groupsChoice === 'custom'" inner-class="flex flex-col gap-2">
+              <UiInput v-model="groupsText" aria-label="Your groups" placeholder="3 4 5" :invalid="!!groupsError" :aria-describedby="groupsError ? 'groups-error' : undefined" />
+              <p v-if="groupsError" id="groups-error" class="text-sm/5 text-red-700 dark:text-red-400">{{ groupsError }}</p>
+            </EaseReveal>
+          </EaseReveal>
+          <EaseReveal :show="pathsShown && pathActs" inner-class="flex flex-col gap-2">
+            <UiListbox v-model="stepChoice" class="w-full" aria-label="Step" title="When the paths take their next step: at each section, each change of key area, or every few bars">
+              <template #selected="{ value }"><UiListboxLabel>Step: {{ STEP_LABELS[value] }}</UiListboxLabel></template>
+              <UiListboxOption v-for="s in STEP_CHOICES" :key="s" :value="s"><UiListboxLabel>{{ STEP_LABELS[s] }}</UiListboxLabel></UiListboxOption>
+            </UiListbox>
+          </EaseReveal>
         </component>
       </component>
     </component>
@@ -49,10 +66,10 @@
 </template>
 
 <script setup lang="ts">
-import { formatRhythm, LIBRARY_IDS, parseRhythmId, positionLabel, type Pulse, PULSE_LABELS, type RhythmId, rhythmLabel, RUN_ATTACKS, runPositions, UNIT_GROUPS, unitRhythm, type Variation, VARIATION_LABELS, VARIATIONS } from '@chord-scale-maker/engine'
+import { formatRhythm, LIBRARY_IDS, parseRhythmId, PENTATONIC_STEP_BARS, positionLabel, type Pulse, PULSE_LABELS, RHYTHM_GROUP_PRESETS, RHYTHM_PATH_OFF, type RhythmId, rhythmLabel, type RhythmPath, rhythmPathCaption, type RhythmStep, RUN_ATTACKS, runPositions, stepLabel, UNIT_GROUPS, unitRhythm, type Variation, VARIATION_LABELS, VARIATIONS } from '@chord-scale-maker/engine'
 import type { FunctionalComponent } from 'vue'
 import { customRhythmId, RHYTHM_TEXT, useRhythmText } from '~/composables/useRhythmText'
-import { isGearsRhythm, rhythmTextError } from '~/utils/rhythmText'
+import { groupsTextError, isGearsRhythm, rhythmTextError, typedGroups } from '~/utils/rhythmText'
 import RailPopover from './RailPopover.vue'
 
 /**
@@ -60,8 +77,10 @@ import RailPopover from './RailPopover.vue'
  * (In and Variation, Attacks and From, the text). describedby: the listbox's help; popover: the detail behind a
  * Rhythm options button (the rail), shown only for a rhythm with detail; inline: that popover stacked (the Controls dialog)
  */
-defineProps<{ describedby?: string; popover?: boolean; inline?: boolean }>()
+const props = defineProps<{ describedby?: string; popover?: boolean; inline?: boolean; paths?: boolean }>()
 const rhythm = defineModel<RhythmId>({ default: 'off' })
+/** the chart's rhythm path (Phase 4 spec §3), set here with paths on (the Changes) */
+const path = defineModel<RhythmPath>('path', { default: () => RHYTHM_PATH_OFF })
 const { shows } = useInterface()
 const optionsOpen = ref(false)
 const setOptionsOpen = (open: boolean): void => void (optionsOpen.value = open)
@@ -127,6 +146,56 @@ function setRun(change: Readonly<{ attacks?: number; from?: number }>): void {
   const p = parsedRhythm.value
   if (p?.kind === 'run') rhythm.value = `run:${p.pulse}:${change.attacks ?? p.attacks}:${change.from ?? p.from}`
 }
+
+/**
+ * the paths (Phase 4 spec §3, §7, D12, D13): Groups on a unit and the Step while a path acts on the rhythm, on the
+ * Changes only (paths), with the rhythmGears flag on and at Everything (D22). The Gears listbox is Task 3.1's.
+ */
+const pathsShown = computed(() => !!props.paths && gearsOn && shows('rhythm-gears') && (parsedRhythm.value?.kind === 'unit' || parsedRhythm.value?.kind === 'custom'))
+const pathActs = computed(() => rhythmPathCaption(rhythm.value, path.value) !== null)
+type GroupsChoice = 'one' | keyof typeof RHYTHM_GROUP_PRESETS | 'custom'
+const GROUPS_CHOICES: readonly GroupsChoice[] = ['one', 'up', 'down', 'custom']
+const GROUPS_LABELS: Readonly<Record<GroupsChoice, string>> = { one: 'One', up: 'Up', down: 'Down', custom: 'Your list…' }
+const sameList = (a: readonly number[] | null, b: readonly number[] | null): boolean => a?.join(' ') === b?.join(' ')
+const presetOf = (groups: readonly number[] | null): GroupsChoice =>
+  groups === null ? 'one' : sameList(groups, RHYTHM_GROUP_PRESETS.up) ? 'up' : sameList(groups, RHYTHM_GROUP_PRESETS.down) ? 'down' : 'custom'
+/** Your list… stays chosen while its text doesn't read (the path is One then), as Your rhythm… does */
+const groupsCustom = ref(presetOf(path.value.groups) === 'custom')
+const groupsText = ref(presetOf(path.value.groups) === 'custom' ? (path.value.groups ?? []).join(' ') : '')
+const groupsError = computed(() => groupsTextError(groupsText.value))
+const setGroups = (groups: readonly number[] | null): void => void (path.value = { ...path.value, groups: groups && [...groups] })
+const groupsChoice = computed<GroupsChoice>({
+  get: () => (groupsCustom.value ? 'custom' : presetOf(path.value.groups)),
+  set: (g) => {
+    groupsCustom.value = g === 'custom'
+    if (g === 'custom') {
+      // start from the list in force, as text to edit
+      if (!groupsText.value && path.value.groups) groupsText.value = path.value.groups.join(' ')
+      setGroups(typedGroups(groupsText.value))
+    } else setGroups(g === 'one' ? null : RHYTHM_GROUP_PRESETS[g])
+  },
+})
+watch(groupsText, (t) => {
+  if (groupsCustom.value) setGroups(typedGroups(t))
+})
+// the path changed from outside (a reset, a link): the listbox follows, unless it is the typed list or text that doesn't read
+watch(() => path.value.groups, (groups) => {
+  if (groupsCustom.value && (sameList(groups, typedGroups(groupsText.value)) || (groups === null && !typedGroups(groupsText.value)))) return
+  groupsCustom.value = presetOf(groups) === 'custom'
+  if (groupsCustom.value) groupsText.value = (groups ?? []).join(' ')
+})
+type StepChoice = 'section' | 'key-area' | `bars:${(typeof PENTATONIC_STEP_BARS)[number]}`
+const STEP_CHOICES: readonly StepChoice[] = ['section', 'key-area', ...PENTATONIC_STEP_BARS.map((n) => `bars:${n}` as const)]
+const stepOf = (c: StepChoice): RhythmStep => (c.startsWith('bars:') ? { unit: 'bars', bars: Number(c.slice(5)) as RhythmStep['bars'] } : { unit: c as RhythmStep['unit'], bars: path.value.step.bars })
+const STEP_LABELS = Object.fromEntries(STEP_CHOICES.map((c) => [c, stepLabel(stepOf(c)).replace(/^./, (x) => x.toUpperCase())])) as Readonly<Record<StepChoice, string>>
+const stepChoice = computed<StepChoice>({
+  get: (): StepChoice => {
+    const { unit, bars } = path.value.step
+    return unit === 'bars' ? `bars:${bars}` : unit
+  },
+  set: (c) => void (path.value = { ...path.value, step: stepOf(c) }),
+})
+
 /** the rhythm has detail to set: a unit's In and Variation, a run's Attacks and From, your rhythm's text (a card has none) */
 const hasDetail = computed(() => rhythmFamily.value === 'custom' || parsedRhythm.value?.kind === 'unit' || parsedRhythm.value?.kind === 'run')
 </script>

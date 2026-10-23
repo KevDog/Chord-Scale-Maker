@@ -1,4 +1,4 @@
-import { type Approach, type NotesPerBar, type RhythmStart, isHexatonicSelection, isPentatonicSelection, type PracticeSelection, type RhythmId, type ScaleLevel } from '@chord-scale-maker/engine'
+import { type Approach, type NotesPerBar, type RhythmStart, isHexatonicSelection, isPentatonicSelection, type PracticeSelection, type RhythmId, type RhythmPath, rhythmPathCaption, type ScaleLevel } from '@chord-scale-maker/engine'
 import type { LineMode } from '~/utils/sheetLine'
 import type { Overlay } from '~/utils/overlay'
 import type { Spell } from '~/utils/scaleChoices'
@@ -44,7 +44,7 @@ const rank = (l: InterfaceLevel): number => INTERFACE_LEVELS.indexOf(l)
 export const shows = (level: InterfaceLevel, id: ControlId): boolean => rank(level) >= rank(CONTROL_TIERS[id])
 
 /** the sheet's settings a control governs: what decides the notice */
-export type ViewSettings = Readonly<{ sheet: SheetKind; scaleLevel: ScaleLevel; numerals: boolean; scaleNames: boolean; lineMode: LineMode; spell: Spell; practice: PracticeSelection | null; overlay: Overlay; picks: boolean; approach: Approach; rhythm: RhythmId; targets: boolean; rhythmStart: RhythmStart; anticipate: number; rhythmLine: boolean; notesPerBar: NotesPerBar }> // picks: live chord picks of the kind the sheet shows (#303)
+export type ViewSettings = Readonly<{ sheet: SheetKind; scaleLevel: ScaleLevel; numerals: boolean; scaleNames: boolean; lineMode: LineMode; spell: Spell; practice: PracticeSelection | null; overlay: Overlay; picks: boolean; approach: Approach; rhythm: RhythmId; targets: boolean; rhythmStart: RhythmStart; anticipate: number; rhythmLine: boolean; notesPerBar: NotesPerBar; rhythmPath: RhythmPath }> // picks: live chord picks of the kind the sheet shows (#303)
 export type HiddenSetting = 'scale-level' | 'numerals' | 'scale-names' | 'line' | 'spell' | 'practice' | 'pentatonics' | 'chord-picks' | 'patterns' | 'approaches' | 'rhythm' | 'rhythm-phrasing' | 'rhythm-gears' | 'notes-per-bar'
 
 /** each setting away from its default on this sheet, and the level its control needs */
@@ -64,7 +64,8 @@ function setAway(v: ViewSettings): readonly (readonly [HiddenSetting, InterfaceL
     ...(changes && v.approach !== 'none' ? [['approaches', 'intermediate'] as const] : []),
     ...(rhythmDrawn || (changes && v.targets) ? [['rhythm', 'intermediate'] as const] : []),
     ...(changes && v.rhythm !== 'off' && v.rhythmLine && (v.rhythmStart !== 'beat' || v.anticipate !== 0) ? [['rhythm-phrasing', 'everything'] as const] : []), // rhythmLine: the Line takes the rhythm (spec C3)
-    ...(rhythmDrawn && isGearsRhythm(v.rhythm) ? [['rhythm-gears', 'everything'] as const] : []), // at a tuplet pulse (Phase 4 spec D22; Off with the rhythmGears flag off)
+    // at a tuplet pulse (Phase 4 spec D22; Off with the rhythmGears flag off), or on the Changes with a path that acts on the rhythm (§7; off with the flag off)
+    ...(rhythmDrawn && (isGearsRhythm(v.rhythm) || (changes && rhythmPathCaption(v.rhythm, v.rhythmPath) !== null)) ? [['rhythm-gears', 'everything'] as const] : []),
     ...(scales && v.notesPerBar !== 'whole' ? [['notes-per-bar', 'intermediate'] as const] : []), // Whole notes with the rhythmSheets flag off
     ...(v.sheet === 'patterns' ? [['patterns', 'intermediate'] as const] : []),
     ...((changes || scales) && v.picks ? [['chord-picks', 'everything'] as const] : []),

@@ -1,8 +1,8 @@
 import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { effectScope, nextTick } from 'vue'
-import { linkPreferences, usePreferences } from '~/composables/usePreferences'
-import { INSTRUMENTS, type ShareView } from '@chord-scale-maker/engine'
+import { linkPreferences, linkRhythmPath, shareRhythmPath, usePreferences } from '~/composables/usePreferences'
+import { INSTRUMENTS, RHYTHM_PATH_OFF, type ShareView } from '@chord-scale-maker/engine'
 
 const flags = vi.hoisted(() => ({ cells: true, approaches: true, phraseCells: true, rhythm: true, rhythmSheets: true, rhythmGears: true }))
 mockNuxtImport('useFeature', () => (name: string) => (name === 'cells' && flags.cells) || (name === 'approaches' && flags.approaches) || (name === 'phraseCells' && flags.phraseCells) || (name === 'rhythm' && flags.rhythm) || (name === 'rhythmSheets' && flags.rhythmSheets) || (name === 'rhythmGears' && flags.rhythmGears))
@@ -309,6 +309,20 @@ describe('linkPreferences', () => {
     flags.rhythmGears = false
     expect(linked({ rhythm: 'unit:16s:7:accents' }).rhythm.value).toBe('off')
     expect(linked({ rhythm: 'unit:8t:3:accents' }).rhythm.value).toBe('unit:8t:3:accents')
+  })
+
+  it('reads the rhythm path a link was sent with, its step Section by default, and off without one or with the rhythmGears flag off (Phase 4 spec §7)', () => {
+    expect(linkRhythmPath({ rhythmPath: { groups: [3, 4], step: { unit: 'bars', bars: 2 } } })).toEqual({ groups: [3, 4], gears: null, step: { unit: 'bars', bars: 2 } })
+    expect(linkRhythmPath({ rhythmPath: { gears: ['8', '16'] } })).toEqual({ groups: null, gears: ['8', '16'], step: { unit: 'section', bars: 4 } })
+    expect(linkRhythmPath({ sheet: 'changes' })).toEqual(RHYTHM_PATH_OFF)
+    flags.rhythmGears = false
+    expect(linkRhythmPath({ rhythmPath: { groups: [3, 4] } })).toEqual(RHYTHM_PATH_OFF)
+  })
+
+  it('writes a rhythm path for a link without its One lists, and reads it back', () => {
+    const path = { groups: [3, 4], gears: null, step: { unit: 'key-area', bars: 4 } } as const
+    expect(shareRhythmPath(path)).toEqual({ groups: [3, 4], step: { unit: 'key-area', bars: 4 } })
+    expect(linkRhythmPath({ rhythmPath: shareRhythmPath(path) })).toEqual(path)
   })
 
   it("shows the Notes per bar a link was sent with, and Whole notes without one or with the rhythmSheets flag off", () => {

@@ -80,6 +80,56 @@ describe('the Rhythm controls (rhythm spec §9)', () => {
     expect((below.emitted('update:rhythm') ?? []).flat()).not.toContain('custom:8q:x_x__')
   })
 
+  describe('the Groups and Step (Phase 4 spec §7)', () => {
+    const OFF = { groups: null, gears: null, step: { unit: 'section', bars: 4 } } as const
+    const UP = { ...OFF, groups: [3, 4, 5, 6, 7] }
+    const at = async (rhythm: string, rhythmPath: object = OFF) => {
+      const w = await mountSuspended(PreviewControls, { props: { sheet: 'changes', instrument: 'piano', spell: 'key', intervals: true, keyStart: 'C', lineMode: 'off', rhythm, rhythmPath } })
+      await openPanel(w, 'Line options')
+      return w
+    }
+    const choose = async (w: Awaited<ReturnType<typeof at>>, box: string, option: string) => {
+      await w.find(`[aria-label="${box}"]`).trigger('click')
+      await w.findAll('[role=option]').find((o) => o.text() === option)!.trigger('click')
+      await nextTick()
+    }
+
+    it('shows Groups for a unit, and the Step only while a path is on', async () => {
+      const w = await at('unit:8:3:accents')
+      expect(w.find('[aria-label="Groups"]').text()).toContain('Groups: One')
+      expect(w.find('[aria-label="Step"]').exists()).toBe(false)
+      await choose(w, 'Groups', 'Up')
+      expect(w.emitted('update:rhythmPath')?.at(-1)).toEqual([UP])
+      const on = await at('unit:8:3:accents', UP)
+      expect(on.find('[aria-label="Groups"]').text()).toContain('Groups: Up')
+      expect(on.find('[aria-label="Step"]').text()).toContain('Step: By section')
+      await choose(on, 'Step', 'Every 2 bars')
+      expect(on.emitted('update:rhythmPath')?.at(-1)).toEqual([{ ...UP, step: { unit: 'bars', bars: 2 } }])
+    })
+
+    it('hides Groups for your rhythm and a per-bar rhythm, and below Everything', async () => {
+      expect((await at('custom:8:>xx', UP)).find('[aria-label="Groups"]').exists()).toBe(false)
+      expect((await at('custom:8:>xx', UP)).find('[aria-label="Step"]').exists()).toBe(false) // Groups don't act on it
+      expect((await at('run:8:4:0', UP)).find('[aria-label="Groups"]').exists()).toBe(false)
+      useInterface().level.value = 'intermediate'
+      expect((await at('unit:8:3:accents', UP)).find('[aria-label="Groups"]').exists()).toBe(false)
+    })
+
+    it('reads Your list…, with an error under it for a list that doesn’t read', async () => {
+      const w = await at('unit:8:3:accents')
+      await choose(w, 'Groups', 'Your list…')
+      const input = w.find('input[aria-label="Your groups"]')
+      expect(input.attributes('placeholder')).toBe('3 4 5')
+      await input.setValue('3 5')
+      await nextTick()
+      expect(w.emitted('update:rhythmPath')?.at(-1)).toEqual([{ ...OFF, groups: [3, 5] }])
+      await input.setValue('3 9')
+      await nextTick()
+      expect(w.find('#groups-error').text()).toContain('Groups of 2 to 7')
+      expect(w.find('[aria-label="Groups"]').text()).toContain('Your list…')
+    })
+  })
+
   it('ties the Start and Timing help to their buttons, for a screen reader (#505)', async () => {
     const w = await mountSuspended(PreviewControls, { props: { sheet: 'changes', instrument: 'piano', spell: 'key', intervals: true, keyStart: 'C', lineMode: 'arpeggio', rhythm: 'card:downbeats', lineTakesRhythm: true } })
     await openPanel(w, 'Line options')

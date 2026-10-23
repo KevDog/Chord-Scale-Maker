@@ -1,7 +1,8 @@
 import { describe, expect, it } from 'vitest'
+import { RHYTHM_PATH_OFF } from '@chord-scale-maker/engine'
 import { CONTROL_TIERS, hiddenSettings, initialLevel, INTERFACE_LEVELS, isInterfaceLevel, levelLabel, shows, type ViewSettings } from '~/utils/interface'
 
-const DEFAULTS: ViewSettings = { sheet: 'changes', scaleLevel: 'standard', numerals: true, scaleNames: true, lineMode: 'off', spell: 'key', practice: null, overlay: 'off', picks: false, approach: 'none', rhythm: 'off', targets: false, rhythmStart: 'beat', anticipate: 0, rhythmLine: false, notesPerBar: 'whole' }
+const DEFAULTS: ViewSettings = { sheet: 'changes', scaleLevel: 'standard', numerals: true, scaleNames: true, lineMode: 'off', spell: 'key', practice: null, overlay: 'off', picks: false, approach: 'none', rhythm: 'off', targets: false, rhythmStart: 'beat', anticipate: 0, rhythmLine: false, notesPerBar: 'whole', rhythmPath: RHYTHM_PATH_OFF }
 
 describe('interface levels', () => {
   it('orders the levels and names them', () => {
@@ -108,6 +109,19 @@ describe('hiddenSettings', () => {
     expect(hiddenSettings('everything', { ...DEFAULTS, rhythm: 'unit:8q:5:accents' })).toBeNull()
     expect(hiddenSettings('intermediate', { ...DEFAULTS, rhythm: 'unit:8t:3:accents' })).toBeNull() // the old pulses stay Intermediate's
     expect(hiddenSettings('intermediate', { ...DEFAULTS, lineMode: 'guide', rhythm: 'unit:8q:5:accents' })).toBeNull() // a Line that doesn't take it
+  })
+
+  it('lists a rhythm path that acts under rhythm-gears, on the Changes only (Phase 4 spec §7)', () => {
+    const up = { ...RHYTHM_PATH_OFF, groups: [3, 4, 5, 6, 7] }
+    const gears = { ...RHYTHM_PATH_OFF, gears: ['8', '16'] as const }
+    expect(hiddenSettings('intermediate', { ...DEFAULTS, rhythm: 'unit:8:3:accents', rhythmPath: up })).toEqual({ settings: ['rhythm-gears'], needs: 'everything' })
+    expect(hiddenSettings('intermediate', { ...DEFAULTS, rhythm: 'custom:8:>xx', rhythmPath: gears })).toEqual({ settings: ['rhythm-gears'], needs: 'everything' })
+    expect(hiddenSettings('essentials', { ...DEFAULTS, lineMode: 'arpeggio', rhythmLine: true, rhythm: 'unit:8:3:accents', rhythmPath: up })).toEqual({ settings: ['line', 'rhythm', 'rhythm-gears'], needs: 'everything' })
+    expect(hiddenSettings('everything', { ...DEFAULTS, rhythm: 'unit:8:3:accents', rhythmPath: up })).toBeNull()
+    expect(hiddenSettings('intermediate', { ...DEFAULTS, rhythm: 'custom:8:>xx', rhythmPath: up })).toBeNull() // Groups act on a unit only
+    expect(hiddenSettings('intermediate', { ...DEFAULTS, rhythm: 'run:8:4:0', rhythmPath: up })).toBeNull() // nor on a per-bar rhythm
+    expect(hiddenSettings('intermediate', { ...DEFAULTS, rhythm: 'off', rhythmPath: up })).toBeNull()
+    expect(hiddenSettings('intermediate', { ...DEFAULTS, sheet: 'scales', rhythm: 'unit:8:3:accents', rhythmPath: up })).toBeNull() // paths are the Changes' (D13)
   })
 
   it('lists Notes per bar on the Scales sheet only (rhythm-scales-arpeggios spec §9)', () => {

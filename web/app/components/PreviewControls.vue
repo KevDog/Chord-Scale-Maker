@@ -190,7 +190,7 @@
                           </EaseReveal>
                           <!-- the rhythm (rhythm spec §9): the rhythm line with the Line off, else poured into the Line (rhythm-on-lines spec §1); a unit, a run, a card or your own; its detail under it -->
                           <div v-if="rhythmOn && shows('rhythm')" class="flex flex-col gap-2">
-                            <RhythmControls v-model="rhythm" :describedby="rhythmHelp ? 'rhythm-help' : undefined" />
+                            <RhythmControls v-model="rhythm" v-model:path="rhythmPath" paths :describedby="rhythmHelp ? 'rhythm-help' : undefined" />
                             <!-- where each chord's line starts and its timing (rhythm-on-lines spec §10), on a Line that takes the rhythm -->
                             <EaseReveal :show="rhythm !== 'off' && lineTakesRhythm && shows('rhythm-phrasing')" inner-class="flex flex-col gap-2">
                               <UiListbox v-model="rhythmStart" class="w-full" aria-label="Start" title="Where each chord's line begins: on its first beat, or with a pick-up of 1, 2 or 3 notes into it (after Galper)" aria-describedby="rhythm-start-help">
@@ -299,7 +299,7 @@
     </template>
 
     <script setup lang="ts">
-    import { type Approach, APPROACH_LABELS, APPROACHES, ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, CELL_ORDER_LABELS, CELL_ORDERS, CELL_SYSTEMS, type CellId, type CellOrder, cellLabel, CHROMATIC_CELLS, isCellId, SINGLE_CELLS, type ArpeggioPattern, type ArpNotes, fitRange, type InstrumentName, formatPattern, noteName, parsePattern, partFor, PATTERN_LIBRARY, type PatternNotes, type HexatonicBasis, type QuartalNotesChoice, type PentatonicBasis, type PentatonicDegree, PENTATONIC_LEAVE_LABELS, PENTATONIC_LEAVES, type PairShape, PAIR_SHAPE_LABELS, type PairLineShape, PAIR_LINE_SHAPE_LABELS, PAIR_LINE_SHAPES, type PentatonicLeave, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit, type Range, rangeChoices, type RhythmId, ANTICIPATE_STEPS, anticipateLabel, RHYTHM_START_LABELS, RHYTHM_STARTS, type RhythmStart, NOTES_PER_BAR, NOTES_PER_BAR_LABELS, type NotesPerBar } from '@chord-scale-maker/engine'
+    import { type Approach, APPROACH_LABELS, APPROACHES, ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, CELL_ORDER_LABELS, CELL_ORDERS, CELL_SYSTEMS, type CellId, type CellOrder, cellLabel, CHROMATIC_CELLS, isCellId, SINGLE_CELLS, type ArpeggioPattern, type ArpNotes, fitRange, type InstrumentName, formatPattern, noteName, parsePattern, partFor, PATTERN_LIBRARY, type PatternNotes, type HexatonicBasis, type QuartalNotesChoice, type PentatonicBasis, type PentatonicDegree, PENTATONIC_LEAVE_LABELS, PENTATONIC_LEAVES, type PairShape, PAIR_SHAPE_LABELS, type PairLineShape, PAIR_LINE_SHAPE_LABELS, PAIR_LINE_SHAPES, type PentatonicLeave, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit, type Range, rangeChoices, type RhythmId, type RhythmPath, RHYTHM_PATH_OFF, ANTICIPATE_STEPS, anticipateLabel, RHYTHM_START_LABELS, RHYTHM_STARTS, type RhythmStart, NOTES_PER_BAR, NOTES_PER_BAR_LABELS, type NotesPerBar } from '@chord-scale-maker/engine'
     import { degreeLabel, PENT_BASES, PENT_DEGREE_CHOICES, PENT_PATHS, PENT_RUNGS, PENT_SIDES, PENT_STEP_BARS, PENT_STEP_UNITS, pathLabel, rungLabel, sideShown } from '~/utils/pentatonics'
     import { approachApplies, type GuideFrom, type LineMode, lineModes } from '~/utils/sheetLine'
     import { HEX_BASES } from '~/utils/hexatonics'
@@ -478,6 +478,8 @@
     const rhythm = defineModel<RhythmId>('rhythm', { default: 'off' })
     // Your rhythm…'s text lives here, not in RhythmControls, so text that doesn't read survives Line options closing
     provide(RHYTHM_TEXT, useRhythmText(rhythm, () => shows('rhythm'), () => shows('rhythm-gears')))
+    /** the chart's rhythm path (Phase 4 spec §3, §7): Groups and its Step, on the Changes */
+    const rhythmPath = defineModel<RhythmPath>('rhythmPath', { default: () => RHYTHM_PATH_OFF })
     const targets = defineModel<boolean>('targets', { default: false })
     const rhythmOn = useFeature('rhythm')
     /** the Rhythm on the Scales and Arpeggios sheets (rhythm-scales-arpeggios spec D7) */
