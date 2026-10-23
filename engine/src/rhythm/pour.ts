@@ -4,6 +4,7 @@
  */
 import { layRhythm, pulseOf, stepsOf, type Laid } from './lay'
 import { rhythmOf, type RhythmId } from './library'
+import type { Feel } from './feel'
 import { rhythmNotes, type RhythmNote } from './notation'
 import type { RhythmSteps } from './path'
 import { pickupNotes, type RhythmStart } from './phrasing'
@@ -32,6 +33,8 @@ export type RhythmPlan = Readonly<{
   bars: readonly number[]
   clockBars: readonly number[]
   breaks: readonly number[]
+  /** how the Changes groups the straight beats' beams (Phase 4 spec D19); 4 when absent */
+  feel?: Feel
 }>
 
 /** the tolerance for comparing beats, which under triplets are inexact floats */
@@ -58,7 +61,7 @@ type Forced = Readonly<{ chord: number; target: number; pickups: readonly (numbe
  * The rhythm laid over the drawn bars (lengths in beats) for a Line, with each chord's target and pick-ups forced
  * (§3.2) and each note's owner (§3.3); null for Off or no bars.
  * id: a rhythm or a plan (Phase 4 spec §3), whose step boundaries join `breaks` (D14).
- * breaks: the bars no tie runs into (a 2nd ending); chords: in sheet order.
+ * breaks: the bars no tie runs into (a 2nd ending); chords: in sheet order; feel: the beams' grouping (Phase 4 spec D19).
  */
 export function lineRhythm(
   id: RhythmId | RhythmSteps,
@@ -67,6 +70,7 @@ export function lineRhythm(
   chords: readonly LineSpan[],
   start: RhythmStart,
   anticipate: number,
+  feel: Feel = 4,
 ): LineRhythm | null {
   const steps = stepsOf(id, bars.length)
   const rs = steps.map(s => rhythmOf(s.id))
@@ -105,7 +109,7 @@ export function lineRhythm(
   const force = forced.flatMap(f => [f.target, ...f.pickups.filter((p): p is number => p !== null)])
 
   const laid = layRhythm(id, bars, cuts, force)!
-  const notes = rhythmNotes(laid)
+  const notes = rhythmNotes(laid, feel)
 
   const spanOf = (pulse: number): number =>
     bounds.findLastIndex((b, j) => pulse >= toPulse(b) - EPS && pulse < toPulse(end(j)) - EPS)
