@@ -379,6 +379,7 @@ for (const instrument of ['Piano', 'Trombone'] as const) {
     await chooseRhythm(page, 'Triplets', { In: 'In 4', Variation: 'with accents' })
     await expect(page.locator('svg[data-time-sig]')).toHaveCount(14)
     const sheetPages = await staves(page).evaluateAll((els) => new Set(els.map((e) => e.closest('section'))).size)
+    expect(await firstSheetStaves(page)).toBe(11)
     await page.emulateMedia({ media: 'print' })
     await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden()
     expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(sheetPages)
