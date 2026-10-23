@@ -26,7 +26,7 @@ export function loadVexFlow(): Promise<VexFlowModule> {
 // viewBox is cropped to what was drawn, so its height depends on how far notes go above or
 // below the staff: about 45px in print for most scales, at most about 65px (three ledger
 // lines, e.g. bass clef from B), so 12 staves and their labels fit on a letter page.
-const STAFF_WIDTH = 1200
+export const STAFF_WIDTH = 1200
 const STAFF_HEIGHT = 200
 export const STAVE_Y = 40 // staff lines at y 80-120, with room for ledger lines on both sides
 export const TIME_SPACE = 40 // extra lead width on the first system, for the time signature
@@ -89,9 +89,7 @@ export const headCentre = (n: { getNoteHeadBeginX(): number; getNoteHeadEndX(): 
 export function drawStaff(vf: VexFlowModule, el: HTMLElement, staff: StaffModel, clef: 'treble' | 'bass', width: number = STAFF_WIDTH): number[] {
   const ctx = svgContext(vf, el, width)
 
-  const stave = inkStave(vf, 0, STAVE_Y, width - 1)
-  if (staff.showClefAndKey) stave.addClef(clef) // every line's first staff (a Patterns continuation has neither)
-  if (staff.showClefAndKey && staff.keySig) stave.addKeySignature(staff.keySig)
+  const stave = staffStave(vf, staff, clef, width)
   stave.setEndBarType(staff.last ? vf.BarlineType.END : vf.BarlineType.DOUBLE)
   stave.setContext(ctx).draw()
 
@@ -118,8 +116,21 @@ export function drawStaff(vf: VexFlowModule, el: HTMLElement, staff: StaffModel,
   const added = names.filter((_, i) => staff.outside?.[i])
   const label = names.join(' ') + (picked ? `; practice: ${picked.length ? picked.join(' ') : 'none'}` : '') + (added.length ? `; added from the pentatonic: ${added.join(' ')}` : '')
   fitSvg(el, cropBand(notes.flatMap((n) => n.getYs())), width, label)
+  if (staff.timeSig) el.querySelector('svg')?.setAttribute('data-time-sig', staff.timeSig)
   return notes.map((n) => headCentre(n, width))
 }
+
+/** a Scales staff's stave: the clef and key signature on every line's first staff (a Patterns continuation has neither), then its time signature (with a rhythm card) */
+function staffStave(vf: VexFlowModule, staff: StaffModel, clef: 'treble' | 'bass', width: number = STAFF_WIDTH): InstanceType<VexFlowModule['Stave']> {
+  const stave = inkStave(vf, 0, STAVE_Y, width - 1)
+  if (staff.showClefAndKey) stave.addClef(clef)
+  if (staff.showClefAndKey && staff.keySig) stave.addKeySignature(staff.keySig)
+  if (staff.timeSig) stave.addTimeSignature(staff.timeSig)
+  return stave
+}
+
+/** the width the staff's notes take (drawing units), from where they start to its right edge: the rhythm card's (D14) */
+export const staffNotesWidth = (vf: VexFlowModule, staff: StaffModel, clef: 'treble' | 'bass'): number => STAFF_WIDTH - 1 - staffStave(vf, staff, clef).getNoteStartX()
 
 /** draw one Arpeggios line: eighths, each group beamed on its own; returns each head's centre as a fraction of the width */
 export function drawArpeggioStaff(vf: VexFlowModule, el: HTMLElement, staff: ArpeggioStaffModel, clef: 'treble' | 'bass'): number[] {

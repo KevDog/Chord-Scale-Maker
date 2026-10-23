@@ -333,6 +333,17 @@
                 On a Line with Target beats on, a chord tone on a dot is lit and any other note on a dot is gray (Galper, pp. 47–49). Nothing moves a note onto a dot. A screen reader hears the target beats and the notes on them, each one that isn't a chord tone named so.
               </dd>
             </div>
+            <div v-if="rhythmSheetsOn">
+              <dt id="rhythm-card" class="scroll-mt-6 font-semibold text-zinc-950 dark:text-white">Rhythm card</dt>
+              <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
+                On the Scales sheet, the <strong class="font-semibold">Rhythm</strong> group puts a card under each staff: the rhythm as slashes on one line,
+                with its accents, triplets and Saindon's bracket. The staff says which notes and the card says when; the whole notes stay as they are,
+                so play the scale in the card's rhythm. The card is one cycle long, the bars it takes to come back on one, up to four bars. A longer
+                cycle ends in <UiCode>…</UiCode> and carries on the same way. A bar is a quarter of the staff's width. The staff and its card take
+                the time signature of the bar that holds the staff's first chord (4/4 where the chart has none), shown on both. The page's subtitle names
+                the rhythm. A sheet with cards prints eight staves a page.
+              </dd>
+            </div>
           </dl>
         </div>
 
@@ -646,6 +657,7 @@ const ireal = useFeature('ireal')
 const backupOn = useFeature('backup')
 const metronomeOn = useFeature('metronome')
 const rhythmOn = useFeature('rhythm')
+const rhythmSheetsOn = useFeature('rhythmSheets')
 const SECTIONS = [
   { id: 'quick', title: 'The short version' },
   { id: 'sheets', title: 'The sheets' },

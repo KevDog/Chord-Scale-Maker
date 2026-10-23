@@ -145,6 +145,16 @@ for (const theme of ['light', 'dark'] as const) {
       await expectAccessible(page)
     })
 
+    test('the Scales sheet with a rhythm card (rhythm-scales-arpeggios spec §1)', async ({ page }) => {
+      await page.goto(SONG)
+      if (theme === 'dark') await darkMode(page)
+      await chooseSheet(page, 'Scales')
+      await expect(staves(page).first()).toBeVisible()
+      await chooseRhythm(page, '8ths', { In: 'In 5', Variation: 'with accents' })
+      await expect(page.locator('[data-slot=rhythm-card] [data-rhythm-bar]').first()).toBeVisible()
+      await expectAccessible(page)
+    })
+
     test('the Patterns sheet, with the Custom box open', async ({ page }) => {
       await page.goto(SONG)
       if (theme === 'dark') await darkMode(page)

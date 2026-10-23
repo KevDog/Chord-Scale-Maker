@@ -138,6 +138,9 @@ export function layRhythm(id: RhythmId, bars: readonly number[], breaks: readonl
 
 const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b))
 
+/** Bars in a repeating rhythm's cycle: it is back on one when `unit` pulses fit a whole number of bars of `barPulses`. */
+export const cycleBars = (unit: number, barPulses: number): number => unit / gcd(unit, barPulses)
+
 const MAX_LISTED = 6
 
 /** "Rhythm: <label> · <cycle>" for a repeating rhythm, "Rhythm: <label>" for a per-bar one (§4). */
@@ -148,7 +151,7 @@ export function rhythmCaption(id: RhythmId, laid: Laid): string {
   const pulses = laid.bars.map(events => events.reduce((n, e) => n + e.length, 0)) // each bar's length: its events fill it
   // bars of one length: the cycle, though a sheet shorter than it never gets there (#505)
   if (pulses.every(p => p === pulses[0])) {
-    const n = unit / gcd(unit, pulses[0]!)
+    const n = cycleBars(unit, pulses[0]!)
     return `${caption} · back on one every ${n === 1 ? 'bar' : `${n} bars`}`
   }
   if (landings.length === 1 && landings[0] === 0) return `${caption} · never back on one`

@@ -3,14 +3,14 @@
     <template v-if="$slots.status" #status><slot name="status" /></template>
     <template #default="{ page }">
       <div class="space-y-1 print:space-y-2">
-        <ScaleStaff v-for="s in page.staves" :key="s.id" :staff="s" :clef="part.clef" :intervals="intervals" :part="part" :pickable="pickable" :quartal="isQuartalSelection(practice ?? null)" @pick="(...a) => emit('pick', ...a)" />
+        <ScaleStaff v-for="s in page.staves" :key="s.id" :staff="s" :clef="part.clef" :intervals="intervals" :part="part" :pickable="pickable" :quartal="isQuartalSelection(practice ?? null)" :rhythm="rhythm" @pick="(...a) => emit('pick', ...a)" />
       </div>
     </template>
   </SheetPages>
 </template>
 
 <script setup lang="ts">
-import { buildSheet, type ChordAt, isQuartalSelection, type ChordPicks, type Key, type PickKind, type ModeChoice, type Part, pageSubtitle, type PracticeSelection, type Resolved, type Row } from '@chord-scale-maker/engine'
+import { buildSheet, type ChordAt, isQuartalSelection, type ChordPicks, type Key, type PickKind, type ModeChoice, type Part, pageSubtitle, type PracticeSelection, type Resolved, type RhythmId, type Row, sheetRhythmText } from '@chord-scale-maker/engine'
 
 const props = defineProps<{
   rows: readonly Row[]
@@ -23,6 +23,7 @@ const props = defineProps<{
   start: string // written start note for the "from" part
   mode: ModeChoice
   perPage: number
+  cardPerPage?: number // staves a page where any staff has a rhythm card (default perPage)
   intervals?: boolean // label notes against the chord root, on screen only
   practice?: PracticeSelection | null // highlight these notes, dim the rest
   homeKey?: Key | null // the chart's key, for the key signature (null: no key: line); undefined: none
@@ -31,17 +32,28 @@ const props = defineProps<{
   picks?: ChordPicks // the chord picks (#303), played where positions are given too
   positions?: ReadonlyMap<number, ChordAt> // each row's drawn position (chordPositions)
   pickable?: boolean // captions open the chord pick popover
+  rhythm?: RhythmId // the rhythm in force on this sheet: a card under each staff, named in the subtitle (rhythm-scales-arpeggios spec §1, §6)
+  beatsOf?: (row: number) => number // the bar length in beats of each row (rowBarBeats; default 4)
 }>()
 const emit = defineEmits<{ pick: [kind: PickKind, positions: readonly ChordAt[], value: number | readonly [number, number] | null] }>()
 
 /** every printed page, in order, with its own heading */
+const build = (perPage: number) =>
+  buildSheet(props.rows, props.part, props.mode, props.start, perPage, props.practice ?? null, props.homeKey, props.resolved, props.picks && props.positions ? { picks: props.picks, at: props.positions } : undefined, props.keys, { rhythm: props.rhythm, beatsOf: props.beatsOf })
+/** the sheet, at cardPerPage a page where any staff has a rhythm card (rhythm-scales-arpeggios spec §8) */
+const sheet = computed(() => {
+  const parts = build(props.perPage)
+  const perPage = props.cardPerPage ?? props.perPage
+  const carded = perPage !== props.perPage && parts.some((p) => p.pages.some((page) => page.some((s) => s.card)))
+  return carded ? build(perPage) : parts
+})
 const pages = computed(() =>
-  buildSheet(props.rows, props.part, props.mode, props.start, props.perPage, props.practice ?? null, props.homeKey, props.resolved, props.picks && props.positions ? { picks: props.picks, at: props.positions } : undefined, props.keys)
+  sheet.value
     .flatMap((sheetPart) =>
       sheetPart.pages.map((staves) => ({
         mode: sheetPart.mode,
         staves,
-        subtitle: pageSubtitle(props.subtitle, props.instrumentLabel, sheetPart.heading),
+        subtitle: pageSubtitle(props.subtitle, props.instrumentLabel, sheetPart.heading, sheetRhythmText(props.rhythm ?? 'off')),
       })),
     ),
 )

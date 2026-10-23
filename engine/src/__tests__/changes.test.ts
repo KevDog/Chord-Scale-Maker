@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { isRest } from '../chord'
 import { describe, expect, it, vi } from 'vitest'
-import { breakLines, buildChanges, type ChangesBar, type ChangesLine, type ChangesLineChoice, type ChangesSheet, changesLinesPerPage, changesSections, chordPositions, drawnChords, type PentatonicPlan, otherChords, type OverlayPlan, pickTargets, showHexatonics, showPentatonics, showQuartals, takesRhythm } from '../changes'
+import { breakLines, buildChanges, type ChangesBar, type ChangesLine, type ChangesLineChoice, type ChangesSheet, changesLinesPerPage, changesSections, chordPositions, drawnChords, rowBarBeats, type PentatonicPlan, otherChords, type OverlayPlan, pickTargets, showHexatonics, showPentatonics, showQuartals, takesRhythm } from '../changes'
 import { changesFor } from '../alternates'
 import { type ChartDoc, expandRowLines, parseChart } from '../chart'
 import { NO_PICKS, pickTarget, withPick } from '../chordPicks'
@@ -19,6 +19,7 @@ import { type PentatonicDegree, PENTATONIC_HOME, type PentatonicPathName, type P
 import { abbreviateScale } from '../scales'
 import { chunk, isSyncCopy } from '../util'
 import { layRhythm, rhythmNotes } from '../rhythm'
+import { sectionLayout } from '../layout'
 
 // a transparent wrapper, so a test can see what buildChanges hands the voice leading
 vi.mock('../guideTones', async (importOriginal) => {
@@ -1367,5 +1368,25 @@ describe('the rhythm line and target beats (rhythm spec §8)', () => {
   it('counts a rhythm as a voiced line on a printed page', () => {
     expect(changesLinesPerPage('off', { numerals: true, scales: true }, true)).toBe(6)
     expect(changesLinesPerPage('off', { numerals: true, scales: true })).toBe(8)
+  })
+})
+
+describe('rowBarBeats', () => {
+  it('gives the length of the bar each row starts in', () => {
+    const doc = parseChart('time: 4/4\nsection: A\n1 | C\n2 | F\nsection: B\ntime: 3/4\n1 | Dm7\n2 | G7\n').value
+    const rows = sectionLayout(doc).value.rows
+    const m = rowBarBeats(doc)
+    expect(rows.map((_, i) => m.get(i))).toEqual([4, 4, 3, 3])
+  })
+
+  it('is 4 for a chart with no time', () => {
+    const doc = parseChart('section: A\n1 | C\n2 | F\n3 | G\n').value
+    expect([...rowBarBeats(doc).values()]).toEqual([4, 4, 4])
+  })
+
+  it('covers the rows of a folded repeat', () => {
+    const doc = parseChart('time: 4/4\nsection: A1\n1 | C\n2 | G\nsection: A2\ncopy: A1\n').value
+    const rows = sectionLayout(doc).value.rows
+    expect(rows.map((_, i) => rowBarBeats(doc).get(i))).toEqual(rows.map(() => 4))
   })
 })

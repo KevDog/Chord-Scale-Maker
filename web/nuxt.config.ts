@@ -103,6 +103,7 @@ export default defineNuxtConfig({
         cells: true, // the Changes sheet's Cells line (#298)
         approaches: true, // the guide tone line's Approach (#298)
         rhythm: true, // the Changes sheet's rhythm, on its rhythm line and its Lines, and target beats (docs/superpowers/specs/2026-10-22-rhythm-line-design.md)
+        rhythmSheets: false, // the Rhythm on the Scales and Arpeggios sheets: cards, Notes per bar, rhythmised runs (docs/superpowers/specs/2026-10-22-rhythm-scales-arpeggios-design.md)
         patterns: true, // the Patterns sheet (#298; docs/superpowers/specs/2026-10-17-practice-patterns-design.md)
         recordings: true, // a library song's notable recording (docs/superpowers/specs/2026-10-17-notable-recordings.md)
         playerRange: true, // the player's range by the Instrument (#359)

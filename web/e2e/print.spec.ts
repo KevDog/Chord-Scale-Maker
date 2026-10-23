@@ -300,6 +300,26 @@ for (const [what, open, pour] of [
   })
 }
 
+// the Scales sheet's rhythm card (rhythm-scales-arpeggios spec §8): a four-bar card with "…" under every staff, a sheet
+// page to a letter page: F Blues (§8's check, 3 staves) and Autumn Leaves (14: a full page at the reduced count a sheet
+// with cards prints, §8's fallback), also with trombone from B, the tallest staves
+for (const [song, instrument, start, pages] of [['f-blues', 'Piano', null, 1], ['autumn-leaves', 'Piano', null, 2], ['autumn-leaves', 'Trombone', 'B', 2]] as const) {
+  test(`prints the Scales with a rhythm card, a sheet page to a letter page (${song}, ${instrument}${start ? `, from ${start}` : ''})`, async ({ page }) => {
+    await page.goto(`/song/${song}`)
+    await chooseSheet(page, 'Scales')
+    await chooseInstrument(page, instrument)
+    if (start) await pickOption(page, 'Where each scale starts', `From ${start}`)
+    await chooseRhythm(page, '8ths', { In: 'In 5', Variation: 'with accents' })
+    const staffs = page.locator('[data-slot=scale-staff]')
+    await expect(page.locator('[data-slot=rhythm-card] [data-rhythm-bar]')).toHaveCount(4 * (await staffs.count()))
+    const sheetPages = await staffs.evaluateAll((els) => new Set(els.map((e) => e.closest('section'))).size)
+    expect(sheetPages).toBe(pages)
+    await page.emulateMedia({ media: 'print' })
+    await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden()
+    expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(sheetPages)
+  })
+}
+
 /** how many captions are taller than one line of their text */
 const wrappedCaptions = (page: Page, slot: 'hexatonic' | 'pentatonic' = 'hexatonic'): Promise<number> =>
   page.locator(`[data-slot="${slot}"]`).evaluateAll((els) => els.filter((el) => el.getBoundingClientRect().height > 1.5 * parseFloat(getComputedStyle(el).fontSize)).length)

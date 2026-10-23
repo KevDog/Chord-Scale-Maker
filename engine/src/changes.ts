@@ -438,6 +438,15 @@ export function chordPositions(doc: ChartDoc): ReadonlyMap<number, ChordAt> {
   return chordKeys(rows, drawnBlocks(layout, t, sectionsWithEndingsOf(layout)), t.barOf)
 }
 
+/** each row's bar length in beats, by its row in sectionLayout(doc).value.rows: the bar it starts in, as the chart's metres make it (a folded repeat's rows too) */
+export function rowBarBeats(doc: ChartDoc): ReadonlyMap<number, number> {
+  const { rows, clock, t } = laidOut(doc)
+  return new Map(rows.flatMap((_, i) => {
+    const bar = t.barOf(i)
+    return bar === undefined ? [] : [[i, barLength(clock, bar)] as const]
+  }))
+}
+
 /** the chords the Changes sheet draws, in order, by ChordAt with their chart text: for carrying picks across an edit (#275) */
 export function drawnChords(doc: ChartDoc): readonly DrawnChord[] {
   const rows = sectionLayout(doc).value.rows

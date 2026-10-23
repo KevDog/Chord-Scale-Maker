@@ -380,7 +380,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   chord's root and canonical quality; first-appearance order). An HTML label column on the left holds the scale name
   and, under it, the chord symbols the line covers (`Cm7 · Cm9`); the VexFlow SVG stave is on the right. HTML labels
   give better typography and accessibility than VexFlow text.
-- **Stave:** one stave with a clef, no time signature, and whole notes. Accidentals follow the bar rule (`accidentalsInBar`):
+- **Stave:** one stave with a clef, no time signature (but see the rhythm card below), and whole notes. Accidentals follow the bar rule (`accidentalsInBar`):
   one shows only where a note differs from what is in force (the key signature, if any, or an earlier note on the
   same letter and octave), and a natural cancels an earlier one. Each staff ends with a double bar
   line, the last with a final one.
@@ -390,6 +390,17 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   `csm-spell` (`root`, `key` or a note; the old `csm-start` is ignored). Share links carry `mode` and, for a picked
   note, `start` (from without a start: the key). The engine still supports `both`.
 - **Subtitles** (`pageSubtitle`): "Subtitle – Tenor Sax (Bb) (Spelled from C)".
+- **Rhythm card** (flag `rhythmSheets`, off; [spec](superpowers/specs/2026-10-22-rhythm-scales-arpeggios-design.md) §1,
+  §7, §8): with the shared Rhythm (`csm-rhythm`) not Off, the Scales rail's Rhythm group puts a card under each staff
+  (`StaffModel.card`, from `cardBars`): the rhythm's cycle up to four bars, then "…" (`cut`). `drawRhythmCard`
+  (`web/app/utils/changesDrawing.ts`) draws it as a one-line slash stave per bar (each a quarter of the staff's notes
+  width, `staffNotesWidth`), with the rhythm line's ticks, triplets, beams, ties and Saindon's bracket, the time
+  signature on its first bar; aria-label `cardAria` ("Rhythm card: 8ths in 5, with accents, 4 bars, continues"). The
+  whole notes stay; the staff gains the time signature (`StaffModel.timeSig`: the beats of the bar holding the line's
+  first row, `rowBarBeats`, over 4; DECISIONS `rhythm.staff-metre`). The subtitle appends "· Rhythm: …". A sheet with
+  cards prints 8 staves a page (`ScaleSheet`'s `cardPerPage`, §8's fallback: 12, and 10 of trombone-from-B staves,
+  overflowed letter). The card draws at a cue size (`CARD_SCALE` 0.8) with one-line barlines; an uncut card's bar is
+  exactly a quarter of the notes width, a cut card's leaves room for the "…".
 - **Interval labels:** the Intervals toggle, on by default and saved per browser, labels every note against the chord's written
   root (`engine/src/intervals.ts`). Labels read b9, #9, #11 and b13, a minor 3rd reads #9 on chords with a major
   3rd, sus chords get a 4, and sixth chords a 6. They are HTML placed under the note heads, on screen only, so

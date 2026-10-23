@@ -46,7 +46,7 @@ export const test = base.extend<{ expectedConsoleError: RegExp | null; interface
 export { expect }
 
 /** count of drawn staves (VexFlow SVGs) */
-export const staves = (page: import('@playwright/test').Page) => page.locator('svg[role=img]')
+export const staves = (page: import('@playwright/test').Page) => page.locator('svg[role=img]:not([data-slot=rhythm-card] svg)') // not a Scales staff's rhythm card
 
 /** each Pitch's instruments as the picker names them (Playwright can't load the engine: its JSON import) */
 const PITCHES: Readonly<Record<string, readonly string[]>> = {
@@ -96,11 +96,13 @@ async function reveal(page: Page, button: string | RegExp): Promise<'Instrument'
   return null
 }
 
-const panelButton = (page: Page, panel: 'Instrument' | 'Line options'): Locator =>
-  page.getByRole('button', { name: panel === 'Instrument' ? /^Instrument: / : 'Line options' }).first()
+/** the rail's popovers: the Instrument's, Line options (the Changes), Rhythm options (the Scales and Arpeggios sheets' Rhythm group) */
+type Panel = 'Instrument' | 'Line options' | 'Rhythm options'
+const panelButton = (page: Page, panel: Panel): Locator =>
+  page.getByRole('button', { name: panel === 'Instrument' ? /^Instrument: / : panel }).first()
 
 /** open the Instrument's panel (its pitch, instrument and range) or Line options, to read what's set there */
-export async function openPanel(page: Page, panel: 'Instrument' | 'Line options'): Promise<void> {
+export async function openPanel(page: Page, panel: Panel): Promise<void> {
   const opener = panelButton(page, panel)
   await expect(async () => {
     if ((await opener.getAttribute('aria-expanded')) !== 'true') await opener.click({ timeout: 1000 })
@@ -110,7 +112,7 @@ export async function openPanel(page: Page, panel: 'Instrument' | 'Line options'
 }
 
 /** close that panel, so it covers nothing under it */
-export async function closePanel(page: Page, panel: 'Instrument' | 'Line options'): Promise<void> {
+export async function closePanel(page: Page, panel: Panel): Promise<void> {
   const opener = panelButton(page, panel)
   if ((await opener.count()) && (await opener.getAttribute('aria-expanded')) === 'true') await opener.click()
   await expect(page.getByRole('dialog', { name: panel })).toHaveCount(0)
@@ -395,7 +397,8 @@ async function practicePreset(page: Page, name: 'Pentatonic' | 'Hexatonic' | 'Qu
 }
 
 /**
- * choose the Changes sheet's rhythm (rhythm spec §9, flag `rhythm`) in Line options: a family from the Rhythm listbox
+ * choose the rhythm: the Changes sheet's in Line options (rhythm spec §9, flag `rhythm`), or the Scales and Arpeggios
+ * sheets' on the rail, its detail in Rhythm options (flag `rhythmSheets`): a family from the Rhythm listbox
  * ("8ths", "Runs of 16ths", "Upbeats", …), then each detail by its listbox ({ In: 'In 5', Variation: 'syncopated' });
  * retried until the page has hydrated and the listbox reads it; the panel is closed after
  */
@@ -411,11 +414,14 @@ export async function chooseRhythm(page: Page, family: string, detail: Readonly<
       }
       await expect(listbox).toHaveText(`Rhythm: ${family}`, { timeout: 1000 })
     }).toPass({ timeout: 10_000 })
+    const options = !panel && Object.keys(detail).length > 0 && (await panelButton(page, 'Rhythm options').isVisible()) // on the rail; inline in the Controls dialog
+    if (options) await openPanel(page, 'Rhythm options')
     for (const [name, option] of Object.entries(detail)) {
       await page.getByRole('button', { name, exact: true }).click()
       await page.getByRole('option', { name: option, exact: true }).click()
       await expect(page.getByRole('button', { name, exact: true })).toHaveText(option)
     }
+    if (options) await closePanel(page, 'Rhythm options')
     if (panel) await closePanel(page, 'Line options')
   })
 }

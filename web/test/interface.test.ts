@@ -90,7 +90,13 @@ describe('hiddenSettings', () => {
     expect(hiddenSettings('essentials', { ...DEFAULTS, rhythm: 'card:upbeats' })).toEqual({ settings: ['rhythm'], needs: 'intermediate' })
     expect(hiddenSettings('essentials', { ...DEFAULTS, targets: true })).toEqual({ settings: ['rhythm'], needs: 'intermediate' })
     expect(hiddenSettings('intermediate', { ...DEFAULTS, rhythm: 'card:upbeats', targets: true })).toBeNull()
-    expect(hiddenSettings('essentials', { ...DEFAULTS, sheet: 'scales', rhythm: 'card:upbeats' })).toBeNull()
+    expect(hiddenSettings('essentials', { ...DEFAULTS, sheet: 'scales', targets: true })).toBeNull() // target beats are the Changes sheet's
+  })
+
+  it('lists the rhythm on the Scales sheet', () => {
+    expect(hiddenSettings('essentials', { ...DEFAULTS, sheet: 'scales', rhythm: 'unit:8:3:accents' })).toEqual({ settings: ['rhythm'], needs: 'intermediate' })
+    expect(hiddenSettings('essentials', { ...DEFAULTS, sheet: 'scales', rhythm: 'off' })).toBeNull() // what EditorView passes with the rhythmSheets flag off
+    expect(hiddenSettings('essentials', { ...DEFAULTS, sheet: 'arpeggios', rhythm: 'unit:8:3:accents' })).toEqual({ settings: ['rhythm'], needs: 'intermediate' })
   })
 
   it('names a rhythm only where it draws: the rhythm line, or a Line that takes it (#505)', () => {

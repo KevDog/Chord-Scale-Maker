@@ -8,7 +8,7 @@ import type { ScaleLevel } from '../levels'
 import { CONCERT, type Part } from '../part'
 import { rootName } from '../pitch'
 import { resolveScales, rowKeys } from '../resolve'
-import { type ModeChoice, type StaffModel, buildSheet, linePositions, noteText, pageSubtitle, scaleLines, toVexKey } from '../sheet'
+import { type ModeChoice, type SheetRhythm, type StaffModel, buildSheet, linePositions, noteText, pageSubtitle, scaleLines, sheetRhythmText, toVexKey } from '../sheet'
 import { parseKey } from '../analysis/keys'
 
 const TENOR: Part = { clef: 'treble', trans: 'Bb' }
@@ -366,6 +366,52 @@ describe('chord picks on the Scales sheet (#303)', () => {
     const s = buildSheet(expandRows(d).value, CONCERT, 'root', 'C', 12, PENT, undefined, r, { picks, at: chordPositions(d) })[0]!.pages.flat()
     const copy = s.find((x) => x.scale?.name === 'Phrygian Dominant')!
     expect([copy.positions, copy.varies, copy.pentatonic?.picked]).toEqual([[], false, false])
+  })
+})
+
+describe('rhythm card', () => {
+  const rows = [row('Dm7', '', '1'), row('G7', '', '2'), row('Cmaj7', '', '3'), row('X', '', '4')]
+  const sheet = (options?: SheetRhythm): StaffModel[] => buildSheet(rows, CONCERT, 'from', 'C', 12, null, undefined, undefined, undefined, undefined, options)[0]?.pages.flat() ?? []
+  const R = { rhythm: 'unit:8:5:accents' } as const
+
+  it('gives every staff without an error a four-bar cut card in 4/4', () => {
+    const ok = sheet(R).filter((s) => !s.error)
+    expect(ok.length).toBeGreaterThan(0)
+    for (const s of ok) {
+      expect(s.card?.bars.length).toBe(4)
+      expect(s.card?.cut).toBe(true)
+      expect(s.timeSig).toBe('4/4')
+    }
+  })
+
+  it('takes the line beats from beatsOf at its first row', () => {
+    const s = sheet({ ...R, beatsOf: (r) => (r === 1 ? 3 : 4) })
+    const three = s.find((x) => x.source?.chord === 'G7')
+    expect(three?.timeSig).toBe('3/4')
+    expect(three?.card?.beats).toBe(3)
+    expect(s.find((x) => x.source?.chord === 'Dm7')?.timeSig).toBe('4/4')
+  })
+
+  it('gives a staff with an error no card', () => {
+    const bad = sheet(R).find((s) => s.error)
+    expect(bad).toBeDefined()
+    expect(bad?.card).toBeNull()
+    expect(bad?.timeSig).toBeNull()
+  })
+
+  it('(guard) without options has no card and keeps the ids', () => {
+    const ok = sheet().filter((s) => !s.error)
+    expect(ok.every((s) => s.card === null && s.timeSig === null)).toBe(true)
+    expect(ok.map((s) => s.id)).toEqual(['Dm7|D Dorian|treble|C|from|60|', 'G7|G Mixolydian|treble|C|from|60|', 'Cmaj7|C Ionian|treble|C|from|60|'])
+  })
+
+  it('changes the id with a rhythm', () => {
+    expect(sheet(R)[0]?.id).not.toBe(sheet()[0]?.id)
+  })
+
+  it('names the rhythm in the subtitle', () => {
+    expect(pageSubtitle('Stella', 'Tenor Sax (Bb)', 'Spelled from C', sheetRhythmText('unit:8:3:accents'))).toBe('Stella – Tenor Sax (Bb) (Spelled from C) · Rhythm: 8ths in 3, with accents')
+    expect(sheetRhythmText('off')).toEqual([])
   })
 })
 

@@ -31,6 +31,21 @@ describe('the Rhythm controls (rhythm spec §9)', () => {
     expect(w.find('[aria-label="Rhythm"]').text()).toContain('Rhythm: Off')
   })
 
+  it('keeps Your rhythm…’s text that doesn’t read when Line options closes and opens again', async () => {
+    const w = await mount()
+    await openPanel(w, 'Line options')
+    await w.find('[aria-label="Rhythm"]').trigger('click')
+    await w.findAll('[role=option]').find((o) => o.text() === 'Your rhythm…')!.trigger('click')
+    await w.find('input[aria-label="Your rhythm"]').setValue('8: xq')
+    await nextTick()
+    await w.findAll('button').find((b) => b.attributes('aria-label') === 'Line options')!.trigger('click') // close
+    await nextTick()
+    expect(w.find('input[aria-label="Your rhythm"]').exists()).toBe(false)
+    await openPanel(w, 'Line options')
+    expect(w.find('[aria-label="Rhythm"]').text()).toContain('Your rhythm…')
+    expect((w.find('input[aria-label="Your rhythm"]').element as HTMLInputElement).value).toBe('8: xq')
+  })
+
   it('ties the Start and Timing help to their buttons, for a screen reader (#505)', async () => {
     const w = await mountSuspended(PreviewControls, { props: { sheet: 'changes', instrument: 'piano', spell: 'key', intervals: true, keyStart: 'C', lineMode: 'arpeggio', rhythm: 'card:downbeats', lineTakesRhythm: true } })
     await openPanel(w, 'Line options')
