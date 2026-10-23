@@ -1400,6 +1400,27 @@ describe("the rhythm's paths on the Changes sheet (Phase 4 spec §3, D17)", () =
     expect(marks).toEqual([{ group: null, pulse: '8' }, null, { group: null, pulse: '8t' }, null, { group: null, pulse: '16' }, null])
   })
 
+  it('plays Gears 8 8t 16 by 2 bars: triplets in 4 in bars 3–4, 12 a bar, accented at pulses 0, 4 and 8 (§3 row 3)', () => {
+    const sheet = bars(sheetOf(sixBars, 'unit:8:4:accents', gears))
+    const third = 1 / 3
+    ;[2, 3].forEach((b) => {
+      const notes = sheet[b]!.rhythm
+      expect(notes).toHaveLength(12)
+      expect(notes.map((n) => Math.round(n.beat * 1000) / 1000)).toEqual(Array.from({ length: 12 }, (_, k) => Math.round(k * third * 1000) / 1000))
+      expect(notes.flatMap((n, k) => (n.accent ? [k] : []))).toEqual([0, 4, 8])
+    })
+    expect(sheet[2]!.step?.pulse).toBe('8t')
+  })
+
+  it('plays Groups 3 5 with Gears 8 16: step 2 is unit:8:3:accents again, both marks at each step (§3 row 4)', () => {
+    const both: RhythmPath = { groups: [3, 5], gears: ['8', '16'], step: { unit: 'bars', bars: 2 } }
+    const sheet = sheetOf(sixBars, 'unit:8:4:accents', both)
+    expect(bars(sheet).map((b) => b.step)).toEqual([{ group: 3, pulse: '8' }, null, { group: 5, pulse: '16' }, null, { group: 3, pulse: '8' }, null])
+    const plan = [{ from: 0, id: 'unit:8:3:accents' }, { from: 2, id: 'unit:16:5:accents' }, { from: 4, id: 'unit:8:3:accents' }] as const
+    expect(bars(sheet).map((b) => b.rhythm)).toEqual(rhythmNotes(layRhythm(plan, Array<number>(6).fill(4))!))
+    expect(bars(sheet)[4]!.rhythm).toEqual(bars(sheet)[0]!.rhythm) // a fresh start: as step 0
+  })
+
   it('marks nothing with no path, or a group on a custom rhythm (D12)', () => {
     expect(bars(sheetOf(aaba, 'unit:8:3:accents')).every((b) => b.step === null)).toBe(true)
     expect(bars(sheetOf(aaba, 'custom:8:x.x', up)).every((b) => b.step === null)).toBe(true)
