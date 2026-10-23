@@ -76,7 +76,7 @@ export async function chooseInstrument(page: import('@playwright/test').Page, na
  * the rail keeps each group one control tall: the instrument's pitch and range sit in its panel (the "Instrument: …"
  * button), the line's detail in Line options. Open the one holding this control, if it's tucked away.
  */
-async function reveal(page: Page, button: string | RegExp): Promise<Locator | null> {
+async function reveal(page: Page, button: string | RegExp): Promise<'Instrument' | 'Line options' | null> {
   // a panel closing (a click outside it) fades out: wait it out, or its controls look there and vanish under the click
   for (const panel of ['Instrument', 'Line options'] as const) {
     const opener = panelButton(page, panel)
@@ -89,7 +89,8 @@ async function reveal(page: Page, button: string | RegExp): Promise<Locator | nu
     const opener = panelButton(page, panel)
     if (!(await opener.isVisible()) || (await opener.getAttribute('aria-expanded')) === 'true') continue
     await opener.click()
-    if (await page.getByRole('button', { name: button }).first().isVisible()) return opener
+    // look in the panel: a control still rendering may show up outside it meanwhile, on a sheet the pick then drops this panel from
+    if (await page.getByRole('dialog', { name: panel }).getByRole('button', { name: button }).first().isVisible()) return panel
     await closePanel(page, panel)
   }
   return null
@@ -120,7 +121,7 @@ export async function pickOption(page: import('@playwright/test').Page, button: 
   const opened = await reveal(page, button)
   await page.getByRole('button', { name: button }).click()
   await page.getByRole('option', { name: option, exact: typeof option === 'string' }).click()
-  if (opened) await opened.click()
+  if (opened) await closePanel(page, opened)
 }
 
 /** set the scale level from its toolbar "Level" dropdown */
