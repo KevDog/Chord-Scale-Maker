@@ -10,6 +10,9 @@ export const RELEASE_NOTES: readonly ReleaseNote[] = [
   {
     date: '2026-10-22',
     items: [
+      { text: 'Rhythm for the Changes sheet. In the Line’s options (Intermediate interface), Rhythm draws slashes with stems, beams, rests, ties and accents where the beat slashes were, and with a Line on, the Line plays in the rhythm. Choose a unit (8ths in 5, after Saindon), a run of 8ths from a beat (after Bergonzi), a card, or type your own. The caption says when the rhythm is back on one.', pr: 544 },
+      { text: 'Target beats, in the Changes sheet’s Analysis group, puts a dot over each strong beat of a bar (after Galper). On a Line, a chord tone on a dot is lit and any other note on a dot is gray.', pr: 544 },
+      { text: 'With a rhythm on a Line (Everything interface), Start adds a 1-, 2- or 3-note pick-up into each chord (after Galper), and Timing begins each chord’s notes early or late (after Bergonzi). With Guide Tones, Restate plays each chord’s note on every attack of the rhythm.', pr: 544 },
       { text: 'Charts can now be in 7/4: write time: 7/4 in the heading, or choose Bar in 7/4 from the bar menu for a single bar.', pr: 487 },
       { text: 'A click to practise with: Click (the note icon, beside Print) puts a metronome at the foot of a song’s page, at a tempo and feel from the chart’s style. Feel plays Swing (the skip note), Straight (even eighths) or Quarters. Tap sets the tempo, Space starts and stops it, and its settings add a count-in, a hat on 2 and 4, and a wood or beep sound. Its chevron folds it to one row while it plays, and it comes into focus mode, still playing.', pr: 497 },
       { text: 'Edit alternate changes on the sheet: while editing, a small line above the bars takes each bar’s alternate (+ alt, then type; Tab for the next bar), and with Changes set to Alternate the big chords are the alternate set. A chart with alternates no longer forces its Source open.', pr: 490 },

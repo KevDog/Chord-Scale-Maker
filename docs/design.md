@@ -705,7 +705,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   Share links carry `approach` (only with a guide line, absent: None; dropped if unknown). Away from None it raises the
   hidden-settings notice below Intermediate (`setAway`, `approaches`).
 
-### The rhythm line on Changes (flag `rhythm`, off; [spec](superpowers/specs/2026-10-22-rhythm-line-design.md))
+### The rhythm line on Changes (flag `rhythm`, on; [spec](superpowers/specs/2026-10-22-rhythm-line-design.md))
 
 - **What:** a pitch-free rhythm drawn on the Changes sheet in place of the beat slashes, laid over the chart's own bars. A view
   preference like the level, never written into chart rows. With the Line off it draws as the rhythm line; with a Line on, the
