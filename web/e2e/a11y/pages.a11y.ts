@@ -1,5 +1,5 @@
 import type { Locator, Page } from '@playwright/test'
-import { chooseRhythm, chooseSheet, closePanel, closePentatonicOptions, expect, openPanel, pentatonicPreset, pickOption, rhythmDrawn, showApproach, showCell, showPentatonics, showTargets, staves, test } from '../fixtures'
+import { chooseRhythm, chooseSheet, chooseStart, closePanel, closePentatonicOptions, expect, openPanel, pentatonicPreset, pickOption, rhythmDrawn, showApproach, showArpeggios, showCell, showPentatonics, showTargets, staves, test } from '../fixtures'
 import { expectAccessible } from './axe'
 
 const SONG = '/song/autumn-leaves'
@@ -129,6 +129,19 @@ for (const theme of ['light', 'dark'] as const) {
       await chooseRhythm(page, '8ths', { In: 'In 5', Variation: 'with accents' })
       await rhythmDrawn(page)
       await showTargets(page)
+      await expectAccessible(page)
+    })
+
+    test('the Changes with a Line in a rhythm, pick-ups and target beats', async ({ page }) => {
+      await page.goto(SONG)
+      if (theme === 'dark') await darkMode(page)
+      await expect(staves(page).first()).toBeVisible()
+      await showArpeggios(page, 'Up · root')
+      await chooseRhythm(page, '8ths', { In: 'In 3', Variation: 'with accents' })
+      await chooseStart(page, '2-note pick-up')
+      await rhythmDrawn(page)
+      await showTargets(page)
+      await expect(page.locator('svg[aria-label^="Bars:"] .vf-selected').first()).toBeVisible()
       await expectAccessible(page)
     })
 

@@ -15,7 +15,7 @@ export type LineSpan = Readonly<{ at: number; sounds: boolean }>
 export type Owner = Readonly<{ chord: number; below: number }>
 
 export type LineRhythm = Readonly<{
-  /** the forced rhythm, for its caption and landings */
+  /** the forced rhythm; the line builders read its pulse (the caption comes from the unforced rhythm laid in buildChanges) */
   laid: Laid
   /** per drawn bar */
   bars: readonly (readonly RhythmNote[])[]

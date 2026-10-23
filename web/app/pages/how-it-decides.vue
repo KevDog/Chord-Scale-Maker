@@ -269,6 +269,7 @@
             gets quarters, two get eighths, three or four get sixteenths. A chord that lasts longer repeats its arpeggio; one
             with too few slots for another whole one turns back on it (six eighths in 3/4: 1 3 5 7 5 3).
           </UiText>
+          <UiText v-if="rhythmOn">A chosen Rhythm replaces this note value: the line plays in the rhythm instead.</UiText>
           <UiText>
             Each arpeggio is placed whole, in the octave that starts it nearest the last note, but never so it runs mostly
             outside the comfortable middle of your range: a line climbing chord after chord turns back rather than drifting
@@ -661,6 +662,7 @@ import { PENT_INSIDE_HELP } from '~/utils/pentatonics'
 import { PAGE_HEAD, seoMeta } from '~/utils/site'
 
 const cellsOn = useFeature('cells')
+const rhythmOn = useFeature('rhythm')
 const phraseCellsOn = useFeature('phraseCells')
 const approachesOn = useFeature('approaches')
 const patternsOn = useFeature('patterns')

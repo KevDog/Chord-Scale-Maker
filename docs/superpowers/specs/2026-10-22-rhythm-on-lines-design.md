@@ -208,7 +208,7 @@ What changes under a rhythm is what a slot is:
   chord's attacks left, and `followsAt` counts attacks. `carry` is moot, because a segment never stops at a barline.
 
 A slot's pitch goes to its attack's note and to every tied-in piece after it. Each rest, and each note with no owner,
-draws as a rest of the rhythm's own value. A pick-up note's pitch is set once its chord's first pitch is known (§3.4).
+draws as a rest of the rhythm's own value, but unowned rests merge within a beat (a chordless bar under 16ths draws 4 quarter rests), and a note with no pitch carries no accent. A pick-up note's pitch is set once its chord's first pitch is known (§3.4).
 Then `withApproach` runs over the played notes in time order. It finds each chord's target among poured notes only, and
 never touches a pick-up note.
 
@@ -272,7 +272,7 @@ type LineSpan = Readonly<{ at: number; sounds: boolean }>
 /** who plays a note: chord, and 0 for a poured note or m for its m-th scale-below pick-up (§3.3) */
 type Owner = Readonly<{ chord: number; below: number }>
 type LineRhythm = Readonly<{
-  laid: Laid                                         // the forced rhythm, for its caption and landings
+  laid: Laid                                         // the forced rhythm; the line builders read its pulse (the caption comes from the unforced rhythm)
   bars: readonly (readonly RhythmNote[])[]           // per drawn bar
   owners: readonly (readonly (Owner | null)[])[]     // per drawn bar, one per note
 }>
