@@ -63,14 +63,18 @@ export function insertKeyBefore(doc: ChartDoc, i: number, key: string): ChartDoc
 
 /**
  * set a row's chord; a scale that was the old chord's default follows to the new chord's default (Cm7 → F7 takes
- * C Dorian to F Mixolydian), while a scale you chose yourself stays
+ * C Dorian to F Mixolydian), while a scale you chose yourself stays. A written function stays only while the new
+ * chord plays as the old one did, the same default scale (Cm7 → Cm9 keeps ii; A7 → Eb7 drops V7/ii, #492).
  */
 export function setRowChord(doc: ChartDoc, i: number, chord: string): ChartDoc {
   const line = doc.lines[i]
   if (line?.kind !== 'row' && line?.kind !== 'altRow') return doc
   const next = defaultScaleOrNull(chord)
-  const follows = line.scale !== '' && next !== null && samePitchScale(line.scale, defaultScaleOrNull(line.chord)) // by pitch (R18)
-  return { lines: replaceAt(doc.lines, i, { ...line, chord, scale: follows ? next : line.scale }) }
+  const old = defaultScaleOrNull(line.chord)
+  const follows = line.scale !== '' && next !== null && samePitchScale(line.scale, old) // by pitch (R18)
+  const { function: fn, ...rest } = line
+  const keepsFunction = fn !== undefined && next !== null && samePitchScale(next, old)
+  return { lines: replaceAt(doc.lines, i, { ...rest, chord, scale: follows ? next : line.scale, ...(keepsFunction ? { function: fn } : {}) }) }
 }
 
 /** a scale's one written form ("D Half-Whole" → "D Half-Whole Diminished"), or the text as is if it can't be read */

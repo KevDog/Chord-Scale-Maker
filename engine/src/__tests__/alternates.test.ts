@@ -92,6 +92,16 @@ describe('setAltBarChords', () => {
     expect(setAltBarChords(doc(BASE), 'A', 2, []).lines.filter((l) => l.kind === 'altRow')).toHaveLength(0)
   })
 
+  it('a tritone sub takes no function from the chord it replaces (#492); the main chord keeps its own', () => {
+    const d = doc('section: A\n1 | Dm7\n2 | A7 |  | V7/ii\n3 | Dm7\n')
+    const alt = setAltBarChords(d, 'A', 2, ['Eb7'])
+    expect(alt.lines.filter((l) => l.kind !== 'section').slice(1, 3)).toEqual([
+      { kind: 'row', bar: '2', chord: 'A7', scale: '', function: 'V7/ii' },
+      { kind: 'altRow', bar: '2', chord: 'Eb7', scale: '' },
+    ])
+    expect(setBarChords(d, 'A', 2, ['Eb7']).lines[2]).toEqual({ kind: 'row', bar: '2', chord: 'Eb7', scale: '' })
+  })
+
   it('same as played: no alt rows', () => {
     const d = doc(BASE)
     expect(setAltBarChords(d, 'A', 1, ['C'])).toEqual(d)
