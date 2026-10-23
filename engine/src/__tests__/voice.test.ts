@@ -3,8 +3,9 @@ import { buildChanges } from '../changes'
 import { parseChart } from '../chart'
 import type { ClickPlan } from '../click'
 import type { GuideNote } from '../guideTones'
+import type { RhythmNote } from '../rhythm'
 import { CONCERT, type Part, partFor } from '../part'
-import { arpeggioPhrase, pentatonicPhrase, scalePhrase, scheduleVoice, swingBeat, timePhrase, voiceNotes } from '../voice'
+import { arpeggioPhrase, pentatonicPhrase, rhythmHits, scalePhrase, scheduleRhythm, scheduleVoice, swingBeat, timePhrase, voiceNotes } from '../voice'
 
 const C4 = { letter: 'C', acc: 0, octave: 4, midi: 60 } as unknown as NonNullable<GuideNote['pitch']>
 const note = (beat: number, beats: number, midi: number | null, tie = false, tiedIn = false): GuideNote => ({
@@ -170,6 +171,74 @@ describe('scheduleVoice', () => {
 
   it('books nothing for an empty line', () => {
     expect(scheduleVoice([], 0, plan(), { barStart: 0, bar: 0 }, 0, 10)).toEqual([])
+  })
+})
+
+describe('rhythmHits', () => {
+  const eight = parseChart('title: T\nkey: C\n\nsection: A\n1 | Dm7\n2 | G7\n3 | CMaj7\n4 | CMaj7\n5 | Dm7\n6 | G7\n7 | CMaj7\n8 | CMaj7\n').value
+  const drawn = (line: 'off' | 'third' | 'up-root', restate = false) =>
+    buildChanges(eight, CONCERT, 4, false, line, undefined, null, 'none', { rhythm: 'unit:8:5:accents', restate }).lines.flatMap((l) => l.bars)
+
+  it('taps the rhythm line’s attacks with the Line off: rests silent, accents kept', () => {
+    const bars = drawn('off')
+    const struck = bars.flatMap((b, bar) => b.rhythm.filter((n) => !n.rest && !n.tiedIn).map((n) => ({ bar, at: n.beat, accent: n.accent })))
+    expect(struck.length).toBeGreaterThan(0)
+    expect(rhythmHits(bars)).toEqual(struck)
+    expect(rhythmHits(bars).some((h) => h.accent)).toBe(true)
+  })
+
+  it('taps the poured Line’s attacks with a Line on: the same rhythm as with the Line off', () => {
+    const off = rhythmHits(drawn('off'))
+    const on = rhythmHits(drawn('up-root'))
+    expect(on.map((h) => [h.bar, h.at])).toEqual(off.map((h) => [h.bar, h.at]))
+  })
+
+  it('a Line under a rhythm sounds in its attacks', () => {
+    const bars = drawn('up-root')
+    expect(voiceNotes(bars, 'C').map((n) => [n.bar, n.at])).toEqual(rhythmHits(bars).map((h) => [h.bar, h.at]))
+  })
+
+  it('holds a tie: a note tied in is no new hit', () => {
+    const tied = { beat: 0, value: '8', rest: false, accent: false, tie: false, tiedIn: true, tuplet: null, ratio: null } as unknown as RhythmNote
+    const struck = { ...tied, beat: 1, tiedIn: false, accent: true } as RhythmNote
+    expect(rhythmHits([{ beats: 4, rhythm: [tied, struck], voice: [] }])).toEqual([{ bar: 0, at: 1, accent: true }])
+    const voice = [note(0, 1, 60, false, true), note(1, 1, 62)].map((n) => ({ ...n, mark: { value: '4', tuplet: null, ratio: null, beam: null, accent: false } }) as unknown as GuideNote)
+    expect(rhythmHits([{ beats: 4, rhythm: [], voice }])).toEqual([{ bar: 0, at: 1, accent: false }])
+  })
+
+  it('none for an unpoured Line: a guide line without Restate', () => {
+    expect(rhythmHits(drawn('third'))).toEqual([])
+  })
+})
+
+describe('scheduleRhythm', () => {
+  const plan = (o: Partial<ClickPlan> = {}): ClickPlan => ({ options: { beats: 4, feel: 'quarters', hat: false }, tempo: 60, countIn: 0, ...o })
+  const hits = [
+    { bar: 0, at: 0, accent: true },
+    { bar: 0, at: 2.5, accent: false },
+    { bar: 1, at: 1, accent: false },
+  ]
+
+  it('books each bar’s hits at the tempo, the form looping from the top', () => {
+    expect(scheduleRhythm(hits, 2, plan(), { barStart: 0, bar: 0 }, 0, 9).map((h) => [h.time, h.accent])).toEqual([
+      [0, true],
+      [2.5, false],
+      [5, false],
+      [8, true],
+    ])
+  })
+
+  it('waits out the count-in', () => {
+    expect(scheduleRhythm(hits, 2, plan({ countIn: 1 }), { barStart: 0, bar: 0 }, 0, 6).map((h) => h.time)).toEqual([4])
+  })
+
+  it('swings an off-beat 8th with the click on Swing', () => {
+    const off = scheduleRhythm(hits, 2, plan({ options: { beats: 4, feel: 'swing', hat: false } }), { barStart: 0, bar: 0 }, 0, 4)[1]
+    expect(off?.time).toBeCloseTo(2 + 2 / 3)
+  })
+
+  it('books nothing with no hits', () => {
+    expect(scheduleRhythm([], 0, plan(), { barStart: 0, bar: 0 }, 0, 10)).toEqual([])
   })
 })
 

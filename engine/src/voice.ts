@@ -7,6 +7,7 @@ import type { GuideNote } from './guideTones'
 import { CLEF_ROOT_LOW, type Transposition, TRANSPOSITIONS } from './instruments'
 import type { Part, Pitched } from './part'
 import { mod, pcOf, type Spelled } from './pitch'
+import type { RhythmNote } from './rhythm'
 
 /** a drawn bar's beats and its Line's voice (a ChangesBar's) */
 export type VoiceBar = Readonly<{ beats: number; voice: readonly GuideNote[] }>
@@ -79,6 +80,14 @@ export function timePhrase(phrase: readonly PhraseNote[], tempo: number, feel: C
   return phrase.map((n) => ({ time: start + swing(n.at) * beat, length: (swing(n.at + n.beats) - swing(n.at)) * beat, midi: n.midi }))
 }
 
+/** each bar the click plays in [barStart, until) past the count-in: its start (s) and the drawn bar it plays (the form loops) */
+function* eachBar(bars: number, plan: ClickPlan, state: ClickState, until: number): Generator<Readonly<{ start: number; bar: number }>> {
+  const length = (plan.options.beats * 60) / plan.tempo
+  for (let start = state.barStart, n = state.bar; start < until; start += length, n += 1) if (n >= plan.countIn) yield { start, bar: (n - plan.countIn) % bars }
+}
+
+const swingOf = (plan: ClickPlan) => (plan.options.feel === 'swing' ? swingBeat : (at: number) => at)
+
 /**
  * the notes to book in [from, until), from the click's plan and the state it is scheduled from: bar n after the
  * count-in plays drawn bar n mod bars (the form loops). A note before from is skipped, never booked late; one starting
@@ -87,17 +96,48 @@ export function timePhrase(phrase: readonly PhraseNote[], tempo: number, feel: C
 export function scheduleVoice(notes: readonly VoiceNote[], bars: number, plan: ClickPlan, state: ClickState, from: number, until: number): TimedNote[] {
   if (!notes.length || bars <= 0) return []
   const beat = 60 / plan.tempo
-  const beats = plan.options.beats
-  const swing = plan.options.feel === 'swing' ? swingBeat : (at: number) => at
+  const swing = swingOf(plan)
   const out: TimedNote[] = []
-  for (let barStart = state.barStart, n = state.bar; barStart < until; barStart += beats * beat, n += 1) {
-    if (n < plan.countIn) continue
-    const bar = (n - plan.countIn) % bars
+  for (const { start, bar } of eachBar(bars, plan, state, until))
     for (const v of notes) {
-      if (v.bar !== bar || v.at >= beats) continue
-      const time = barStart + swing(v.at) * beat
+      if (v.bar !== bar || v.at >= plan.options.beats) continue
+      const time = start + swing(v.at) * beat
       if (time >= from && time < until) out.push({ time, length: (swing(v.at + v.beats) - swing(v.at)) * beat, midi: v.midi })
     }
-  }
+  return out
+}
+
+/** a drawn bar's rhythm line and its Line's voice (a ChangesBar's) */
+export type RhythmBar = Readonly<{ beats: number; rhythm: readonly RhythmNote[]; voice: readonly GuideNote[] }>
+/** a rhythm attack to tap: bar, the drawn bar from 0; at, beats from its start */
+export type RhythmHit = Readonly<{ bar: number; at: number; accent: boolean }>
+/** time: seconds on the audio clock */
+export type TimedHit = Readonly<{ time: number; accent: boolean }>
+
+/**
+ * the rhythm's attacks as drawn (decision hear.rhythm): the rhythm line's with the Line off, else the poured Line's;
+ * a rest or a tied note strikes nothing. None where no rhythm is drawn (a guide line without Restate)
+ */
+export function rhythmHits(bars: readonly RhythmBar[]): RhythmHit[] {
+  const line = bars.some((b) => b.rhythm.length)
+  return bars.flatMap((b, bar) =>
+    line
+      ? b.rhythm.filter((n) => !n.rest && !n.tiedIn).map((n) => ({ bar, at: n.beat, accent: n.accent }))
+      : b.voice.filter((n) => n.mark && n.pitch && !n.tiedIn).map((n) => ({ bar, at: n.beat, accent: !!n.mark?.accent })),
+  )
+}
+
+/** the hits to book in [from, until), as scheduleVoice books the Line's notes */
+export function scheduleRhythm(hits: readonly RhythmHit[], bars: number, plan: ClickPlan, state: ClickState, from: number, until: number): TimedHit[] {
+  if (!hits.length || bars <= 0) return []
+  const beat = 60 / plan.tempo
+  const swing = swingOf(plan)
+  const out: TimedHit[] = []
+  for (const { start, bar } of eachBar(bars, plan, state, until))
+    for (const h of hits) {
+      if (h.bar !== bar || h.at >= plan.options.beats) continue
+      const time = start + swing(h.at) * beat
+      if (time >= from && time < until) out.push({ time, accent: h.accent })
+    }
   return out
 }
