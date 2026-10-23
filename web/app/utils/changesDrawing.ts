@@ -571,23 +571,27 @@ export function cardAria(label: string, card: RhythmCardModel): string {
 
 const CARD_BARS = 4 // a card bar is a quarter of the staff's notes width (D14), as many as the card has
 const CARD_LINE = 2 // the one line a card shows: the middle one, where the slashes sit
-const ELLIPSIS_ROOM = 64 // after a card's bars: the "…" of a cut cycle
+const CARD_SCALE = 0.8 // the card's notation against the staff's: a cue size, so a page of staves with cards stays short
+const ELLIPSIS_ROOM = 64 // after a cut card's bars: its "…"
 const ELLIPSIS_SIZE = 32
 
 /**
  * the rhythm card under a Scales staff (rhythm-scales-arpeggios spec §1, §7): a one-line stave per bar (each a quarter
- * of width, the staff's notes width, ending under the staff's end; data-rhythm-bar: its bar from 1), the rhythm's slash
- * notes with their tuplets, beams, accents and ties, the time signature on the first bar, Saindon's bracket under the
- * line, and "…" after the last barline when the cycle was cut; label: its aria-label (cardAria)
+ * of width, the staff's notes width, less the "…"'s room when cut; ending under the staff's end; data-rhythm-bar: its
+ * bar from 1) with one-line barlines, the rhythm's slash notes with their tuplets, beams, accents and ties, the time
+ * signature on the first bar, Saindon's bracket under the line, and "…" after the last barline when the cycle was cut;
+ * drawn at CARD_SCALE; label: its aria-label (cardAria)
  */
 export function drawRhythmCard(vf: VexFlowModule, el: HTMLElement, card: RhythmCardModel, width: number, label = ''): void {
-  const ctx = svgContext(vf, el, STAFF_WIDTH)
-  const barWidth = (width - ELLIPSIS_ROOM) / CARD_BARS
-  const left = STAFF_WIDTH - 1 - width
+  const total = STAFF_WIDTH / CARD_SCALE // the same SVG width as the staff's, in smaller units
+  const ctx = svgContext(vf, el, total)
+  const barWidth = (width - (card.cut ? ELLIPSIS_ROOM : 0)) / CARD_BARS / CARD_SCALE
+  const left = (STAFF_WIDTH - 1 - width) / CARD_SCALE
   const laid = card.bars.map((rhythm, b) => {
     const x = left + b * barWidth
     const stave = inkStave(vf, x, STAVE_Y, barWidth)
     stave.setConfigForLines(Array.from({ length: stave.getNumLines() }, (_, l) => ({ visible: l === CARD_LINE })))
+    stave.setBegBarType(vf.BarlineType.NONE).setEndBarType(vf.BarlineType.NONE) // a five-line staff's: drawn below, one-line
     if (b === 0) stave.addTimeSignature(`${card.beats}/4`)
     const ticks = rhythm.map((n) => rhythmTick(vf, n, 'treble'))
     ticks.forEach((t) => t.setStave(stave))
@@ -598,27 +602,30 @@ export function drawRhythmCard(vf: VexFlowModule, el: HTMLElement, card: RhythmC
     beams.forEach((beam) => beam.postFormat())
     return { rhythm, stave, ticks, voice, beams, tuplets }
   })
+  const first = laid[0]?.stave
+  const line = first?.getYForLine(CARD_LINE) ?? 100
+  const space = first?.getSpacingBetweenLines() ?? 10
   laid.forEach((l, b) => {
     const group: unknown = ctx.openGroup('rhythm-bar')
     if (group instanceof Element) group.setAttribute('data-rhythm-bar', String(b + 1))
     l.stave.setContext(ctx).draw()
+    const end = l.stave.getX() + l.stave.getWidth() // its barline: a space over and under the line
+    ctx.beginPath().moveTo(end, line - space).lineTo(end, line + space).stroke()
     l.voice.draw(ctx, l.stave)
     l.beams.forEach((beam) => beam.setContext(ctx).draw())
     l.tuplets.forEach((t) => t.setContext(ctx).draw())
     ctx.closeGroup()
   })
   rhythmTies(vf, ctx, laid)
-  const first = laid[0]?.stave
-  const line = first?.getYForLine(CARD_LINE) ?? 100
-  const under = line + (first?.getSpacingBetweenLines() ?? 10) + BRACKET_DROP // under the slash heads on the line
+  const under = line + space + BRACKET_DROP // under the slash heads on the line
   laid.forEach((l, b) => saindonBracket(ctx, l.rhythm, l.ticks, under, String(b + 1)))
   if (card.cut) ctx.setFont('serif', ELLIPSIS_SIZE).fillText('…', left + CARD_BARS * barWidth + 12, line)
-  const struck = laid.flatMap((l) => l.ticks.filter((t, i) => !t.isRest() && l.rhythm[i]))
+  const struck = laid.flatMap((l) => l.ticks.filter((t) => !t.isRest()))
   const accented = new Set(laid.flatMap((l) => l.ticks.filter((_, i) => l.rhythm[i]?.accent)))
   const tips = inkTips(struck, accented, laid.flatMap((l) => l.tuplets))
   const hasBracket = card.bars.some((bar) => bar.some((m) => m.bracket))
-  // the barlines span the hidden lines: the band holds them, the stems, accents and triplets, and the bracket
-  const top = first?.getYForLine(0) ?? 80
-  const bottom = first?.getYForLine(first.getNumLines() - 1) ?? 120
-  fitSvg(el, { top: Math.min(top, ...tips) - 4, bottom: Math.max(bottom, hasBracket ? under : bottom) + 4 }, STAFF_WIDTH, label)
+  // the band: the time signature (two spaces over and under the line), the stem tips, accents and triplets, the bracket
+  const top = line - 2 * space
+  const bottom = line + 2 * space
+  fitSvg(el, { top: Math.min(top, ...tips) - 4, bottom: Math.max(bottom, hasBracket ? under : bottom) + 4 }, total, label)
 }

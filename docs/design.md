@@ -398,7 +398,9 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   signature on its first bar; aria-label `cardAria` ("Rhythm card: 8ths in 5, with accents, 4 bars, continues"). The
   whole notes stay; the staff gains the time signature (`StaffModel.timeSig`: the beats of the bar holding the line's
   first row, `rowBarBeats`, over 4; DECISIONS `rhythm.staff-metre`). The subtitle appends "· Rhythm: …". A sheet with
-  cards prints 10 staves a page (§8's fallback: 12 overflowed letter).
+  cards prints 8 staves a page (`ScaleSheet`'s `cardPerPage`, §8's fallback: 12, and 10 of trombone-from-B staves,
+  overflowed letter). The card draws at a cue size (`CARD_SCALE` 0.8) with one-line barlines; an uncut card's bar is
+  exactly a quarter of the notes width, a cut card's leaves room for the "…".
 - **Interval labels:** the Intervals toggle, on by default and saved per browser, labels every note against the chord's written
   root (`engine/src/intervals.ts`). Labels read b9, #9, #11 and b13, a minor 3rd reads #9 on chords with a major
   3rd, sus chords get a 4, and sixth chords a 6. They are HTML placed under the note heads, on screen only, so

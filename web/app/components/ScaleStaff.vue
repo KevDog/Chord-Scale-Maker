@@ -41,7 +41,7 @@
         >{{ glyphs(label) }}</span>
       </p>
       <!-- the rhythm card (rhythm-scales-arpeggios spec §1): drawn under the staff and its intervals -->
-      <div v-if="staff.card" ref="card" data-slot="rhythm-card" class="text-zinc-900 dark:text-zinc-100 print:text-black" />
+      <div v-if="staff.card && rhythm && rhythm !== 'off'" ref="card" data-slot="rhythm-card" class="text-zinc-900 dark:text-zinc-100 print:text-black" />
     </div>
   </div>
 </template>
@@ -99,7 +99,8 @@ async function draw(): Promise<void> {
     const vf = await loadVexFlow()
     if (!el.value) return // still showing a previous draw error; keep it
     xs.value = drawStaff(vf, el.value, props.staff, props.clef)
-    if (props.staff.card && cardEl.value) drawRhythmCard(vf, cardEl.value, props.staff.card, staffNotesWidth(vf, props.staff, props.clef), cardAria(rhythmLabel(props.rhythm ?? 'off'), props.staff.card))
+    // a card is drawn for the rhythm in force, which names it: none without one
+    if (props.staff.card && cardEl.value && props.rhythm && props.rhythm !== 'off') drawRhythmCard(vf, cardEl.value, props.staff.card, staffNotesWidth(vf, props.staff, props.clef), cardAria(rhythmLabel(props.rhythm), props.staff.card))
     drawError.value = null
   } catch (e) {
     drawError.value = `Couldn't draw this staff (${e instanceof Error ? e.message : String(e)})`

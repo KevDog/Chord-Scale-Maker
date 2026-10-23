@@ -339,9 +339,9 @@
                 On the Scales sheet, the <strong class="font-semibold">Rhythm</strong> group puts a card under each staff: the rhythm as slashes on one line,
                 with its accents, triplets and Saindon's bracket. The staff says which notes and the card says when; the whole notes stay as they are,
                 so play the scale in the card's rhythm. The card is one cycle long, the bars it takes to come back on one, up to four bars. A longer
-                cycle ends in <UiCode>…</UiCode> and carries on the same way. Each bar of the card is a quarter of the staff wide. The staff and its card take
+                cycle ends in <UiCode>…</UiCode> and carries on the same way. A bar is a quarter of the staff's width. The staff and its card take
                 the time signature of the bar that holds the staff's first chord (4/4 where the chart has none), shown on both. The page's subtitle names
-                the rhythm. A sheet with cards prints ten staves a page.
+                the rhythm. A sheet with cards prints eight staves a page.
               </dd>
             </div>
           </dl>

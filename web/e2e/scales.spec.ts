@@ -79,6 +79,7 @@ test.describe('the Scales sheet’s rhythm', () => {
       await expect(card.locator('[data-rhythm-bracket]')).not.toHaveCount(0)
       await expect(card).toHaveAttribute('aria-label', 'Rhythm card: 8ths in 5, with accents, 4 bars, continues')
     }
+    await expect(staves(page)).toHaveCount(count) // the cards aren't staves
     await expect(page.locator('[data-slot=scale-staff] svg[data-time-sig="4/4"]:not([data-slot=rhythm-card] svg)')).toHaveCount(count)
     // Off: today's staves, no card and no time signature
     await chooseRhythm(page, 'Off')

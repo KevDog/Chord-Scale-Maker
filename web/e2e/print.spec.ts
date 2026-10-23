@@ -301,9 +301,9 @@ for (const [what, open, pour] of [
 }
 
 // the Scales sheet's rhythm card (rhythm-scales-arpeggios spec §8): a four-bar card with "…" under every staff, a sheet
-// page to a letter page: F Blues (§8's check, 3 staves) and Autumn Leaves (14: a full page, 10 a page with a card as
-// §8's fallback has it)
-for (const [song, instrument, start, pages] of [['f-blues', 'Piano', null, 1], ['autumn-leaves', 'Piano', null, 2]] as const) {
+// page to a letter page: F Blues (§8's check, 3 staves) and Autumn Leaves (14: a full page at the reduced count a sheet
+// with cards prints, §8's fallback), also with trombone from B, the tallest staves
+for (const [song, instrument, start, pages] of [['f-blues', 'Piano', null, 1], ['autumn-leaves', 'Piano', null, 2], ['autumn-leaves', 'Trombone', 'B', 2]] as const) {
   test(`prints the Scales with a rhythm card, a sheet page to a letter page (${song}, ${instrument}${start ? `, from ${start}` : ''})`, async ({ page }) => {
     await page.goto(`/song/${song}`)
     await chooseSheet(page, 'Scales')

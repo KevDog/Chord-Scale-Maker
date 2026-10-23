@@ -46,7 +46,7 @@ export const test = base.extend<{ expectedConsoleError: RegExp | null; interface
 export { expect }
 
 /** count of drawn staves (VexFlow SVGs) */
-export const staves = (page: import('@playwright/test').Page) => page.locator('svg[role=img]')
+export const staves = (page: import('@playwright/test').Page) => page.locator('svg[role=img]:not([data-slot=rhythm-card] svg)') // not a Scales staff's rhythm card
 
 /** each Pitch's instruments as the picker names them (Playwright can't load the engine: its JSON import) */
 const PITCHES: Readonly<Record<string, readonly string[]>> = {

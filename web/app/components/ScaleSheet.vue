@@ -23,6 +23,7 @@ const props = defineProps<{
   start: string // written start note for the "from" part
   mode: ModeChoice
   perPage: number
+  cardPerPage?: number // staves a page where any staff has a rhythm card (default perPage)
   intervals?: boolean // label notes against the chord root, on screen only
   practice?: PracticeSelection | null // highlight these notes, dim the rest
   homeKey?: Key | null // the chart's key, for the key signature (null: no key: line); undefined: none
@@ -37,8 +38,17 @@ const props = defineProps<{
 const emit = defineEmits<{ pick: [kind: PickKind, positions: readonly ChordAt[], value: number | readonly [number, number] | null] }>()
 
 /** every printed page, in order, with its own heading */
+const build = (perPage: number) =>
+  buildSheet(props.rows, props.part, props.mode, props.start, perPage, props.practice ?? null, props.homeKey, props.resolved, props.picks && props.positions ? { picks: props.picks, at: props.positions } : undefined, props.keys, { rhythm: props.rhythm, beatsOf: props.beatsOf })
+/** the sheet, at cardPerPage a page where any staff has a rhythm card (rhythm-scales-arpeggios spec §8) */
+const sheet = computed(() => {
+  const parts = build(props.perPage)
+  const perPage = props.cardPerPage ?? props.perPage
+  const carded = perPage !== props.perPage && parts.some((p) => p.pages.some((page) => page.some((s) => s.card)))
+  return carded ? build(perPage) : parts
+})
 const pages = computed(() =>
-  buildSheet(props.rows, props.part, props.mode, props.start, props.perPage, props.practice ?? null, props.homeKey, props.resolved, props.picks && props.positions ? { picks: props.picks, at: props.positions } : undefined, props.keys, { rhythm: props.rhythm, beatsOf: props.beatsOf })
+  sheet.value
     .flatMap((sheetPart) =>
       sheetPart.pages.map((staves) => ({
         mode: sheetPart.mode,
