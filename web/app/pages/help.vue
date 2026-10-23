@@ -360,7 +360,7 @@
               <dt id="rhythm-arpeggios" class="scroll-mt-6 font-semibold text-zinc-950 dark:text-white">Rhythm on the Arpeggios</dt>
               <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
                 On the Arpeggios sheet, the <strong class="font-semibold">Rhythm</strong> group pours each arpeggio into the rhythm: the same notes in the same
-                order, one an attack, in bars with the time signature (the staff's, as for the rhythm card). Rests and ties come from the rhythm, its beams
+                order, each note an attack, in bars with the time signature (the staff's, as for the rhythm card). Rests and ties come from the rhythm, its beams
                 replace the arpeggio's, and its accents and triplets draw; Saindon's bracket doesn't. The last note's bar rests after it. The page's subtitle
                 names the rhythm, and a sheet with a rhythm prints eleven staves a page. Triad pairs' <em>Block</em> plays chords, so it takes no rhythm and
                 the group hides there.

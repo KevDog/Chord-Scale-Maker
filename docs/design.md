@@ -433,7 +433,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 ### Arpeggios sheet ([spec](superpowers/specs/2026-10-12-arpeggios-sheet-design.md))
 
 - **Lines:** exactly the Scales sheet's (`scaleLines`), in eighth notes, one stave each, no time signature (but see the Rhythm below). 12 lines a
-  printed page. Controls (Arpeggio group): 7th Chord · Extended, and a direction listbox Up · Down · Up & down
+  printed page (11 with a run). Controls (Arpeggio group): 7th Chord · Extended, and a direction listbox Up · Down · Up & down
   (`aria-label="Arpeggio direction"`); Show: Intervals as on the Scales; no Spell Scale, no practice panel.
 - **Notes:** the line's first chord's tones (`arpeggioTones`: 1 3 5 7). 7th Chord mode runs them over two octaves, closing
   on the root (1 3 5 7 1 3 5 7 1; a triad 1 3 5 1 3 5 1; #227), beamed a chord at a time with the top root alone. Extended
@@ -991,7 +991,7 @@ paper and its focus-mode pages, the rail, the More menu, the header, the library
 - **Page:** `@page { size: letter; margin: 0.5in 10mm 10mm }`. The print stylesheet hides the editor and the
   toolbar, and each page of `SheetPages` breaks after itself with its own header. On screen the pages run
   together as one card, with "Page N" dividers marking the breaks.
-- **Scale sheets:** 12 staves a page, with 8px between staves. A full page fills
+- **Scale sheets:** 12 staves a page, with 8px between staves (except a Scales sheet with a rhythm card or a run, 8 a page, and an Arpeggios sheet with a run, 11). A full page fills
   about 9.6in, even when every note has ledger lines (e.g. trombone from B). Autumn Leaves prints on 2 pages.
 - **Changes:** 8 four-bar lines a page with guide tones off, so a 32-bar AABA prints on one page.
   - With a line on, `changesLinesPerPage` (`engine/src/changes.ts`) gives fewer: 6 with a line on and

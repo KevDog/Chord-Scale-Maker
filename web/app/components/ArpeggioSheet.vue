@@ -38,8 +38,12 @@ const props = defineProps<{
 }>()
 const emit = defineEmits<{ pick: [kind: PickKind, positions: readonly ChordAt[], value: number | readonly [number, number] | null] }>()
 
-const build = (perPage: number) =>
-  props.moves
+/** a staff may be poured into the rhythm (spec §4, D12): a rhythm on, not the Patterns sheet, not Triad pairs' Block */
+const mayPour = computed(() => !!props.rhythm && props.rhythm !== 'off' && !props.moves && !(props.notes === 'pairs' && props.shape === 'block'))
+/** every printed page, in order, with its heading: rhythmPerPage a page where a staff may be poured (rhythm-scales-arpeggios spec §8) */
+const pages = computed(() => {
+  const perPage = mayPour.value ? (props.rhythmPerPage ?? props.perPage) : props.perPage
+  const sheet = props.moves
     ? buildPatternSheet(props.rows, props.part, perPage, props.moves, props.notes as PatternNotes, props.dir, props.homeKey, props.resolved)
     : buildArpeggioSheet(props.rows, props.part, perPage, props.notes as ArpNotes, props.dir, props.homeKey, props.resolved, {
         shape: props.shape,
@@ -48,14 +52,8 @@ const build = (perPage: number) =>
         rhythm: props.rhythm,
         beatsOf: props.beatsOf,
       })
-const poured = (sheet: ReturnType<typeof build>): boolean => sheet.pages.some((page) => page.some((s) => s.run))
-/** every printed page, in order, with its heading: rhythmPerPage a page where a staff is poured into the rhythm (rhythm-scales-arpeggios spec §8) */
-const pages = computed(() => {
-  const first = build(props.perPage)
-  const perPage = props.rhythmPerPage ?? props.perPage
-  const sheet = perPage !== props.perPage && poured(first) ? build(perPage) : first
-  // the subtitle names the rhythm only where a staff pours it (spec §6): not under Block, nor on the Patterns sheet
-  const rhythmText = poured(sheet) ? sheetRhythmText(props.rhythm ?? 'off') : []
+  // the subtitle names the rhythm only where a staff pours it (spec §6)
+  const rhythmText = sheet.pages.some((page) => page.some((s) => s.run)) ? sheetRhythmText(props.rhythm ?? 'off') : []
   return sheet.pages.map((staves) => ({ staves, subtitle: pageSubtitle(props.subtitle, props.instrumentLabel, sheet.heading, rhythmText) }))
 })
 </script>
