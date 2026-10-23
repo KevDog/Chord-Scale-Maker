@@ -83,12 +83,13 @@ export const headCentre = (n: { getNoteHeadBeginX(): number; getNoteHeadEndX(): 
 
 /**
  * draw one staff of whole notes into el, replacing what was there; colors follow CSS `color`.
+ * width: its drawing units, which the SVG scales to its container (fewer draw it larger).
  * Returns each note head's centre as a fraction of the width, for labels placed under it.
  */
-export function drawStaff(vf: VexFlowModule, el: HTMLElement, staff: StaffModel, clef: 'treble' | 'bass'): number[] {
-  const ctx = svgContext(vf, el, STAFF_WIDTH)
+export function drawStaff(vf: VexFlowModule, el: HTMLElement, staff: StaffModel, clef: 'treble' | 'bass', width: number = STAFF_WIDTH): number[] {
+  const ctx = svgContext(vf, el, width)
 
-  const stave = inkStave(vf, 0, STAVE_Y, STAFF_WIDTH - 1)
+  const stave = inkStave(vf, 0, STAVE_Y, width - 1)
   if (staff.showClefAndKey) stave.addClef(clef) // every line's first staff (a Patterns continuation has neither)
   if (staff.showClefAndKey && staff.keySig) stave.addKeySignature(staff.keySig)
   stave.setEndBarType(staff.last ? vf.BarlineType.END : vf.BarlineType.DOUBLE)
@@ -102,7 +103,7 @@ export function drawStaff(vf: VexFlowModule, el: HTMLElement, staff: StaffModel,
   })
   if (notes.length > 0) {
     const voice = new vf.Voice({ numBeats: notes.length * 4, beatValue: 4 }).setMode(vf.Voice.Mode.SOFT).addTickables(notes)
-    new vf.Formatter().joinVoices([voice]).format([voice], STAFF_WIDTH - stave.getNoteStartX() - 24)
+    new vf.Formatter().joinVoices([voice]).format([voice], width - stave.getNoteStartX() - 24)
     voice.draw(ctx, stave)
   }
 
@@ -116,8 +117,8 @@ export function drawStaff(vf: VexFlowModule, el: HTMLElement, staff: StaffModel,
   const picked = staff.selected ? names.filter((_, i) => staff.selected?.[i]) : null
   const added = names.filter((_, i) => staff.outside?.[i])
   const label = names.join(' ') + (picked ? `; practice: ${picked.length ? picked.join(' ') : 'none'}` : '') + (added.length ? `; added from the pentatonic: ${added.join(' ')}` : '')
-  fitSvg(el, cropBand(notes.flatMap((n) => n.getYs())), STAFF_WIDTH, label)
-  return notes.map((n) => headCentre(n, STAFF_WIDTH))
+  fitSvg(el, cropBand(notes.flatMap((n) => n.getYs())), width, label)
+  return notes.map((n) => headCentre(n, width))
 }
 
 /** draw one Arpeggios line: eighths, each group beamed on its own; returns each head's centre as a fraction of the width */

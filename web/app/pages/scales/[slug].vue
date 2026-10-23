@@ -41,7 +41,7 @@
             </template>
           </SheetRail>
           <div class="mt-4 rounded-paper bg-paper p-4 shadow-paper sm:p-6">
-            <ScaleStaff v-if="staff" :staff="staff" :clef="part.clef" :part="part" :intervals="prefs.intervals.value" />
+            <ScaleStaff v-if="staff" :staff="staff" :clef="part.clef" :part="part" :intervals="prefs.intervals.value" stacked />
           </div>
           <template #fallback><UiText>Loading the staff…</UiText></template>
         </ClientOnly>
@@ -52,7 +52,7 @@
         <template v-if="page.playsOver.length">
           <dl class="divide-y divide-zinc-950/5 dark:divide-white/5">
             <div v-for="o in page.playsOver" :key="`${o.quality}|${o.root}`" class="flex flex-wrap items-baseline gap-x-4 gap-y-1 py-2.5">
-              <dt class="w-20 font-display text-lg/7 font-semibold text-zinc-950 dark:text-white"><ChordSymbol :tokens="o.symbolOnC" /></dt>
+              <dt class="w-20 font-display text-lg/7 font-semibold text-zinc-950 dark:text-white"><UiTextLink :href="chordQualityPath(o.quality)" :aria-label="`${chordTitle(o.quality)} chord`"><ChordSymbol :tokens="o.symbolOnC" /></UiTextLink></dt>
               <dd class="flex flex-wrap items-baseline gap-2 text-sm/6 text-zinc-600 dark:text-zinc-400">
                 <span v-if="o.from">{{ o.from }}</span>
                 <UiBadge v-for="t in o.tags" :key="t" :color="t === 'default' ? 'note' : 'zinc'">{{ TAG_LABELS[t] }}</UiBadge>
@@ -79,7 +79,8 @@
 </template>
 
 <script setup lang="ts">
-import { buildSheet, keyStart, parseKey, partFor, type PlaysOverTag, type Row } from '@chord-scale-maker/engine'
+import { buildSheet, chordTitle, keyStart, parseKey, partFor, type PlaysOverTag, type Row } from '@chord-scale-maker/engine'
+import { chordQualityPath } from '~/utils/chordPage'
 import { spellLabel, SPELLS, spellView } from '~/utils/scaleChoices'
 import { scaleGroupOf } from '~/utils/scaleGroups'
 import { SCALES_PATH, scaleHead, scalePage } from '~/utils/scalePage'

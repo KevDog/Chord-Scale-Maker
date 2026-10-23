@@ -1,4 +1,4 @@
-import { SCALES } from '@chord-scale-maker/engine'
+import { CHORD_QUALITIES, SCALES } from '@chord-scale-maker/engine'
 import { describe, expect, it } from 'vitest'
 import { canonicalUrl } from '~/utils/site'
 import { chartSlugsOf, sitemapPaths, sitemapXml, songSlugs } from '~/utils/sitemap'
@@ -33,6 +33,9 @@ describe('sitemap paths', () => {
     expect(paths).toContain('/scales/dorian')
     expect(paths).toContain('/scales/diatonic-diminished-sharp-iv')
     expect(paths.filter((p) => p.startsWith('/scales/'))).toHaveLength(Object.keys(SCALES).length)
+    expect(paths).toContain('/chords')
+    expect(paths).toContain('/chords/half-diminished')
+    expect(paths.filter((p) => p.startsWith('/chords/'))).toHaveLength(CHORD_QUALITIES.length)
     expect(paths.slice(-3)).toEqual(['/composers', '/composers/thelonious-monk', '/song/a'])
   })
 })

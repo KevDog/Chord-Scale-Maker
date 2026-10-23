@@ -50,6 +50,8 @@ describe('SheetLabelPicker', () => {
     await settle()
     const link = [...(panel()?.querySelectorAll('a') ?? [])].find((a) => a.textContent?.includes('About this scale'))
     expect(link?.getAttribute('href')).toBe('/scales/mixolydian')
+    const chord = [...(panel()?.querySelectorAll('a') ?? [])].find((a) => a.textContent?.includes('About this chord'))
+    expect(chord?.getAttribute('href')).toBe('/chords/dominant-7')
   })
 
   it('the numeral has no scale link', async () => {
@@ -57,6 +59,7 @@ describe('SheetLabelPicker', () => {
     await w.find('button').trigger('click')
     await settle()
     expect(panel()?.textContent).not.toContain('About this scale')
+    expect(panel()?.textContent).not.toContain('About this chord')
   })
 
   it('the scale opens the scale list', async () => {

@@ -16,7 +16,7 @@
           </template>
         </UiNavbarSection>
         <UiNavbarSpacer />
-        <HeaderQuote class="max-w-xl max-xl:hidden" />
+        <HeaderQuote class="max-w-xl max-2xl:hidden" />
         <UiNavbarSection>
           <UiNavbarItem :aria-label="`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`" @click="toggle">
             <SunIcon v-if="theme === 'dark'" data-slot="icon" />
@@ -56,6 +56,7 @@
           <NuxtLink to="/release-notes" class="hover:text-zinc-950 dark:hover:text-white">Release notes</NuxtLink>
           <NuxtLink to="/functions" class="hover:text-zinc-950 dark:hover:text-white">Functions</NuxtLink>
           <NuxtLink to="/scales" class="hover:text-zinc-950 dark:hover:text-white">Scales</NuxtLink>
+          <NuxtLink to="/chords" class="hover:text-zinc-950 dark:hover:text-white">Chords</NuxtLink>
           <NuxtLink to="/composers" class="hover:text-zinc-950 dark:hover:text-white">Composers</NuxtLink>
           <NuxtLink to="/about" class="hover:text-zinc-950 dark:hover:text-white">About</NuxtLink>
           <NuxtLink to="/contact" class="hover:text-zinc-950 dark:hover:text-white">Contact</NuxtLink>
