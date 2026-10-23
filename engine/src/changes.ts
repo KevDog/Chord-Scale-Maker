@@ -726,12 +726,13 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
           ? { ...arpeggioVoices(drawn(), part, clock, keySig, line, approach, plan), labels: new Map() }
           : guideVoices(drawn(), part, clock, keySig, line, approach, plan, restate)
 
-  // target beats colored by the chord sounding there: the last drawn chord starting at or before the note, as its
-  // arpeggio tones' pitch classes (not ChangesChord.scale, the written display label); null when it can't be read
-  const inputs = targets ? drawn() : []
+  // target beats colored by the chord sounding there: the drawn chord starting latest at or before the note (by the
+  // clock, not the drawn order), as its arpeggio tones' pitch classes, spelled from the scale the sheet shows (not
+  // ChangesChord.scale, the written display label); null when it can't be read
+  const inputs = targets ? drawn((i, row) => resolved.get(i)?.scale ?? qualityScale(row)) : []
   const tonesAt = (bar: number) => (beat: number): readonly number[] | null => {
     const at = barStart(clock, bar) + beat
-    const input = inputs.findLast((x) => x.start <= at)
+    const input = inputs.reduce<GuideInput | undefined>((best, x) => (x.start <= at && (!best || x.start >= best.start) ? x : best), undefined)
     return input ? (arpeggioTones(part, input.chord, input.scale)?.map(pcOf) ?? null) : null
   }
   let lastKey = ''

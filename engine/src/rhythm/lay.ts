@@ -151,13 +151,14 @@ export function rhythmCaption(id: RhythmId, laid: Laid, bars: readonly number[])
   const r = rhythmOf(id)
   if (!r || r.kind === 'bar') return caption
   const { landings } = laid
-  if (landings.length === 1 && landings[0] === 0) return `${caption} · never back on one`
+  // bars of one length: the cycle, though a sheet shorter than it never gets there (#505)
   if (bars.every(b => b === bars[0])) {
     const unit = r.rhythm.cells.length
     const bar = bars[0]! * PULSE_PER_BEAT[r.rhythm.pulse]
     const n = unit / gcd(unit, bar)
     return `${caption} · back on one every ${n === 1 ? 'bar' : `${n} bars`}`
   }
+  if (landings.length === 1 && landings[0] === 0) return `${caption} · never back on one`
   const listed = landings.slice(0, MAX_LISTED).map(b => b + 1)
   return `${caption} · back on one at bars ${listed.join(', ')}${landings.length > MAX_LISTED ? ', …' : ''}`
 }

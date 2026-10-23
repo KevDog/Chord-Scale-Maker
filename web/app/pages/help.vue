@@ -322,15 +322,15 @@
             <div>
               <dt id="rhythm-targets" class="scroll-mt-6 font-semibold text-zinc-950 dark:text-white">Target beats</dt>
               <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
-                In the Changes sheet's Analysis group, a toggle that puts a dot over each strong beat of a bar: the first beat, and the third in
-                4/4 (1 in 2/4 and 3/4; 1 and 3 in 4/4; 1 and 4 in 5/4 and 6/4; 1 and 5 in 7/4). It follows Hal Galper's <em>Forward Motion: From Bach to Bebop</em> (pp. 47–49, 67): the on-beats are where a line releases, the off-beats where it builds tension, and chord tones belong on the dots. Aim a chord tone at each dot. The dots show on the
-                slashes and on a rhythm alike.
+                In the Changes sheet's Analysis group, a toggle that puts a dot over each strong beat of a bar: 1 in 2/4 and 3/4, 1 and 3 in 4/4,
+                1 and 4 in 5/4 and 6/4, 1 and 5 in 7/4. It follows Hal Galper's <em>Forward Motion: From Bach to Bebop</em> (pp. 47–49, 67).
+                A line releases on the on-beats and builds tension on the off-beats, so aim a chord tone at each dot. The dots show on the slashes and on a rhythm alike.
               </dd>
             </div>
             <div>
               <dt id="rhythm-target-tones" class="scroll-mt-6 font-semibold text-zinc-950 dark:text-white">Target tones</dt>
               <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
-                On a Line with Target beats on, a chord tone on a dot is lit and any other note on a dot is gray (Galper, pp. 47–49). Nothing moves a note onto a dot.
+                On a Line with Target beats on, a chord tone on a dot is lit and any other note on a dot is gray (Galper, pp. 47–49). Nothing moves a note onto a dot. A screen reader hears the target beats and the notes on them, each one that isn't a chord tone named so.
               </dd>
             </div>
           </dl>

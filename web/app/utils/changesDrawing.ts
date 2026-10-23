@@ -196,6 +196,16 @@ export function rhythmAria(caption: string | null): string {
 
 const hasTargets = (line: ChangesLine): boolean => line.bars.some((b) => b.targets.length > 0)
 
+/** the aria-label's target beats, by the count ("1 and 3"; by bar where they differ), and the notes on them, which the drawing tells by color alone (#505); '' with none */
+export function targetsAria(line: ChangesLine): string {
+  if (!hasTargets(line)) return ''
+  const beats = line.bars.map((b) => b.targets.map((t) => t + 1).join(' and ') || '–')
+  const named = `; target beats: ${beats.every((b) => b === beats[0]) ? beats[0] : beats.join(' | ')}`
+  if (!line.bars.some((b) => b.voice.some((n) => n.target))) return named
+  const tones = line.bars.map((b) => b.voice.flatMap((n) => (n.target && n.pitch ? [`${pitchName(n.pitch)}${n.target === 'other' ? ' not a chord tone' : ''}`] : [])).join(', ') || '–')
+  return `${named}; target tones: ${tones.join(' | ')}`
+}
+
 const barsLabel = (line: ChangesLine): string => `Bars: ${line.bars.map((b) => b.chords.map((c) => c.text).join(' ') || '–').join(' | ')}`
 
 type Geometry = Readonly<{ clef: Clef | undefined; total: number; widths: readonly number[]; scales: readonly (readonly number[])[]; fits: number }>
@@ -301,7 +311,7 @@ export function drawChangesLine(vf: VexFlowModule, el: HTMLElement, line: Change
   })
   const plain = clef ? CLEF_BAND : BAND
   const { band, at } = withTargets(line.bars.some((b) => b.volta) ? { top: VOLTA_BAND.top, bottom: plain.bottom } : plain, hasTargets(line) ? SLASH_TARGET_ROW : null)
-  fitSvg(el, band, total, barsLabel(line))
+  fitSvg(el, band, total, barsLabel(line) + targetsAria(line))
   return { xs, ends: endsOf(widths, total), scales, fits, dots: at }
 }
 
@@ -412,7 +422,7 @@ function drawGuideLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, op
   })
   const { band, at } = withTargets(voicedBand([...heads, ...tips], bracket === null ? null : bracket + shift), row)
   const poured = line.bars.some((b) => b.voice.some((n) => n.mark))
-  fitSvg(el, band, total, barsLabel(line) + (opts.arpeggio ? arpeggioAria(line, opts.lineName) : guideAria(line)) + (poured ? rhythmAria(opts.rhythmCaption ?? null) : ''))
+  fitSvg(el, band, total, barsLabel(line) + (opts.arpeggio ? arpeggioAria(line, opts.lineName) : guideAria(line)) + (poured ? rhythmAria(opts.rhythmCaption ?? null) : '') + targetsAria(line))
   return { xs, ends: endsOf(widths, total), scales, fits, dots: at }
 }
 
@@ -535,6 +545,6 @@ function drawRhythmLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, o
   })
   const hasBracket = line.bars.some((b) => b.rhythm.some((m) => m.bracket))
   const { band, at } = withTargets(voicedBand([...heads, ...tips, ...(hasBracket ? [under] : [])], bracket === null ? null : bracket + shift), row)
-  fitSvg(el, band, total, barsLabel(line) + rhythmAria(opts.rhythmCaption ?? null))
+  fitSvg(el, band, total, barsLabel(line) + rhythmAria(opts.rhythmCaption ?? null) + targetsAria(line))
   return { xs, ends: endsOf(widths, total), scales, fits, dots: at }
 }

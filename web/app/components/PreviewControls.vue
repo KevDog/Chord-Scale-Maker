@@ -228,14 +228,17 @@
                             </EaseReveal>
                             <!-- where each chord's line starts and its timing (rhythm-on-lines spec §10), on a Line that takes the rhythm -->
                             <EaseReveal :show="rhythm !== 'off' && lineTakesRhythm && shows('rhythm-phrasing')" inner-class="flex flex-col gap-2">
-                              <UiListbox v-model="rhythmStart" class="w-full" aria-label="Start" title="Where each chord's line begins: on its first beat, or with a pick-up of 1, 2 or 3 notes into it (after Galper)">
+                              <UiListbox v-model="rhythmStart" class="w-full" aria-label="Start" title="Where each chord's line begins: on its first beat, or with a pick-up of 1, 2 or 3 notes into it (after Galper)" aria-describedby="rhythm-start-help">
                                 <template #selected="{ value }"><UiListboxLabel>Start: {{ RHYTHM_START_LABELS[value] }}</UiListboxLabel></template>
                                 <UiListboxOption v-for="s in RHYTHM_STARTS" :key="s" :value="s"><UiListboxLabel>{{ RHYTHM_START_LABELS[s] }}</UiListboxLabel></UiListboxOption>
                               </UiListbox>
-                              <UiListbox v-model="anticipate" class="w-full" aria-label="Timing" title="Begin each chord's notes early (anticipate) or late (resolve late); the chord symbols stay put (after Bergonzi)">
+                              <UiListbox v-model="anticipate" class="w-full" aria-label="Timing" title="Begin each chord's notes early (anticipate) or late (resolve late); the chord symbols stay put (after Bergonzi)" aria-describedby="rhythm-timing-help">
                                 <template #selected="{ value }"><UiListboxLabel>{{ anticipateLabel(value) }}</UiListboxLabel></template>
                                 <UiListboxOption v-for="n in ANTICIPATE_STEPS" :key="n" :value="n"><UiListboxLabel>{{ anticipateLabel(n) }}</UiListboxLabel></UiListboxOption>
                               </UiListbox>
+                              <!-- the titles' help, for a screen reader (#505), as the Spell Scale's start-help -->
+                              <UiText id="rhythm-start-help" class="sr-only">Where each chord's line begins: on its first beat, or with a pick-up of 1, 2 or 3 notes into it (after Galper)</UiText>
+                              <UiText id="rhythm-timing-help" class="sr-only">Begin each chord's notes early (anticipate) or late (resolve late); the chord symbols stay put (after Bergonzi)</UiText>
                             </EaseReveal>
                             <ToggleButton v-if="lineMode === 'guide' && rhythm !== 'off'" v-model="restate" class="self-start" title="Play each chord's guide tone again on every attack of the rhythm">Restate</ToggleButton>
                             <p v-if="rhythmHelp" id="rhythm-help" class="text-sm/5 text-zinc-500 dark:text-zinc-400">Guide tones hold each chord's note. Turn on Restate to play it in the rhythm.</p>

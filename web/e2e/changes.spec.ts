@@ -714,6 +714,7 @@ test.describe('the rhythm line', () => {
     await expect(first.locator('[data-target-beat]')).toHaveCount(8) // 4 bars
     await expect(first.locator('[data-target-beat="0"]')).toHaveCount(4)
     await expect(first.locator('[data-target-beat="2"]')).toHaveCount(4)
+    await expect(lines(page).first()).toHaveAttribute('aria-label', /; target beats: 1 and 3$/)
   })
 
   test('a share link carries the rhythm: it opens reading Upbeats', async ({ page, browser }) => {
@@ -758,6 +759,7 @@ test.describe('a rhythm on the Lines', () => {
     const line = lines(page).first()
     await expect(line.locator('.vf-dimmed')).toHaveCount(3) // C E D F | A C G B | D F C E | G B G E: beat 3's D, G and C
     await expect(line.locator('.vf-selected')).toHaveCount(5)
+    await expect(line).toHaveAttribute('aria-label', /; target tones: C\S*, D\S* not a chord tone \| A\S*, G\S* not a chord tone \|/)
   })
 
   test('8th triplets in 4 with accents: a triplet bracket and accents on the Line', async ({ page }) => {

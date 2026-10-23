@@ -92,6 +92,13 @@ describe('hiddenSettings', () => {
     expect(hiddenSettings('essentials', { ...DEFAULTS, sheet: 'scales', rhythm: 'card:upbeats' })).toBeNull()
   })
 
+  it('names a rhythm only where it draws: the rhythm line, or a Line that takes it (#505)', () => {
+    const guide = { ...DEFAULTS, lineMode: 'guide', rhythm: 'card:upbeats' } as const satisfies ViewSettings
+    expect(hiddenSettings('essentials', guide)).toEqual({ settings: ['line'], needs: 'intermediate' }) // guide tones hold, without Restate
+    expect(hiddenSettings('essentials', { ...guide, rhythmLine: true })).toEqual({ settings: ['line', 'rhythm'], needs: 'intermediate' })
+    expect(hiddenSettings('essentials', { ...guide, targets: true })).toEqual({ settings: ['line', 'rhythm'], needs: 'intermediate' })
+  })
+
   it('puts a pentatonic practice selection at Everything', () => {
     expect(hiddenSettings('essentials', { ...DEFAULTS, sheet: 'scales', practice: { preset: 'chordTones' } })).toEqual({ settings: ['practice'], needs: 'intermediate' })
     expect(hiddenSettings('intermediate', { ...DEFAULTS, sheet: 'scales', practice: { preset: 'pentatonic', degree: 2 } })).toEqual({ settings: ['practice'], needs: 'everything' })

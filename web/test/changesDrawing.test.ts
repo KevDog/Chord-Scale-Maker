@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { ChangesBar, ChangesChord, ChangesLine, GuideNote, Letter, Pitched } from '@chord-scale-maker/engine'
-import { arpeggioAria, beamRuns, beatXs, DURATIONS, fitBars, guideAria, mergeNames, restatedAccidental, rhythmAria, SLASH_TARGET_ROW, targetRow, voicedBand, voltaShift, withTargets } from '~/utils/changesDrawing'
+import { arpeggioAria, beamRuns, beatXs, DURATIONS, fitBars, guideAria, mergeNames, restatedAccidental, rhythmAria, targetsAria, SLASH_TARGET_ROW, targetRow, voicedBand, voltaShift, withTargets } from '~/utils/changesDrawing'
 
 const chord = (beat: number, text: string, guide: string): ChangesChord => ({
   beat,
@@ -234,6 +234,25 @@ describe('rhythmAria', () => {
   })
   it('is empty with no rhythm drawn', () => {
     expect(rhythmAria(null)).toBe('')
+  })
+})
+
+describe('targetsAria (#505)', () => {
+  const on = (b: ChangesBar, targets: readonly number[]): ChangesBar => ({ ...b, targets })
+  const line = (bars: readonly ChangesBar[]): ChangesLine => ({ bars }) as unknown as ChangesLine
+  it('names the target beats, once where every bar has the same', () => {
+    expect(targetsAria(line([on(bar([], []), [0, 2]), on(bar([], []), [0, 2])]))).toBe('; target beats: 1 and 3')
+  })
+  it('lists them by bar where the metre changes', () => {
+    expect(targetsAria(line([on(bar([], []), [0, 2]), on({ ...bar([], []), beats: 3 }, [0]), on({ ...bar([], []), beats: 7 }, [0, 4])]))).toBe('; target beats: 1 and 3 | 1 | 1 and 5')
+  })
+  it('names the notes on the targets, and which are not chord tones', () => {
+    const b1 = on(bar([], [note(0, 0, 60, 0, 1, { target: 'tone' }), note(1, 0, 62, 1, 1), note(1, 0, 62, 2, 1, { target: 'other' })]), [0, 2])
+    const b2 = on(bar([], [rest(0, 4)]), [0, 2])
+    expect(targetsAria(line([b1, b2]))).toBe('; target beats: 1 and 3; target tones: C4, D4 not a chord tone | –')
+  })
+  it('is empty without target beats', () => {
+    expect(targetsAria(line([bar([], [note(0, 0, 60, 0, 1)])]))).toBe('')
   })
 })
 
