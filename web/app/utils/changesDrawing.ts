@@ -208,8 +208,8 @@ export function stepAria(line: ChangesLine, fromBar: number): string {
 }
 
 const hasTargets = (line: ChangesLine): boolean => line.bars.some((b) => b.targets.length > 0)
-/** a line with a step's numeral to draw (the gear's name is Task 3.1's) */
-const stepped = (line: ChangesLine): boolean => line.bars.some((b) => b.step !== null && b.step.group !== null)
+/** a line with a step mark to draw: a numeral, a gear's name or both */
+const stepped = (line: ChangesLine): boolean => line.bars.some((b) => b.step !== null)
 
 /** the aria-label's target beats, by the count ("1 and 3"; by bar where they differ), and the notes on them, which the drawing tells by color alone (#505); '' with none */
 export function targetsAria(line: ChangesLine): string {
@@ -520,23 +520,31 @@ function saindonBracket(ctx: Context, rhythm: readonly RhythmNote[], ticks: read
 
 const STEP_MARK_SIZE = 12 // a step's numeral: about a staff space, so it fits the target dots' band (DOT_ROOM a side)
 const STEP_MARK_WIDTH = 0.9 // its width, in ems (a circled digit is about square)
-const STEP_MARK_GAP = 4 // from a target dot over the same note to the numeral's left edge
+const STEP_MARK_GAP = 4 // from a target dot over the same note to the mark's left edge
+const GEAR_MARK_SIZE = 10 // a gear's name: small italics, shorter than the numeral, so it keeps to the same band
+const GEAR_MARK_GAP = 2 // from the numeral to the gear's name
 
 /**
- * the step marks over each step's first note (Phase 4 spec §6, D17): the circled numeral on the target dots' row
- * (row, in drawing units, already clear of the crop's top), centred on the note's head, or just right of a target
- * dot over it (dots: the line draws them); data-rhythm-step: the group. The gear's name (Task 3.1) goes beside it.
+ * the step marks over each step's first note (Phase 4 spec §6, D17) on the target dots' row (row, in drawing units,
+ * already clear of the crop's top): the circled numeral where the group changes, then the pulse's name in small
+ * italics where the pulse changes; the mark starts centred on the note's head (its numeral, or its name's first
+ * letter), or just right of a target dot over it (dots: the line draws them); data-rhythm-step: the group and pulse
  */
 export function drawStepMarks(ctx: Context, bars: readonly Readonly<{ bar: ChangesBar; ticks: readonly StaveNote[] }>[], row: number, dots: boolean): void {
   bars.forEach(({ bar, ticks }) => {
     const first = ticks[0]
-    if (!bar.step || bar.step.group === null || !first) return
-    const width = STEP_MARK_SIZE * STEP_MARK_WIDTH
+    if (!bar.step || !first) return
+    const { group, pulse } = bar.step
+    const lead = group !== null ? STEP_MARK_SIZE * STEP_MARK_WIDTH : GEAR_MARK_SIZE * 0.6 // the mark's first glyph, to centre
     const centre = (first.getNoteHeadBeginX() + first.getNoteHeadEndX()) / 2
-    const left = dots && bar.targets.includes(0) ? centre + STEP_MARK_GAP : centre - width / 2
-    const group: unknown = ctx.openGroup('rhythm-step')
-    if (group instanceof Element) group.setAttribute('data-rhythm-step', String(bar.step.group))
-    ctx.setFont('serif', STEP_MARK_SIZE).fillText(stepNumeral(bar.step.group), left, row + STEP_MARK_SIZE * 0.35) // its baseline, so its middle sits on the row
+    const left = dots && bar.targets.includes(0) ? centre + STEP_MARK_GAP : centre - lead / 2
+    const g: unknown = ctx.openGroup('rhythm-step')
+    if (g instanceof Element) g.setAttribute('data-rhythm-step', [group, pulse].filter((v) => v !== null).join(' '))
+    if (group !== null) ctx.setFont('serif', STEP_MARK_SIZE).fillText(stepNumeral(group), left, row + STEP_MARK_SIZE * 0.35) // its baseline, so its middle sits on the row
+    if (pulse !== null) {
+      const x = group !== null ? left + STEP_MARK_SIZE * STEP_MARK_WIDTH + GEAR_MARK_GAP : left
+      ctx.setFont('serif', GEAR_MARK_SIZE, 'normal', 'italic').fillText(PULSE_LABELS[pulse], x, row + GEAR_MARK_SIZE * 0.35)
+    }
     ctx.closeGroup()
   })
 }

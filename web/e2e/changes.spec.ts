@@ -1,5 +1,5 @@
 import type { Locator, Page } from '@playwright/test'
-import { chooseGroups, chooseInstrument, chooseInterface, chooseRhythm, chooseRhythmStep, chooseSheet, chooseStart, closePanel, type Drawn, drawn, expect, openPanel, GLYPH, arpeggiosDrawn, guidesDrawn, openEditor, restateOn, rhythmDrawn, sheetChord, showArpeggios, showApproach, showCell, showGuides, showOrder, test, writeChart } from './fixtures'
+import { chooseGears, chooseGroups, chooseInstrument, chooseInterface, chooseRhythm, chooseRhythmStep, chooseSheet, chooseStart, closePanel, type Drawn, drawn, expect, openPanel, GLYPH, arpeggiosDrawn, guidesDrawn, openEditor, restateOn, rhythmDrawn, sheetChord, showArpeggios, showApproach, showCell, showGuides, showOrder, test, writeChart } from './fixtures'
 
 const lines = (page: Page) => page.locator('svg[aria-label^="Bars:"]')
 /** the sheet itself, not the controls above it (whose menus name the same scales) */
@@ -784,6 +784,34 @@ test.describe('the Groups path', () => {
     await rhythmDrawn(visitor)
     await expect(visitor.locator('[data-rhythm-step]')).toHaveText(['③', '④', '⑤', '⑥'])
     await other.close()
+  })
+})
+
+// gears (Phase 4 spec §3, §6, §7; flag `rhythmGears`): Up the gears by 2 bars, 4 bars a line
+test.describe('the Gears path', () => {
+  test('names each step’s pulse over its first bar and in the lines’ aria-labels', async ({ page }) => {
+    await page.goto('/song/f-jazz-blues')
+    await chooseRhythm(page, '8ths', { In: 'In 4', Variation: 'with accents' })
+    await chooseGears(page, 'Up the gears')
+    await chooseRhythmStep(page, 'Every 2 bars')
+    await rhythmDrawn(page)
+    await expect(page.locator('section header p').first()).toContainText('quarter-note triplets → 8ths → triplets → 16ths → sextuplets · every 2 bars')
+    await expect(lines(page).nth(0)).toHaveAttribute('aria-label', /, from bar 1: quarter-note triplets, from bar 3: 8ths(?!,)/)
+    await expect(lines(page).nth(1)).toHaveAttribute('aria-label', /, from bar 5: triplets, from bar 7: 16ths/)
+    await expect(page.locator('[data-rhythm-step]').first()).toHaveText('Quarter-note triplets')
+    await expect(page.locator('[data-rhythm-step]').nth(1)).toHaveText('8ths')
+    await expect(page.getByText(/Couldn.t draw/)).toHaveCount(0)
+  })
+
+  test('marks both where both change, the numeral first', async ({ page }) => {
+    await page.goto('/song/f-jazz-blues')
+    await chooseRhythm(page, '8ths', { In: 'In 3', Variation: 'with accents' })
+    await chooseGroups(page, 'Up')
+    await chooseGears(page, 'Down the gears')
+    await chooseRhythmStep(page, 'Every 4 bars')
+    await rhythmDrawn(page)
+    await expect(page.locator('[data-rhythm-step]').first()).toHaveText('③Sextuplets')
+    await expect(lines(page).nth(0)).toHaveAttribute('aria-label', /, from bar 1: in 3, sextuplets/)
   })
 })
 

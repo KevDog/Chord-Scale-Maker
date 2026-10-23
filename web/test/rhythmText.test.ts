@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { groupsTextError, isGearsRhythm, rhythmTextError, typedGroups } from '~/utils/rhythmText'
+import { gearsTextError, groupsTextError, isGearsRhythm, rhythmTextError, typedGears, typedGroups } from '~/utils/rhythmText'
 
 describe('rhythmTextError', () => {
   it('says nothing for a valid rhythm, or for an empty box', () => {
@@ -51,5 +51,20 @@ describe('typedGroups and groupsTextError (Phase 4 spec §3, §7)', () => {
     expect(groupsTextError('3 4')).toBe('')
     expect(groupsTextError('  ')).toBe('')
     expect(groupsTextError('3 9')).toBe('Groups of 2 to 7, separated by spaces: up to 8 of them.')
+  })
+})
+
+describe('typedGears and gearsTextError (Phase 4 spec §3, §7)', () => {
+  it('reads 1 to 8 pulses by their spellings, separated by spaces or commas', () => {
+    expect(typedGears('4t 8 8t 16 16t')).toEqual(['4t', '8', '8t', '16', '16t'])
+    expect(typedGears(' 16s,4q  8q ')).toEqual(['16s', '4q', '8q'])
+    expect(typedGears('4 8 8t 16 4t 4q 8q 16q')).toHaveLength(8)
+    for (const bad of ['', '8 32', '8T', '8:', 'x', '4 8 8t 16 4t 4q 8q 16q 16t']) expect(typedGears(bad)).toBeNull()
+  })
+
+  it('says nothing for a valid list or an empty box, else how to write one', () => {
+    expect(gearsTextError('8 16')).toBe('')
+    expect(gearsTextError('  ')).toBe('')
+    expect(gearsTextError('8 32')).toBe('Pulses from 4, 8, 8t, 16, 4t, 4q, 8q, 16q, 16t and 16s, separated by spaces: up to 8 of them.')
   })
 })
