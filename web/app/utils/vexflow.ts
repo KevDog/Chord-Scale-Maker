@@ -85,13 +85,14 @@ export const headCentre = (n: { getNoteHeadBeginX(): number; getNoteHeadEndX(): 
 
 /**
  * draw one staff of whole notes into el, replacing what was there; colors follow CSS `color`.
+ * width: its drawing units, which the SVG scales to its container (fewer draw it larger).
  * Returns each note head's centre as a fraction of the width, for labels placed under it.
  */
-export function drawStaff(vf: VexFlowModule, el: HTMLElement, staff: StaffModel, clef: 'treble' | 'bass'): number[] {
-  if (staff.run) return drawRunStaff(vf, el, staff, staff.run, clef)
-  const ctx = svgContext(vf, el, STAFF_WIDTH)
+export function drawStaff(vf: VexFlowModule, el: HTMLElement, staff: StaffModel, clef: 'treble' | 'bass', width: number = STAFF_WIDTH): number[] {
+  if (staff.run) return drawRunStaff(vf, el, staff, staff.run, clef, width)
+  const ctx = svgContext(vf, el, width)
 
-  const stave = staffStave(vf, staff, clef)
+  const stave = staffStave(vf, staff, clef, width)
   stave.setEndBarType(staff.last ? vf.BarlineType.END : vf.BarlineType.DOUBLE)
   stave.setContext(ctx).draw()
 
@@ -103,7 +104,7 @@ export function drawStaff(vf: VexFlowModule, el: HTMLElement, staff: StaffModel,
   })
   if (notes.length > 0) {
     const voice = new vf.Voice({ numBeats: notes.length * 4, beatValue: 4 }).setMode(vf.Voice.Mode.SOFT).addTickables(notes)
-    new vf.Formatter().joinVoices([voice]).format([voice], STAFF_WIDTH - stave.getNoteStartX() - 24)
+    new vf.Formatter().joinVoices([voice]).format([voice], width - stave.getNoteStartX() - 24)
     voice.draw(ctx, stave)
   }
 
@@ -114,9 +115,9 @@ export function drawStaff(vf: VexFlowModule, el: HTMLElement, staff: StaffModel,
   })
   const names = staff.notes.map(ariaName)
   const label = staffLabel(names, staff.selected ? names.filter((_, i) => staff.selected?.[i]) : null, names.filter((_, i) => staff.outside?.[i]))
-  fitSvg(el, cropBand(notes.flatMap((n) => n.getYs())), STAFF_WIDTH, label)
+  fitSvg(el, cropBand(notes.flatMap((n) => n.getYs())), width, label)
   if (staff.timeSig) el.querySelector('svg')?.setAttribute('data-time-sig', staff.timeSig)
-  return notes.map((n) => headCentre(n, STAFF_WIDTH))
+  return notes.map((n) => headCentre(n, width))
 }
 
 /** a pitch's name in an aria-label: "eb4" */
@@ -140,9 +141,9 @@ const RUN_MARGIN = 4 // the crop's room past a stem tip, a tuplet's number or an
  * the staff note each run note repeats (D15); its aria-label the run's notes, "rest" for a rest, then the practice part.
  * Returns each run note's head centre (at its attack) as a fraction of the width, for the intervals under it.
  */
-function drawRunStaff(vf: VexFlowModule, el: HTMLElement, staff: StaffModel, run: NonNullable<StaffModel['run']>, clef: 'treble' | 'bass'): number[] {
-  const ctx = svgContext(vf, el, STAFF_WIDTH)
-  const ticks = drawRun(vf, ctx, run, run.notes, run.accidentals, clef, 0, STAFF_WIDTH - 1, { clef: staff.showClefAndKey, keySig: staff.keySig, timeSig: staff.timeSig ?? `${run.beats}/4`, last: staff.last })
+function drawRunStaff(vf: VexFlowModule, el: HTMLElement, staff: StaffModel, run: NonNullable<StaffModel['run']>, clef: 'treble' | 'bass', width: number): number[] {
+  const ctx = svgContext(vf, el, width)
+  const ticks = drawRun(vf, ctx, run, run.notes, run.accidentals, clef, 0, width - 1, { clef: staff.showClefAndKey, keySig: staff.keySig, timeSig: staff.timeSig ?? `${run.beats}/4`, last: staff.last })
   const marks = run.bars.flatMap((b) => b.notes)
   marks.forEach((m, i) => {
     const classes = m.note === null ? [] : practiceClasses(staff, run.source[m.note] ?? -1)
@@ -167,13 +168,13 @@ function drawRunStaff(vf: VexFlowModule, el: HTMLElement, staff: StaffModel, run
   const band = cropBand(heads)
   const tuplets = [...new Set(ticks.flatMap((t) => t.getTuplet() ?? []))]
   const tops = inkTips(pitched, accented, tuplets)
-  fitSvg(el, { top: Math.min(band.top, ...tops.map((y) => y - RUN_MARGIN)), bottom: Math.max(band.bottom, ...stems.map((y) => y + RUN_MARGIN)) }, STAFF_WIDTH, label)
+  fitSvg(el, { top: Math.min(band.top, ...tops.map((y) => y - RUN_MARGIN)), bottom: Math.max(band.bottom, ...stems.map((y) => y + RUN_MARGIN)) }, width, label)
   el.querySelector('svg')?.setAttribute('data-time-sig', staff.timeSig ?? `${run.beats}/4`)
   // each run note's x: at its attack
   return run.notes.map((_, k) => {
     const at = marks.findIndex((m) => m.note === k && !m.mark.tiedIn)
     const t = ticks[at]
-    return t ? headCentre(t, STAFF_WIDTH) : 0
+    return t ? headCentre(t, width) : 0
   })
 }
 
@@ -244,8 +245,8 @@ export function drawRun(
 }
 
 /** a Scales staff's stave: the clef and key signature on every line's first staff (a Patterns continuation has neither), then its time signature (with a rhythm card) */
-function staffStave(vf: VexFlowModule, staff: StaffModel, clef: 'treble' | 'bass'): InstanceType<VexFlowModule['Stave']> {
-  const stave = inkStave(vf, 0, STAVE_Y, STAFF_WIDTH - 1)
+function staffStave(vf: VexFlowModule, staff: StaffModel, clef: 'treble' | 'bass', width: number = STAFF_WIDTH): InstanceType<VexFlowModule['Stave']> {
+  const stave = inkStave(vf, 0, STAVE_Y, width - 1)
   if (staff.showClefAndKey) stave.addClef(clef)
   if (staff.showClefAndKey && staff.keySig) stave.addKeySignature(staff.keySig)
   if (staff.timeSig) stave.addTimeSignature(staff.timeSig)

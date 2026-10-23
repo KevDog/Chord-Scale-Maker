@@ -139,7 +139,7 @@ test('on a phone, the menu lists every page flat', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 800 })
   await page.goto('/')
   await page.getByRole('button', { name: 'Open navigation' }).click()
-  await expect(page.getByRole('dialog').getByRole('link')).toHaveText(['Library', 'Scales', 'Composers', 'How it works', 'How it decides', 'Functions', 'About', 'Contact'])
+  await expect(page.getByRole('dialog').getByRole('link')).toHaveText(['Library', 'Scales', 'Chords', 'Composers', 'How it works', 'How it decides', 'Functions', 'About', 'Contact'])
 })
 
 test('Help is in the navbar and footer, and its contents jump to each section', async ({ page }) => {
@@ -180,6 +180,7 @@ test('the header is the same height whatever the quote, and keeps the whole quot
   const picks = [byLength.at(-1)!.i, byLength[0]!.i, 0, quotes.length - 1, byLength[Math.floor(byLength.length / 2)]!.i, 1]
   const paths = ['/', '/help', '/about', '/contact', '/functions', '/song/autumn-leaves']
   const heights = new Set<number>()
+  await page.setViewportSize({ width: 1536, height: 900 }) // the quote shows from 2xl
   for (const [n, path] of paths.entries()) {
     await page.addInitScript((r) => (Math.random = () => r), at(picks[n]!)) // init scripts run in order: the last added wins
     await page.goto(path)
@@ -194,7 +195,7 @@ test('the header is the same height whatever the quote, and keeps the whole quot
     expect((await page.getByRole('banner').getByRole('navigation').first().boundingBox())?.height).toBeLessThanOrEqual(64)
   }
   // the longest quotes, at the narrowest width that shows one: whole, and the author whole under them
-  await page.setViewportSize({ width: 1280, height: 800 })
+  await page.setViewportSize({ width: 1536, height: 800 })
   for (const { i } of byLength.slice(-6)) {
     await page.addInitScript((r) => (Math.random = () => r), at(i))
     await page.goto('/help')

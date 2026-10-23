@@ -38,6 +38,7 @@ test('a scale page draws its staff, written for the instrument', async ({ page }
   await expect(practice).toContainText('C Dorian')
   await chooseInstrument(page, 'Tenor')
   await expect(practice).toContainText('D Dorian')
+  await expect(practice.getByText('Spell Scale')).toHaveCount(0) // a reference page spells from the root
 })
 
 test.describe('an unknown scale', () => {
