@@ -329,7 +329,10 @@ describe('the Changes sheet', () => {
     expect(changesLinesPerPage('third', { numerals: true, scales: true, pentatonics: true })).toBe(5)
     expect(changesLinesPerPage('seventh', { numerals: true, scales: false, pentatonics: true })).toBe(6)
     expect(changesLinesPerPage('off', { numerals: true, scales: true, pentatonics: true })).toBe(7)
-    expect(changesLinesPerPage('off', { numerals: true, scales: false, pentatonics: true })).toBe(8)
+    expect(changesLinesPerPage('off', { numerals: true, scales: false, pentatonics: true })).toBe(8)    // a poured rhythm (rhythm-on-lines spec §9) is a line taller still: one fewer
+    expect(changesLinesPerPage('up-root', { numerals: true, scales: true }, true, true)).toBe(5)
+    expect(changesLinesPerPage('up-root', { numerals: true, scales: true }, true, false)).toBe(6)
+    expect(changesLinesPerPage('off', { numerals: true, scales: true }, true, true)).toBe(6)
   })
 })
 

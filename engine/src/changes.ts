@@ -217,17 +217,18 @@ function areaLadder(name: string, part: Part): Readonly<{ ladder: readonly Penta
  * Changes lines on a printed page, one rule a line:
  * - no guide line: 8, or 7 with numerals, scales and pentatonics all shown;
  * - a guide tone or arpeggio line, or a rhythm line (rhythm spec §8): 5 with all three rows, 6 with any row, 7 with none.
+ * A rhythm poured into a Line (rhythm-on-lines spec §9, `poured`) takes one line fewer: 4 with all three rows, 5 with any row, 6 with none.
  * Notes, stems and the label row take more height. Measured over the library in every transposition at letter width,
  * with a page's tallest lines (an ending raised over the stems); the 5 and 7 were measured on Stardust (tuba, From
  * 7th), the documented worst case, and print.spec checks it. With Pentatonics plus Numerals or Scales, 8 and 6 hold
  * (measured with the contour band #265 drew, since removed: #277).
  */
-export function changesLinesPerPage(line: ChangesLineChoice, rows: Readonly<{ numerals: boolean; scales: boolean; pentatonics?: boolean; hexatonics?: boolean; quartals?: boolean }>, rhythm = false): number {
+export function changesLinesPerPage(line: ChangesLineChoice, rows: Readonly<{ numerals: boolean; scales: boolean; pentatonics?: boolean; hexatonics?: boolean; quartals?: boolean }>, rhythm = false, poured = false): number {
   const overlay = !!(rows.pentatonics || rows.hexatonics || rows.quartals) // the hexatonic and quartal rows take the pentatonic row's place and height
   const all = overlay && rows.numerals && rows.scales
   if (line === 'off' && !rhythm) return all ? 7 : 8
-  if (all) return 5
-  return 6 + (!rows.numerals && !rows.scales && !overlay ? 1 : 0)
+  const voiced = all ? 5 : 6 + (!rows.numerals && !rows.scales && !overlay ? 1 : 0)
+  return poured && line !== 'off' ? voiced - 1 : voiced // a poured rhythm's ties, tuplets and target marks stand taller (rhythm-on-lines spec §9)
 }
 
 const STANDARD: ScaleView = { level: 'standard', seed: 0 }

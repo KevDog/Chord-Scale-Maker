@@ -336,6 +336,9 @@ as the sheet):
 **If either overflows,** `changesLinesPerPage` gains `poured = false` as a fourth argument, giving one line fewer than
 the voiced budget for a poured line, and both tests then pass with it. Only poured sheets, which are new, change.
 
+**Measured:** Stardust (tuba) fit the voiced budget; the 5/4 chart (triplets, Anticipate 1½ beats) printed 4 pages for a 2-page
+sheet. So `poured` is in: a Line on with a rhythm caption gives voiced − 1 (4, 5 or 6), and both tests pass.
+
 ### 10. Controls, preferences and links
 
 - **Flag:** `rhythm` (existing). The e2e build has it on.

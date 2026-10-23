@@ -156,7 +156,7 @@ function onAlt(key: string, then: 'edit' | 'next' | 'prev' | 'close'): void {
 const pentatonic = computed((): PentatonicPlan | null => (props.overlay?.kind === 'pentatonic' ? props.overlay : null))
 const counted = computed(() => !!pentatonic.value && (pentatonic.value.counts || pentatonic.value.basis === 'chord' || built.value.lines.some((l) => l.bars.some((b) => b.chords.some((c) => c.pentatonic?.picked)))))
 // 8 lines with slashes (a 32-bar AABA, one section a line pair); fewer with a guide tone or rhythm line, whose notes and labels are taller
-const linesPerPage = computed(() => changesLinesPerPage(line.value, { numerals: props.numerals, scales: props.scales, pentatonics: props.overlay?.kind === 'pentatonic', hexatonics: props.overlay?.kind === 'hexatonic', quartals: props.overlay?.kind === 'quartal' }, !!built.value.rhythmCaption))
+const linesPerPage = computed(() => changesLinesPerPage(line.value, { numerals: props.numerals, scales: props.scales, pentatonics: props.overlay?.kind === 'pentatonic', hexatonics: props.overlay?.kind === 'hexatonic', quartals: props.overlay?.kind === 'quartal' }, !!built.value.rhythmCaption, line.value !== 'off' && !!built.value.rhythmCaption))
 const subtitleText = computed(() => [pageSubtitle(props.subtitle, props.instrumentLabel, 'Changes'), built.value.pentatonicCaption, built.value.rhythmCaption].filter(Boolean).join(' · '))
 const pages = computed(() =>
   chunk(
