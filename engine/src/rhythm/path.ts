@@ -82,7 +82,7 @@ export function rhythmPathCaption(id: RhythmId, path: RhythmPath | undefined): s
   const { p, groups, gears } = on
   const label =
     p.kind === 'custom'
-      ? `Your rhythm (${p.rhythm.cells.join('')})`
+      ? `Your rhythm (${p.rhythm.cells.join('')})` // its cells alone, not formatRhythm's: only Gears acts on it, so its pulse is the path's
       : p.kind === 'unit'
         ? `${gears ? 'Units' : PULSE_LABELS[p.pulse]}${groups ? '' : ` in ${p.group}`}, ${VARIATION_LABELS[p.variation]}`
         : ''

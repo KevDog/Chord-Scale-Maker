@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import * as vf from 'vexflow/bravura'
-import type { ChangesBar, ChangesChord, ChangesLine, GuideNote, Letter, Pitched, RhythmCardModel, RhythmNote } from '@chord-scale-maker/engine'
-import { arpeggioAria, balancedSplit, beamRuns, beatXs, bracketsCross, cardAria, cardFit, DURATIONS, evenChunks, feelAria, feelMark, fitBars, guideAria, mergeNames, restatedAccidental, rhythmAria, stepAria, stepNumeral, targetsAria, SLASH_TARGET_ROW, targetRow, tupletsOf, voicedBand, voltaShift, withTargets } from '~/utils/changesDrawing'
+import { type ChangesBar, type ChangesChord, type ChangesLine, type GuideNote, type Letter, type Pitched, PULSE_SHORT_LABELS, type RhythmCardModel, type RhythmNote } from '@chord-scale-maker/engine'
+import { arpeggioAria, balancedSplit, beamRuns, beatXs, bracketsCross, cardAria, cardFit, drawStepMarks, DURATIONS, evenChunks, feelAria, feelMark, fitBars, guideAria, mergeNames, restatedAccidental, rhythmAria, stepAria, stepNumeral, targetsAria, SLASH_TARGET_ROW, targetRow, tupletsOf, voicedBand, voltaShift, withTargets } from '~/utils/changesDrawing'
 
 const chord = (beat: number, text: string, guide: string): ChangesChord => ({
   beat,
@@ -382,5 +382,63 @@ describe('cardFit', () => {
     expect(cardFit([500], 250, 1000, 64)).toEqual({ widths: [500], shown: 1 })
     expect(cardFit([900, 900], 250, 1000, 64)).toEqual({ widths: [900, 900], shown: 1 }) // at least one
     expect(cardFit([400, 250, 250], 250, 1000, 64)).toEqual({ widths: [400, 250, 250], shown: 3 }) // all three fit: no ellipsis
+  })
+})
+
+describe('drawStepMarks (Phase 4 spec §6, D17; #553)', () => {
+  /** a context that records what it writes, each glyph half its font size wide */
+  function fakeCtx() {
+    let size = 0
+    const written: { text: string; x: number; size: number }[] = []
+    const ctx = {
+      openGroup: () => null,
+      closeGroup: () => {},
+      setFont: (_family: string, s: number) => {
+        size = s
+        return ctx
+      },
+      measureText: (text: string) => ({ width: [...text].length * size * 0.5 }),
+      fillText: (text: string, x: number) => written.push({ text, x, size }),
+    }
+    return { ctx: ctx as unknown as Parameters<typeof drawStepMarks>[0], written }
+  }
+  /** a bar whose first note's head spans 100–110 (centre 105), the stave from 80 to 280 */
+  const marked = (step: ChangesBar['step'], targets: readonly number[] = []) => ({
+    bar: { step, targets } as unknown as ChangesBar,
+    ticks: [{ getNoteHeadBeginX: () => 100, getNoteHeadEndX: () => 110 }] as unknown as vf.StaveNote[],
+    stave: { getX: () => 80, getWidth: () => 200 } as unknown as vf.Stave,
+  })
+
+  it('centres the numeral on the first note’s head, then the pulse’s name after it', () => {
+    const { ctx, written } = fakeCtx()
+    drawStepMarks(ctx, [marked({ group: 3, pulse: '16' })], 0, null)
+    expect(written.map((w) => w.text)).toEqual([stepNumeral(3), PULSE_SHORT_LABELS['16']])
+    expect(written[0]!.x).toBeCloseTo(105 - (12 * 0.9) / 2) // its first glyph centred on the head
+    expect(written[1]!.x).toBeGreaterThan(written[0]!.x)
+  })
+
+  it('starts just right of a target dot over the note', () => {
+    const { ctx, written } = fakeCtx()
+    drawStepMarks(ctx, [marked({ group: 3, pulse: null }, [0])], 0, [[105]])
+    expect(written[0]!.x).toBe(105 + 9)
+  })
+
+  it('on the sheet’s first bar, starts after the Feel mark', () => {
+    const { ctx, written } = fakeCtx()
+    drawStepMarks(ctx, [marked({ group: 3, pulse: null })], 0, null, 150)
+    expect(written[0]!.x).toBe(150 + 5)
+  })
+
+  it('shrinks the numeral to its room before the next dot, never under its least size', () => {
+    const { ctx, written } = fakeCtx()
+    drawStepMarks(ctx, [marked({ group: 12, pulse: null }, [0, 1])], 0, [[105, 120]])
+    expect(written[0]!.size).toBeLessThan(12)
+    expect(written[0]!.size).toBeGreaterThanOrEqual(8)
+  })
+
+  it('draws nothing on a bar with no step', () => {
+    const { ctx, written } = fakeCtx()
+    drawStepMarks(ctx, [marked(null)], 0, null)
+    expect(written).toEqual([])
   })
 })

@@ -59,6 +59,7 @@ test('the footer and the Functions page link to the scales', async ({ page }) =>
 
 // a tuplet pulse (Phase 4 spec §2, §7; flag `rhythmGears`): a Units family at Everything, one 5:4 tuplet a card bar
 test.describe('the Scales sheet’s tuplet pulses', () => {
+  test.use({ interfaceLevel: 'everything' }) // the tuplet pulses are Everything's (#553): said here, not left to the fixture's default
   test('a quarter-note quintuplet card: one tuplet a bar, its number 5', async ({ page }) => {
     await page.goto('/song/f-blues')
     await chooseSheet(page, 'Scales')

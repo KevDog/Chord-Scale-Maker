@@ -4,7 +4,7 @@
  */
 import { feelGroups, type Feel } from './feel'
 import { statementAt, type Laid, type RhythmEvent } from './lay'
-import { PULSE_GRID, pulseBeat, type Pulse, type PulseGrid, type RhythmValue } from './rhythm'
+import { PULSE_GRID, pulseBeat, type Pulse, type PulseGrid, type RhythmValue, VALUE_BEATS } from './rhythm'
 
 export type { RhythmValue } from './rhythm'
 
@@ -28,16 +28,17 @@ export type RhythmNote = Readonly<{
   bracket: 'start' | 'end' | 'both' | null
 }>
 
-/** Straight values by length in 16ths, longest first (§6.2: 4, 3, 2, 1.5, 1 beats, then 0.75, 0.5, 0.25). */
-const STRAIGHT: readonly (readonly [number, RhythmValue])[] = [
-  [16, 'w'], [12, 'hd'], [8, 'h'], [6, 'qd'], [4, 'q'], [3, '8d'], [2, '8'], [1, '16'],
-]
+/** the values, longest first (sorted: Object.keys puts '8' and '16', integer keys, first) */
+const VALUES = (Object.keys(VALUE_BEATS) as RhythmValue[]).toSorted((a, b) => VALUE_BEATS[b] - VALUE_BEATS[a])
 
-/** Whole-beat values by beats, longest first (§6.3's merged beats, and a tuplet's merged groups). */
-const WHOLE_BEATS: readonly (readonly [number, RhythmValue])[] = [[4, 'w'], [3, 'hd'], [2, 'h'], [1, 'q']]
+/** Straight values by length in 16ths, longest first (§6.2: 4, 3, 2, 1.5, 1 beats, then 0.75, 0.5, 0.25). */
+const STRAIGHT: readonly (readonly [number, RhythmValue])[] = VALUES.map((v) => [VALUE_BEATS[v] * 4, v] as const)
+
+/** Whole-beat values by beats, longest first (§6.3's merged beats, and a tuplet's merged groups): w, hd, h, q. */
+const WHOLE_BEATS: readonly (readonly [number, RhythmValue])[] = VALUES.filter((v) => Number.isInteger(VALUE_BEATS[v])).map((v) => [VALUE_BEATS[v], v] as const)
 
 /** A value's length in 16ths. */
-const SIXTEENTHS: Readonly<Record<RhythmValue, number>> = { w: 16, hd: 12, h: 8, qd: 6, q: 4, '8d': 3, '8': 2, '16': 1 }
+const SIXTEENTHS = (v: RhythmValue): number => VALUE_BEATS[v] * 4
 
 const longest = (table: readonly (readonly [number, RhythmValue])[], n: number): readonly [number, RhythmValue] =>
   table.find(([len]) => len <= n)!
@@ -77,7 +78,7 @@ function tupletPieces(at: number, length: number, grid: PulseGrid): readonly Pie
     } else {
       const room = Math.min(left, n - (p % n))
       const len = [4, 3, 2, 1].find(k => k <= room)!
-      pieces.push({ at: p, length: len, value: longest(STRAIGHT, len * SIXTEENTHS[base])[1], ratio: grid.tuplet })
+      pieces.push({ at: p, length: len, value: longest(STRAIGHT, len * SIXTEENTHS(base))[1], ratio: grid.tuplet })
       p += len
       left -= len
     }

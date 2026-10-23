@@ -15,7 +15,7 @@ import { type PentatonicLine, pentatonicVoices } from './pentatonicLine'
 import { type TriadPairLine, triadPairVoices } from './triadPairLine'
 import { concertPc, type Part, rangeOf, scaleLabel, writtenRoot, writtenScale } from './part'
 import { glyphs, mod, parseRoot, pcOf, rootName, type Spelled, shiftBy } from './pitch'
-import { stepUnits } from './steps'
+import { blockBars, stepUnits } from './steps'
 import { isPentatonicPreset, type PentatonicDegree, pentatonicDegreeFrom, PENTATONIC_HOME, PENTATONIC_STEP, pentatonicAt, pentatonicCycle, pentatonicPathCaption, type PentatonicPathName, type PentatonicStep, pentatonicLadder, pentatonicRanking, type RankedPentatonic, type PentatonicRung, type PentatonicView } from './pentatonics'
 import { baseQuality, readChord } from './qualities'
 import { bluesTonic, isBluesRule, type Resolved, resolveScales, type ScaleView } from './resolve'
@@ -686,7 +686,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
   // each drawn chord's pentatonic (its label's, picks and all), worked out before the line, which plays it (#284)
   const pentAt = new Map<number, ChangesPentatonic | null>()
   blocks.forEach((block, k) => {
-    for (let j = 0; j < Math.max(1, block.to - block.from + 1); j++) {
+    for (let j = 0; j < blockBars(block); j++) {
       for (const i of block.rows.filter((r) => barOf(r) === block.from + j)) {
         const row = rows[i] as LinedRow
         const scale = resolved.get(i)?.scale ?? null
@@ -698,7 +698,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
   const pentRoots = new Map([...pentAt].flatMap(([i, p]) => (p ? [[i, p.root] as const] : [])))
   // the bars as drawn (a repeat drawn with repeat signs counts once), which the rhythm is laid over: their clock bars,
   // lengths, and the breaks no tie runs into (a 2nd or later ending: the player jumps there from before the 1st)
-  const clockBars = blocks.flatMap((b) => Array.from({ length: Math.max(1, b.to - b.from + 1) }, (_, j) => b.from + j))
+  const clockBars = blocks.flatMap((b) => Array.from({ length: blockBars(b) }, (_, j) => b.from + j))
   const lengths = clockBars.map((bar) => barLength(clock, bar))
   const breaks = clockBars.flatMap((bar, d) => ((voltaAt.get(bar)?.n ?? 0) > 1 && voltaAt.get(bar)?.n !== voltaAt.get(clockBars[d - 1] ?? -1)?.n ? [d] : []))
   const poured = rhythm !== 'off' && takesRhythm(line, restate)
@@ -743,7 +743,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
   const lastForm = blocks.findLastIndex((b) => b.part === 'form')
   const lines = blocks.flatMap((block, k) => {
     const firstBar = Number((rows[block.rows[0] ?? -1] as LinedRow | undefined)?.bar ?? 1)
-    const bars = Array.from({ length: Math.max(1, block.to - block.from + 1) }, (_, j): ChangesBar => {
+    const bars = Array.from({ length: blockBars(block) }, (_, j): ChangesBar => {
       const bar = block.from + j
       const chords = block.rows
         .filter((i) => barOf(i) === bar)

@@ -11,7 +11,7 @@ import { spellFrom } from './scales'
 import { orNull } from './util'
 import { lineRhythm, type LineRhythm, type LineSpan, type RhythmPlan } from './rhythm/pour'
 import { restPieces, type RhythmNote, type RhythmValue, tupletGroup, type TupletRatio } from './rhythm/notation'
-import { pulseAt, pulseBeat, type Pulse } from './rhythm/rhythm'
+import { pulseAt, pulseBeat, type Pulse, VALUE_BEATS } from './rhythm/rhythm'
 
 /**
  * 7th chord arpeggios on the Changes sheet (docs/superpowers/specs/2026-10-12-seventh-chord-arpeggios-design.md):
@@ -401,7 +401,6 @@ function lineSpans(chords: readonly GuideInput[], cells: readonly (Cells | null)
 }
 
 /** a rhythm value's length in beats (in a tuplet, scaled by its ratio: ⅔ of it in a triplet) */
-const VALUE_BEATS: Readonly<Record<RhythmValue, number>> = { w: 4, hd: 3, h: 2, qd: 1.5, q: 1, '8d': 0.75, '8': 0.5, '16': 0.25 }
 const tupletBeats = (value: RhythmValue, ratio: TupletRatio | null): number => VALUE_BEATS[value] * (ratio === null ? 1 : ratio.of / ratio.notes)
 const valueBeats = (n: RhythmNote): number => tupletBeats(n.value, n.ratio)
 
