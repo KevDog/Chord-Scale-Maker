@@ -320,6 +320,22 @@ for (const [song, instrument, start, pages] of [['f-blues', 'Piano', null, 1], [
   })
 }
 
+// a tuplet pulse's card (Phase 4 spec §8; flag `rhythmGears`): 8th-note quintuplets in 5, a one-bar card of two 5:4
+// tuplets, keep the cards' count, a sheet page to a letter page
+test('prints the Scales with an 8th-note quintuplet card, a sheet page to a letter page (f-blues, Piano)', async ({ page }) => {
+  await page.goto('/song/f-blues')
+  await chooseSheet(page, 'Scales')
+  await chooseInstrument(page, 'Piano')
+  await chooseRhythm(page, '8th-note quintuplets', { In: 'In 5', Variation: 'with accents' })
+  const staffs = page.locator('[data-slot=scale-staff]')
+  await expect(page.locator('[data-slot=rhythm-card] [data-rhythm-bar]')).toHaveCount(await staffs.count()) // 5 in 5: the cycle is a bar
+  await expect(page.locator('[data-slot=rhythm-card] .vf-tuplet')).toHaveCount(2 * (await staffs.count()))
+  const sheetPages = await staffs.evaluateAll((els) => new Set(els.map((e) => e.closest('section'))).size)
+  await page.emulateMedia({ media: 'print' })
+  await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden()
+  expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(sheetPages)
+})
+
 // Notes per bar (rhythm-scales-arpeggios spec §8): a run is a voiced staff with stems; 7 a bar (tuplets) and 1 a bar
 // (15 bars on a staff), a sheet page to a letter page: F Blues (§8's check) and Autumn Leaves (14: a full page at the
 // reduced count, as with cards: 12 of trombone-from-B runs at 7 a bar overflow), also trombone from B

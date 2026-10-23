@@ -57,6 +57,20 @@ test('the footer and the Functions page link to the scales', async ({ page }) =>
   await expect(page.locator('main a[href="/scales/dorian"]').first()).toBeVisible()
 })
 
+// a tuplet pulse (Phase 4 spec §2, §7; flag `rhythmGears`): a Units family at Everything, one 5:4 tuplet a card bar
+test.describe('the Scales sheet’s tuplet pulses', () => {
+  test('a quarter-note quintuplet card: one tuplet a bar, its number 5', async ({ page }) => {
+    await page.goto('/song/f-blues')
+    await chooseSheet(page, 'Scales')
+    await expect(staves(page).first()).toBeVisible()
+    await chooseRhythm(page, 'Quarter-note quintuplets', { In: 'In 5', Variation: 'with accents' })
+    const card = page.locator('[data-slot=rhythm-card] svg').first()
+    await expect(card.locator('[data-rhythm-bar]')).toHaveCount(1) // 5 in 5: the cycle is a bar
+    await expect(card.locator('.vf-tuplet')).toHaveCount(1)
+    await expect(card.locator('.vf-tuplet text')).toHaveText(String.fromCodePoint(0xe885)) // Bravura's tuplet 5
+  })
+})
+
 // the Scales sheet's rhythm card (rhythm-scales-arpeggios spec §1, §6, §9; flag `rhythmSheets`)
 test.describe('the Scales sheet’s rhythm', () => {
   test.use({ interfaceLevel: 'intermediate' })
