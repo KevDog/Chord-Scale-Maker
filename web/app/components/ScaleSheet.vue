@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import { buildSheet, type ChordAt, isQuartalSelection, type ChordPicks, type Key, type PickKind, type ModeChoice, type Part, pageSubtitle, type PracticeSelection, type Resolved, type Row } from '@chord-scale-maker/engine'
+import { buildSheet, type ChordAt, isQuartalSelection, type ChordPicks, type Key, type PickKind, type ModeChoice, type Part, pageSubtitle, type PracticeSelection, type Resolved, type RhythmId, type Row, sheetRhythmText } from '@chord-scale-maker/engine'
 
 const props = defineProps<{
   rows: readonly Row[]
@@ -31,17 +31,19 @@ const props = defineProps<{
   picks?: ChordPicks // the chord picks (#303), played where positions are given too
   positions?: ReadonlyMap<number, ChordAt> // each row's drawn position (chordPositions)
   pickable?: boolean // captions open the chord pick popover
+  rhythm?: RhythmId // the rhythm in force on this sheet: a card under each staff, named in the subtitle (rhythm-scales-arpeggios spec §1, §6)
+  beatsOf?: (row: number) => number // the bar length in beats of each row (rowBarBeats; default 4)
 }>()
 const emit = defineEmits<{ pick: [kind: PickKind, positions: readonly ChordAt[], value: number | readonly [number, number] | null] }>()
 
 /** every printed page, in order, with its own heading */
 const pages = computed(() =>
-  buildSheet(props.rows, props.part, props.mode, props.start, props.perPage, props.practice ?? null, props.homeKey, props.resolved, props.picks && props.positions ? { picks: props.picks, at: props.positions } : undefined, props.keys)
+  buildSheet(props.rows, props.part, props.mode, props.start, props.perPage, props.practice ?? null, props.homeKey, props.resolved, props.picks && props.positions ? { picks: props.picks, at: props.positions } : undefined, props.keys, { rhythm: props.rhythm, beatsOf: props.beatsOf })
     .flatMap((sheetPart) =>
       sheetPart.pages.map((staves) => ({
         mode: sheetPart.mode,
         staves,
-        subtitle: pageSubtitle(props.subtitle, props.instrumentLabel, sheetPart.heading),
+        subtitle: pageSubtitle(props.subtitle, props.instrumentLabel, sheetPart.heading, sheetRhythmText(props.rhythm ?? 'off')),
       })),
     ),
 )

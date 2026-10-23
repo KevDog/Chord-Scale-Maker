@@ -21,7 +21,7 @@ export const CONTROL_TIERS = {
   patterns: 'intermediate', // the Patterns sheet (#298)
   cells: 'intermediate', // the Cells line's cell choice (#298), its Order and Phrase (#376)
   approaches: 'intermediate', // the guide tone line's Approach listbox (#298)
-  rhythm: 'intermediate', // the Changes sheet's rhythm line and target beats (rhythm spec §9)
+  rhythm: 'intermediate', // the Changes sheet's rhythm line and target beats (rhythm spec §9); the Rhythm on the Scales and Arpeggios sheets
   'rhythm-phrasing': 'everything', // the rhythm's Start and timing (rhythm spec §10)
   'scale-choice': 'intermediate', // a chord's scale: the scale label picker, ChordChoices' Scale section
   'form-editing': 'intermediate', // Repeat a section, Write out, endings, segno, coda, Jump, New section here, Paste bars
@@ -57,7 +57,7 @@ function setAway(v: ViewSettings): readonly (readonly [HiddenSetting, InterfaceL
     ...(scales && v.practice ? [['practice', isPentatonicSelection(v.practice) || isHexatonicSelection(v.practice) ? 'everything' : 'intermediate'] as const] : []),
     ...(changes && v.overlay !== 'off' ? [['pentatonics', 'everything'] as const] : []), // Superimpose's control id
     ...(changes && v.approach !== 'none' ? [['approaches', 'intermediate'] as const] : []),
-    ...(changes && ((v.rhythm !== 'off' && (v.lineMode === 'off' || v.rhythmLine)) || v.targets) ? [['rhythm', 'intermediate'] as const] : []), // a rhythm draws as the rhythm line, or in a Line that takes it (#505)
+    ...((changes && ((v.rhythm !== 'off' && (v.lineMode === 'off' || v.rhythmLine)) || v.targets)) || ((scales || v.sheet === 'arpeggios') && v.rhythm !== 'off') ? [['rhythm', 'intermediate'] as const] : []), // a rhythm draws as the rhythm line, or in a Line that takes it (#505); on Scales and Arpeggios, the rhythm in force there (Off with the rhythmSheets flag off)
     ...(changes && v.rhythm !== 'off' && v.rhythmLine && (v.rhythmStart !== 'beat' || v.anticipate !== 0) ? [['rhythm-phrasing', 'everything'] as const] : []), // rhythmLine: the Line takes the rhythm (spec C3)
     ...(v.sheet === 'patterns' ? [['patterns', 'intermediate'] as const] : []),
     ...((changes || scales) && v.picks ? [['chord-picks', 'everything'] as const] : []),

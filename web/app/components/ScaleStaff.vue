@@ -1,5 +1,5 @@
 <template>
-  <div class="grid grid-cols-[8rem_1fr] items-center gap-3 break-inside-avoid print:grid-cols-[8.5rem_1fr]">
+  <div data-slot="scale-staff" class="grid grid-cols-[8rem_1fr] items-center gap-3 break-inside-avoid print:grid-cols-[8.5rem_1fr]">
     <div class="text-right leading-tight">
       <div v-if="staff.scale" class="text-base font-semibold"><NoteName :note="staff.scale.root" /> {{ staff.scale.name }}</div>
       <div class="text-sm text-zinc-500 dark:text-zinc-400 print:text-neutral-600">
@@ -30,6 +30,8 @@
     </div>
     <div v-else>
       <div ref="el" class="text-zinc-900 dark:text-zinc-100 print:text-black" />
+      <!-- the rhythm card (rhythm-scales-arpeggios spec §1): drawn under the staff -->
+      <div v-if="staff.card" data-slot="rhythm-card" />
       <!-- on screen only, so print keeps its 12 staves a page -->
       <p v-if="intervals && staff.intervals && xs.length" class="relative h-4 text-xs/4 text-zinc-600 tabular-nums dark:text-zinc-400 print:hidden">
         <span class="sr-only">Intervals from the chord root:</span>
