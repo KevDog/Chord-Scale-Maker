@@ -407,6 +407,13 @@ describe('a rhythm poured into the line (rhythm-on-lines spec §4)', () => {
     expect(letters(ap.get(0))).toEqual(['r', 'r', 'r', 'r', 'B'])
     expect(ap.get(2)![0]!.pitch!.midi - ap.get(1)!.at(-1)!.pitch!.midi).toBe(1)
   })
+  it('merges the rests of a bar no chord plays within each beat: no sixteen 16th rests under N.C.', () => {
+    const nc = seq(['N.C.', 4], ['CMaj7', 4])
+    const marks = (v: readonly GuideNote[] | undefined) => (v ?? []).map((n) => [n.beat, n.beats, n.mark?.value, n.mark?.tuplet, n.mark?.accent])
+    expect(marks(poured(nc, 4, plan('unit:16:4:accents', [4, 4])).get(0))).toEqual([0, 1, 2, 3].map((b) => [b, 1, 'q', null, false]))
+    expect(marks(poured(nc, 4, plan('unit:8t:4:accents', [4, 4])).get(0))).toEqual([0, 1, 2, 3].map((b) => [b, 1, 'q', null, false]))
+    expect(letters(poured(nc, 4, plan('unit:16:4:accents', [4, 4])).get(1))).toHaveLength(16) // the played bar keeps its 16ths
+  })
   it('(guard) a plan whose rhythm is off gives the voices of no plan', () => {
     const cs = seq(['CMaj7', 4], ['Dm7', 4])
     expect(arpeggioVoices(cs, CONCERT, 4, null, 'up-root', 'none', plan('off', [4, 4]))).toEqual(arpeggioVoices(cs, CONCERT, 4, null, 'up-root'))

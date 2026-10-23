@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import type { ChangesBar, ChangesChord, ChangesLine, GuideNote, Letter } from '@chord-scale-maker/engine'
-import { arpeggioAria, beatXs, DURATIONS, fitBars, guideAria, mergeNames, restatedAccidental, rhythmAria, SLASH_TARGET_ROW, targetRow, voicedBand, voltaShift, withTargets } from '~/utils/changesDrawing'
+import type { ChangesBar, ChangesChord, ChangesLine, GuideNote, Letter, Pitched } from '@chord-scale-maker/engine'
+import { arpeggioAria, beamRuns, beatXs, DURATIONS, fitBars, guideAria, mergeNames, restatedAccidental, rhythmAria, SLASH_TARGET_ROW, targetRow, voicedBand, voltaShift, withTargets } from '~/utils/changesDrawing'
 
 const chord = (beat: number, text: string, guide: string): ChangesChord => ({
   beat,
@@ -234,5 +234,14 @@ describe('rhythmAria', () => {
   })
   it('is empty with no rhythm drawn', () => {
     expect(rhythmAria(null)).toBe('')
+  })
+})
+
+describe('beamRuns (rhythm-on-lines spec §8)', () => {
+  const C4: Pitched = { letter: 0, acc: 0, midi: 60 }
+  const n = (beam: number | null, pitched = true): GuideNote => ({ pitch: pitched ? C4 : null, beat: 0, beats: 0.5, tie: false, tiedIn: false, accidental: null, mark: { value: '8', tuplet: null, beam, accent: false } })
+  it('beams runs of two or more pitched notes sharing a mark beam; a rest splits a run', () => {
+    expect(beamRuns([n(0), n(0, false), n(0), n(1), n(1), n(1)])).toEqual([[3, 4, 5]])
+    expect(beamRuns([n(0), n(0), n(null), n(2), n(2)])).toEqual([[0, 1], [3, 4]])
   })
 })

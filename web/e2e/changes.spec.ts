@@ -734,3 +734,43 @@ test.describe('the rhythm line', () => {
     await other.close()
   })
 })
+
+// a rhythm poured into the Line (rhythm-on-lines spec §8): Rhythm, Start, Timing and Target beats set in storage before load
+test.describe('a rhythm on the Lines', () => {
+  const CHART = 'title: T\nkey: C\n\nsection: A\n1 | CMaj7\n2 | Dm7\n3 | G7\n4 | CMaj7\n'
+  const poured = async (page: Page, prefs: Readonly<Record<string, string>>) => {
+    await page.addInitScript((p) => Object.entries(p).forEach(([k, v]) => localStorage.setItem(k, v)), prefs)
+    await writeChart(page, CHART)
+    await chooseInstrument(page, 'Piano')
+    await showArpeggios(page, 'Up · root')
+    await arpeggiosDrawn(page)
+  }
+
+  test('8ths in 3 with rests: each attack plays the arpeggio, the rests rest, and the label names the rhythm', async ({ page }) => {
+    await poured(page, { 'csm-rhythm': 'unit:8:3:rests', 'csm-rhythm-start': 'beat', 'csm-anticipate': '0' })
+    const line = lines(page).first()
+    await expect(line).toHaveAttribute('aria-label', /7th chords: C\S* rest rest E\S* rest G\S* rest /)
+    await expect(line).toHaveAttribute('aria-label', /; rhythm: 8ths in 3, with rests/)
+  })
+
+  test('Target beats under Downbeats, anticipating 2 beats: a chord tone on a target beat is colored, any other note dimmed', async ({ page }) => {
+    await poured(page, { 'csm-rhythm': 'card:downbeats', 'csm-rhythm-start': 'beat', 'csm-anticipate': '2', 'csm-targets': 'on' })
+    const line = lines(page).first()
+    await expect(line.locator('.vf-dimmed')).toHaveCount(3) // C E D F | A C G B | D F C E | G B G E: beat 3's D, G and C
+    await expect(line.locator('.vf-selected')).toHaveCount(5)
+  })
+
+  test('8th triplets in 4 with accents: a triplet bracket and accents on the Line', async ({ page }) => {
+    await poured(page, { 'csm-rhythm': 'unit:8t:4:accents', 'csm-rhythm-start': 'beat', 'csm-anticipate': '0' })
+    const line = lines(page).first()
+    await expect(line.locator('.vf-tuplet').first()).toBeAttached()
+    await expect(line.locator('text', { hasText: String.fromCodePoint(0xe4a0) }).first()).toBeAttached() // Bravura's accent above
+  })
+
+  test('Rhythm Off, Target beats on: the quarters on beats 1 and 3 are chord tones, colored', async ({ page }) => {
+    await poured(page, { 'csm-rhythm': 'off', 'csm-targets': 'on' })
+    const line = lines(page).first()
+    await expect(line.locator('.vf-selected')).toHaveCount(8)
+    await expect(line.locator('.vf-dimmed')).toHaveCount(0)
+  })
+})

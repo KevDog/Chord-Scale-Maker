@@ -10,7 +10,8 @@ import { baseQuality } from './qualities'
 import { spellFrom } from './scales'
 import { orNull } from './util'
 import { lineRhythm, type LineRhythm, type LineSpan, type RhythmPlan } from './rhythm/pour'
-import type { RhythmNote, RhythmValue } from './rhythm/notation'
+import { restPieces, type RhythmNote, type RhythmValue } from './rhythm/notation'
+import { PULSE_PER_BEAT, type Pulse } from './rhythm/rhythm'
 
 /**
  * 7th chord arpeggios on the Changes sheet (docs/superpowers/specs/2026-10-12-seventh-chord-arpeggios-design.md):
@@ -447,11 +448,38 @@ function pourVoices(poured: LineRhythm, rhythm: RhythmPlan, played: readonly Pla
     const voice = bar.map((n, i): GuideNote => {
       if (!n.tiedIn) held = n.rest || !poured.owners[d]?.[i] ? null : (pitchAt.get(`${d}:${n.beat}`) ?? null)
       const pitch = n.rest ? null : held
-      return { pitch, beat: n.beat, beats: valueBeats(n), tie: !!pitch && n.tie, tiedIn: !!pitch && n.tiedIn, accidental: null, mark: { value: n.value, tuplet: n.tuplet, beam: n.beam, accent: n.accent } }
+      return { pitch, beat: n.beat, beats: valueBeats(n), tie: !!pitch && n.tie, tiedIn: !!pitch && n.tiedIn, accidental: null, mark: { value: n.value, tuplet: n.tuplet, beam: n.beam, accent: !!pitch && n.accent } }
     })
-    bars.set(rhythm.clockBars[d] ?? d, voiceAccidentals(voice, keySig))
+    const silent = voice.map((n, i) => !n.pitch && !poured.owners[d]?.[i])
+    bars.set(rhythm.clockBars[d] ?? d, voiceAccidentals(mergeSilence(voice, silent, poured.laid.pulse), keySig))
   })
   return bars
+}
+
+/**
+ * a bar's silences (its rhythm's rests and the attacks no chord plays, as under N.C.) merged within each beat and
+ * notated as a rest is (rhythm spec §6.2, §6.3), so a bar no chord plays under 16ths draws a rest a beat, not sixteen;
+ * a scale-below pick-up out of range keeps its own rest
+ */
+function mergeSilence(voice: readonly GuideNote[], silent: readonly boolean[], pulse: Pulse): readonly GuideNote[] {
+  const per = PULSE_PER_BEAT[pulse]
+  const pulseOf = (beat: number): number => Math.round(beat * per)
+  const runs = voice.reduce<GuideNote[][]>((out, n, i) => {
+    const last = out.at(-1)
+    const prev = voice[i - 1]
+    const joins = silent[i] && prev && silent[i - 1] && last && Math.floor(pulseOf(n.beat) / per) === Math.floor(pulseOf(last[0]!.beat) / per)
+    return joins ? [...out.slice(0, -1), [...last, n]] : [...out, [n]]
+  }, [])
+  return runs.flatMap((run) => {
+    const first = run[0]!
+    if (run.length === 1) return run
+    const at = pulseOf(first.beat)
+    const length = run.reduce((a, n) => a + pulseOf(n.beat + n.beats) - pulseOf(n.beat), 0)
+    return restPieces(at, length, per, pulse === '8t').map((p): GuideNote => {
+      const tuplet = p.triplet ? (first.mark?.tuplet ?? null) : null
+      return { ...first, beat: p.at / per, beats: VALUE_BEATS[p.value] * (tuplet === null ? 1 : 2 / 3), mark: { value: p.value, tuplet, beam: null, accent: false } }
+    })
+  })
 }
 
 /** a chord's played note: pickup, a scale-below pick-up (the Approach never touches it) */

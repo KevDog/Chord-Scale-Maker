@@ -254,10 +254,21 @@ const voiceOf = (vf: VexFlowModule, beats: number, ticks: readonly Tick[]): Voic
 /** room for the notes after the stave's modifiers */
 const room = (stave: Stave, x: number, width: number): number => width - (stave.getNoteStartX() - x) - 20
 
-/** a guide tone (or rest), its stem by VexFlow's usual rule (up below the middle line, down above) */
+/** a dot where the value ends in d (the engine's values are VexFlow's durations), and an accent */
+function marked(vf: VexFlowModule, note: StaveNote, value: string, accent: boolean): StaveNote {
+  if (value.endsWith('d')) vf.Dot.buildAndAttach([note], { all: true })
+  if (accent) note.addModifier(new vf.Articulation('a>'), 0)
+  return note
+}
+
+/**
+ * a guide tone (or rest), its stem by VexFlow's usual rule (up below the middle line, down above); a poured note
+ * (rhythm-on-lines spec §8) takes its value, dot and accent from its mark, any other is dotted at 3 and 6 beats
+ */
 function tickFor(vf: VexFlowModule, n: GuideNote, clef: Clef, restate: string | null): StaveNote {
-  const duration = DURATIONS[n.beats as NoteBeats]
+  const duration = n.mark?.value ?? DURATIONS[n.beats as NoteBeats]
   const dotted = (note: StaveNote): StaveNote => {
+    if (n.mark) return marked(vf, note, n.mark.value, !!n.pitch && n.mark.accent)
     if (n.beats === 3 || n.beats === 6) vf.Dot.buildAndAttach([note], { all: true })
     return note
   }
@@ -303,8 +314,25 @@ type Laid = Readonly<{
   grid: readonly GhostNote[] // a ghost a beat, formatted with the notes: where each beat falls
   plain: readonly StaveNote[] // slashes, for a bar without guide tones
   all: readonly Voice[]
-  beams: readonly Beam[] // eighths and sixteenths of an arpeggio line, grouped by the beat
+  beams: readonly Beam[] // eighths and sixteenths of an arpeggio line, grouped by the beat; a poured bar's by its marks
+  tuplets: readonly InstanceType<VexFlowModule['Tuplet']>[] // a poured bar's triplets
 }>
+
+/**
+ * a poured bar's beams (rhythm-on-lines spec §8): the indexes of each run of two or more consecutive pitched notes
+ * sharing a mark's beam; a rest on the Line splits a run
+ */
+export function beamRuns(notes: readonly GuideNote[]): number[][] {
+  let run = 0
+  const keys = notes.map((n) => {
+    if (!n.pitch) run++
+    return n.pitch && n.mark?.beam != null ? `${n.mark.beam}:${run}` : null
+  })
+  return groupsOf(
+    notes.map((_, i) => i),
+    (i) => keys[i] ?? null,
+  ).filter((g) => g.length > 1)
+}
 
 /** a line with guide tones: lay out every bar, place the brackets over the stem tips, then draw */
 function drawGuideLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, opts: Opts): ChangesLayout {
@@ -319,6 +347,8 @@ function drawGuideLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, op
     const stave = staveFor(vf, bar, b === 0, x, width, clef)
     const model = bar.voice
     const ticks = model.map((n, i) => tickFor(vf, n, noteClef, b === 0 && i === 0 ? restatedAccidental(n, bar.keySig) : null))
+    const poured = model.some((n) => n.mark)
+    const tuplets = groupsOf(ticks, (i) => model[i]?.mark?.tuplet ?? null).map((notes) => new vf.Tuplet(notes, { numNotes: 3, notesOccupied: 2, location: 1 }))
     const grid = ticks.length ? Array.from({ length: bar.beats }, () => new vf.GhostNote('q')) : []
     const plain = ticks.length ? [] : slashes(vf, bar.beats)
     const lists: readonly (readonly Tick[])[] = ticks.length ? [ticks, grid] : [plain]
@@ -326,17 +356,25 @@ function drawGuideLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, op
       ticks.forEach((t) => t.setStave(stave))
       return voiceOf(vf, bar.beats, ticks)
     })
-    const beams = opts.arpeggio ? vf.Beam.generateBeams(ticks, { groups: [new vf.Fraction(1, 4)] }) : []
+    const beams = poured
+      ? beamRuns(model).map((run) => new vf.Beam(run.flatMap((i) => (ticks[i] ? [ticks[i]] : []))))
+      : opts.arpeggio
+        ? vf.Beam.generateBeams(ticks, { groups: [new vf.Fraction(1, 4)] })
+        : []
     new vf.Formatter().joinVoices(all).format(all, room(stave, x, width))
     beams.forEach((b) => b.postFormat()) // beamed stems change length here, before the crop and the bracket read their tips
     x += width
-    return { bar, stave, model, ticks, grid, plain, all, beams }
+    return { bar, stave, model, ticks, grid, plain, all, beams, tuplets }
   })
 
-  // pass 2: raise the brackets over the highest stem tip or accidental, level across the line; draw staves, then notes
+  // pass 2: raise the brackets over the highest stem tip, accidental, accent or triplet, level across the line; draw staves, then notes
   const pitched = laid.flatMap((l) => l.ticks).filter((t) => !t.isRest())
+  const accented = new Set(laid.flatMap((l) => l.ticks.filter((t, i) => !t.isRest() && l.model[i]?.mark?.accent)))
   const heads = pitched.flatMap((n) => n.getYs())
-  const tips = pitched.filter((n) => n.hasStem()).map((n) => n.getStemExtents().topY)
+  const tips = [
+    ...pitched.filter((n) => n.hasStem()).map((n) => n.getStemExtents().topY - (accented.has(n) ? ACCENT_RISE : 0)),
+    ...laid.flatMap((l) => l.tuplets.map((t) => t.getYPosition() - TUPLET_RISE)), // the triplets' 3s and brackets
+  ]
   const first = laid[0]?.stave
   const bracket = first && line.bars.some((b) => b.volta) ? first.getYForTopText(first.getNumLines()) + VOLTA_Y : null
   const tops = [...tips, ...heads.map((y) => y - ACCIDENTAL_RISE)]
@@ -348,6 +386,9 @@ function drawGuideLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, op
   })
   laid.forEach((l) => l.all.forEach((v) => v.draw(ctx, l.stave)))
   laid.forEach((l) => l.beams.forEach((b) => b.setContext(ctx).draw()))
+  laid.forEach((l) => l.tuplets.forEach((t) => t.setContext(ctx).draw()))
+  // target tones (rhythm-on-lines spec §6): colored as Practice highlighting colors a scale's notes
+  laid.forEach((l) => l.model.forEach((m, i) => m.target && l.ticks[i]?.getSVGElement()?.classList.add(m.target === 'tone' ? 'vf-selected' : 'vf-dimmed')))
 
   // ties, one chain across the line: open at its end, and a half-tie in where the line starts tied
   const chain = laid.flatMap((l) => l.model.map((m, i) => ({ m, t: l.ticks[i] ?? null })))
@@ -365,12 +406,13 @@ function drawGuideLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, op
     const starts = new Map<number, number>()
     l.model.forEach((m, i) => {
       const t = l.ticks[i]
-      if (t) starts.set(m.beat, headCentre(t, total))
+      if (t && onBeat(m.beat) && !starts.has(Math.round(m.beat))) starts.set(Math.round(m.beat), headCentre(t, total))
     })
     return beatXs(starts, l.grid.map((g) => g.getAbsoluteX()), total)
   })
   const { band, at } = withTargets(voicedBand([...heads, ...tips], bracket === null ? null : bracket + shift), row)
-  fitSvg(el, band, total, barsLabel(line) + (opts.arpeggio ? arpeggioAria(line, opts.lineName) : guideAria(line)))
+  const poured = line.bars.some((b) => b.voice.some((n) => n.mark))
+  fitSvg(el, band, total, barsLabel(line) + (opts.arpeggio ? arpeggioAria(line, opts.lineName) : guideAria(line)) + (poured ? rhythmAria(opts.rhythmCaption ?? null) : ''))
   return { xs, ends: endsOf(widths, total), scales, fits, dots: at }
 }
 
@@ -384,15 +426,13 @@ const onBeat = (beat: number): boolean => Math.abs(beat - Math.round(beat)) < 1e
 function rhythmTick(vf: VexFlowModule, n: RhythmNote, clef: Clef): StaveNote {
   // the engine's values are VexFlow's durations: a trailing d is a dot
   const note = new vf.StaveNote({ keys: [REST_KEY[clef]], duration: n.value, type: n.rest ? 'r' : 's', clef, stemDirection: 1 })
-  if (n.value.endsWith('d')) vf.Dot.buildAndAttach([note], { all: true })
   if (!n.rest) note.setStemStyle(INK) // stems carry their own default (black), not the context's currentColor
-  if (n.accent) note.addModifier(new vf.Articulation('a>'), 0)
-  return note
+  return marked(vf, note, n.value, n.accent)
 }
 
 /** notes grouped by an index (a tuplet's, a beam's), in order; null: in none */
-const groupsOf = <T>(ticks: readonly T[], index: (i: number) => number | null): T[][] => {
-  const groups = new Map<number, T[]>()
+const groupsOf = <T, K = number>(ticks: readonly T[], index: (i: number) => K | null): T[][] => {
+  const groups = new Map<K, T[]>()
   ticks.forEach((t, i) => {
     const g = index(i)
     if (g !== null) groups.set(g, [...(groups.get(g) ?? []), t])
