@@ -3,7 +3,7 @@ import { webAudio } from '~/utils/clickSounds'
 
 /** just enough of an AudioContext to build the click's nodes, counting the buffers it makes */
 function stubContext() {
-  const made = { buffers: 0 }
+  const made = { buffers: 0, oscillators: 0 }
   const param = () => ({ value: 0, setValueAtTime: () => {}, exponentialRampToValueAtTime: () => {} })
   const node = () => ({ connect: (n: unknown) => n, gain: param(), frequency: param(), type: '', buffer: null, start: () => {}, stop: () => {} })
   class Ctx {
@@ -11,7 +11,10 @@ function stubContext() {
     currentTime = 0
     destination = node()
     createGain = node
-    createOscillator = node
+    createOscillator = () => {
+      made.oscillators++
+      return node()
+    }
     createBiquadFilter = node
     createBufferSource = node
     createBuffer = (_: number, length: number) => {
@@ -31,5 +34,14 @@ describe('clickSounds', () => {
     const audio = webAudio()!
     for (const t of [0, 0.5, 1]) audio.play('hat', t, 'wood')
     expect(made.buffers).toBe(1)
+  })
+
+  it('a tick, the lights’ silent beat, makes no sound', () => {
+    const made = stubContext()
+    const audio = webAudio()!
+    audio.play('tick', 0, 'wood')
+    expect(made.oscillators).toBe(0)
+    audio.play('beat', 0, 'wood')
+    expect(made.oscillators).toBe(1)
   })
 })

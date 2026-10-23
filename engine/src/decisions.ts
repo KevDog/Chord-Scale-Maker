@@ -62,6 +62,7 @@ export const DECISIONS = [
   { id: 'rhythm.staff-metre', title: 'A staff’s metre', page: 'help', anchor: 'rhythm-card', summary: 'A Scales staff’s rhythm card is in the metre of the bar that holds its first chord, from the chart’s time signature (4/4 where it has none), written as beats over 4; so is its Notes per bar run.' },
   { id: 'rhythm.notes-per-bar', title: 'Notes per bar', page: 'help', anchor: 'notes-per-bar', summary: 'The run is the scale up an octave and back down; a bar of N notes is one note the bar long for 1, one value for all where it fits the bar (or two dotted ones), else a tuplet of the longest value that fits; with a Rhythm, a bar plays its first N attacks and rests the rest.' },
   { id: 'spell.chord', title: 'Spelling a chord symbol', page: 'how-it-decides', anchor: 'spell.chord', summary: 'A chord symbol follows its scale’s spelling, and a slash bass keeps its interval from the root.' },
+  { id: 'click.pattern', title: 'What the click plays on', page: 'how-it-decides', anchor: 'click.pattern', summary: 'Click on follows the rhythm’s Feel until you set it: every beat in 4, 2 and 4 (the hi-hat) in 2, 4 alone in 1; a bar too short for a pattern plays every beat.' },
   { id: 'click.tempo', title: 'The click’s tempo and feel', page: 'how-it-decides', anchor: 'click.tempo', summary: 'The click starts at a tempo and a feel read from the chart’s style: a ballad at 66, medium at 132, up at 220; Latin, bossa and even 8ths straight, the rest swing.' },
 ] as const satisfies readonly DecisionInfo[]
 

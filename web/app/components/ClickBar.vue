@@ -36,6 +36,14 @@
     <!-- its settings beside the controls they qualify, not by Hide (the owner, #497) -->
     <RailPopover v-if="!folded" v-model:open="settingsOpen" label="Click settings" :place="home === 'docked' ? 'above' : 'below'">
       <SegmentedControl v-model="countIn" legend="Count-in" :name="`click-count-${home}`" :options="COUNT_INS" />
+      <!-- Click on (Bergonzi 31): the beats the click sounds; a pattern the bar is too short for plays every beat -->
+      <div class="flex items-center gap-2">
+        <UiText>Click on</UiText>
+        <UiListbox v-model="pattern" aria-label="Click on" class="min-w-36">
+          <template #selected="{ value }"><UiListboxLabel>{{ PATTERN_LABELS[value as ClickPattern] }}</UiListboxLabel></template>
+          <UiListboxOption v-for="p in patterns" :key="p" :value="p"><UiListboxLabel>{{ PATTERN_LABELS[p] }}</UiListboxLabel></UiListboxOption>
+        </UiListbox>
+      </div>
       <UiCheckbox v-if="chart.beats === 4" v-model="hat">Hat on 2 &amp; 4</UiCheckbox>
       <SegmentedControl v-model="sound" legend="Sound" :name="`click-sound-${home}`" :options="SOUNDS" />
     </RailPopover>
@@ -70,7 +78,7 @@
 
 <script setup lang="ts">
 import { ChevronDownIcon, ChevronUpIcon, MinusIcon, PlayIcon, PlusIcon, StopIcon, XMarkIcon } from '@heroicons/vue/16/solid'
-import { type ClickFeel, clampTempo } from '@chord-scale-maker/engine'
+import { CLICK_PATTERNS, type ClickFeel, type ClickPattern, clampTempo, patternFits } from '@chord-scale-maker/engine'
 import { CLICK, type Click, type ClickChart, type ClickSettings } from '~/composables/useClick'
 import type { ClickSound } from '~/utils/clickSounds'
 
@@ -96,6 +104,20 @@ const COUNT_INS = [
   { value: '1', label: '1 bar' },
   { value: '2', label: '2 bars' },
 ] as const
+const PATTERN_LABELS: Readonly<Record<ClickPattern, string>> = {
+  all: 'Every beat',
+  '2-4': '2 & 4',
+  '1-3': '1 & 3',
+  '3': '3 only',
+  '4': '4 only',
+  'and-2-4': 'The & of 2 & 4',
+}
+const patterns = computed(() => CLICK_PATTERNS.filter((p) => patternFits(p, props.chart.beats)))
+// what plays: a pattern the bar is too short for shows as Every beat, as it sounds
+const pattern = computed({
+  get: (): ClickPattern => (patternFits(click.pattern.value, props.chart.beats) ? click.pattern.value : 'all'),
+  set: (p: ClickPattern) => (click.pattern.value = p),
+})
 const SOUNDS: readonly { value: ClickSound; label: string }[] = [
   { value: 'wood', label: 'Wood' },
   { value: 'beep', label: 'Beep' },

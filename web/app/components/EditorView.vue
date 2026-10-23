@@ -856,6 +856,7 @@ const clickChart = computed(
     beats: chartBeats(editor.doc.value),
     style: chartDetails(editor.doc.value).style,
     metreChanges: sheetView.value.sections.some((sec) => sec.bars.some((b) => b.time)),
+    rhythmFeel: prefs.feel.value, // Click on follows it until set
   }),
 )
 const click = useClick(clickChart, toRef(() => props.practiceKey))

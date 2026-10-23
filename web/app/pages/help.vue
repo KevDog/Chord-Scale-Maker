@@ -462,9 +462,10 @@
                 taps of the beat. The feel is what plays between the beats: <strong class="font-semibold">Quarters</strong>, the
                 beats alone; <strong class="font-semibold">Swing</strong>, the skip note of swung eighths; or
                 <strong class="font-semibold">Straight</strong>, even eighths. Under <strong class="font-semibold">⋯</strong>: a
-                count-in of one or two bars, a hat on 2 and 4 in 4/4, and the sound, Wood or Beep. The chevron folds it to
+                count-in of one or two bars; <strong class="font-semibold">Click on</strong>, the beats it sounds (every beat, 2 and 4, 1 and 3,
+                3 only, 4 only, or the and of 2 and 4, after Bergonzi; <DecisionLink id="click.pattern">how it starts</DecisionLink>); a hat on 2 and 4 in 4/4; and the sound, Wood or Beep. The chevron folds it to
                 Start, the tempo and the beat, playing on, to leave a phone's screen to the music. The
-                chart remembers its tempo and feel. A chart that changes time signature partway plays the one it starts in.
+                chart remembers its tempo, feel and Click on. A chart that changes time signature partway plays the one it starts in.
                 On an iPhone or iPad the sound stops when the screen locks.
               </dd>
             </div>

@@ -3,28 +3,57 @@
  * arithmetic. Pure: the app books these events on its audio clock (web/app/composables/useClick.ts).
  */
 import type { Beats } from './chart'
+import type { Feel } from './rhythm/feel'
 
 /** quarters: the beats alone; swing: the skip note two thirds through each beat; straight: eighths halfway */
 export type ClickFeel = 'quarters' | 'swing' | 'straight'
-export type ClickKind = 'accent' | 'beat' | 'hat' | 'sub' | 'count'
+/** tick: a silent beat, for the lights, where a pattern leaves it out */
+export type ClickKind = 'accent' | 'beat' | 'hat' | 'sub' | 'count' | 'tick'
 /** at: beats from the bar's start */
 export type ClickEvent = Readonly<{ at: number; kind: ClickKind }>
-/** hat: on 2 and 4, in 4/4 only */
-export type ClickOptions = Readonly<{ beats: Beats; feel: ClickFeel; hat: boolean }>
+
+/** Click on (Bergonzi 31): every beat, 2 and 4, 1 and 3, 3 only, 4 only, or the and of 2 and 4 */
+export type ClickPattern = 'all' | '2-4' | '1-3' | '3' | '4' | 'and-2-4'
+export const CLICK_PATTERNS: readonly ClickPattern[] = ['all', '2-4', '1-3', '3', '4', 'and-2-4']
+/** each pattern's beats, from 0; and: on the beat's 8th after it */
+const PATTERN_BEATS: Readonly<Record<Exclude<ClickPattern, 'all'>, Readonly<{ beats: readonly number[]; and: boolean }>>> = {
+  '2-4': { beats: [1, 3], and: false },
+  '1-3': { beats: [0, 2], and: false },
+  '3': { beats: [2], and: false },
+  '4': { beats: [3], and: false },
+  'and-2-4': { beats: [1, 3], and: true },
+}
+
+/** a bar of `beats` has every beat the pattern clicks on */
+export const patternFits = (p: ClickPattern, beats: number): boolean => p === 'all' || PATTERN_BEATS[p].beats.every((b) => b < beats)
+
+/** the Feel's click (decision click.pattern): every beat in 4, the hat's 2 and 4 in 2, 4 alone in 1 */
+export const defaultPattern = (feel: Feel): ClickPattern => (feel === 4 ? 'all' : feel === 2 ? '2-4' : '4')
+
+/** hat: on 2 and 4, in 4/4 only; pattern: every beat when left out */
+export type ClickOptions = Readonly<{ beats: Beats; feel: ClickFeel; hat: boolean; pattern?: ClickPattern }>
 
 export const CLICK_TEMPO = { min: 40, max: 300, fallback: 120 } as const
 
 const byTime = (a: ClickEvent, b: ClickEvent): number => a.at - b.at
 
-/** one bar's clicks: the accent on 1, a click on the other beats, then the feel's note between them and the hat */
+const onBeat = (n: number): ClickEvent => ({ at: n, kind: n === 0 ? 'accent' : 'beat' })
+
+/**
+ * one bar's clicks: the accent on 1, a click on the other beats, then the feel's note between them and the hat. A
+ * pattern clicks its beats alone, with a silent tick on every beat and no notes between them; a bar too short for
+ * it plays every beat.
+ */
 export function clickBar(o: ClickOptions): readonly ClickEvent[] {
   const beats = Array.from({ length: o.beats }, (_, n) => n)
   const sub = o.feel === 'swing' ? 2 / 3 : o.feel === 'straight' ? 1 / 2 : null
-  return [
-    ...beats.map((n): ClickEvent => ({ at: n, kind: n === 0 ? 'accent' : 'beat' })),
-    ...(sub === null ? [] : beats.map((n): ClickEvent => ({ at: n + sub, kind: 'sub' }))),
-    ...(o.hat && o.beats === 4 ? [1, 3].map((n): ClickEvent => ({ at: n, kind: 'hat' })) : []),
-  ].sort(byTime)
+  const pattern = o.pattern ?? 'all'
+  const hat = o.hat && o.beats === 4 ? [1, 3].map((n): ClickEvent => ({ at: n, kind: 'hat' })) : []
+  if (pattern === 'all' || !patternFits(pattern, o.beats))
+    return [...beats.map(onBeat), ...(sub === null ? [] : beats.map((n): ClickEvent => ({ at: n + sub, kind: 'sub' }))), ...hat].sort(byTime)
+  const p = PATTERN_BEATS[pattern]
+  const clicks = p.and ? p.beats.map((n): ClickEvent => ({ at: n + (sub ?? 1 / 2), kind: 'beat' })) : p.beats.map(onBeat)
+  return [...beats.map((n): ClickEvent => ({ at: n, kind: 'tick' })), ...clicks, ...hat].sort(byTime)
 }
 
 /** a count on each beat of the count-in bars; at: beats from the count-in's start */

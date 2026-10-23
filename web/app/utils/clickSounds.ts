@@ -20,7 +20,7 @@ const PITCH: Readonly<Record<ClickSound, Readonly<{ wave: OscillatorType; accent
   wood: { wave: 'triangle', accent: 1800, beat: 1200 },
   beep: { wave: 'sine', accent: 1320, beat: 880 },
 }
-const PEAK: Readonly<Record<Exclude<ClickKind, 'hat'>, number>> = { accent: 1, beat: 0.8, count: 0.8, sub: 0.3 }
+const PEAK: Readonly<Record<Exclude<ClickKind, 'hat' | 'tick'>, number>> = { accent: 1, beat: 0.8, count: 0.8, sub: 0.3 }
 const DECAY = 0.06 // s
 const HAT = { length: 0.03, cutoff: 6000, gain: 0.4 } as const
 
@@ -36,8 +36,9 @@ function noiseFor(ctx: BaseAudioContext): AudioBuffer {
   return buffer
 }
 
-/** one click at `time` on the context's clock, into `out` */
+/** one click at `time` on the context's clock, into `out`; a tick (the lights' silent beat) none */
 export function playClick(ctx: AudioContext, out: AudioNode, kind: ClickKind, time: number, sound: ClickSound): void {
+  if (kind === 'tick') return
   const env = ctx.createGain()
   env.connect(out)
   if (kind === 'hat') {
