@@ -281,6 +281,19 @@
                 quintuplets. The unit keeps counting through that bar.
               </dd>
             </div>
+            <div v-if="rhythmGearsOn">
+              <dt id="rhythm-groups" class="scroll-mt-6 font-semibold text-zinc-950 dark:text-white">Mixed phrasing</dt>
+              <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
+                From the Everything interface, a unit on the Changes can change its grouping as the tune goes, after Ed Saindon's mixed phrasing
+                (<em>Rhythmic Patterns</em>, p. 12) and Jerry Bergonzi's groupings (<em>Inside Improvisation Vol. 4</em>, ch. 14). In
+                <strong class="font-semibold">Line options</strong>, <strong class="font-semibold">Groups</strong> is One (the unit's own), Up (3 4 5 6 7),
+                Down (7 6 5 4 3) or Your list… (numbers 2 to 7, separated by spaces), and <strong class="font-semibold">Step</strong> says when the next
+                grouping comes: at each section, at each change of key area, or every 2, 4 or 8 bars. A list shorter than the form starts over. Each
+                step starts fresh on its first bar's beat 1: a statement still running there is cut, with no tie, and a Line's pick-ups don't reach back
+                over it. An intro or an ending plays the first grouping. A circled number (③) over a step's first note shows its grouping, the caption
+                names the path, and the path is kept with the chart in this browser and goes in a share link. Your rhythm…, Runs and Cards keep theirs.
+              </dd>
+            </div>
             <div>
               <dt class="font-semibold text-zinc-950 dark:text-white">Runs</dt>
               <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
