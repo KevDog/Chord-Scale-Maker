@@ -122,6 +122,8 @@ describe('the Rhythm controls (rhythm spec §9)', () => {
       expect(input.attributes('placeholder')).toBe('3 4 5')
       await input.setValue('3 5')
       await nextTick()
+      expect(w.emitted('update:rhythmPath')?.at(-1)).toEqual([OFF]) // typing plays after a pause (#553)
+      await input.trigger('keydown.enter') // or at once on Enter
       expect(w.emitted('update:rhythmPath')?.at(-1)).toEqual([{ ...OFF, groups: [3, 5] }])
       await input.setValue('3 9')
       await nextTick()
@@ -147,7 +149,7 @@ describe('the Rhythm controls (rhythm spec §9)', () => {
       await choose(w, 'Gears', 'Your list…')
       const input = w.find('input[aria-label="Your gears"]')
       await input.setValue('8 16s')
-      await nextTick()
+      await input.trigger('blur') // leaving the field plays it at once (#553)
       expect(w.emitted('update:rhythmPath')?.at(-1)).toEqual([{ ...OFF, gears: ['8', '16s'] }])
       await input.setValue('8 32')
       await nextTick()

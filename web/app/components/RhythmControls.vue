@@ -49,7 +49,7 @@
               <UiListboxOption v-for="g in LIST_CHOICES" :key="g" :value="g"><UiListboxLabel>{{ GROUPS_LABELS[g] }}</UiListboxLabel></UiListboxOption>
             </UiListbox>
             <EaseReveal :show="groupsChoice === 'custom'" inner-class="flex flex-col gap-2">
-              <UiInput v-model="groupsText" aria-label="Your groups" placeholder="3 4 5" :invalid="!!groupsError" :aria-describedby="groupsError ? 'groups-error' : undefined" />
+              <UiInput v-model="groupsText" aria-label="Your groups" placeholder="3 4 5" :invalid="!!groupsError" :aria-describedby="groupsError ? 'groups-error' : undefined" @blur="lists.groups.commit" @keydown.enter="lists.groups.commit" />
               <p v-if="groupsError" id="groups-error" class="text-sm/5 text-red-700 dark:text-red-400">{{ groupsError }}</p>
             </EaseReveal>
           </EaseReveal>
@@ -59,7 +59,7 @@
               <UiListboxOption v-for="g in LIST_CHOICES" :key="g" :value="g"><UiListboxLabel>{{ GEARS_LABELS[g] }}</UiListboxLabel></UiListboxOption>
             </UiListbox>
             <EaseReveal :show="gearsChoice === 'custom'" inner-class="flex flex-col gap-2">
-              <UiInput v-model="gearsText" aria-label="Your gears" placeholder="8 8t 16" :invalid="!!gearsError" :aria-describedby="gearsError ? 'gears-error' : undefined" />
+              <UiInput v-model="gearsText" aria-label="Your gears" placeholder="8 8t 16" :invalid="!!gearsError" :aria-describedby="gearsError ? 'gears-error' : undefined" @blur="lists.gears.commit" @keydown.enter="lists.gears.commit" />
               <p v-if="gearsError" id="gears-error" class="text-sm/5 text-red-700 dark:text-red-400">{{ gearsError }}</p>
             </EaseReveal>
           </EaseReveal>
