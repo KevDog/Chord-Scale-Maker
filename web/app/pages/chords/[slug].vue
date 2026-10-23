@@ -5,7 +5,6 @@
       <header>
         <p class="mb-2"><NuxtLink :to="CHORDS_PATH" class="text-sm/6 font-medium text-accent hover:underline">Chords</NuxtLink><span class="text-sm/6 text-zinc-500 dark:text-zinc-400"> · <ChordSymbol :tokens="page.symbolOnC" /></span></p>
         <UiHeading>{{ page.title }} chord</UiHeading>
-        <UiText class="mt-1">{{ intro }}</UiText>
         <PageIndex :sections="SECTIONS" />
       </header>
 
@@ -29,15 +28,6 @@
               <UiField class="w-64">
                 <UiLabel class="pl-3">Instrument</UiLabel>
                 <InstrumentPicker v-model="prefs.instrument.value" />
-              </UiField>
-              <UiField>
-                <UiLabel class="pl-3">Spell Scale</UiLabel>
-                <div class="flex items-center gap-2">
-                  <UiListbox v-model="prefs.spell.value" class="w-40" aria-label="Where the scale starts">
-                    <template #selected="{ value }"><UiListboxLabel>{{ spellLabel(value, keyStartNote) }}</UiListboxLabel></template>
-                    <UiListboxOption v-for="s in SPELLS" :key="s" :value="s"><UiListboxLabel>{{ spellLabel(s, keyStartNote) }}</UiListboxLabel></UiListboxOption>
-                  </UiListbox>
-                </div>
               </UiField>
             </template>
           </SheetRail>
@@ -82,7 +72,6 @@
 <script setup lang="ts">
 import { buildSheet, keyStart, parseKey, partFor, type Row } from '@chord-scale-maker/engine'
 import { type ChordScaleTag, chordHead, chordOnC, chordPage, CHORDS_PATH } from '~/utils/chordPage'
-import { spellLabel, SPELLS, spellView } from '~/utils/scaleChoices'
 import { seoMeta } from '~/utils/site'
 
 /** a chord quality's reference page (/chords/<slug>, #498): its notes, a staff for your instrument, the scales it takes, and the library tunes that write it */
@@ -105,8 +94,6 @@ const current = useCurrentSection(() => SECTIONS.map((s) => s.id))
 const TAG_LABELS: Readonly<Record<ChordScaleTag, string>> = { default: 'Default', basic: 'Basic level', advanced: 'Advanced level', outside: 'Outside', functional: 'One function only' }
 
 const notes = page.notes.split(' ').map((note, i) => ({ note, degree: page.formula.split(' ')[i] ?? '' }))
-const COUNTS = ['', '', '', 'three', 'four', 'five', 'six']
-const intro = `A ${COUNTS[notes.length] ?? notes.length}-note chord: its notes, a staff written for your instrument, the scales that play over it, and the library tunes that use it.`
 const chord = chordOnC(page.quality)
 const defaultScale = page.scales.find((s) => s.tags.includes('default'))?.source ?? page.scales[0]?.source ?? ''
 
@@ -114,10 +101,9 @@ const prefs = usePreferences()
 const part = computed(() => partFor(prefs.instrument.value))
 /** the written C for the part: the staff's "key" is the chord's own root */
 const keyStartNote = computed(() => keyStart(parseKey('C'), part.value))
-/** one staff: the chord's default scale on C, its chord tones lit */
+/** one staff: the chord’s default scale on C, spelled from its root, its chord tones lit */
 const staff = computed(() => {
   const row: Row = { section: '', bar: '', chord, scale: defaultScale }
-  const { mode, start } = spellView(prefs.spell.value, keyStartNote.value)
-  return buildSheet([row], part.value, mode, start, 1, { preset: 'chordTones' })[0]?.pages[0]?.[0] ?? null
+  return buildSheet([row], part.value, 'root', keyStartNote.value, 1, { preset: 'chordTones' })[0]?.pages[0]?.[0] ?? null
 })
 </script>

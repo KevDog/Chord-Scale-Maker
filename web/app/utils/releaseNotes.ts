@@ -10,6 +10,7 @@ export const RELEASE_NOTES: readonly ReleaseNote[] = [
   {
     date: '2026-10-22',
     items: [
+      { text: 'Scale and chord pages drop Spell Scale (their staff is always spelled from the scale’s own root, written for your instrument) and the line of introduction under their title.' },
       { text: 'Chord pages: Chords, in the menu bar beside Scales, has a page for every chord quality with its notes and formula, a staff of its default scale for your instrument with the chord tones lit, the scales that play over it (each linked to its page), and the library tunes that use it. A scale’s Plays over chords link to them, and so does About this chord in a chord’s scale menu and in a phone’s chord editor. A scale page’s staff draws larger, across the full width. The header’s quote now shows on wider screens only (1536 px and up), to make room for Chords.', pr: 546 },
       { text: 'Rhythm for the Changes sheet. In the Line’s options (Intermediate interface), Rhythm draws slashes with stems, beams, rests, ties and accents where the beat slashes were, and with a Line on, the Line plays in the rhythm. Choose a unit (8ths in 5, after Saindon), a run of 8ths from a beat (after Bergonzi), a card, or type your own. The caption says when the rhythm is back on one.', pr: 544 },
       { text: 'Target beats, in the Changes sheet’s Analysis group, puts a dot over each strong beat of a bar (after Galper). On a Line, a chord tone on a dot is lit and any other note on a dot is gray.', pr: 544 },
