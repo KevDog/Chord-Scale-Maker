@@ -391,6 +391,14 @@ describe('a rhythm poured into the line (rhythm-on-lines spec §4)', () => {
     const late = poured(seq(['CMaj7', 4], ['Dm7', 4]), 4, plan('card:downbeats', [4, 4], { anticipate: -1 }))
     expect([letters(late.get(0)), letters(late.get(1))]).toEqual([['C', 'E', 'G', 'B'], ['G', 'D', 'F', 'A']])
   })
+  it('rests a scale-below pick-up into a chord with no scale (#505)', () => {
+    expect(letters(poured(seq(['N.C.', 4], ['CMaj7', 4]), 4, plan('card:downbeats', [4, 4], { start: 'pickup-3' }), 'none', WIDE).get(0))).toEqual(['r', 'r', 'r', 'r', 'r', 'r'])
+  })
+  it('gives a chord in an undrawn bar no attacks, and the next drawn bar its own chord (#505)', () => {
+    const v = poured(seq(['CMaj7', 4], ['Dm7', 4], ['Em7', 4]), 4, plan('card:downbeats', [4, 4], { clockBars: [0, 2] }))
+    expect([letters(v.get(0)), letters(v.get(2))]).toEqual([['C', 'E', 'G', 'B'], ['E', 'G', 'B', 'D']])
+    expect(v.has(1)).toBe(false)
+  })
   it('cuts a cell at its chord\'s last attack: C E D F', () => {
     expect(letters(poured(seq(['CMaj7', 2], ['Dm7', 2]), 4, plan('card:downbeats', [4])).get(0))).toEqual(['C', 'E', 'D', 'F'])
   })

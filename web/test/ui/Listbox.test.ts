@@ -76,4 +76,19 @@ describe('UiListbox', () => {
     expect(button.text()).toBe('tenor-sax')
     w.unmount()
   })
+
+  it('puts a caller’s aria-describedby on the button it describes, not the wrapper (#505)', async () => {
+    const Described = defineComponent({
+      components: { UiListbox, UiListboxOption, UiListboxLabel },
+      setup: () => ({ value: ref('beat') }),
+      template: `<UiListbox v-model="value" aria-label="Start" aria-describedby="start-help" class="w-full">
+          <template #selected="{ value }"><UiListboxLabel>{{ value }}</UiListboxLabel></template>
+          <UiListboxOption value="beat"><UiListboxLabel>On the beat</UiListboxLabel></UiListboxOption>
+        </UiListbox>`,
+    })
+    const w = await mountSuspended(Described)
+    expect(w.find('button').attributes('aria-describedby')).toBe('start-help')
+    expect(w.find('[data-slot=control]').attributes('aria-describedby')).toBeUndefined()
+    expect(w.find('[data-slot=control]').classes()).toContain('w-full') // the rest of its attributes stay on the wrapper
+  })
 })

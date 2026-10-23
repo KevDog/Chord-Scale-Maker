@@ -162,6 +162,14 @@ describe('layRhythm forced attacks (lines spec §3.2)', () => {
     expect(ats(layRhythm('unit:8:3:tied', [4], [], [1]))).toEqual([[0, 1], [1, 2], [3, 3], [6, 2]])
   })
 
+  it('forces a pulse on a break as the break already sounds it: one attack, no tie into it (#505)', () => {
+    // 8ths in 4, syncopated (_ x x x): pulse 8, a 2nd ending's first, holds pulse 7 but for the break
+    const broken = layRhythm('unit:8:4:syncopated', [4, 4], [1])!
+    expect(layRhythm('unit:8:4:syncopated', [4, 4], [1], [8])).toEqual(broken)
+    expect(broken.bars[0]!.at(-1)).toMatchObject({ tie: false })
+    expect(broken.bars[1]![0]).toMatchObject({ at: 0, rest: false, tiedIn: false })
+  })
+
   it('keeps an accent (guard)', () => {
     expect(layRhythm('unit:8:3:accents', [4], [], [3])!.bars[0]!.find(e => e.at === 3)?.accent).toBe(true)
   })

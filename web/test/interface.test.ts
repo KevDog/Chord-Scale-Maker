@@ -82,6 +82,7 @@ describe('hiddenSettings', () => {
     expect(hiddenSettings('intermediate', away)).toEqual({ settings: ['rhythm-phrasing'], needs: 'everything' })
     expect(hiddenSettings('intermediate', { ...away, rhythmStart: 'beat', anticipate: -1 })).toEqual({ settings: ['rhythm-phrasing'], needs: 'everything' })
     expect(hiddenSettings('intermediate', { ...away, rhythmLine: false })).toBeNull()
+    expect(hiddenSettings('intermediate', { ...away, rhythm: 'off' })).toBeNull() // a Line that would take a rhythm, but none is on (#505)
     expect(hiddenSettings('everything', away)).toBeNull()
   })
 
