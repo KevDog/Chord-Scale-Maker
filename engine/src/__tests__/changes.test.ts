@@ -1531,7 +1531,7 @@ describe('buildChanges: Feel (Phase 4 spec §4)', () => {
 
   it('beams the rhythm line by the group, and captions the feel', () => {
     expect(bars(build(doc, { rhythm: 'run:8:4:0', feel: 2 }))[0]!.rhythm.map((n) => n.beam)).toEqual([0, 0, 0, 0, null, null])
-    expect(build(doc, { rhythm: 'run:8:4:0', feel: 2 }).rhythmCaption).toBe('Rhythm: 4 8ths from 1 · in 2')
+    expect(build(doc, { rhythm: 'run:8:4:0', feel: 2 }).rhythmCaption).toBe('Rhythm: 4 8ths from 1 · feel in 2')
     expect(build(doc, { rhythm: 'run:8:4:0', feel: 4 }).rhythmCaption).toBe('Rhythm: 4 8ths from 1')
   })
 
@@ -1539,6 +1539,6 @@ describe('buildChanges: Feel (Phase 4 spec §4)', () => {
     const sheet = buildChanges(doc, CONCERT, 4, false, 'up-root', undefined, null, 'none', { rhythm: 'run:8:4:0', feel: 1, start: 'pickup-1' })
     // the pick-up into Dm7 on beat 4& stands alone after the rest
     expect(bars(sheet)[0]!.voice.filter((n) => n.pitch !== null).map((n) => n.mark?.beam ?? null)).toEqual([0, 0, 0, 0, null])
-    expect(sheet.rhythmCaption).toBe('Rhythm: 4 8ths from 1 · in 1 · 1-note pick-ups')
+    expect(sheet.rhythmCaption).toBe('Rhythm: 4 8ths from 1 · feel in 1 · 1-note pick-ups')
   })
 })

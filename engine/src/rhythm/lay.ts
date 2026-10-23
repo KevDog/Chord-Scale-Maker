@@ -214,10 +214,10 @@ const MAX_LISTED = 6
 /**
  * "Rhythm: <label> · <cycle>" for a repeating rhythm, "Rhythm: <label>" for a per-bar one (§4). With a path that acts
  * on it, "Rhythm: <label> · <path> · <step>" instead: the step marks say where each grouping starts (Phase 4 spec §3).
- * A Feel in 2 or in 1 appends " · in 2" or " · in 1" (Phase 4 spec D21).
+ * A Feel in 2 or in 1 appends " · feel in 2" or " · feel in 1" (Phase 4 spec D21: "feel", so it can't read as a grouping).
  */
 export function rhythmCaption(id: RhythmId, laid: Laid, path?: RhythmPath, feel: Feel = 4): string {
-  return feel === 4 ? laidCaption(id, laid, path) : `${laidCaption(id, laid, path)} · in ${feel}`
+  return feel === 4 ? laidCaption(id, laid, path) : `${laidCaption(id, laid, path)} · feel in ${feel}`
 }
 
 function laidCaption(id: RhythmId, laid: Laid, path?: RhythmPath): string {

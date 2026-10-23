@@ -86,11 +86,11 @@ describe('Feel: beams (D19)', () => {
 })
 
 describe('Feel: caption (D21)', () => {
-  it('appends " · in 2" or " · in 1", and nothing in 4', () => {
+  it('appends " · feel in 2" or " · feel in 1", and nothing in 4', () => {
     const laid = layRhythm('unit:8:3:accents', [4, 4, 4])!
     const plain = rhythmCaption('unit:8:3:accents', laid)
     expect(rhythmCaption('unit:8:3:accents', laid, undefined, 4)).toBe(plain)
-    expect(rhythmCaption('unit:8:3:accents', laid, undefined, 2)).toBe(`${plain} · in 2`)
-    expect(rhythmCaption('run:8:4:0', layRhythm('run:8:4:0', [4])!, undefined, 1)).toBe('Rhythm: 4 8ths from 1 · in 1')
+    expect(rhythmCaption('unit:8:3:accents', laid, undefined, 2)).toBe(`${plain} · feel in 2`)
+    expect(rhythmCaption('run:8:4:0', layRhythm('run:8:4:0', [4])!, undefined, 1)).toBe('Rhythm: 4 8ths from 1 · feel in 1')
   })
 })
