@@ -14,6 +14,13 @@ test.describe('without JavaScript', () => {
     await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute('href', 'https://www.chordscalemaker.com/chords/minor-7')
   })
 
+  test('a chord page’s link preview is its own, served at 1200×630 (#524)', async ({ page, request }) => {
+    await page.goto('/chords/minor-7')
+    await expect(page.locator('head meta[property="og:image"]')).toHaveAttribute('content', 'https://www.chordscalemaker.com/og/chords/minor-7.png')
+    const png = await (await request.get('/og/chords/minor-7.png')).body()
+    expect([png.readUInt32BE(16), png.readUInt32BE(20)]).toEqual([1200, 630]) // the IHDR's width and height
+  })
+
   test('/chords lists every chord in the sitemap', async ({ page, request }) => {
     const xml = await (await request.get('/sitemap.xml')).text()
     const paths = [...xml.matchAll(/<loc>https:\/\/www\.chordscalemaker\.com(\/chords\/[^<]+)<\/loc>/g)].map((m) => m[1])

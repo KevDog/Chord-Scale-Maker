@@ -10,6 +10,7 @@ export const RELEASE_NOTES: readonly ReleaseNote[] = [
   {
     date: '2026-10-23',
     items: [
+      { text: 'A chord page’s link now previews with its own card when shared: the chord on C, its name, formula and notes, and the scales that play over it.', pr: 566 },
       { text: 'In Focus, the sheet’s scale, numeral and pentatonic labels are plain text: the fitted pages set them too close together to tap reliably. Pick a scale or open a chord’s Why before going into Focus. And Exit focus’s Esc hint is darker, to read on the stand’s background.', pr: 565 },
       { text: 'Click on, in the click’s settings (after Bergonzi): the click can sound every beat, 2 and 4, 1 and 3, 3 only, 4 only, or the and of 2 and 4, leaving the other beats to you; the lights still follow every beat. It starts from the rhythm’s Feel (in 2: 2 and 4; in 1: 4 only), and the chart remembers it.', pr: 558 },
       { text: 'Tuplet pulses for the rhythm (Everything interface): Units also come as quarter-note triplets, quarter-note quintuplets, 8th-note quintuplets, 16th quintuplets, sextuplets and septuplets, after Saindon and Bergonzi, on the Changes, Scales and Arpeggios sheets, and Your rhythm… takes them as 4t:, 4q:, 8q:, 16q:, 16t: and 16s:. A tuplet never crosses a barline: a bar that can’t hold a whole number of them plays in plain quarters (plain 8ths for 8th-note quintuplets).', pr: 557 },

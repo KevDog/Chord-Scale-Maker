@@ -2,17 +2,18 @@
 /// <reference lib="dom.iterable" />
 // (the DOM types: page.evaluate runs in the page)
 // Draws each library song's link preview into public/og/<slug>.png (1200×630: the song's heading on paper, its
-// first four bars as on the Changes sheet) and public/og/manifest.json, what each one shows (build/ogCard.ts; a test
+// first four bars as on the Changes sheet), each chord page's into public/og/chords/<slug>.png (the chord on C, its
+// name, formula, notes and scales: #524) and public/og/manifest.json, what each one shows (build/ogCard.ts; a test
 // fails when one is missing or stale). Run `make og` after adding or editing a chart: it redraws only what changed;
 // `-- --all` redraws every one. Needs ImageMagick (brew install imagemagick) to shrink them to ≤ 60 KB.
 import { execFileSync } from 'node:child_process'
 import { createRequire } from 'node:module'
-import { existsSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
+import { existsSync, mkdirSync, mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { join } from 'node:path'
 import { chromium } from '@playwright/test'
-import type { ChordToken } from '@chord-scale-maker/engine'
-import { libraryCharts, type OgCard, ogCard, ogHash, OG_DIR } from '../build/ogCard'
+import { CHORD_QUALITIES, type ChordToken, chordSlug } from '@chord-scale-maker/engine'
+import { type ChordOgCard, chordOgCard, libraryCharts, type OgCard, ogCard, ogHash, OG_DIR } from '../build/ogCard'
 
 const WIDTH = 1200
 const HEIGHT = 630
@@ -45,7 +46,8 @@ function bars(card: OgCard): string {
 
 const font = `file://${createRequire(import.meta.url).resolve('@fontsource-variable/jost/files/jost-latin-wght-normal.woff2')}`
 
-function html(card: OgCard): string {
+/** the paper every card is drawn on, the site's mark at its top right, around `body` */
+function html(body: string): string {
   const mark = new URL('../public/favicon.svg', import.meta.url).href
   return `<!doctype html><html><head><meta charset="utf-8"><style>
     @font-face { font-family: Jost; src: url(${font}) format('woff2'); font-weight: 100 900; }
@@ -63,14 +65,27 @@ function html(card: OgCard): string {
     .chord sup { font-size: 0.75em; }
     line { stroke: #a1a1aa; stroke-width: 1.5; }
     .slash { fill: #18181b; }
+    h1.symbol { font-size: 120px; line-height: 1; }
+    h1.symbol sup { font-size: 0.6em; }
+    .scales { position: absolute; left: 56px; right: 56px; bottom: 52px; margin: 0; padding-top: 20px; border-top: 1.5px solid #e4e4e7; font-size: 26px; color: #3f3f46; }
+    .scales b { font-weight: 600; color: #09090b; }
   </style></head><body><div class="paper">
     <div class="site"><img src="${mark}" alt="">chordscalemaker.com</div>
+    ${body}
+  </div></body></html>`
+}
+
+const songCard = (card: OgCard): string => `
     <h1>${escape(card.title)}</h1>
     ${card.composer ? `<p class="composer">${escape(card.composer)}</p>` : ''}
     ${card.details ? `<p class="details">${escape(card.details)}</p>` : ''}
-    ${bars(card)}
-  </div></body></html>`
-}
+    ${bars(card)}`
+
+const chordCard = (card: ChordOgCard): string => `
+    <h1 class="symbol">${symbol(card.symbol)}</h1>
+    <p class="composer">${escape(card.title)} · ${escape(card.formula)}</p>
+    <p class="details">${escape(card.notes)}</p>
+    <p class="scales"><b>Scales</b> ${escape(card.scales)}</p>`
 
 const manifestPath = join(OG_DIR, 'manifest.json')
 const old = (existsSync(manifestPath) ? JSON.parse(readFileSync(manifestPath, 'utf8')) : {}) as Record<string, string>
@@ -81,20 +96,23 @@ const tmp = mkdtempSync(join(tmpdir(), 'og-'))
 const browser = await chromium.launch()
 try {
   const page = await browser.newPage({ viewport: { width: WIDTH, height: HEIGHT } })
-  for (const { slug, text } of charts) {
-    const card = ogCard(text)
-    const hash = ogHash(card)
-    const out = join(OG_DIR, `${slug}.png`)
-    manifest[slug] = hash
-    if (!all && old[slug] === hash && existsSync(out)) continue
+  /** draw one card to `out` (its manifest key `key`), unless it's unchanged */
+  async function draw(key: string, hash: string, body: string, out: string): Promise<void> {
+    manifest[key] = hash
+    if (!all && old[key] === hash && existsSync(out)) return
     const file = join(tmp, 'card.html')
-    writeFileSync(file, html(card))
+    writeFileSync(file, html(body))
     await page.goto(`file://${file}`)
     await page.evaluate(() => document.fonts.ready)
     // a long title shrinks until it fits two lines
     await page.evaluate(() => {
-      const h1 = document.querySelector('h1')
-      for (let size = 64; h1 && h1.scrollHeight > size * 1.08 * 2 + 2 && size > 36; size -= 2) h1.style.fontSize = `${size - 2}px`
+      const h1 = document.querySelector('h1:not(.symbol)')
+      for (let size = 64; h1 instanceof HTMLElement && h1.scrollHeight > size * 1.08 * 2 + 2 && size > 36; size -= 2) h1.style.fontSize = `${size - 2}px`
+    })
+    // a chord's scales shrink until they fit one line
+    await page.evaluate(() => {
+      const scales = document.querySelector('.scales')
+      for (let size = 26; scales instanceof HTMLElement && scales.scrollHeight > 20 + size * 1.6 && size > 18; size -= 1) scales.style.fontSize = `${size - 1}px`
     })
     // a busy bar's chords move right so none overlaps the one before, all of them shrinking until they fit the staff
     await page.evaluate((width) => {
@@ -112,11 +130,20 @@ try {
     }, STAFF.width + 24)
     await page.screenshot({ path: join(tmp, 'card.png') })
     execFileSync('magick', [join(tmp, 'card.png'), '-strip', '-colors', '64', `PNG8:${out}`])
-    console.log(slug)
+    console.log(key)
+  }
+  for (const { slug, text } of charts) {
+    const card = ogCard(text)
+    await draw(slug, ogHash(card), songCard(card), join(OG_DIR, `${slug}.png`))
+  }
+  mkdirSync(join(OG_DIR, 'chords'), { recursive: true })
+  for (const slug of CHORD_QUALITIES.map((q) => chordSlug(q))) {
+    const card = chordOgCard(slug)
+    if (card) await draw(`chords/${slug}`, ogHash(card), chordCard(card), join(OG_DIR, 'chords', `${slug}.png`))
   }
 } finally {
   await browser.close()
   rmSync(tmp, { recursive: true, force: true })
 }
-for (const slug of Object.keys(old)) if (!(slug in manifest)) rmSync(join(OG_DIR, `${slug}.png`), { force: true }) // a chart taken out
+for (const key of Object.keys(old)) if (!(key in manifest)) rmSync(join(OG_DIR, `${key}.png`), { force: true }) // a chart or chord taken out
 writeFileSync(manifestPath, JSON.stringify(manifest, null, 2) + '\n')

@@ -23,6 +23,9 @@ describe('chordHead', () => {
   it('is null for an unknown slug', () => {
     expect(chordHead('nope')).toBeNull()
   })
+  it('has its own link preview image (make og)', () => {
+    expect(chordHead('minor-7')?.head.image).toEqual({ url: 'https://www.chordscalemaker.com/og/chords/minor-7.png', alt: 'Minor 7th chord: its formula, notes and scales' })
+  })
 })
 
 describe('chordPage', () => {

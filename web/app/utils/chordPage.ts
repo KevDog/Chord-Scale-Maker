@@ -1,7 +1,7 @@
 import { CONCERT, chordFormula, chordFromSlug, chordQualityOf, chordScales, chordSlug, chordTitle, type ChordToken, chordTokens, chordUsage, glyphs, noteText, parseRoot, rootName, type ScaleOption, spellFrom } from '@chord-scale-maker/engine'
 import { LIBRARY, tuneOf } from './library'
 import { scalePath } from './scalePage'
-import { canonicalUrl, type PageHead, songPath } from './site'
+import { canonicalUrl, type PageHead, SITE_URL, songPath } from './site'
 import { jsonLd } from './structuredData'
 
 /** a chord reference page (/chords/<slug>, #498), as scalePage.ts is for the scales: its head and what it shows */
@@ -79,7 +79,13 @@ export function chordHead(slug: string): Readonly<{ head: PageHead; ld: string }
   const url = canonicalUrl(chordQualityPath(quality))
   const description = `The ${title} chord (${glyphs(chordFormula(quality))}): its notes, the scales that play over it and the jazz standards that use it.`
   return {
-    head: { title: `${title} chord: notes, scales and tunes`, description, robots: 'index, follow, max-image-preview:large' },
+    head: {
+      title: `${title} chord: notes, scales and tunes`,
+      description,
+      robots: 'index, follow, max-image-preview:large',
+      // drawn by scripts/og.ts (make og)
+      image: { url: `${SITE_URL}/og/chords/${slug}.png`, alt: `${title} chord: its formula, notes and scales` },
+    },
     ld: jsonLd([
       { '@context': CONTEXT, '@type': 'DefinedTerm', name: `${title} chord`, description, inDefinedTermSet: 'Jazz chords', url },
       {
