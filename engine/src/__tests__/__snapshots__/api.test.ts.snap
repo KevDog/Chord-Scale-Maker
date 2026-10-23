@@ -405,6 +405,7 @@ exports[`exports the same names 1`] = `
   "setRowField",
   "shareViewFrom",
   "sharedCount",
+  "sheetRhythmText",
   "sheetScale",
   "shiftBy",
   "shiftNote",

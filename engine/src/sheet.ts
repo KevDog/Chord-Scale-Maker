@@ -4,6 +4,7 @@ import type { Row } from './chart'
 import { qualityScale } from './chart'
 import { type ChordToken, chordTokensOrNull, isRest, parseChord, writtenChordRoot, writtenChordRootLenient } from './chord'
 import { intervalLabels } from './intervals'
+import { cardBars, type RhythmCardModel, type RhythmId, rhythmLabel } from './rhythm'
 import { type HexPair, hexatonicPairs, hexatonicPick, pickablePairs, type StaffHexatonic, writtenKeyPair } from './hexatonics'
 import { isHexatonicSelection, isPentatonicSelection, isQuartalSelection, type PracticeSelection, practiceKeys, selectedNotes, startReference } from './practice'
 import { outsideNotes, pentatonicPick, type StaffPentatonic } from './pentatonics'
@@ -42,9 +43,13 @@ export type StaffModel = Readonly<{
   positions: readonly ChordAt[] // the drawn chords it covers (#303), in form order; [] without picks given, or all in a folded repeat
   varies: boolean // its positions have different picks of the preset's kind (a pick and none differ)
   source: Readonly<{ chord: string; scale: string }> | null // what a pick on it is made for: its first row's chord and scale, concert; null with no scale
+  card: RhythmCardModel | null // the rhythm card drawn on the staff (Scales rhythm); null: Off, or no notes
+  timeSig: string | null // "4/4", "3/4": drawn at the staff's start with a card; null otherwise
   error: string | null // shown instead of notes
   last: boolean // final bar line
 }>
+/** the Scales sheet's rhythm: the card every staff plays, and each line's beats (by its first row; default 4) */
+export type SheetRhythm = Readonly<{ rhythm?: RhythmId; beatsOf?: (row: number) => number }>
 export type SheetPart = Readonly<{ mode: Mode; heading: string; pages: readonly (readonly StaffModel[])[] }>
 /** the chord picks (#303) and each row's drawn position (chordPositions over the rows' document) */
 export type SheetPicks = Readonly<{ picks: ChordPicks; at: ReadonlyMap<number, ChordAt> }>
@@ -169,13 +174,15 @@ function staff(
   key: Key | null | undefined,
   covers: Cover,
   keyName?: string,
+  beats = 4,
+  rhythm: RhythmId = 'off',
 ): StaffModel {
   const startKey = 'midi' in start ? start.midi : start.error
   const keySig = key === undefined ? null : keySignature(key, part)
   const id = [chordTexts.join(' '), scale, part.clef, part.trans, mode, startKey, keySig, ].join('|')
   const base = { id, last, keySig, showClefAndKey: true, positions: covers.positions, source: scale === null ? null : { chord: row.chord, scale } }
   const chords = chordTexts.map((c) => chordTokensOrNull(part, c, scale))
-  const none = { notes: [], accidentals: [], intervals: null, keys: null, selected: null, pentatonic: null, hexatonic: null, quartal: null, second: null, outside: null, varies: false }
+  const none = { notes: [], accidentals: [], intervals: null, keys: null, selected: null, pentatonic: null, hexatonic: null, quartal: null, second: null, outside: null, varies: false, card: null, timeSig: null }
   if (scale === null) return { ...base, ...none, chords, scale: null, error: chords[0] ? 'Choose a scale' : "Can't read this chord" }
   try {
     const label = scaleLabel(part, scale)
@@ -184,8 +191,12 @@ function staff(
     const low = mode === 'root' ? (scaleOnly[0]?.midi ?? 0) : start.midi
     const { degrees, ...practiced } = practiceFor(row, part, mode, startText, scale, scaleOnly, scaleNotes(part, scale, mode, start.midi, 'degrees'), practice, covers.pick, low, keyName)
     const { notes } = practiced
+    const card = notes.length ? cardBars(rhythm, beats) : null
     return {
       ...base,
+      id: card ? `${id}|${rhythm}|${beats}` : id,
+      card,
+      timeSig: card ? `${beats}/4` : null,
       chords,
       scale: label,
       accidentals: accidentalsInBar(notes.map((n) => ({ letter: n.letter, acc: n.acc, octave: octaveOf(n) })), keySig),
@@ -212,9 +223,15 @@ export function noteText(text: string): string {
  * the page subtitle: "Subtitle – Tenor Sax (Bb) (Spelled from C)";
  * just the heading when there is neither a subtitle nor an instrument label
  */
-export function pageSubtitle(subtitle: string, instrument: string, heading: string): string {
+export function pageSubtitle(subtitle: string, instrument: string, heading: string, extra: readonly string[] = []): string {
   const bits = [subtitle, instrument].filter(Boolean)
-  return bits.length ? `${bits.join(' – ')} (${heading})` : heading
+  const head = bits.length ? `${bits.join(' – ')} (${heading})` : heading
+  return [head, ...extra].join(' · ')
+}
+
+/** the subtitle's words for the sheet's rhythm: "Rhythm: 8ths in 3, with accents"; none for Off */
+export function sheetRhythmText(rhythm: RhythmId): readonly string[] {
+  return rhythm === 'off' ? [] : [`Rhythm: ${rhythmLabel(rhythm)}`]
 }
 
 
@@ -225,7 +242,8 @@ export function pageSubtitle(subtitle: string, instrument: string, heading: stri
  * resolved: resolveScales over the document the rows come from, at the sheet's level; without it each row plays its
  * own scale or its quality's default. picks (#303): each staff plays its first position's live pick of the preset's
  * kind, and varies where its positions' picks differ. keys (#432): each row's key area (rowKeys), which the Hexatonic
- * preset ranked against the key reads from each line's first row; without them it plays Auto.
+ * preset ranked against the key reads from each line's first row; without them it plays Auto. options: the rhythm card
+ * each staff with notes carries, in the beats `beatsOf` gives its first row (4 by default); none without one.
  */
 export function buildSheet(
   rows: readonly Row[],
@@ -238,6 +256,7 @@ export function buildSheet(
   resolved?: ReadonlyMap<number, Resolved>,
   picks?: SheetPicks,
   keys?: ReadonlyMap<number, string>,
+  options: SheetRhythm = {},
 ): SheetPart[] {
   const scaleOf = (r: Row, i: number): string | null => (resolved?.has(i) ? (resolved.get(i)?.scale ?? null) : qualityScale(r))
   const lines = scaleLines(rows, scaleOf)
@@ -251,7 +270,7 @@ export function buildSheet(
       pages: chunk(
         lines.map((l, n) => {
           const r = rows[l.row] as Row
-          return staff(r, l.chords, scaleOf(r, l.row), part, mode, start, n === lines.length - 1, startText, practice, key, covers[n]!, keys ? (keys.get(l.row) ?? '') : undefined)
+          return staff(r, l.chords, scaleOf(r, l.row), part, mode, start, n === lines.length - 1, startText, practice, key, covers[n]!, keys ? (keys.get(l.row) ?? '') : undefined, options.beatsOf?.(l.row) ?? 4, options.rhythm ?? 'off')
         }),
         perPage,
       ),
