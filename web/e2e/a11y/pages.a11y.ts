@@ -168,6 +168,16 @@ for (const theme of ['light', 'dark'] as const) {
       await expectAccessible(page)
     })
 
+    test('the Arpeggios sheet with a rhythm (rhythm-scales-arpeggios spec §4)', async ({ page }) => {
+      await page.goto(SONG)
+      if (theme === 'dark') await darkMode(page)
+      await chooseSheet(page, 'Arpeggios')
+      await expect(staves(page).first()).toBeVisible()
+      await chooseRhythm(page, '8ths', { In: 'In 3', Variation: 'with accents' })
+      await expect(staves(page).first()).toHaveAttribute('data-time-sig', '4/4')
+      await expectAccessible(page)
+    })
+
     test('the Patterns sheet, with the Custom box open', async ({ page }) => {
       await page.goto(SONG)
       if (theme === 'dark') await darkMode(page)

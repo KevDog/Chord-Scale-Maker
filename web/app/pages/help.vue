@@ -356,6 +356,24 @@
                 page's subtitle names the number. <em>Whole notes</em> is the staff as it was. A sheet with runs prints eight staves a page.
               </dd>
             </div>
+            <div v-if="rhythmSheetsOn">
+              <dt id="rhythm-arpeggios" class="scroll-mt-6 font-semibold text-zinc-950 dark:text-white">Rhythm on the Arpeggios</dt>
+              <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
+                On the Arpeggios sheet, the <strong class="font-semibold">Rhythm</strong> group pours each arpeggio into the rhythm: the same notes in the same
+                order, one an attack, in bars with the time signature (the staff's, as for the rhythm card). Rests and ties come from the rhythm, its beams
+                replace the arpeggio's, and its accents and triplets draw; Saindon's bracket doesn't. The last note's bar rests after it. The page's subtitle
+                names the rhythm, and a sheet with a rhythm prints eleven staves a page. Triad pairs' <em>Block</em> plays chords, so it takes no rhythm and
+                the group hides there.
+              </dd>
+            </div>
+            <div v-if="rhythmSheetsOn">
+              <dt id="rhythm-grouping" class="scroll-mt-6 font-semibold text-zinc-950 dark:text-white">Grouping</dt>
+              <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
+                To play an arpeggio grouped in 3, 4, 5, 6 or 7, choose the Rhythm <em>8ths in N, with accents</em>: every 8th plays, beamed in groups of N
+                across the barlines, the first of each group accented. Grouping in N is that rhythm, after Ed Saindon's <em>Rhythmic Patterns</em> (p. 12)
+                and Jerry Bergonzi's <em>Inside Improvisation Vol. 4</em> (ch. 32).
+              </dd>
+            </div>
           </dl>
         </div>
 

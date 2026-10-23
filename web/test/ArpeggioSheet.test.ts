@@ -19,6 +19,33 @@ describe('ArpeggioSheet', () => {
     expect(w.find('section p').text()).toBe('S (Patterns)')
   })
 
+  // rhythm-scales-arpeggios spec §4, §6: the rhythm pours each run and the subtitle names it; Block and Patterns take none
+  it('pours each run into the rhythm and names it in the subtitle', async () => {
+    const w = await mountSuspended(ArpeggioSheet, { props: { ...props, rhythm: 'unit:8:3:accents', beatsOf: () => 3 }, global: { stubs: { ArpeggioStaff: true } } })
+    expect(w.find('section p').text()).toBe('S (Extended arpeggios) · Rhythm: 8ths in 3, with accents')
+    const staves = w.findAllComponents({ name: 'ArpeggioStaff' })
+    expect(staves.map((s) => s.props('staff').timeSig)).toEqual(['3/4', '3/4'])
+    expect(staves.map((s) => s.props('rhythm'))).toEqual(['unit:8:3:accents', 'unit:8:3:accents'])
+  })
+
+  // spec §8's fallback: a poured sheet prints rhythmPerPage a page; an unpoured one keeps perPage
+  it('pages a poured sheet at rhythmPerPage', async () => {
+    const many: Row[] = Array.from({ length: 3 }, (_, i) => ({ section: 'A', bar: String(i + 1), chord: ['Cm7', 'F7', 'BbMaj7'][i]!, scale: '' }))
+    const sections = async (rhythm: 'off' | 'unit:8t:4:accents') => {
+      const w = await mountSuspended(ArpeggioSheet, { props: { ...props, rows: many, perPage: 3, rhythmPerPage: 2, rhythm }, global: { stubs: { ArpeggioStaff: true } } })
+      return w.findAll('section').length
+    }
+    expect(await sections('unit:8t:4:accents')).toBe(2)
+    expect(await sections('off')).toBe(1)
+  })
+
+  it('names no rhythm where no staff pours it: Off, Block, Patterns', async () => {
+    for (const extra of [{ rhythm: 'off' }, { notes: 'pairs', shape: 'block', rhythm: 'unit:8:3:accents' }, { notes: 'scale', moves: [2, -1], rhythm: 'unit:8:3:accents' }] as const) {
+      const w = await mountSuspended(ArpeggioSheet, { props: { ...props, ...extra }, global: { stubs: { ArpeggioStaff: true } } })
+      expect(w.find('section p').text()).not.toContain('Rhythm')
+    }
+  })
+
   it('heads Triad pairs, and passes a staff’s pick up (#436)', async () => {
     const w = await mountSuspended(ArpeggioSheet, { props: { ...props, notes: 'pairs', shape: 'block' }, global: { stubs: { ArpeggioStaff: true } } })
     expect(w.find('section p').text()).toBe('S (Triad pairs)')
