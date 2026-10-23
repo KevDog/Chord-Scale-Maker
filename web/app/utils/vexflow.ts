@@ -113,9 +113,7 @@ export function drawStaff(vf: VexFlowModule, el: HTMLElement, staff: StaffModel,
     if (classes.length) n.getSVGElement()?.classList.add(...classes)
   })
   const names = staff.notes.map(ariaName)
-  const picked = staff.selected ? names.filter((_, i) => staff.selected?.[i]) : null
-  const added = names.filter((_, i) => staff.outside?.[i])
-  const label = names.join(' ') + (picked ? `; practice: ${picked.length ? picked.join(' ') : 'none'}` : '') + (added.length ? `; added from the pentatonic: ${added.join(' ')}` : '')
+  const label = staffLabel(names, staff.selected ? names.filter((_, i) => staff.selected?.[i]) : null, names.filter((_, i) => staff.outside?.[i]))
   fitSvg(el, cropBand(notes.flatMap((n) => n.getYs())), STAFF_WIDTH, label)
   if (staff.timeSig) el.querySelector('svg')?.setAttribute('data-time-sig', staff.timeSig)
   return notes.map((n) => headCentre(n, STAFF_WIDTH))
@@ -123,6 +121,10 @@ export function drawStaff(vf: VexFlowModule, el: HTMLElement, staff: StaffModel,
 
 /** a pitch's name in an aria-label: "eb4" */
 const ariaName = (n: Pitched): string => toVexKey(n).replace('/', '')
+
+/** a Scales staff's aria-label: its notes, then the practice part (none: Practice off) and the pentatonic's added notes */
+const staffLabel = (names: readonly string[], picked: readonly string[] | null, added: readonly string[]): string =>
+  names.join(' ') + (picked ? `; practice: ${picked.length ? picked.join(' ') : 'none'}` : '') + (added.length ? `; added from the pentatonic: ${added.join(' ')}` : '')
 
 /** practice classes (main.css): the staff note's pick, its second accent for a hexatonic's group B or a pentatonic's added note (#308) */
 function practiceClasses(staff: StaffModel, i: number): readonly string[] {
@@ -147,11 +149,17 @@ function drawRunStaff(vf: VexFlowModule, el: HTMLElement, staff: StaffModel, run
     if (classes.length) ticks[i]?.getSVGElement()?.classList.add(...classes)
   })
   const attacks = marks.filter((m) => !m.mark.tiedIn)
-  const names = attacks.map((m) => (m.note === null ? 'rest' : ariaName(run.notes[m.note]!)))
-  const sourced = (pick: readonly boolean[] | null | undefined) => attacks.flatMap((m) => (m.note !== null && pick?.[run.source[m.note] ?? -1] ? [ariaName(run.notes[m.note]!)] : []))
-  const picked = staff.selected ? sourced(staff.selected) : null
-  const added = sourced(staff.outside)
-  const label = names.join(' ') + (picked ? `; practice: ${picked.length ? picked.join(' ') : 'none'}` : '') + (added.length ? `; added from the pentatonic: ${added.join(' ')}` : '')
+  const pitchOf = (note: number | null): Pitched | undefined => (note === null ? undefined : run.notes[note])
+  const names = attacks.map((m) => {
+    const p = pitchOf(m.note)
+    return p ? ariaName(p) : 'rest'
+  })
+  const sourced = (pick: readonly boolean[] | null | undefined) =>
+    attacks.flatMap((m) => {
+      const p = pitchOf(m.note)
+      return p && m.note !== null && pick?.[run.source[m.note] ?? -1] ? [ariaName(p)] : []
+    })
+  const label = staffLabel(names, staff.selected ? sourced(staff.selected) : null, sourced(staff.outside))
   const pitched = ticks.filter((t) => !t.isRest())
   const heads = pitched.flatMap((n) => n.getYs())
   const stems = pitched.filter((n) => n.hasStem()).map((n) => n.getStemExtents().topY)

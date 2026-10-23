@@ -267,7 +267,7 @@
               </Transition>
               <!-- Notes per bar beside it (spec §2, §9): it leaves at once, so leaving the Scales sheet never wraps the rail while both fade -->
               <Transition name="ease-fade" :duration="{ enter: 180, leave: 0 }">
-                <UiField v-if="sheet === 'scales' && rhythmSheetsOn && shows('rhythm') && shows('notes-per-bar')">
+                <UiField v-if="sheet === 'scales' && rhythmSheetsOn && shows('notes-per-bar')">
                   <UiLabel class="pl-3">Notes per bar</UiLabel>
                   <div class="flex flex-wrap items-center gap-2">
                     <UiListbox v-model="notesPerBar" :class="compact ? 'w-full' : 'w-52'" aria-label="Notes per bar" title="Play the scale up and down in bars of this many notes (after Bergonzi)">

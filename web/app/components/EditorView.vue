@@ -966,8 +966,8 @@ async function shareUrl(): Promise<string> {
     ...(sheetLine.value !== 'off' ? { line: sheetLine.value } : {}), // absent: off
     sheet: sheet.value,
     ...(sheet.value === 'changes' && approachShown.value !== 'none' ? { approach: approachShown.value } : {}), // the line's Approach (#298, #381)
-    ...(sheetRhythm.value !== 'off' ? { rhythm: sheetRhythm.value } : {}),
-    ...(sheetNotesPerBar.value !== 'whole' ? { notesPerBar: sheetNotesPerBar.value } : {}), // the Scales sheet's (spec §9); absent: Whole notes // the rhythm line (rhythm spec §9), on the Scales and Arpeggios too with the rhythmSheets flag on; absent: off
+    ...(sheetRhythm.value !== 'off' ? { rhythm: sheetRhythm.value } : {}), // the rhythm line (rhythm spec §9), on the Scales and Arpeggios too with the rhythmSheets flag on; absent: off
+    ...(sheetNotesPerBar.value !== 'whole' ? { notesPerBar: sheetNotesPerBar.value } : {}), // the Scales sheet's (spec §9); absent: Whole notes
     ...(sheet.value === 'changes' && prefs.rhythm.value !== 'off' && prefs.rhythmStart.value !== 'beat' ? { rhythmStart: prefs.rhythmStart.value } : {}), // rhythm-on-lines spec §10; absent: on the beat
     ...(sheet.value === 'changes' && prefs.rhythm.value !== 'off' && prefs.anticipate.value !== 0 ? { anticipate: prefs.anticipate.value } : {}), // absent: on time
     ...(sheet.value === 'changes' && prefs.rhythm.value !== 'off' && prefs.restate.value ? { restate: true as const } : {}), // absent: off
