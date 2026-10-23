@@ -18,13 +18,19 @@ import type { ScaleView } from '../resolve'
 import { type PentatonicDegree, PENTATONIC_HOME, type PentatonicPathName, type PentatonicStep } from '../pentatonics'
 import { abbreviateScale } from '../scales'
 import { chunk, isSyncCopy } from '../util'
-import { layRhythm, rhythmNotes } from '../rhythm'
+import { layRhythm, type RhythmPath, rhythmNotes } from '../rhythm'
 import { sectionLayout } from '../layout'
+import { stepUnits } from '../steps'
 
 // a transparent wrapper, so a test can see what buildChanges hands the voice leading
 vi.mock('../guideTones', async (importOriginal) => {
   const actual = await importOriginal<typeof import('../guideTones')>()
   return { ...actual, guideVoices: vi.fn(actual.guideVoices) }
+})
+// and what it hands the step units (Phase 4 spec §3)
+vi.mock('../steps', async (importOriginal) => {
+  const actual = await importOriginal<typeof import('../steps')>()
+  return { ...actual, stepUnits: vi.fn(actual.stepUnits) }
 })
 
 const library = (name: string) => parseChart(readFileSync(`charts/${name}.txt`, 'utf8')).value
@@ -1368,6 +1374,64 @@ describe('the rhythm line and target beats (rhythm spec §8)', () => {
   it('counts a rhythm as a voiced line on a printed page', () => {
     expect(changesLinesPerPage('off', { numerals: true, scales: true }, true)).toBe(6)
     expect(changesLinesPerPage('off', { numerals: true, scales: true })).toBe(8)
+  })
+})
+
+describe("the rhythm's paths on the Changes sheet (Phase 4 spec §3, D17)", () => {
+  const bars = (sheet: ChangesSheet) => sheet.lines.flatMap((l) => l.bars)
+  const ROWS = ['1 | CMaj7', '3 | Am7', '5 | Dm7', '7 | G7']
+  // four 8-bar sections, each written out
+  const aaba = parseChart(['key: C', ...['A1', 'A2', 'B', 'A3'].flatMap((s) => ['', `section: ${s}`, 'bars: 8', ...ROWS])].join('\n') + '\n').value
+  const sixBars = parseChart('key: C\n\nsection: A\n1 | CMaj7\n2 | Am7\n3 | Dm7\n4 | G7\n5 | Em7\n6 | A7\n').value
+  const up: RhythmPath = { groups: [3, 4, 5, 6, 7], gears: null, step: { unit: 'section', bars: 4 } }
+  const gears: RhythmPath = { groups: null, gears: ['8', '8t', '16'], step: { unit: 'bars', bars: 2 } }
+  const sheetOf = (doc: ChartDoc, rhythm: `${string}:${string}`, rhythmPath?: RhythmPath, line: ChangesLineChoice = 'off') =>
+    buildChanges(doc, CONCERT, 4, false, line, undefined, null, 'none', { rhythm: rhythm as never, rhythmPath })
+
+  it('marks each step\'s group over its first bar, Groups Up by section', () => {
+    const marks = bars(sheetOf(aaba, 'unit:8:3:accents', up)).map((b) => b.step)
+    expect(marks).toHaveLength(32)
+    expect([marks[0], marks[8], marks[16], marks[24]]).toEqual([3, 4, 5, 6].map((group) => ({ group, pulse: null })))
+    expect(marks.filter((_, d) => d % 8 !== 0).every((m) => m === null)).toBe(true)
+  })
+
+  it('marks the pulse alone under a Gears path', () => {
+    const marks = bars(sheetOf(sixBars, 'unit:8:4:accents', gears)).map((b) => b.step)
+    expect(marks).toEqual([{ group: null, pulse: '8' }, null, { group: null, pulse: '8t' }, null, { group: null, pulse: '16' }, null])
+  })
+
+  it('marks nothing with no path, or a group on a custom rhythm (D12)', () => {
+    expect(bars(sheetOf(aaba, 'unit:8:3:accents')).every((b) => b.step === null)).toBe(true)
+    expect(bars(sheetOf(aaba, 'custom:8:x.x', up)).every((b) => b.step === null)).toBe(true)
+    expect(bars(sheetOf(aaba, 'run:8:4:0', up)).every((b) => b.step === null)).toBe(true)
+  })
+
+  it('lays the plan and captions the path', () => {
+    const sheet = sheetOf(aaba, 'unit:8:3:accents', { ...up, groups: [3, 4, 5] })
+    expect(sheet.rhythmCaption).toBe('Rhythm: 8ths, with accents · in 3 → 4 → 5 · by section')
+    expect(bars(sheet).map((b) => b.rhythm)).toEqual(rhythmNotes(layRhythm([{ from: 0, id: 'unit:8:3:accents' }, { from: 8, id: 'unit:8:4:accents' }, { from: 16, id: 'unit:8:5:accents' }, { from: 24, id: 'unit:8:3:accents' }], Array<number>(32).fill(4))!))
+    expect(sheetOf(sixBars, 'unit:8:4:accents', gears).rhythmCaption).toBe('Rhythm: Units in 4, with accents · 8ths → triplets → 16ths · every 2 bars')
+  })
+
+  it('pours the path into a Line: the arpeggio attacks where the rhythm line would', () => {
+    const at = (beat: number) => Math.round(beat * 1000) / 1000
+    const rhythm = bars(sheetOf(sixBars, 'unit:8:3:rests', gears)).map((b) => b.rhythm.filter((n) => !n.rest && !n.tiedIn).map((n) => at(n.beat)))
+    const voice = bars(sheetOf(sixBars, 'unit:8:3:rests', gears, 'up-root')).map((b) => b.voice.filter((n) => n.pitch !== null && !n.tiedIn).map((n) => at(n.beat)))
+    expect(voice).toEqual(rhythm)
+    expect(rhythm[2]).toEqual([0, 1, 2, 3].map(at)) // triplets in bars 3–4: 12 pulses, in 3 from beat 1
+    expect(rhythm[4]).toHaveLength(6) // 16ths in bars 5–6, 16 pulses in 3 after 24 + 24 pulses
+  })
+
+  it('gives the step units the bars as drawn: a written-out repeat, a 2nd ending, a held bar', () => {
+    const doc = parseChart(['key: C', '', 'section: A', '1 | Dm7', '2 | G7', '3 | CMaj7', '4 | A7', '@ending 1 3', '@ending 2 4', '', 'section: B', 'bars: 4', '1 | FMaj7', '3 | E7', '', 'section: A2', 'copy: A'].join('\n') + '\n').value
+    vi.mocked(stepUnits).mockClear()
+    const sheet = sheetOf(doc, 'unit:8:3:accents', { ...up, step: { unit: 'bars', bars: 2 } })
+    const calls = vi.mocked(stepUnits).mock.calls
+    const results = vi.mocked(stepUnits).mock.results
+    expect(calls.length).toBeGreaterThanOrEqual(1)
+    expect(calls.every(([blocks]) => blocks === calls[0]![0])).toBe(true) // one drawn-blocks array for both paths
+    expect(results.map((r) => (r.value as ReturnType<typeof stepUnits>).ofDrawnBar.length)).toEqual(calls.map(() => bars(sheet).length))
+    expect(bars(sheet).length).toBe(4 + 4 + 4)
   })
 })
 

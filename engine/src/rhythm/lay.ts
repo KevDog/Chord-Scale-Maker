@@ -3,7 +3,7 @@
  * Pure TypeScript; the notation (Task 5's notes, beams and brackets) reads these events.
  */
 import { rhythmLabel, rhythmOf, type RhythmId } from './library'
-import type { RhythmSteps } from './path'
+import { rhythmPathCaption, type RhythmPath, type RhythmSteps } from './path'
 import { barPulse, pulseBeat, pulsesIn, range, type Cell, type Pulse } from './rhythm'
 
 /**
@@ -210,8 +210,13 @@ export const cycleBars = (unit: number, barPulses: number): number => unit / gcd
 
 const MAX_LISTED = 6
 
-/** "Rhythm: <label> · <cycle>" for a repeating rhythm, "Rhythm: <label>" for a per-bar one (§4). */
-export function rhythmCaption(id: RhythmId, laid: Laid): string {
+/**
+ * "Rhythm: <label> · <cycle>" for a repeating rhythm, "Rhythm: <label>" for a per-bar one (§4). With a path that acts
+ * on it, "Rhythm: <label> · <path> · <step>" instead: the step marks say where each grouping starts (Phase 4 spec §3).
+ */
+export function rhythmCaption(id: RhythmId, laid: Laid, path?: RhythmPath): string {
+  const onPath = rhythmPathCaption(id, path)
+  if (onPath) return `Rhythm: ${onPath}`
   const caption = `Rhythm: ${rhythmLabel(id)}`
   if (laid.kind === 'bar') return caption
   const { landings, unit } = laid

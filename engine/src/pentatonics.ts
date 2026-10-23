@@ -102,11 +102,14 @@ export function pentatonicCycle(path: PentatonicPathName, i: number): Pentatonic
   }
 }
 
+/** what a path steps by, as its caption says it: "every 4 bars", "by section", "by key area" */
+export const stepLabel = (step: PentatonicStep): string =>
+  step.unit === 'bars' ? `every ${step.bars} bars` : step.unit === 'section' ? 'by section' : 'by key area'
+
 /** "Pentatonics: Minor thirds · every 4 bars"; null for One rung and Custom */
 export function pentatonicPathCaption(path: PentatonicPathName, step: PentatonicStep = PENTATONIC_STEP): string | null {
   if (!isPentatonicPreset(path)) return null
-  const unit = step.unit === 'bars' ? `every ${step.bars} bars` : step.unit === 'section' ? 'by section' : 'by key area'
-  return `Pentatonics: ${PENTATONIC_PATH_LABELS[path]} · ${unit}`
+  return `Pentatonics: ${PENTATONIC_PATH_LABELS[path]} · ${stepLabel(step)}`
 }
 
 /**

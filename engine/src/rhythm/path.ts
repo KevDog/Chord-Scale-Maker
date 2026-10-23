@@ -2,9 +2,9 @@
  * Rhythm paths (Phase 4 spec §3): a Groups path and a Gears path that step through the form by the pentatonic path's
  * Step, and the plan they make, one rhythm id per run of drawn bars. Pure TypeScript.
  */
-import { isPentatonicStep, PENTATONIC_STEP, type PentatonicStep } from '../pentatonics'
-import { formatRhythm, PULSES, type Pulse } from './rhythm'
-import { parseRhythmId, UNIT_GROUPS, type RhythmId } from './library'
+import { isPentatonicStep, PENTATONIC_STEP, stepLabel, type PentatonicStep } from '../pentatonics'
+import { formatRhythm, PULSE_LABELS, PULSES, type Pulse } from './rhythm'
+import { parseRhythmId, UNIT_GROUPS, VARIATION_LABELS, type RhythmId } from './library'
 
 export type RhythmStep = PentatonicStep
 
@@ -60,4 +60,57 @@ export function rhythmSteps(id: RhythmId, path: RhythmPath, units: readonly (num
     if (out.at(-1)?.id !== here) out.push({ from: b, id: here })
     return out
   }, [])
+}
+
+/** the lists of `path` that act on `id` (D12): Groups on a unit, Gears on a unit or a custom rhythm; null for neither */
+function acting(id: RhythmId, path: RhythmPath | undefined) {
+  const p = id === 'off' || !path ? null : parseRhythmId(id)
+  const groups = p?.kind === 'unit' ? path!.groups : null
+  const gears = p?.kind === 'unit' || p?.kind === 'custom' ? path!.gears : null
+  return p && (groups || gears) ? { p, groups, gears } : null
+}
+
+const gearName = (pulse: Pulse): string => PULSE_LABELS[pulse].replace(/^./, (c) => c.toLowerCase())
+
+/**
+ * The caption's label and path with a path that acts on `id` (Phase 4 spec §3): the label drops what the path
+ * changes (the group under Groups, the pulse under Gears), then each path and the step. Null when no path acts.
+ */
+export function rhythmPathCaption(id: RhythmId, path: RhythmPath | undefined): string | null {
+  const on = acting(id, path)
+  if (!on) return null
+  const { p, groups, gears } = on
+  const label =
+    p.kind === 'custom'
+      ? `Your rhythm (${p.rhythm.cells.join('')})`
+      : p.kind === 'unit'
+        ? `${gears ? 'Units' : PULSE_LABELS[p.pulse]}${groups ? '' : ` in ${p.group}`}, ${VARIATION_LABELS[p.variation]}`
+        : ''
+  const parts = [label, groups && `in ${groups.join(' → ')}`, gears && gears.map(gearName).join(' → '), stepLabel(path!.step)]
+  return parts.filter(Boolean).join(' · ')
+}
+
+/** a step's mark over its first bar (D17): its group where it changes, its pulse where it changes */
+export type RhythmStepMark = Readonly<{ group: number | null; pulse: Pulse | null }>
+
+/**
+ * Each drawn bar's step mark under `path`, from the plan `steps` (`rhythmSteps`) over `bars` drawn bars: on step 0,
+ * the group whenever Groups acts and the pulse whenever Gears acts; on a later step, each only where it differs from
+ * the step before. Null on every other bar, and everywhere with no path acting (a custom rhythm shows no group).
+ */
+export function rhythmStepMarks(id: RhythmId, path: RhythmPath | undefined, steps: RhythmSteps, bars: number): readonly (RhythmStepMark | null)[] {
+  const out = Array<RhythmStepMark | null>(bars).fill(null)
+  const on = acting(id, path)
+  if (!on) return out
+  const values = steps.map(({ id: at }) => {
+    const p = parseRhythmId(at)
+    return { group: p?.kind === 'unit' ? p.group : null, pulse: p?.kind === 'unit' ? p.pulse : p?.kind === 'custom' ? p.rhythm.pulse : null }
+  })
+  steps.forEach(({ from }, i) => {
+    const prev = values[i - 1]
+    const group = on.groups && values[i]!.group !== prev?.group ? values[i]!.group : null
+    const pulse = on.gears && values[i]!.pulse !== prev?.pulse ? values[i]!.pulse : null
+    if ((group !== null || pulse !== null) && from < bars) out[from] = { group, pulse }
+  })
+  return out
 }
