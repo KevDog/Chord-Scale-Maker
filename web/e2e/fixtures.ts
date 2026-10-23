@@ -452,6 +452,9 @@ export const chooseGears = (page: Page, label: string): Promise<void> => chooseI
 /** with a rhythm path on, choose its Step (Phase 4 spec §7): "By section", "By key area", "Every 2 bars", … */
 export const chooseRhythmStep = (page: Page, label: string): Promise<void> => chooseInLineOptions(page, 'Step', label, `Step: ${label}`)
 
+/** on the Changes, choose its Feel (Phase 4 spec §7): "In 4", "In 2", "In 1" */
+export const chooseFeel = (page: Page, label: string): Promise<void> => chooseInLineOptions(page, 'Feel', label, `Feel: ${label}`)
+
 /** with a rhythm on a Line that takes it, choose its Start (rhythm-on-lines spec §10): "On the beat", "1-note pick-up", … */
 export const chooseStart = (page: Page, label: string): Promise<void> => chooseInLineOptions(page, 'Start', label, `Start: ${label}`)
 

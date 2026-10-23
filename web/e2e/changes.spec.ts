@@ -1,5 +1,5 @@
 import type { Locator, Page } from '@playwright/test'
-import { chooseGears, chooseGroups, chooseInstrument, chooseInterface, chooseRhythm, chooseRhythmStep, chooseSheet, chooseStart, closePanel, type Drawn, drawn, expect, openPanel, GLYPH, arpeggiosDrawn, guidesDrawn, openEditor, restateOn, rhythmDrawn, sheetChord, showArpeggios, showApproach, showCell, showGuides, showOrder, showTargets, test, writeChart } from './fixtures'
+import { chooseFeel, chooseGears, chooseGroups, chooseInstrument, chooseInterface, chooseRhythm, chooseRhythmStep, chooseSheet, chooseStart, closePanel, type Drawn, drawn, expect, openPanel, GLYPH, arpeggiosDrawn, guidesDrawn, openEditor, restateOn, rhythmDrawn, sheetChord, showArpeggios, showApproach, showCell, showGuides, showOrder, showTargets, test, writeChart } from './fixtures'
 
 const lines = (page: Page) => page.locator('svg[aria-label^="Bars:"]')
 /** the sheet itself, not the controls above it (whose menus name the same scales) */
@@ -959,6 +959,93 @@ test.describe('the Gears path', () => {
       expect(bar, `${text}'s bar`).not.toBeNull()
       expect(mark.right, `${text} inside its bar`).toBeLessThanOrEqual(bar!.right)
     }
+  })
+})
+
+// Feel (Phase 4 spec §4, §6, §7; flag `rhythmGears`): in 2 and in 1 on F Blues, 4 bars a line
+test.describe('Feel', () => {
+  /** each line's slash notes a bar, wait until every line is drawn with the mark's line first */
+  const slashesABar = (page: Page) =>
+    lines(page).evaluateAll((svgs) => svgs.map((svg) => svg.querySelectorAll('.vf-stavenote').length / svg.querySelectorAll('.vf-stave').length))
+
+  test('in 2: two hollow slashes a bar, the mark over the first bar, and its words in the first line’s aria-label', async ({ page }) => {
+    await page.goto('/song/f-jazz-blues')
+    await chooseFeel(page, 'In 2')
+    await expect(lines(page).first()).toHaveAttribute('aria-label', /; feel in 2/)
+    await expect.poll(() => slashesABar(page)).toEqual([2, 2, 2])
+    await expect(page.locator('[data-feel-mark]')).toHaveText(['in 2'])
+    await expect(lines(page).nth(1)).not.toHaveAttribute('aria-label', /feel/)
+    await expect(page.locator('section header p').first()).not.toContainText('feel') // no rhythm, no caption
+    await expect(page.getByText(/Couldn.t draw/)).toHaveCount(0)
+  })
+
+  test('in 2 with a rhythm: the caption says so, and the target dots fall on 1 and 3', async ({ page }) => {
+    await page.goto('/song/f-jazz-blues')
+    await chooseRhythm(page, 'Upbeats')
+    await chooseFeel(page, 'In 2')
+    await showTargets(page)
+    await rhythmDrawn(page)
+    await expect(page.locator('section header p').first()).toContainText('feel in 2')
+    await expect(lines(page).first()).toHaveAttribute('aria-label', /; rhythm: .* · feel in 2/)
+    await expect(page.locator('[data-feel-mark]')).toHaveText(['in 2'])
+    await expect(page.locator('[data-slot="system"]').first().locator('[data-target-beat]')).toHaveCount(8)
+  })
+
+  test('in 1: one whole slash a bar and the downbeat alone a target', async ({ page }) => {
+    await page.goto('/song/f-jazz-blues')
+    await chooseFeel(page, 'In 1')
+    await showTargets(page)
+    await expect.poll(() => slashesABar(page)).toEqual([1, 1, 1])
+    await expect(page.locator('[data-feel-mark]')).toHaveText(['in 1'])
+    const first = page.locator('[data-slot="system"]').first()
+    await expect(first.locator('[data-target-beat]')).toHaveCount(4)
+    await expect(first.locator('[data-target-beat="0"]')).toHaveCount(4)
+  })
+
+  // a path's ③ is on the first bar too: the Feel mark first, the step mark after it, neither over a target dot (phone width)
+  test('keeps the mark clear of the step mark and the target dots on the first bar (phone width)', async ({ page }) => {
+    await page.goto('/song/f-jazz-blues')
+    await chooseRhythm(page, '8ths', { In: 'In 3', Variation: 'with accents' })
+    await chooseGroups(page, 'Up')
+    await chooseGears(page, 'Up the gears')
+    await chooseRhythmStep(page, 'Every 2 bars')
+    await chooseFeel(page, 'In 2')
+    await showTargets(page)
+    await page.setViewportSize({ width: 390, height: 844 })
+    await rhythmDrawn(page)
+    await expect(page.locator('[data-feel-mark]')).toHaveCount(1)
+    type Box = Readonly<{ left: number; right: number; top: number; bottom: number }>
+    const found = await lines(page).first().evaluate((svg) => {
+      const box = (e: Element): Box => {
+        const r = e.getBoundingClientRect()
+        return { left: r.left, right: r.right, top: r.top, bottom: r.bottom }
+      }
+      const bar = box(svg.querySelectorAll('.vf-stave')[0]!)
+      return { feel: box(svg.querySelector('[data-feel-mark]')!), step: box(svg.querySelector('[data-rhythm-step]')!), dots: Array.from(document.querySelectorAll('[data-target-beat]')).map(box), bar }
+    })
+    const overlaps = (a: Box, b: Box): boolean => a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom
+    expect(overlaps(found.feel, found.step), 'the Feel mark over the step mark').toBe(false)
+    expect(found.feel.right).toBeLessThanOrEqual(found.step.left)
+    expect(found.dots.filter((d) => overlaps(found.feel, d)), 'the Feel mark over a target dot').toEqual([])
+    expect(found.dots.filter((d) => overlaps(found.step, d)), 'the step mark over a target dot').toEqual([])
+    expect(found.step.right, 'the step mark inside the first bar').toBeLessThanOrEqual(found.bar.right)
+  })
+
+  test('a share link carries the Feel: it opens in 1', async ({ page, browser }) => {
+    await page.goto('/song/f-jazz-blues')
+    await chooseFeel(page, 'In 1')
+    await expect(page.locator('[data-feel-mark]')).toHaveText(['in 1'])
+    await page.getByRole('button', { name: 'Share' }).click()
+    const box = page.getByRole('dialog').getByLabel('Link')
+    await expect(box).toHaveValue(/\/song#s=[A-Za-z0-9_-]+$/)
+    const link = await box.inputValue()
+    const other = await browser.newContext() // fresh storage: its own Feel is in 4
+    await chooseInterface(other, 'everything')
+    const visitor = await other.newPage()
+    await visitor.goto(link)
+    await expect(visitor.locator('[data-feel-mark]')).toHaveText(['in 1'])
+    await expect.poll(() => slashesABar(visitor)).toEqual([1, 1, 1])
+    await other.close()
   })
 })
 
