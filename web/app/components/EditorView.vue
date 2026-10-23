@@ -131,6 +131,9 @@
             v-model:guide-line="prefs.guideLine.value"
             v-model:approach="prefs.approach.value"
             v-model:rhythm="prefs.rhythm.value"
+            v-model:rhythm-start="prefs.rhythmStart.value"
+            v-model:anticipate="prefs.anticipate.value"
+            v-model:restate="prefs.restate.value"
             v-model:targets="prefs.targets.value"
             v-model:arpeggio="prefs.arpeggio.value"
             v-model:cells="prefs.cells.value"
@@ -148,6 +151,7 @@
             :lock-labels="sheetEditor"
             :compact="compactRail"
             :sticky-rail="sheetEditing"
+            :line-takes-rhythm="lineTakesRhythm"
             @instrument-chosen="instrumentChosen"
           >
             <!-- Level: how sophisticated each chord's scale is (engine/src/levels.ts); a dropdown in the toolbar -->
@@ -377,6 +381,7 @@ import {
   remapOwned,
   chartName,
   type InstrumentName,
+  takesRhythm,
 } from '@chord-scale-maker/engine'
 import BarDialog, { type BarDialogKind, type BarDialogSubmit } from './BarDialog.vue'
 import type { SaveTarget } from '~/composables/useSavedChart'
@@ -530,6 +535,8 @@ const phraseOn = useFeature('phraseCells')
 const sheetLine = computed(() => shareLineOf(prefs.lineMode.value, prefs.guideLine.value, prefs.arpeggio.value, prefs.cells.value, prefs.cellsOrder.value, prefs.cellsPhrase.value))
 /** the line the Changes sheet draws: the stored one, the arpeggio slot read as the Pentatonic line under the Pentatonic overlay (#284) */
 const changesLine = computed(() => changesLineOf({ mode: prefs.lineMode.value, guide: prefs.guideLine.value, arpeggio: prefs.arpeggio.value, overlay: prefs.overlay.value, leave: prefs.pentLeave.value, dir: prefs.arpDir.value, cells: prefs.cells.value, shape: prefs.pairLine.value, order: phraseOn ? prefs.cellsOrder.value : 'as-written', phrase: phraseOn && prefs.cellsPhrase.value }))
+/** the drawn Line takes the rhythm (rhythm-on-lines spec §1): Start and Timing act on it */
+const lineTakesRhythm = computed(() => takesRhythm(changesLine.value, prefs.restate.value))
 /**
  * chords on the Changes sheet open the chord editor while the editor is shown (on a phone, the whole editor); on a chart
  * with alternates, in the set played (#469)
@@ -633,7 +640,7 @@ const picksInForce = computed((): boolean => {
 const approachShown = computed(() => (approachApplies(prefs.lineMode.value, prefs.overlay.value) ? prefs.approach.value : 'none'))
 /** settings in force whose controls this Interface level hides (a share link, a stored preference): the notice offers to show them or reset them */
 const hidden = computed(() =>
-  hiddenSettings(ui.level.value, { sheet: sheet.value, scaleLevel: scaleLevel.level.value, numerals: showNumerals.value, scaleNames: showScaleNames.value, lineMode: prefs.lineMode.value, spell: prefs.spell.value, practice: selection.value, overlay: prefs.overlay.value, picks: picksInForce.value, approach: approachShown.value, rhythm: prefs.rhythm.value, targets: prefs.targets.value, rhythmStart: prefs.rhythmStart.value, anticipate: prefs.anticipate.value, rhythmLine: false /* takesRhythm on the drawn line: Task 9 */ }),
+  hiddenSettings(ui.level.value, { sheet: sheet.value, scaleLevel: scaleLevel.level.value, numerals: showNumerals.value, scaleNames: showScaleNames.value, lineMode: prefs.lineMode.value, spell: prefs.spell.value, practice: selection.value, overlay: prefs.overlay.value, picks: picksInForce.value, approach: approachShown.value, rhythm: prefs.rhythm.value, targets: prefs.targets.value, rhythmStart: prefs.rhythmStart.value, anticipate: prefs.anticipate.value, rhythmLine: lineTakesRhythm.value }),
 )
 /** each reset, given the mode in force before any of them ran (resetting the spelling changes the mode) */
 const RESETS: Readonly<Record<HiddenSetting, (inForce: Mode) => void>> = {
@@ -645,6 +652,9 @@ const RESETS: Readonly<Record<HiddenSetting, (inForce: Mode) => void>> = {
   rhythm: () => {
     prefs.rhythm.value = 'off'
     prefs.targets.value = false
+    prefs.rhythmStart.value = 'beat'
+    prefs.anticipate.value = 0
+    prefs.restate.value = false
   },
   'rhythm-phrasing': () => {
     prefs.rhythmStart.value = 'beat'
@@ -932,6 +942,9 @@ async function shareUrl(): Promise<string> {
     sheet: sheet.value,
     ...(sheet.value === 'changes' && approachShown.value !== 'none' ? { approach: approachShown.value } : {}), // the line's Approach (#298, #381)
     ...(sheet.value === 'changes' && prefs.rhythm.value !== 'off' ? { rhythm: prefs.rhythm.value } : {}), // the rhythm line (rhythm spec §9); absent: off
+    ...(sheet.value === 'changes' && prefs.rhythm.value !== 'off' && prefs.rhythmStart.value !== 'beat' ? { rhythmStart: prefs.rhythmStart.value } : {}), // rhythm-on-lines spec §10; absent: on the beat
+    ...(sheet.value === 'changes' && prefs.rhythm.value !== 'off' && prefs.anticipate.value !== 0 ? { anticipate: prefs.anticipate.value } : {}), // absent: on time
+    ...(sheet.value === 'changes' && prefs.rhythm.value !== 'off' && prefs.restate.value ? { restate: true as const } : {}), // absent: off
     ...(sheet.value === 'changes' && prefs.targets.value ? { targets: true } : {}), // target beats; absent: off
     ...(sheet.value === 'patterns' ? { pattern: prefs.pattern.value, patternNotes: prefs.patternNotes.value, patternDir: prefs.patternDir.value } : {}),
     ...(sheet.value === 'arpeggios' ? { arpNotes: prefs.arpNotes.value, arpDir: prefs.arpDir.value, ...(prefs.arpNotes.value === 'pairs' ? { arpShape: prefs.arpShape.value } : {}) } : {}),

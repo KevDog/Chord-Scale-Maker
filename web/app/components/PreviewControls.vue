@@ -188,9 +188,9 @@
                             </UiListbox>
                             <ToggleButton v-if="cells in CELL_SYSTEMS" v-model="cellsPhrase" title="Aim each cell at the next chord, and color long dominants">Phrase</ToggleButton>
                           </EaseReveal>
-                          <!-- the rhythm line (rhythm spec §9), what the bars play with the Line off: a unit, a run, a card or your own; its detail under it -->
+                          <!-- the rhythm (rhythm spec §9): the rhythm line with the Line off, else poured into the Line (rhythm-on-lines spec §1); a unit, a run, a card or your own; its detail under it -->
                           <div v-if="rhythmOn && shows('rhythm')" class="flex flex-col gap-2">
-                            <UiListbox v-model="rhythmFamily" class="w-full" aria-label="Rhythm" :aria-describedby="lineMode !== 'off' ? 'rhythm-help' : undefined">
+                            <UiListbox v-model="rhythmFamily" class="w-full" aria-label="Rhythm" :aria-describedby="rhythmHelp ? 'rhythm-help' : undefined">
                               <template #selected="{ value }"><UiListboxLabel>Rhythm: {{ familyLabel(value) }}</UiListboxLabel></template>
                               <UiListboxOption value="off"><UiListboxLabel>Off</UiListboxLabel></UiListboxOption>
                               <UiListboxGroup v-for="g in RHYTHM_FAMILIES" :key="g.label" :label="g.label">
@@ -226,7 +226,19 @@
                               <UiInput v-model="rhythmText" aria-label="Your rhythm" placeholder="8: >xx.x_" :invalid="!!rhythmError" :aria-describedby="rhythmError ? 'rhythm-error' : undefined" />
                               <p v-if="rhythmError" id="rhythm-error" class="text-sm/5 text-red-700 dark:text-red-400">{{ rhythmError }}</p>
                             </EaseReveal>
-                            <p v-if="lineMode !== 'off'" id="rhythm-help" class="text-sm/5 text-zinc-500 dark:text-zinc-400">Turn Line off to see the rhythm.</p>
+                            <!-- where each chord's line starts and its timing (rhythm-on-lines spec §10), on a Line that takes the rhythm -->
+                            <EaseReveal :show="rhythm !== 'off' && lineTakesRhythm && shows('rhythm-phrasing')" inner-class="flex flex-col gap-2">
+                              <UiListbox v-model="rhythmStart" class="w-full" aria-label="Start" title="Where each chord's line begins: on its first beat, or with a pick-up of 1, 2 or 3 notes into it (after Galper)">
+                                <template #selected="{ value }"><UiListboxLabel>Start: {{ RHYTHM_START_LABELS[value] }}</UiListboxLabel></template>
+                                <UiListboxOption v-for="s in RHYTHM_STARTS" :key="s" :value="s"><UiListboxLabel>{{ RHYTHM_START_LABELS[s] }}</UiListboxLabel></UiListboxOption>
+                              </UiListbox>
+                              <UiListbox v-model="anticipate" class="w-full" aria-label="Timing" title="Begin each chord's notes early (anticipate) or late (resolve late); the chord symbols stay put (after Bergonzi)">
+                                <template #selected="{ value }"><UiListboxLabel>{{ anticipateLabel(value) }}</UiListboxLabel></template>
+                                <UiListboxOption v-for="n in ANTICIPATE_STEPS" :key="n" :value="n"><UiListboxLabel>{{ anticipateLabel(n) }}</UiListboxLabel></UiListboxOption>
+                              </UiListbox>
+                            </EaseReveal>
+                            <ToggleButton v-if="lineMode === 'guide' && rhythm !== 'off'" v-model="restate" class="self-start" title="Play each chord's guide tone again on every attack of the rhythm">Restate</ToggleButton>
+                            <p v-if="rhythmHelp" id="rhythm-help" class="text-sm/5 text-zinc-500 dark:text-zinc-400">Guide tones hold each chord's note. Turn on Restate to play it in the rhythm.</p>
                           </div>
                           </div>
                         </RailPopover>
@@ -299,7 +311,7 @@
     </template>
 
     <script setup lang="ts">
-    import { type Approach, APPROACH_LABELS, APPROACHES, ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, CELL_ORDER_LABELS, CELL_ORDERS, CELL_SYSTEMS, type CellId, type CellOrder, cellLabel, CHROMATIC_CELLS, isCellId, SINGLE_CELLS, type ArpeggioPattern, type ArpNotes, fitRange, type InstrumentName, formatPattern, noteName, parsePattern, partFor, PATTERN_LIBRARY, type PatternNotes, type HexatonicBasis, type QuartalNotesChoice, type PentatonicBasis, type PentatonicDegree, PENTATONIC_LEAVE_LABELS, PENTATONIC_LEAVES, type PairShape, PAIR_SHAPE_LABELS, type PairLineShape, PAIR_LINE_SHAPE_LABELS, PAIR_LINE_SHAPES, type PentatonicLeave, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit, type Range, rangeChoices, formatRhythm, LIBRARY_IDS, parseRhythm, parseRhythmId, positionLabel, type Pulse, PULSE_LABELS, type Rhythm, type RhythmId, rhythmLabel, RUN_ATTACKS, runPositions, UNIT_GROUPS, unitRhythm, type Variation, VARIATION_LABELS, VARIATIONS } from '@chord-scale-maker/engine'
+    import { type Approach, APPROACH_LABELS, APPROACHES, ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, CELL_ORDER_LABELS, CELL_ORDERS, CELL_SYSTEMS, type CellId, type CellOrder, cellLabel, CHROMATIC_CELLS, isCellId, SINGLE_CELLS, type ArpeggioPattern, type ArpNotes, fitRange, type InstrumentName, formatPattern, noteName, parsePattern, partFor, PATTERN_LIBRARY, type PatternNotes, type HexatonicBasis, type QuartalNotesChoice, type PentatonicBasis, type PentatonicDegree, PENTATONIC_LEAVE_LABELS, PENTATONIC_LEAVES, type PairShape, PAIR_SHAPE_LABELS, type PairLineShape, PAIR_LINE_SHAPE_LABELS, PAIR_LINE_SHAPES, type PentatonicLeave, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit, type Range, rangeChoices, formatRhythm, LIBRARY_IDS, parseRhythm, parseRhythmId, positionLabel, type Pulse, PULSE_LABELS, type Rhythm, type RhythmId, rhythmLabel, RUN_ATTACKS, runPositions, UNIT_GROUPS, unitRhythm, type Variation, VARIATION_LABELS, VARIATIONS, ANTICIPATE_STEPS, anticipateLabel, RHYTHM_START_LABELS, RHYTHM_STARTS, type RhythmStart } from '@chord-scale-maker/engine'
     import { degreeLabel, PENT_BASES, PENT_DEGREE_CHOICES, PENT_PATHS, PENT_RUNGS, PENT_SIDES, PENT_STEP_BARS, PENT_STEP_UNITS, pathLabel, rungLabel, sideShown } from '~/utils/pentatonics'
     import { approachApplies, type GuideFrom, type LineMode, lineModes } from '~/utils/sheetLine'
     import { HEX_BASES } from '~/utils/hexatonics'
@@ -371,7 +383,7 @@
     /** keyStart: the chart's key, written for the instrument (what "From key" starts on) */
     /** compact: a phone with compactRail on: the rail keeps Work on, Instrument and the slot's rail actions; Controls opens the rest */
     /** stickyRail: the rail sticks over the sheet (lg up): while editing */
-    const props = defineProps<{ lockLabels?: boolean; keyStart: string; compact?: boolean; stickyRail?: boolean }>()
+    const props = defineProps<{ lockLabels?: boolean; keyStart: string; compact?: boolean; stickyRail?: boolean; lineTakesRhythm?: boolean }>()
     defineSlots<{ version?: () => unknown; level?: () => unknown; changes?: () => unknown; actions?: (p: { place: 'rail' | 'dialog'; after: (run: () => void) => void }) => unknown }>()
     const controlsOpen = ref(false)
     watch(() => props.compact, () => (controlsOpen.value = false))
@@ -478,6 +490,12 @@
     const rhythm = defineModel<RhythmId>('rhythm', { default: 'off' })
     const targets = defineModel<boolean>('targets', { default: false })
     const rhythmOn = useFeature('rhythm')
+    /** the rhythm on the Lines (rhythm-on-lines spec §10): Start, Timing, and Restate for Guide Tones */
+    const rhythmStart = defineModel<RhythmStart>('rhythmStart', { default: 'beat' })
+    const anticipate = defineModel<number>('anticipate', { default: 0 })
+    const restate = defineModel<boolean>('restate', { default: false })
+    /** Guide Tones hold their notes under a rhythm until Restate is on: the Rhythm says so */
+    const rhythmHelp = computed(() => lineMode.value === 'guide' && rhythm.value !== 'off' && !restate.value)
     const DEFAULT_GROUP = 3 // a new unit: 3 against the 4/4 bar
     const DEFAULT_ATTACKS = 4 // a new run
     /** the Rhythm listbox's value: off, a unit or a run by its pulse, a card's id, or custom */

@@ -1,5 +1,5 @@
 <template>
-  <HListbox v-model="model" :disabled="isDisabled" as="div" data-slot="control" class="relative">
+  <HListbox v-bind="rootAttrs" v-model="model" :disabled="isDisabled" as="div" data-slot="control" class="relative">
     <HListboxButton
       :id="labelledBy ? buttonId : ariaLabel ? undefined : field?.controlId"
       v-slot="{ open }"
@@ -7,7 +7,7 @@
       :aria-label="ariaLabel"
       :aria-labelledby="labelledBy ? `${labelledBy} ${buttonId}` : undefined"
       :aria-invalid="invalid ? 'true' : undefined"
-      :aria-describedby="describedBy(field)"
+      :aria-describedby="describedBy(field, attrs['aria-describedby'])"
       :data-invalid="dataFlag(invalid)"
       :data-disabled="dataFlag(isDisabled)"
       :class="BUTTON"
@@ -47,6 +47,13 @@ import { dataFlag, vInteractive } from '~/utils/interactive'
  * names it by that element and its value, as a field's label can't: aria-label hides the value (#425). Headless UI Vue has no anchor positioning, so the menu opens below.
  */
 const props = defineProps<{ placeholder?: string; ariaLabel?: string; labelledBy?: string; invalid?: boolean; disabled?: boolean }>()
+/** the caller's attributes go on the wrapper, but its aria-describedby on the button, which it describes */
+defineOptions({ inheritAttrs: false })
+const attrs = useAttrs()
+const rootAttrs = computed(() => {
+  const { 'aria-describedby': _described, ...rest } = attrs
+  return rest
+})
 const model = defineModel<T>()
 const field = inject(FIELD, undefined)
 const buttonId = useId()

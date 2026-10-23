@@ -419,6 +419,43 @@ export async function chooseRhythm(page: Page, family: string, detail: Readonly<
   })
 }
 
+/** in Line options, choose a listbox's option by its label, retried until the listbox reads `shown`; the panel is closed after */
+async function chooseInLineOptions(page: Page, name: string, option: string, shown: string): Promise<void> {
+  await inControls(page, async () => {
+    const panel = await panelButton(page, 'Line options').isVisible() // in the Controls dialog it's inline
+    if (panel) await openPanel(page, 'Line options')
+    const listbox = page.getByRole('button', { name, exact: true })
+    await expect(async () => {
+      if ((await listbox.textContent())?.trim() !== shown) {
+        await listbox.click({ timeout: 1000 })
+        await page.getByRole('option', { name: option, exact: true }).click({ timeout: 1000 })
+      }
+      await expect(listbox).toHaveText(shown, { timeout: 1000 })
+    }).toPass({ timeout: 10_000 })
+    if (panel) await closePanel(page, 'Line options')
+  })
+}
+
+/** with a rhythm on a Line that takes it, choose its Start (rhythm-on-lines spec §10): "On the beat", "1-note pick-up", … */
+export const chooseStart = (page: Page, label: string): Promise<void> => chooseInLineOptions(page, 'Start', label, `Start: ${label}`)
+
+/** with a rhythm on a Line that takes it, choose its Timing (rhythm-on-lines spec §10): "On time", "Anticipate 1½ beats", "Resolve late 1 beat", … */
+export const chooseTiming = (page: Page, label: string): Promise<void> => chooseInLineOptions(page, 'Timing', label, label)
+
+/** with Guide Tones and a rhythm, turn Restate on (rhythm-on-lines spec §5), retried until it reads pressed; the panel is closed after */
+export async function restateOn(page: Page): Promise<void> {
+  await inControls(page, async () => {
+    const panel = await panelButton(page, 'Line options').isVisible() // in the Controls dialog it's inline
+    if (panel) await openPanel(page, 'Line options')
+    const toggle = page.getByRole('button', { name: 'Restate', exact: true })
+    await expect(async () => {
+      if ((await toggle.getAttribute('aria-pressed')) !== 'true') await toggle.click({ timeout: 1000 })
+      await expect(toggle).toHaveAttribute('aria-pressed', 'true', { timeout: 1000 })
+    }).toPass({ timeout: 10_000 })
+    if (panel) await closePanel(page, 'Line options')
+  })
+}
+
 /** wait until every Changes line has been drawn with its rhythm */
 export async function rhythmDrawn(page: Page): Promise<void> {
   await expect
