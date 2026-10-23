@@ -174,6 +174,17 @@ describe('share links', () => {
     for (const bad of [0, 8, 'whole', '4', 2.5]) expect(shareViewFrom({ sheet: 'scales', notesPerBar: bad })).toEqual({ sheet: 'scales' })
   })
 
+  it('carries the rhythm path (Phase 4 spec §7), dropping an invalid list, step or entry', async () => {
+    for (const rhythmPath of [{ groups: [3, 4] }, { groups: [3, 4], step: { unit: 'bars', bars: 2 } }, { gears: ['8', '8t'], step: { unit: 'key-area', bars: 4 } }, { groups: [7, 6, 5, 4, 3], gears: ['16'] }] as const) {
+      const view = { sheet: 'changes', rhythm: 'unit:8:3:accents', rhythmPath } as const
+      expect(await decodeShare(await encodeShare({ chart: CHART, view }))).toEqual({ chart: CHART, view })
+    }
+    const base = { sheet: 'changes' } as const
+    for (const bad of [{ groups: [9] }, { groups: [] }, { groups: [3, 4, 5, 6, 7, 3, 4, 5, 6] }, { gears: ['9'] }, { groups: null, gears: null }, {}, [3, 4], 'up', null]) expect(shareViewFrom({ ...base, rhythmPath: bad })).toEqual(base)
+    expect(shareViewFrom({ ...base, rhythmPath: { groups: [9], gears: ['8'] } })).toEqual({ ...base, rhythmPath: { gears: ['8'] } })
+    expect(shareViewFrom({ ...base, rhythmPath: { groups: [3], step: { unit: 'chord', bars: 4 } } })).toEqual({ ...base, rhythmPath: { groups: [3] } })
+  })
+
   it("carries the Changes sheet's Approach (#298), dropping an unknown one", async () => {
     for (const approach of ['enclosure', 'chromatic-below', 'none'] as const) {
       const view = { sheet: 'changes', line: 'third', approach } as const

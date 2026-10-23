@@ -105,6 +105,13 @@ exports[`the old pulses on the pulse grid (regression) > lays and notates card:h
       8,
       14,
     ],
+    "steps": [
+      {
+        "from": 0,
+        "id": "card:halves",
+        "unit": 0,
+      },
+    ],
     "unit": 0,
   },
   "line": {
@@ -300,6 +307,13 @@ exports[`the old pulses on the pulse grid (regression) > lays and notates card:h
         0,
         8,
         14,
+      ],
+      "steps": [
+        {
+          "from": 0,
+          "id": "card:halves",
+          "unit": 0,
+        },
       ],
       "unit": 0,
     },
@@ -847,6 +861,13 @@ exports[`the old pulses on the pulse grid (regression) > lays and notates custom
       4,
       7,
     ],
+    "steps": [
+      {
+        "from": 0,
+        "id": "custom:4:x.x_",
+        "unit": 4,
+      },
+    ],
     "unit": 4,
   },
   "line": {
@@ -1108,6 +1129,13 @@ exports[`the old pulses on the pulse grid (regression) > lays and notates custom
         0,
         4,
         7,
+      ],
+      "steps": [
+        {
+          "from": 0,
+          "id": "custom:4:x.x_",
+          "unit": 4,
+        },
       ],
       "unit": 4,
     },
@@ -1831,6 +1859,13 @@ exports[`the old pulses on the pulse grid (regression) > lays and notates custom
       8,
       14,
     ],
+    "steps": [
+      {
+        "from": 0,
+        "id": "custom:8:x.x_",
+        "unit": 4,
+      },
+    ],
     "unit": 4,
   },
   "line": {
@@ -2218,6 +2253,13 @@ exports[`the old pulses on the pulse grid (regression) > lays and notates custom
         0,
         8,
         14,
+      ],
+      "steps": [
+        {
+          "from": 0,
+          "id": "custom:8:x.x_",
+          "unit": 4,
+        },
       ],
       "unit": 4,
     },
@@ -3457,6 +3499,13 @@ exports[`the old pulses on the pulse grid (regression) > lays and notates custom
       12,
       21,
     ],
+    "steps": [
+      {
+        "from": 0,
+        "id": "custom:8t:x.x_",
+        "unit": 4,
+      },
+    ],
     "unit": 4,
   },
   "line": {
@@ -4141,6 +4190,13 @@ exports[`the old pulses on the pulse grid (regression) > lays and notates custom
         0,
         12,
         21,
+      ],
+      "steps": [
+        {
+          "from": 0,
+          "id": "custom:8t:x.x_",
+          "unit": 4,
+        },
       ],
       "unit": 4,
     },
@@ -5405,6 +5461,13 @@ exports[`the old pulses on the pulse grid (regression) > lays and notates custom
       16,
       28,
     ],
+    "steps": [
+      {
+        "from": 0,
+        "id": "custom:16:x.x_",
+        "unit": 4,
+      },
+    ],
     "unit": 4,
   },
   "line": {
@@ -6150,6 +6213,13 @@ exports[`the old pulses on the pulse grid (regression) > lays and notates custom
         0,
         16,
         28,
+      ],
+      "steps": [
+        {
+          "from": 0,
+          "id": "custom:16:x.x_",
+          "unit": 4,
+        },
       ],
       "unit": 4,
     },
@@ -7140,6 +7210,13 @@ exports[`the old pulses on the pulse grid (regression) > lays and notates run:8:
       8,
       14,
     ],
+    "steps": [
+      {
+        "from": 0,
+        "id": "run:8:4:2",
+        "unit": 0,
+      },
+    ],
     "unit": 0,
   },
   "line": {
@@ -7566,6 +7643,13 @@ exports[`the old pulses on the pulse grid (regression) > lays and notates run:8:
         0,
         8,
         14,
+      ],
+      "steps": [
+        {
+          "from": 0,
+          "id": "run:8:4:2",
+          "unit": 0,
+        },
       ],
       "unit": 0,
     },
@@ -8239,6 +8323,13 @@ exports[`the old pulses on the pulse grid (regression) > lays and notates unit:4
       4,
       7,
     ],
+    "steps": [
+      {
+        "from": 0,
+        "id": "unit:4:3:syncopated",
+        "unit": 3,
+      },
+    ],
     "unit": 3,
   },
   "line": {
@@ -8457,6 +8548,13 @@ exports[`the old pulses on the pulse grid (regression) > lays and notates unit:4
         0,
         4,
         7,
+      ],
+      "steps": [
+        {
+          "from": 0,
+          "id": "unit:4:3:syncopated",
+          "unit": 3,
+        },
       ],
       "unit": 3,
     },
@@ -9086,6 +9184,13 @@ exports[`the old pulses on the pulse grid (regression) > lays and notates unit:4
       4,
       7,
     ],
+    "steps": [
+      {
+        "from": 0,
+        "id": "unit:4:5:accents",
+        "unit": 5,
+      },
+    ],
     "unit": 5,
   },
   "line": {
@@ -9346,6 +9451,13 @@ exports[`the old pulses on the pulse grid (regression) > lays and notates unit:4
         0,
         4,
         7,
+      ],
+      "steps": [
+        {
+          "from": 0,
+          "id": "unit:4:5:accents",
+          "unit": 5,
+        },
       ],
       "unit": 5,
     },
@@ -9942,6 +10054,13 @@ exports[`the old pulses on the pulse grid (regression) > lays and notates unit:8
       8,
       14,
     ],
+    "steps": [
+      {
+        "from": 0,
+        "id": "unit:8:3:syncopated",
+        "unit": 3,
+      },
+    ],
     "unit": 3,
   },
   "line": {
@@ -10343,6 +10462,13 @@ exports[`the old pulses on the pulse grid (regression) > lays and notates unit:8
         0,
         8,
         14,
+      ],
+      "steps": [
+        {
+          "from": 0,
+          "id": "unit:8:3:syncopated",
+          "unit": 3,
+        },
       ],
       "unit": 3,
     },
@@ -11368,6 +11494,13 @@ exports[`the old pulses on the pulse grid (regression) > lays and notates unit:8
       8,
       14,
     ],
+    "steps": [
+      {
+        "from": 0,
+        "id": "unit:8:5:accents",
+        "unit": 5,
+      },
+    ],
     "unit": 5,
   },
   "line": {
@@ -11859,6 +11992,13 @@ exports[`the old pulses on the pulse grid (regression) > lays and notates unit:8
         0,
         8,
         14,
+      ],
+      "steps": [
+        {
+          "from": 0,
+          "id": "unit:8:5:accents",
+          "unit": 5,
+        },
       ],
       "unit": 5,
     },
@@ -12793,6 +12933,13 @@ exports[`the old pulses on the pulse grid (regression) > lays and notates unit:8
       12,
       21,
     ],
+    "steps": [
+      {
+        "from": 0,
+        "id": "unit:8t:3:syncopated",
+        "unit": 3,
+      },
+    ],
     "unit": 3,
   },
   "line": {
@@ -13553,6 +13700,13 @@ exports[`the old pulses on the pulse grid (regression) > lays and notates unit:8
         0,
         12,
         21,
+      ],
+      "steps": [
+        {
+          "from": 0,
+          "id": "unit:8t:3:syncopated",
+          "unit": 3,
+        },
       ],
       "unit": 3,
     },
@@ -15333,6 +15487,13 @@ exports[`the old pulses on the pulse grid (regression) > lays and notates unit:8
       12,
       21,
     ],
+    "steps": [
+      {
+        "from": 0,
+        "id": "unit:8t:5:accents",
+        "unit": 5,
+      },
+    ],
     "unit": 5,
   },
   "line": {
@@ -16154,6 +16315,13 @@ exports[`the old pulses on the pulse grid (regression) > lays and notates unit:8
         0,
         12,
         21,
+      ],
+      "steps": [
+        {
+          "from": 0,
+          "id": "unit:8t:5:accents",
+          "unit": 5,
+        },
       ],
       "unit": 5,
     },
@@ -17359,6 +17527,13 @@ exports[`the old pulses on the pulse grid (regression) > lays and notates unit:1
       16,
       28,
     ],
+    "steps": [
+      {
+        "from": 0,
+        "id": "unit:16:3:syncopated",
+        "unit": 3,
+      },
+    ],
     "unit": 3,
   },
   "line": {
@@ -18075,6 +18250,13 @@ exports[`the old pulses on the pulse grid (regression) > lays and notates unit:1
         0,
         16,
         28,
+      ],
+      "steps": [
+        {
+          "from": 0,
+          "id": "unit:16:3:syncopated",
+          "unit": 3,
+        },
       ],
       "unit": 3,
     },
@@ -19773,6 +19955,13 @@ exports[`the old pulses on the pulse grid (regression) > lays and notates unit:1
       16,
       28,
     ],
+    "steps": [
+      {
+        "from": 0,
+        "id": "unit:16:5:accents",
+        "unit": 5,
+      },
+    ],
     "unit": 5,
   },
   "line": {
@@ -20726,6 +20915,13 @@ exports[`the old pulses on the pulse grid (regression) > lays and notates unit:1
         0,
         16,
         28,
+      ],
+      "steps": [
+        {
+          "from": 0,
+          "id": "unit:16:5:accents",
+          "unit": 5,
+        },
       ],
       "unit": 5,
     },

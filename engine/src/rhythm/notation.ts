@@ -2,7 +2,7 @@
  * Notation (rhythm spec §6): each bar's events split into drawable notes, with their tuplets, beams and brackets.
  * Pure TypeScript, so the sheet only maps these notes onto its drawing.
  */
-import type { Laid, RhythmEvent } from './lay'
+import { statementAt, type Laid, type RhythmEvent } from './lay'
 import { PULSE_GRID, pulseBeat, type Pulse, type PulseGrid, type RhythmValue } from './rhythm'
 
 export type { RhythmValue } from './rhythm'
@@ -162,8 +162,8 @@ export function rhythmNotes(laid: Laid): readonly (readonly RhythmNote[])[] {
     const pulse = laid.pulses[b]!
     const tuplets = PULSE_GRID[pulse].tuplet !== null
     const beatOf = (at: number): number => Math.floor(pulseBeat(pulse, at))
-    const statement = (at: number): number =>
-      laid.kind === 'repeat' ? Math.floor((laid.starts[b]! + at) / laid.unit) : beatOf(at)
+    // a repeating rhythm's statements are counted per step (Phase 4 spec §3)
+    const statement = laid.kind === 'repeat' ? statementAt(laid, b) : beatOf
     const splits = events.flatMap(e => splitEvent(e, pulse, statement))
     const tupletOf = renumber(splits.map(s => s.note.tuplet))
     // tuplet notes beam by their group (Phase 4 spec §2), a per-bar rhythm's by the beat (a straight pulse's group)

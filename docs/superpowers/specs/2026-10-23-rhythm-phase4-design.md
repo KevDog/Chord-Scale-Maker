@@ -236,9 +236,9 @@ starts are now sums of each bar's own pulse count. The step boundaries join `bre
 
 | Rhythm and path | Bars |
 | --- | --- |
-| `unit:8:3:accents`, Groups 3 4 5 | ③ `>xx>xx>x` · `x>xx>xx>x` (cut) · ④ `>xxx>xxx` · `>xxx>xxx` · ⑤ `>xxxx>xx` · `xx>xxxx>x` |
+| `unit:8:3:accents`, Groups 3 4 5 | ③ `>xxx>xxx>xx` · `x>xxx>xxx>x` (cut) · ④ `>xxxx>xxxx` · `>xxxx>xxxx` · ⑤ `>xxxxx>xxx` · `xx>xxxxx>x` |
 | `unit:8:3:rests`, Groups 3 4 | ③ `x..x..x.` · `.x..x..x` · ④ `x...x...` · `x...x...` · ③ `x..x..x.` · `.x..x..x` |
-| `unit:8:4:accents`, Gears 8 8t 16 | `>xxx>xxx` ×2 · *Triplets* 12 a bar, accents at pulses 0, 4, 8 (beat 1, the trip of 2, the let of 3) ×2 · *16ths* `>xxx` a beat ×2 |
+| `unit:8:4:accents`, Gears 8 8t 16 | `>xxxx>xxxx` ×2 · *Triplets* 12 a bar, accents at pulses 0, 4, 8 (beat 1, the trip of 2, the let of 3) ×2 · *16ths* `>xxxx` a beat ×2 |
 | `unit:8:4:accents`, Groups 3 5 + Gears 8 16 | ③ 8ths in 3 · ⑤ *16ths* in 5 · ③ *8ths* in 3 |
 | `unit:8:3:accents`, Groups Up, by section, AABA | A1 ③ · A2 ④ · B ⑤ · A3 ⑥ |
 

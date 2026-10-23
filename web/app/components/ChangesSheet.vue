@@ -25,6 +25,7 @@
             :arpeggio="arpeggio"
             :line-name="lineName"
             :rhythm-caption="built.rhythmCaption"
+            :from-bar="l.fromBar"
             :clef="part.clef"
             :part="part"
             :editable="editable"
@@ -70,7 +71,7 @@
 import { SHEET_PAGED } from '~/utils/sheetPaged'
 import { PlusIcon, Square2StackIcon } from '@heroicons/vue/16/solid'
 import type { SheetChordEdit, SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
-import { type Approach, barKey, type RhythmId, type RhythmStart, breakLines, buildChanges, otherChords, changesLinesPerPage, type ChangesSet, type ChartDoc, type ChordAt, type ChordPreview, chunk, type GridPos, isArpeggioPattern, pageSubtitle, type OverlayPlan, type Part, type PentatonicPlan, type PickKind, type ScaleView, showHexatonics, showPentatonics, showQuartals, type ChangesLineChoice } from '@chord-scale-maker/engine'
+import { type Approach, barKey, type RhythmId, type RhythmPath, type RhythmStart, breakLines, buildChanges, otherChords, changesLinesPerPage, type ChangesSet, type ChartDoc, type ChordAt, type ChordPreview, chunk, type GridPos, isArpeggioPattern, pageSubtitle, type OverlayPlan, type Part, type PentatonicPlan, type PickKind, type ScaleView, showHexatonics, showPentatonics, showQuartals, type ChangesLineChoice } from '@chord-scale-maker/engine'
 
 /** the Changes sheet (docs/plan-changes.md): the chart as a study lead sheet, 4 bars a line (2 on phones), fewer where the chords' names don't fit */
 const { shows } = useInterface()
@@ -90,6 +91,7 @@ const props = defineProps<{
   rhythmStart?: RhythmStart // a Line's pick-ups into each chord under the rhythm (rhythm-on-lines spec §3); undefined: on the beat
   anticipate?: number // its Timing: beats each chord arrives early (negative: late) (§2); undefined: 0
   restate?: boolean // the guide tone line restates each guide tone in the rhythm (§5)
+  rhythmPath?: RhythmPath // the Groups and Gears paths the rhythm steps through, with their marks (Phase 4 spec §3); undefined: none
   line?: ChangesLineChoice // a guide tone, arpeggio or Pentatonic line, as notes in place of the slashes (the clef then always starts line 1)
   editable?: boolean // tap a chord to edit it
   selectedLine?: number | null // the chart line of the chord the editor is on
@@ -127,7 +129,7 @@ const line = computed((): ChangesLineChoice => props.line ?? 'off')
 /** an arpeggio, Pentatonic, Triad pair or Cells line: beamed cells, no label row; lineName: the latter three's, for the aria-label */
 const lineName = computed(() => (typeof line.value === 'object' ? ({ pentatonic: 'pentatonic', 'triad-pair': 'triad pair', quartal: 'quartal', cells: 'cells' } as const)[line.value.kind] : undefined))
 const arpeggio = computed(() => !!lineName.value || isArpeggioPattern(line.value))
-const built = computed(() => buildChanges(props.doc, props.part, barsPerLine.value, true, line.value, props.view, props.overlay ?? null, props.approach ?? 'none', { rhythm: props.rhythm ?? 'off', targets: props.targets ?? false, start: props.rhythmStart ?? 'beat', anticipate: props.anticipate ?? 0, restate: props.restate ?? false }))
+const built = computed(() => buildChanges(props.doc, props.part, barsPerLine.value, true, line.value, props.view, props.overlay ?? null, props.approach ?? 'none', { rhythm: props.rhythm ?? 'off', targets: props.targets ?? false, start: props.rhythmStart ?? 'beat', anticipate: props.anticipate ?? 0, restate: props.restate ?? false, rhythmPath: props.rhythmPath }))
 /** the other set's chords in each bar where they differ (#215), written for the part and spelled at the level as the main set's are */
 const others = computed(() => (props.otherDoc ? otherChords(built.value, buildChanges(props.otherDoc, props.part, barsPerLine.value, true, 'off', props.view)) : null))
 /** the bars that start a line because the names before them didn't fit (ChangesSystem measures): until the sheet changes */
@@ -160,7 +162,7 @@ const linesPerPage = computed(() => changesLinesPerPage(line.value, { numerals: 
 const subtitleText = computed(() => [pageSubtitle(props.subtitle, props.instrumentLabel, 'Changes'), built.value.pentatonicCaption, built.value.rhythmCaption].filter(Boolean).join(' · '))
 const pages = computed(() =>
   chunk(
-    sheet.value.lines.map((line, index) => ({ line, index })),
+    sheet.value.lines.map((line, index, all) => ({ line, index, fromBar: 1 + all.slice(0, index).reduce((n, l) => n + l.bars.length, 0) })), // fromBar: its first bar, from the sheet's first
     linesPerPage.value,
   ).map((lines) => ({ subtitle: subtitleText.value, lines })),
 )

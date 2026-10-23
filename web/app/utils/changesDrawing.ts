@@ -1,4 +1,4 @@
-import { accText, barKey, type ChangesBar, type ChangesLine, type GuideNote, type NoteBeats, type Pitched, type RhythmCardModel, type RhythmNote, signatureAccidentals, toVexKey } from '@chord-scale-maker/engine'
+import { accText, barKey, type ChangesBar, type ChangesLine, type GuideNote, type NoteBeats, type Pitched, PULSE_LABELS, type RhythmCardModel, type RhythmNote, signatureAccidentals, toVexKey } from '@chord-scale-maker/engine'
 import { BAR_UNITS, cropBand, fitSvg, headCentre, inkStave, signatureLead, STAFF_WIDTH, STAVE_Y, svgContext, TIME_SPACE, type VexFlowModule } from './vexflow'
 
 /**
@@ -34,7 +34,8 @@ type Clef = 'treble' | 'bass'
 /** names: each bar's chords, their widths as fractions of the line, to widen the bars they crowd (fitBars) */
 /** first: the sheet's first line, which starts with the clef */
 /** rhythmCaption: the sheet's rhythm caption, for the aria-label of a line with a rhythm (rhythm spec §8) */
-type Opts = Readonly<{ first: boolean; barsPerLine: number; clef?: Clef; names?: readonly (readonly NamedBeat[])[]; arpeggio?: boolean; lineName?: string; rhythmCaption?: string | null }>
+/** fromBar: the line's first bar, counted from the sheet's first (1), for the step marks' aria-label (Phase 4 spec §6) */
+type Opts = Readonly<{ first: boolean; barsPerLine: number; clef?: Clef; names?: readonly (readonly NamedBeat[])[]; arpeggio?: boolean; lineName?: string; rhythmCaption?: string | null; fromBar?: number }>
 type Band = Readonly<{ top: number; bottom: number }>
 type Beam = InstanceType<VexFlowModule['Beam']>
 type Stave = InstanceType<VexFlowModule['Stave']>
@@ -194,7 +195,21 @@ export function rhythmAria(caption: string | null): string {
   return caption ? `; rhythm: ${caption.replace(/^Rhythm: /, '')}` : ''
 }
 
+/** a step's group as Saindon marks it (Phase 4 spec D17): the circled numeral, ② to ⑦ */
+export const stepNumeral = (group: number): string => String.fromCodePoint(0x2460 + group - 1)
+
+/** a step mark's words: "in 5" for its group, the pulse's name where it changes ("in 5, 16ths") */
+const stepWords = (step: NonNullable<ChangesBar['step']>): string =>
+  [step.group !== null && `in ${step.group}`, step.pulse !== null && PULSE_LABELS[step.pulse].replace(/^./, (c) => c.toLowerCase())].filter(Boolean).join(', ')
+
+/** the aria-label's step marks (Phase 4 spec §6): ", from bar N: in 5" for each, N counted from the sheet's first bar (fromBar: the line's first); '' with none */
+export function stepAria(line: ChangesLine, fromBar: number): string {
+  return line.bars.map((b, i) => (b.step ? `, from bar ${fromBar + i}: ${stepWords(b.step)}` : '')).join('')
+}
+
 const hasTargets = (line: ChangesLine): boolean => line.bars.some((b) => b.targets.length > 0)
+/** a line with a step's numeral to draw (the gear's name is Task 3.1's) */
+const stepped = (line: ChangesLine): boolean => line.bars.some((b) => b.step !== null && b.step.group !== null)
 
 /** the aria-label's target beats, by the count ("1 and 3"; by bar where they differ), and the notes on them, which the drawing tells by color alone (#505); '' with none */
 export function targetsAria(line: ChangesLine): string {
@@ -386,7 +401,8 @@ function drawGuideLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, op
   const bracket = first && line.bars.some((b) => b.volta) ? first.getYForTopText(first.getNumLines()) + VOLTA_Y : null
   const tops = [...tips, ...heads.map((y) => y - ACCIDENTAL_RISE)]
   const row = hasTargets(line) ? targetRow([...tips, ...heads]) : null // a dot sits over its head's center, clear of the accidental to its left
-  const shift = first && bracket !== null ? voltaShift([...tops, ...(row === null ? [] : [row - DOT_ROOM])], bracket + 1.5 * first.getSpacingBetweenLines()) : 0
+  const marks = stepped(line) ? targetRow([...tips, ...heads]) : null // a poured Line's step marks share the dots' row
+  const shift = first && bracket !== null ? voltaShift([...tops, ...[row ?? marks].flatMap((r) => (r === null ? [] : [r - DOT_ROOM]))], bracket + 1.5 * first.getSpacingBetweenLines()) : 0
   laid.forEach((l) => {
     setVolta(vf, l.stave, l.bar, VOLTA_Y + shift)
     l.stave.setContext(ctx).draw()
@@ -419,7 +435,8 @@ function drawGuideLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, op
   })
   const { band, at } = withTargets(voicedBand([...heads, ...tips], bracket === null ? null : bracket + shift), row)
   const poured = line.bars.some((b) => b.voice.some((n) => n.mark))
-  fitSvg(el, band, total, barsLabel(line) + (opts.arpeggio ? arpeggioAria(line, opts.lineName) : guideAria(line)) + (poured ? rhythmAria(opts.rhythmCaption ?? null) : '') + targetsAria(line))
+  if (marks !== null) drawStepMarks(ctx, laid, stepRow(marks, band.top), row !== null)
+  fitSvg(el, band, total, barsLabel(line) + (opts.arpeggio ? arpeggioAria(line, opts.lineName) : guideAria(line)) + (poured ? rhythmAria(opts.rhythmCaption ?? null) + stepAria(line, opts.fromBar ?? 1) : '') + targetsAria(line))
   return { xs, ends: endsOf(widths, total), scales, fits, dots: at }
 }
 
@@ -501,6 +518,32 @@ function saindonBracket(ctx: Context, rhythm: readonly RhythmNote[], ticks: read
   ctx.closeGroup()
 }
 
+const STEP_MARK_SIZE = 12 // a step's numeral: about a staff space, so it fits the target dots' band (DOT_ROOM a side)
+const STEP_MARK_WIDTH = 0.9 // its width, in ems (a circled digit is about square)
+const STEP_MARK_GAP = 4 // from a target dot over the same note to the numeral's left edge
+
+/**
+ * the step marks over each step's first note (Phase 4 spec §6, D17): the circled numeral on the target dots' row
+ * (row, in drawing units, already clear of the crop's top), centred on the note's head, or just right of a target
+ * dot over it (dots: the line draws them); data-rhythm-step: the group. The gear's name (Task 3.1) goes beside it.
+ */
+export function drawStepMarks(ctx: Context, bars: readonly Readonly<{ bar: ChangesBar; ticks: readonly StaveNote[] }>[], row: number, dots: boolean): void {
+  bars.forEach(({ bar, ticks }) => {
+    const first = ticks[0]
+    if (!bar.step || bar.step.group === null || !first) return
+    const width = STEP_MARK_SIZE * STEP_MARK_WIDTH
+    const centre = (first.getNoteHeadBeginX() + first.getNoteHeadEndX()) / 2
+    const left = dots && bar.targets.includes(0) ? centre + STEP_MARK_GAP : centre - width / 2
+    const group: unknown = ctx.openGroup('rhythm-step')
+    if (group instanceof Element) group.setAttribute('data-rhythm-step', String(bar.step.group))
+    ctx.setFont('serif', STEP_MARK_SIZE).fillText(stepNumeral(bar.step.group), left, row + STEP_MARK_SIZE * 0.35) // its baseline, so its middle sits on the row
+    ctx.closeGroup()
+  })
+}
+
+/** the row the step marks sit on, in a crop whose top is top: the target dots' row, brought down as withTargets brings a dot */
+const stepRow = (row: number, top: number): number => Math.max(row, top + DOT_ROOM)
+
 type RhythmLaid = Readonly<{
   bar: ChangesBar
   stave: Stave
@@ -548,7 +591,8 @@ function drawRhythmLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, o
   const first = laid[0]?.stave
   const bracket = first && line.bars.some((b) => b.volta) ? first.getYForTopText(first.getNumLines()) + VOLTA_Y : null
   const row = hasTargets(line) ? targetRow(tips) : null
-  const shift = first && bracket !== null ? voltaShift([...tips, ...(row === null ? [] : [row - DOT_ROOM])], bracket + 1.5 * first.getSpacingBetweenLines()) : 0
+  const marks = stepped(line) ? targetRow(tips) : null // the step marks share the dots' row
+  const shift = first && bracket !== null ? voltaShift([...tips, ...[row ?? marks].flatMap((r) => (r === null ? [] : [r - DOT_ROOM]))], bracket + 1.5 * first.getSpacingBetweenLines()) : 0
   laid.forEach((l) => {
     setVolta(vf, l.stave, l.bar, VOLTA_Y + shift)
     l.stave.setContext(ctx).draw()
@@ -571,7 +615,8 @@ function drawRhythmLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, o
   })
   const hasBracket = line.bars.some((b) => b.rhythm.some((m) => m.bracket))
   const { band, at } = withTargets(voicedBand([...heads, ...tips, ...(hasBracket ? [under] : [])], bracket === null ? null : bracket + shift), row)
-  fitSvg(el, band, total, barsLabel(line) + rhythmAria(opts.rhythmCaption ?? null) + targetsAria(line))
+  if (marks !== null) drawStepMarks(ctx, laid, stepRow(marks, band.top), row !== null)
+  fitSvg(el, band, total, barsLabel(line) + rhythmAria(opts.rhythmCaption ?? null) + stepAria(line, opts.fromBar ?? 1) + targetsAria(line))
   return { xs, ends: endsOf(widths, total), scales, fits, dots: at }
 }
 

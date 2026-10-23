@@ -4,6 +4,7 @@ import type { RhythmId } from '../rhythm/library'
 import { rhythmNotes } from '../rhythm/notation'
 import { lineRhythm } from '../rhythm/pour'
 import { cardBars, pourRun } from '../rhythm/run'
+import { RHYTHM_PATH_OFF, type RhythmPath } from '../rhythm/path'
 
 const cap = (id: RhythmId, bars: number[]) => rhythmCaption(id, layRhythm(id, bars)!)
 
@@ -217,5 +218,37 @@ describe('the old pulses on the pulse grid (regression)', () => {
       card: cardBars(id, 3),
       poured: pourRun(9, id, 4, null),
     }).toMatchSnapshot()
+  })
+})
+
+describe('rhythmCaption with a path (Phase 4 spec §3)', () => {
+  const bars = Array<number>(6).fill(4)
+  const groups: RhythmPath = { groups: [3, 4, 5], gears: null, step: { unit: 'section', bars: 4 } }
+  const gears: RhythmPath = { groups: null, gears: ['8', '8t', '16'], step: { unit: 'bars', bars: 2 } }
+
+  it('names the Groups path and its step, keeping the pulse', () => {
+    expect(rhythmCaption('unit:8:3:accents', layRhythm('unit:8:3:accents', bars)!, groups)).toBe('Rhythm: 8ths, with accents · in 3 → 4 → 5 · by section')
+  })
+
+  it('names the Gears path and its step, keeping the group', () => {
+    expect(rhythmCaption('unit:8:4:accents', layRhythm('unit:8:4:accents', bars)!, gears)).toBe('Rhythm: Units in 4, with accents · 8ths → triplets → 16ths · every 2 bars')
+  })
+
+  it('names both paths, by key area', () => {
+    const both: RhythmPath = { groups: [3, 5], gears: ['8', '16'], step: { unit: 'key-area', bars: 4 } }
+    expect(rhythmCaption('unit:8:4:rests', layRhythm('unit:8:4:rests', bars)!, both)).toBe('Rhythm: Units, with rests · in 3 → 5 · 8ths → 16ths · by key area')
+  })
+
+  it('is unchanged with no path, the path off, or a path the rhythm ignores (D12)', () => {
+    const laid = layRhythm('unit:8:5:accents', bars)!
+    const want = 'Rhythm: 8ths in 5, with accents · back on one every 5 bars'
+    expect(rhythmCaption('unit:8:5:accents', laid)).toBe(want)
+    expect(rhythmCaption('unit:8:5:accents', laid, RHYTHM_PATH_OFF)).toBe(want)
+    expect(rhythmCaption('run:8:4:0', layRhythm('run:8:4:0', bars)!, gears)).toBe(cap('run:8:4:0', bars))
+    expect(rhythmCaption('custom:8:x.x', layRhythm('custom:8:x.x', bars)!, groups)).toBe(cap('custom:8:x.x', bars))
+  })
+
+  it("names a custom rhythm's gears without its pulse", () => {
+    expect(rhythmCaption('custom:8:x.x', layRhythm('custom:8:x.x', bars)!, gears)).toBe('Rhythm: Your rhythm (x.x) · 8ths → triplets → 16ths · every 2 bars')
   })
 })

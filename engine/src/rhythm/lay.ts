@@ -3,6 +3,7 @@
  * Pure TypeScript; the notation (Task 5's notes, beams and brackets) reads these events.
  */
 import { rhythmLabel, rhythmOf, type RhythmId } from './library'
+import { rhythmPathCaption, type RhythmPath, type RhythmSteps } from './path'
 import { barPulse, pulseBeat, pulsesIn, range, type Cell, type Pulse } from './rhythm'
 
 /**
@@ -22,7 +23,8 @@ export type RhythmEvent = Readonly<{
 /**
  * `unit` is a repeating rhythm's statement length in pulses (0 for a per-bar one); `starts` is each bar's first
  * pulse in the stream, so a statement can be found at any pulse. `pulse` is the rhythm's; `pulses` is each bar's,
- * its fallback where the pulse's group doesn't fit the bar (Phase 4 spec §1, D11).
+ * its fallback where the pulse's group doesn't fit the bar (Phase 4 spec §1, D11). `steps` is the plan as laid
+ * (Phase 4 spec §3), one entry for a bare id; `pulse` and `unit` are step 0's.
  */
 export type Laid = Readonly<{
   pulse: Pulse
@@ -32,7 +34,11 @@ export type Laid = Readonly<{
   landings: readonly number[]
   unit: number
   starts: readonly number[]
+  steps: readonly LaidStep[]
 }>
+
+/** One entry of a plan as laid: its first drawn bar, its id, and its unit (a repeating rhythm's statement length, else 0). */
+export type LaidStep = Readonly<{ from: number; id: RhythmId; unit: number }>
 
 /** A note (an attack and its following `_`) or one rest cell, in stream pulses. */
 type Segment = Readonly<{ start: number; length: number; rest: boolean; accent: boolean }>
@@ -97,16 +103,72 @@ function barEvents(segs: readonly Segment[], start: number, length: number, stat
     }, [])
 }
 
+type Rhythmic = NonNullable<ReturnType<typeof rhythmOf>>
+
+/** A rhythm's own pulse. */
+export const pulseOf = (r: Rhythmic): Pulse => (r.kind === 'repeat' ? r.rhythm.pulse : r.pulse)
+
+/** A plan's entries over `n` drawn bars: a bare id is one entry; entries past the sheet are dropped. */
+export const stepsOf = (id: RhythmId | RhythmSteps, n: number): RhythmSteps =>
+  typeof id === 'string' ? [{ from: 0, id }] : id.filter(s => s.from < n)
+
 /**
  * A rhythm laid over the drawn bars (each bar's length in beats, in sheet order), or null for Off or no bars.
+ * id: a rhythm, or a plan (Phase 4 spec §3) whose entries each start afresh on their first bar, as at a break (D14):
+ * each has its own stream, landings and statements (the statements numbered on through the sheet).
  * breaks: the bars no tie runs into (a 2nd ending after the 1st): the stream keeps counting, but a note held into
  * one starts afresh there.
  * force: stream pulses that sound as attacks whatever the rhythm has there (pulses outside the sheet are ignored).
  */
-export function layRhythm(id: RhythmId, bars: readonly number[], breaks: readonly number[] = [], force: readonly number[] = []): Laid | null {
-  const r = rhythmOf(id)
-  if (!r || bars.length === 0) return null
-  const pulse = r.kind === 'repeat' ? r.rhythm.pulse : r.pulse
+export function layRhythm(id: RhythmId | RhythmSteps, bars: readonly number[], breaks: readonly number[] = [], force: readonly number[] = []): Laid | null {
+  const steps = stepsOf(id, bars.length)
+  const rs = steps.map(s => rhythmOf(s.id))
+  if (bars.length === 0 || steps[0]?.from !== 0 || !rs.every((r): r is Rhythmic => r !== null)) return null
+  const parts: Omit<Laid, 'steps'>[] = []
+  let first = 0 // the step's first stream pulse
+  let base = 0 // the step's first statement
+  steps.forEach((s, i) => {
+    const to = steps[i + 1]?.from ?? bars.length
+    const own = bars.slice(s.from, to)
+    const total = own.reduce((a, b) => a + pulsesIn(pulseOf(rs[i]!), b), 0)
+    // a step's first bar is a break by its own stream starting there, so only the breaks inside it are passed
+    const part = layStep(
+      rs[i]!,
+      own,
+      breaks.filter(b => b > s.from && b < to).map(b => b - s.from),
+      force.filter(p => p >= first && p < first + total).map(p => p - first),
+      base,
+    )
+    parts.push({ ...part, starts: part.starts.map(p => p + first), landings: part.landings.map(b => b + s.from) })
+    first += total
+    if (part.unit > 0) base += Math.ceil(total / part.unit)
+  })
+  const [head] = parts
+  return {
+    ...head!,
+    pulses: parts.flatMap(p => p.pulses),
+    bars: parts.flatMap(p => p.bars),
+    landings: parts.flatMap(p => p.landings),
+    starts: parts.flatMap(p => p.starts),
+    steps: steps.map((s, i) => ({ from: s.from, id: s.id, unit: parts[i]!.unit })),
+  }
+}
+
+/**
+ * The statement at pulse `at` of drawn bar `b` of a repeating rhythm, as `layRhythm` numbers them: counted from the
+ * bar's step's first bar, and on through the sheet (Phase 4 spec §3).
+ */
+export function statementAt(laid: Laid, b: number): (at: number) => number {
+  const s = Math.max(0, laid.steps.findLastIndex(st => st.from <= b))
+  const startOf = (k: number): number => laid.starts[laid.steps[k]!.from]!
+  const base = laid.steps.slice(0, s).reduce((n, st, k) => n + Math.ceil((startOf(k + 1) - startOf(k)) / st.unit), 0)
+  const { unit } = laid.steps[s]!
+  return at => base + Math.floor((laid.starts[b]! - startOf(s) + at) / unit)
+}
+
+/** One step's rhythm laid over its own bars, its stream from 0, its statements numbered from `base`. */
+function layStep(r: Rhythmic, bars: readonly number[], breaks: readonly number[], force: readonly number[], base: number): Omit<Laid, 'steps'> {
+  const pulse = pulseOf(r)
   // each bar at its own pulse (a fallback where the group doesn't fit); the stream counts cells through every bar
   const pulses = bars.map(b => barPulse(pulse, b))
   const lengths = bars.map(b => pulsesIn(pulse, b))
@@ -123,7 +185,7 @@ export function layRhythm(id: RhythmId, bars: readonly number[], breaks: readonl
       pulse,
       pulses,
       kind: 'repeat',
-      bars: lengths.map((len, b) => barEvents(segs, starts[b]!, len, at => Math.floor((starts[b]! + at) / unit))),
+      bars: lengths.map((len, b) => barEvents(segs, starts[b]!, len, at => base + Math.floor((starts[b]! + at) / unit))),
       landings: range(bars.length).filter(b => starts[b]! % unit === 0),
       unit,
       starts,
@@ -148,8 +210,13 @@ export const cycleBars = (unit: number, barPulses: number): number => unit / gcd
 
 const MAX_LISTED = 6
 
-/** "Rhythm: <label> · <cycle>" for a repeating rhythm, "Rhythm: <label>" for a per-bar one (§4). */
-export function rhythmCaption(id: RhythmId, laid: Laid): string {
+/**
+ * "Rhythm: <label> · <cycle>" for a repeating rhythm, "Rhythm: <label>" for a per-bar one (§4). With a path that acts
+ * on it, "Rhythm: <label> · <path> · <step>" instead: the step marks say where each grouping starts (Phase 4 spec §3).
+ */
+export function rhythmCaption(id: RhythmId, laid: Laid, path?: RhythmPath): string {
+  const onPath = rhythmPathCaption(id, path)
+  if (onPath) return `Rhythm: ${onPath}`
   const caption = `Rhythm: ${rhythmLabel(id)}`
   if (laid.kind === 'bar') return caption
   const { landings, unit } = laid

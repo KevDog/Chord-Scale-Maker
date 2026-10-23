@@ -131,6 +131,7 @@
             v-model:guide-line="prefs.guideLine.value"
             v-model:approach="prefs.approach.value"
             v-model:rhythm="prefs.rhythm.value"
+            v-model:rhythm-path="rhythmPathModel"
             v-model:notes-per-bar="prefs.notesPerBar.value"
             v-model:rhythm-start="prefs.rhythmStart.value"
             v-model:anticipate="prefs.anticipate.value"
@@ -232,6 +233,7 @@
             :line="changesLine"
             :approach="approachShown"
             :rhythm="prefs.rhythm.value"
+            :rhythm-path="rhythmPath.path.value"
             :targets="prefs.targets.value"
             :rhythm-start="prefs.rhythmStart.value"
             :anticipate="prefs.anticipate.value"
@@ -391,6 +393,7 @@ import {
   type InstrumentName,
   type NotesPerBar,
   type RhythmId,
+  rhythmPathCaption,
   rowBarBeats,
   takesRhythm,
 } from '@chord-scale-maker/engine'
@@ -399,7 +402,8 @@ import type { SaveTarget } from '~/composables/useSavedChart'
 import { nextChordLine, type SheetChordEdit, type SheetDone, type SheetEdit, type SheetFocus, type SheetPlace } from '~/utils/sheetChordEdit'
 import { SCALE_VIEW } from '~/utils/scaleView'
 import { firstSheet, type SheetKind } from '~/utils/sheets'
-import { DEFAULT_PATTERN } from '~/composables/usePreferences'
+import { DEFAULT_PATTERN, linkRhythmPath, shareRhythmPath } from '~/composables/usePreferences'
+import { isGearsRhythm } from '~/utils/rhythmText'
 import { type MoreAction, moreMenuItems } from '~/utils/moreMenu'
 import { CHART_SUBMISSION_KEY, type ChartSubmission, submissionAction } from '~/utils/chartSubmission'
 import { FOCUS_BAR_HEIGHT, SHEET_PAGED } from '~/utils/sheetPaged'
@@ -506,6 +510,18 @@ const pentPath = usePentatonicPath(props.practiceKey, pentSections, computed(() 
 const pentPathModel = computed({ get: () => pentPath.path.value, set: (v) => pentPath.setPath(v) })
 const pentStepUnit = computed({ get: () => pentPath.step.value.unit, set: (unit) => pentPath.setStep({ ...pentPath.step.value, unit }) })
 const pentStepBars = computed({ get: () => pentPath.step.value.bars, set: (bars) => pentPath.setStep({ ...pentPath.step.value, bars }) })
+/** the chart's rhythm path (Phase 4 spec §3, §7): stored per chart; a share link's for the visit */
+const rhythmPath = useRhythmPath(props.practiceKey, props.shared ? linkRhythmPath(props.shared) : undefined)
+const rhythmPathModel = computed({
+  get: () => rhythmPath.path.value,
+  set: (p) => {
+    rhythmPath.setGroups(p.groups)
+    rhythmPath.setGears(p.gears)
+    rhythmPath.setStep(p.step)
+  },
+})
+/** the path acts on the Changes' rhythm (a unit's Groups, a unit's or your rhythm's Gears, D12): the link carries it */
+const rhythmPathActs = computed(() => rhythmPathCaption(prefs.rhythm.value, rhythmPath.path.value) !== null)
 /** what the sheets and the grid play a blank cell at; one resolution per revision, shared by the Scales sheet and practice */
 const scaleView = computed((): ScaleView => ({ level: scaleLevel.level.value, seed: scaleLevel.seed.value }))
 provide(SCALE_VIEW, scaleView)
@@ -668,7 +684,7 @@ const picksInForce = computed((): boolean => {
 const approachShown = computed(() => (approachApplies(prefs.lineMode.value, prefs.overlay.value) ? prefs.approach.value : 'none'))
 /** settings in force whose controls this Interface level hides (a share link, a stored preference): the notice offers to show them or reset them */
 const hidden = computed(() =>
-  hiddenSettings(ui.level.value, { sheet: sheet.value, scaleLevel: scaleLevel.level.value, numerals: showNumerals.value, scaleNames: showScaleNames.value, lineMode: prefs.lineMode.value, spell: prefs.spell.value, practice: selection.value, overlay: prefs.overlay.value, picks: picksInForce.value, approach: approachShown.value, rhythm: sheetRhythm.value, targets: prefs.targets.value, rhythmStart: prefs.rhythmStart.value, anticipate: prefs.anticipate.value, rhythmLine: lineTakesRhythm.value, notesPerBar: sheetNotesPerBar.value }),
+  hiddenSettings(ui.level.value, { sheet: sheet.value, scaleLevel: scaleLevel.level.value, numerals: showNumerals.value, scaleNames: showScaleNames.value, lineMode: prefs.lineMode.value, spell: prefs.spell.value, practice: selection.value, overlay: prefs.overlay.value, picks: picksInForce.value, approach: approachShown.value, rhythm: sheetRhythm.value, targets: prefs.targets.value, rhythmStart: prefs.rhythmStart.value, anticipate: prefs.anticipate.value, rhythmLine: lineTakesRhythm.value, notesPerBar: sheetNotesPerBar.value, rhythmPath: rhythmPath.path.value }),
 )
 /** each reset, given the mode in force before any of them ran (resetting the spelling changes the mode) */
 const RESETS: Readonly<Record<HiddenSetting, (inForce: Mode) => void>> = {
@@ -689,7 +705,11 @@ const RESETS: Readonly<Record<HiddenSetting, (inForce: Mode) => void>> = {
     prefs.rhythmStart.value = 'beat'
     prefs.anticipate.value = 0
   },
-  'rhythm-gears': () => (prefs.rhythm.value = 'off'), // a rhythm at a tuplet pulse (Phase 4 spec §7)
+  // a rhythm at a tuplet pulse, and the chart's rhythm path, its stored path too (Phase 4 spec §7)
+  'rhythm-gears': () => {
+    if (isGearsRhythm(prefs.rhythm.value)) prefs.rhythm.value = 'off'
+    rhythmPath.reset()
+  },
   spell: () => (prefs.spell.value = 'key'),
   practice: (inForce) => practice.setSelection(inForce, null),
   pentatonics: () => {
@@ -950,6 +970,7 @@ function saveCopy(): void {
 function carryTo(key: string): void {
   scaleLevel.carryTo(key)
   pentPath.carryTo(key)
+  rhythmPath.carryTo(key)
   changesSet.carryTo(key)
   for (const set of CHANGES_SETS) picksBySet[set].carryTo(setKey(key, set))
 }
@@ -977,6 +998,7 @@ async function shareUrl(): Promise<string> {
     ...(sheet.value === 'changes' && prefs.rhythm.value !== 'off' && prefs.anticipate.value !== 0 ? { anticipate: prefs.anticipate.value } : {}), // absent: on time
     ...(sheet.value === 'changes' && prefs.rhythm.value !== 'off' && prefs.restate.value ? { restate: true as const } : {}), // absent: off
     ...(sheet.value === 'changes' && prefs.targets.value ? { targets: true } : {}), // target beats; absent: off
+    ...(sheet.value === 'changes' && rhythmPathActs.value ? { rhythmPath: shareRhythmPath(rhythmPath.path.value) } : {}), // Phase 4 spec §7; absent: no path
     ...(sheet.value === 'patterns' ? { pattern: prefs.pattern.value, patternNotes: prefs.patternNotes.value, patternDir: prefs.patternDir.value } : {}),
     ...(sheet.value === 'arpeggios' ? { arpNotes: prefs.arpNotes.value, arpDir: prefs.arpDir.value, ...(prefs.arpNotes.value === 'pairs' ? { arpShape: prefs.arpShape.value } : {}) } : {}),
     ...(sheet.value === 'changes' && prefs.lineMode.value === 'arpeggio' ? { arpDir: prefs.arpDir.value, pentLeave: prefs.pentLeave.value, pairLine: prefs.pairLine.value } : {}), // the Pentatonic (#284), Triad pair (#325, #432) and Quartal lines', under the receiver's own overlay

@@ -779,6 +779,19 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   `rhythmStart`, `anticipate`, `restate`. Print: a poured Line counts one line fewer per page than a voiced line
   (measured on a 5/4 triplet chart).
 
+#### Rhythm paths (flag `rhythmGears`, off; [spec](superpowers/specs/2026-10-23-rhythm-phase4-design.md) §3, §6, §7)
+
+- **Engine:** `RhythmPath` (`groups`, `gears`, `step`: the pentatonic path's Step), `rhythmSteps(id, path, units)` over
+  `stepUnits` (shared with the pentatonic path) gives one id a run of drawn bars; `layRhythm`/`lineRhythm` take the plan,
+  each step a break (`DECISIONS` `rhythm.path-step`). `buildChanges` option `rhythmPath`; `ChangesBar.step` marks a step's
+  first bar; the caption names the path. Paths act on units (Groups) and units or Your rhythm (Gears) on the Changes only.
+- **Web:** `useRhythmPath(key)` stores `csm-rhythm-path:<slug | mine:id>` (visit-only without a key, from a link's
+  `rhythmPath`); removed when both lists are One; read off with the flag off. Line options adds Groups (One · Up · Down ·
+  Your list…) and Step at Everything (`CONTROL_TIERS['rhythm-gears']`); a path that acts raises the hidden-settings notice
+  under `rhythm-gears`, whose reset clears the chart's path. Drawing: a circled numeral (`data-rhythm-step`) over each
+  step's first note on the target dots' row (right of a dot there), and ", from bar N: in G" in the line's aria-label.
+  Print: the marks take no room; Autumn Leaves, trombone, 6 lines a page holds.
+
 ### Pentatonics on Changes ([spec](superpowers/specs/2026-10-13-pentatonic-ladders-design.md))
 
 - **Ladder** (`engine/src/pentatonics.ts`): a key area's 12 minor pentatonics round the circle of fifths from home

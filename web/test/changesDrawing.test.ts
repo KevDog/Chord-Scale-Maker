@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import * as vf from 'vexflow/bravura'
 import type { ChangesBar, ChangesChord, ChangesLine, GuideNote, Letter, Pitched, RhythmCardModel, RhythmNote } from '@chord-scale-maker/engine'
-import { arpeggioAria, beamRuns, beatXs, cardAria, DURATIONS, fitBars, guideAria, mergeNames, restatedAccidental, rhythmAria, targetsAria, SLASH_TARGET_ROW, targetRow, tupletsOf, voicedBand, voltaShift, withTargets } from '~/utils/changesDrawing'
+import { arpeggioAria, beamRuns, beatXs, cardAria, DURATIONS, fitBars, guideAria, mergeNames, restatedAccidental, rhythmAria, stepAria, stepNumeral, targetsAria, SLASH_TARGET_ROW, targetRow, tupletsOf, voicedBand, voltaShift, withTargets } from '~/utils/changesDrawing'
 
 const chord = (beat: number, text: string, guide: string): ChangesChord => ({
   beat,
@@ -254,6 +254,21 @@ describe('targetsAria (#505)', () => {
   })
   it('is empty without target beats', () => {
     expect(targetsAria(line([bar([], [note(0, 0, 60, 0, 1)])]))).toBe('')
+  })
+})
+
+describe('stepNumeral and stepAria (Phase 4 spec §6, D17)', () => {
+  const at = (step: ChangesBar['step']): ChangesBar => ({ ...bar([], []), step })
+  const line = (bars: readonly ChangesBar[]): ChangesLine => ({ bars }) as unknown as ChangesLine
+  it('circles a group, ② to ⑦', () => {
+    expect([2, 3, 4, 5, 6, 7].map(stepNumeral).join('')).toBe('②③④⑤⑥⑦')
+  })
+  it("names each step's grouping from its bar, counted from the sheet's first", () => {
+    expect(stepAria(line([at(null), at({ group: 4, pulse: null }), at(null), at({ group: 5, pulse: null })]), 9)).toBe(', from bar 10: in 4, from bar 12: in 5')
+    expect(stepAria(line([at({ group: 3, pulse: null })]), 1)).toBe(', from bar 1: in 3')
+  })
+  it('is empty with no step on the line', () => {
+    expect(stepAria(line([at(null), bar([], [])]), 1)).toBe('')
   })
 })
 
