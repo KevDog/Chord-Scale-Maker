@@ -162,7 +162,7 @@ for (const theme of ['light', 'dark'] as const) {
       await chooseGroups(page, 'Up')
       await chooseGears(page, 'Up the gears')
       await rhythmDrawn(page)
-      await expect(page.locator('[data-rhythm-step]').first()).toHaveText('③Quarter-note triplets')
+      await expect(page.locator('[data-rhythm-step]').first()).toHaveText('③♩ triplets')
       await openPanel(page, 'Line options') // the Groups, Gears and Step listboxes, scanned too
       await expect(page.getByRole('button', { name: 'Step', exact: true })).toBeVisible()
       await expectAccessible(page)

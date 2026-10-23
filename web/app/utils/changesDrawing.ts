@@ -1,4 +1,4 @@
-import { accText, barKey, type ChangesBar, type ChangesLine, type GuideNote, type NoteBeats, type Pitched, PULSE_LABELS, type RhythmCardModel, type RhythmNote, signatureAccidentals, toVexKey } from '@chord-scale-maker/engine'
+import { accText, barKey, type ChangesBar, type ChangesLine, type GuideNote, type NoteBeats, type Pitched, PULSE_LABELS, PULSE_SHORT_LABELS, type RhythmCardModel, type RhythmNote, signatureAccidentals, toVexKey } from '@chord-scale-maker/engine'
 import { BAR_UNITS, cropBand, fitSvg, headCentre, inkStave, signatureLead, STAFF_WIDTH, STAVE_Y, svgContext, TIME_SPACE, type VexFlowModule } from './vexflow'
 
 /**
@@ -435,7 +435,7 @@ function drawGuideLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, op
   })
   const { band, at } = withTargets(voicedBand([...heads, ...tips], bracket === null ? null : bracket + shift), row)
   const poured = line.bars.some((b) => b.voice.some((n) => n.mark))
-  if (marks !== null) drawStepMarks(ctx, laid, stepRow(marks, band.top), row !== null)
+  if (marks !== null) drawStepMarks(ctx, laid, stepRow(marks, band.top), row === null ? null : xs.map((bar) => bar.map((x) => x * total)))
   fitSvg(el, band, total, barsLabel(line) + (opts.arpeggio ? arpeggioAria(line, opts.lineName) : guideAria(line)) + (poured ? rhythmAria(opts.rhythmCaption ?? null) + stepAria(line, opts.fromBar ?? 1) : '') + targetsAria(line))
   return { xs, ends: endsOf(widths, total), scales, fits, dots: at }
 }
@@ -520,30 +520,54 @@ function saindonBracket(ctx: Context, rhythm: readonly RhythmNote[], ticks: read
 
 const STEP_MARK_SIZE = 12 // a step's numeral: about a staff space, so it fits the target dots' band (DOT_ROOM a side)
 const STEP_MARK_WIDTH = 0.9 // its width, in ems (a circled digit is about square)
-const STEP_MARK_GAP = 4 // from a target dot over the same note to the mark's left edge
+// a target dot is 6 CSS px across, drawn over the line, which shows at about half its drawing units on a phone (2 bars of
+// BAR_UNITS in some 330 px) and larger elsewhere: its radius is up to 6 drawing units, so the marks keep that and more
+const STEP_MARK_GAP = 9 // from a target dot over the same note to the mark's left edge
 const GEAR_MARK_SIZE = 10 // a gear's name: small italics, shorter than the numeral, so it keeps to the same band
-const GEAR_MARK_GAP = 2 // from the numeral to the gear's name
+const GEAR_MARK_MIN = 7 // the smallest it shrinks to, to fit its room, before it is cut short
+const GEAR_MARK_GAP = 3 // from the numeral (as measured) to the gear's name
+const GEAR_MARK_CLEAR = 10 // from the gear's name's end to the next target dot's centre, or to the barline
+
+/**
+ * a gear's name at the size that fits room (drawing units): GEAR_MARK_SIZE, else shrunk as far as GEAR_MARK_MIN,
+ * else cut short with an ellipsis; the context's font is left at the size returned
+ */
+function fitGearName(ctx: Context, name: string, room: number): Readonly<{ text: string; size: number }> {
+  const width = (text: string, size: number): number => ctx.setFont('serif', size, 'normal', 'italic').measureText(text).width
+  const full = width(name, GEAR_MARK_SIZE)
+  if (full <= room) return { text: name, size: GEAR_MARK_SIZE }
+  const size = Math.max(GEAR_MARK_MIN, (GEAR_MARK_SIZE * room) / full)
+  if (width(name, size) <= room) return { text: name, size }
+  const cut = [...name].findLastIndex((_, k) => k > 0 && width(`${name.slice(0, k).trimEnd()}…`, size) <= room)
+  return { text: `${name.slice(0, Math.max(1, cut)).trimEnd()}…`, size }
+}
 
 /**
  * the step marks over each step's first note (Phase 4 spec §6, D17) on the target dots' row (row, in drawing units,
- * already clear of the crop's top): the circled numeral where the group changes, then the pulse's name in small
+ * already clear of the crop's top): the circled numeral where the group changes, then the pulse's short name in small
  * italics where the pulse changes; the mark starts centred on the note's head (its numeral, or its name's first
- * letter), or just right of a target dot over it (dots: the line draws them); data-rhythm-step: the group and pulse
+ * letter), or just right of a target dot over it. dots: each bar's target dots' x by beat, in drawing units (null:
+ * the line draws none); the name keeps clear of the next dot and of the barline (fitGearName). data-rhythm-step: the
+ * group and pulse
  */
-export function drawStepMarks(ctx: Context, bars: readonly Readonly<{ bar: ChangesBar; ticks: readonly StaveNote[] }>[], row: number, dots: boolean): void {
-  bars.forEach(({ bar, ticks }) => {
+export function drawStepMarks(ctx: Context, bars: readonly Readonly<{ bar: ChangesBar; ticks: readonly StaveNote[]; stave: Stave }>[], row: number, dots: readonly (readonly number[])[] | null): void {
+  bars.forEach(({ bar, ticks, stave }, b) => {
     const first = ticks[0]
     if (!bar.step || !first) return
     const { group, pulse } = bar.step
     const lead = group !== null ? STEP_MARK_SIZE * STEP_MARK_WIDTH : GEAR_MARK_SIZE * 0.6 // the mark's first glyph, to centre
     const centre = (first.getNoteHeadBeginX() + first.getNoteHeadEndX()) / 2
+    const dotXs = dots ? bar.targets.flatMap((beat) => (dots[b]?.[beat] === undefined ? [] : [dots[b]![beat]!])) : []
     const left = dots && bar.targets.includes(0) ? centre + STEP_MARK_GAP : centre - lead / 2
     const g: unknown = ctx.openGroup('rhythm-step')
     if (g instanceof Element) g.setAttribute('data-rhythm-step', [group, pulse].filter((v) => v !== null).join(' '))
-    if (group !== null) ctx.setFont('serif', STEP_MARK_SIZE).fillText(stepNumeral(group), left, row + STEP_MARK_SIZE * 0.35) // its baseline, so its middle sits on the row
+    const numeral = group === null ? 0 : ctx.setFont('serif', STEP_MARK_SIZE).measureText(stepNumeral(group)).width
+    if (group !== null) ctx.fillText(stepNumeral(group), left, row + STEP_MARK_SIZE * 0.35) // its baseline, so its middle sits on the row
     if (pulse !== null) {
-      const x = group !== null ? left + STEP_MARK_SIZE * STEP_MARK_WIDTH + GEAR_MARK_GAP : left
-      ctx.setFont('serif', GEAR_MARK_SIZE, 'normal', 'italic').fillText(PULSE_LABELS[pulse], x, row + GEAR_MARK_SIZE * 0.35)
+      const x = group !== null ? left + numeral + GEAR_MARK_GAP : left
+      const end = Math.min(stave.getX() + stave.getWidth(), ...dotXs.filter((d) => d > x)) - GEAR_MARK_CLEAR
+      const { text, size } = fitGearName(ctx, PULSE_SHORT_LABELS[pulse], end - x)
+      ctx.fillText(text, x, row + size * 0.35)
     }
     ctx.closeGroup()
   })
@@ -623,7 +647,7 @@ function drawRhythmLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, o
   })
   const hasBracket = line.bars.some((b) => b.rhythm.some((m) => m.bracket))
   const { band, at } = withTargets(voicedBand([...heads, ...tips, ...(hasBracket ? [under] : [])], bracket === null ? null : bracket + shift), row)
-  if (marks !== null) drawStepMarks(ctx, laid, stepRow(marks, band.top), row !== null)
+  if (marks !== null) drawStepMarks(ctx, laid, stepRow(marks, band.top), row === null ? null : xs.map((bar) => bar.map((x) => x * total)))
   fitSvg(el, band, total, barsLabel(line) + rhythmAria(opts.rhythmCaption ?? null) + stepAria(line, opts.fromBar ?? 1) + targetsAria(line))
   return { xs, ends: endsOf(widths, total), scales, fits, dots: at }
 }

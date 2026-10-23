@@ -1,5 +1,5 @@
 import type { Locator, Page } from '@playwright/test'
-import { chooseGears, chooseGroups, chooseInstrument, chooseInterface, chooseRhythm, chooseRhythmStep, chooseSheet, chooseStart, closePanel, type Drawn, drawn, expect, openPanel, GLYPH, arpeggiosDrawn, guidesDrawn, openEditor, restateOn, rhythmDrawn, sheetChord, showArpeggios, showApproach, showCell, showGuides, showOrder, test, writeChart } from './fixtures'
+import { chooseGears, chooseGroups, chooseInstrument, chooseInterface, chooseRhythm, chooseRhythmStep, chooseSheet, chooseStart, closePanel, type Drawn, drawn, expect, openPanel, GLYPH, arpeggiosDrawn, guidesDrawn, openEditor, restateOn, rhythmDrawn, sheetChord, showArpeggios, showApproach, showCell, showGuides, showOrder, showTargets, test, writeChart } from './fixtures'
 
 const lines = (page: Page) => page.locator('svg[aria-label^="Bars:"]')
 /** the sheet itself, not the controls above it (whose menus name the same scales) */
@@ -798,7 +798,7 @@ test.describe('the Gears path', () => {
     await expect(page.locator('section header p').first()).toContainText('quarter-note triplets → 8ths → triplets → 16ths → sextuplets · every 2 bars')
     await expect(lines(page).nth(0)).toHaveAttribute('aria-label', /, from bar 1: quarter-note triplets, from bar 3: 8ths(?!,)/)
     await expect(lines(page).nth(1)).toHaveAttribute('aria-label', /, from bar 5: triplets, from bar 7: 16ths/)
-    await expect(page.locator('[data-rhythm-step]').first()).toHaveText('Quarter-note triplets')
+    await expect(page.locator('[data-rhythm-step]').first()).toHaveText('♩ triplets') // the short name; the aria-label keeps the full one
     await expect(page.locator('[data-rhythm-step]').nth(1)).toHaveText('8ths')
     await expect(page.getByText(/Couldn.t draw/)).toHaveCount(0)
   })
@@ -812,6 +812,39 @@ test.describe('the Gears path', () => {
     await rhythmDrawn(page)
     await expect(page.locator('[data-rhythm-step]').first()).toHaveText('③Sextuplets')
     await expect(lines(page).nth(0)).toHaveAttribute('aria-label', /, from bar 1: in 3, sextuplets/)
+  })
+
+  // the longest short names (♩ triplets, ③ before each) at phone width, the narrowest bars, with the target dots on the same row
+  test('keeps each mark clear of the target dots and inside its bar (phone width, Target beats on)', async ({ page }) => {
+    await page.goto('/song/f-jazz-blues')
+    await chooseRhythm(page, '8ths', { In: 'In 3', Variation: 'with accents' })
+    await chooseGroups(page, 'Up')
+    await chooseGears(page, 'Up the gears')
+    await chooseRhythmStep(page, 'Every 2 bars')
+    await showTargets(page)
+    await page.setViewportSize({ width: 390, height: 844 }) // the controls set, the lines redraw at phone width
+    await rhythmDrawn(page)
+    await expect(page.locator('[data-target-beat]').first()).toBeVisible()
+    await expect(page.locator('[data-rhythm-step]')).toHaveCount(6)
+    type Box = Readonly<{ left: number; right: number; top: number; bottom: number }>
+    const found = await page.locator('svg[aria-label^="Bars:"]').evaluateAll((svgs) => {
+      const box = (e: Element): Box => {
+        const r = e.getBoundingClientRect()
+        return { left: r.left, right: r.right, top: r.top, bottom: r.bottom }
+      }
+      const dots = Array.from(document.querySelectorAll('[data-target-beat]')).map(box)
+      return svgs.flatMap((svg) => {
+        const staves = Array.from(svg.querySelectorAll('.vf-stave')).map(box)
+        return Array.from(svg.querySelectorAll('[data-rhythm-step]')).map((m) => ({ mark: box(m), text: m.textContent, dots, bar: staves.find((s) => s.left <= box(m).left && box(m).left < s.right) ?? null }))
+      })
+    })
+    const overlaps = (a: Box, b: Box): boolean => a.left < b.right && b.left < a.right && a.top < b.bottom && b.top < a.bottom
+    expect(found).toHaveLength(6)
+    for (const { mark, text, dots, bar } of found) {
+      expect(dots.filter((d) => overlaps(mark, d)), `${text} over a target dot`).toEqual([])
+      expect(bar, `${text}'s bar`).not.toBeNull()
+      expect(mark.right, `${text} inside its bar`).toBeLessThanOrEqual(bar!.right)
+    }
   })
 })
 

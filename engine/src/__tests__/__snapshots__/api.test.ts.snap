@@ -66,6 +66,7 @@ exports[`exports the same names 1`] = `
   "PULSE_GRID",
   "PULSE_LABELS",
   "PULSE_PER_BEAT",
+  "PULSE_SHORT_LABELS",
   "QUALITY_NAMES",
   "QUARTAL_NOTES",
   "RANGES",

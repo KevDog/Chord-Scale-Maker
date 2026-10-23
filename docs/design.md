@@ -790,8 +790,9 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   Your list…; units only), Gears (One · Up the gears · Down the gears · Your list… of `PULSES` spellings; units and Your
   rhythm) and Step at Everything (`CONTROL_TIERS['rhythm-gears']`); a path that acts raises the hidden-settings notice
   under `rhythm-gears`, whose reset clears the chart's path. Drawing: over each step's first note on the target dots'
-  row (right of a dot there), a circled numeral where the group changes, then the pulse's label in small italics where
-  the pulse changes (`data-rhythm-step`: the group and pulse), and ", from bar N: in G, pulse" in the line's aria-label.
+  row (right of a dot there), a circled numeral where the group changes, then the pulse's short name
+  (`PULSE_SHORT_LABELS`: ♩ triplets, Sextuplets) in small italics where the pulse changes, shrunk or cut short to keep
+  clear of the next target dot and the barline (`data-rhythm-step`: the group and pulse), and ", from bar N: in G, pulse" in the line's aria-label.
   Print: the marks take no room; Autumn Leaves, trombone, 6 lines a page holds (with a tuplet pulse it doesn't, path or
   not: the tuplet numbers stand taller).
 
