@@ -162,4 +162,25 @@ describe('ClickBar', () => {
       Object.assign(features, was)
     }
   })
+
+  it('Hear rhythm: in the settings with the flag on and a rhythm drawn', async () => {
+    const features = useRuntimeConfig().public.features as Record<string, unknown>
+    const was = { ...features }
+    const rhythm = { hits: [{ bar: 0, at: 0, accent: true }], bars: 1 }
+    try {
+      const off = await mountBar()
+      off.click.setRhythm(rhythm)
+      await off.button('Click settings')!.trigger('click')
+      expect(off.w.text()).not.toContain('Hear rhythm') // the flag off
+      Object.assign(features, { hearLine: true })
+      const { w, click, button } = await mountBar()
+      await button('Click settings')!.trigger('click')
+      expect(w.text()).not.toContain('Hear rhythm') // no rhythm
+      click.setRhythm(rhythm)
+      await nextTick()
+      expect(w.text()).toContain('Hear rhythm')
+    } finally {
+      Object.assign(features, was)
+    }
+  })
 })

@@ -47,6 +47,8 @@
         </UiListbox>
       </div>
       <UiCheckbox v-if="chart.beats === 4" v-model="hat">Hat on 2 &amp; 4</UiCheckbox>
+      <!-- Hear rhythm (#521): the sheet's rhythm taps on a rim with the click -->
+      <UiCheckbox v-if="hearOn && click.hasRhythm.value" v-model="hearRhythm">Hear rhythm</UiCheckbox>
       <SegmentedControl v-model="sound" legend="Sound" :name="`click-sound-${home}`" :options="SOUNDS" />
     </RailPopover>
     <span data-testid="click-lights" aria-hidden="true" class="flex items-center gap-1.5">
@@ -156,6 +158,7 @@ function setting<K extends keyof ClickSettings>(key: K) {
 }
 const hat = setting('hat')
 const hear = setting('hear')
+const hearRhythm = setting('hearRhythm')
 const hearOn = useFeature('hearLine')
 const folded = setting('folded')
 const sound = setting('sound')

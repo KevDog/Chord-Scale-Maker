@@ -1,5 +1,5 @@
 import type { Locator, Page } from '@playwright/test'
-import { chooseSheet, expect, showGuides, test } from './fixtures'
+import { chooseRhythm, chooseSheet, expect, rhythmDrawn, showGuides, test } from './fixtures'
 
 /** click until it takes: a click before hydration is lost */
 async function clickUntil(page: Page, button: Locator, shown: Locator): Promise<void> {
@@ -155,6 +155,30 @@ test('Hear line shows with a Line on the Changes, and plays with the click (#507
   await page.reload()
   await clickUntil(page, page.getByRole('button', { name: 'Click', exact: true }), clickBar(page))
   await expect(clickBar(page).getByRole('button', { name: 'Hear line' })).toHaveAttribute('aria-pressed', 'true') // remembered, with the Line
+})
+
+test.describe('Hear rhythm', () => {
+  test.use({ interfaceLevel: 'intermediate' })
+
+  test('shows with a rhythm on the Changes, and taps with the click (#521)', async ({ page }) => {
+    await page.goto('/song/f-jazz-blues')
+    await clickUntil(page, page.getByRole('button', { name: 'Click', exact: true }), clickBar(page))
+    const settings = page.getByRole('dialog', { name: 'Click settings' })
+    await clickBar(page).getByRole('button', { name: 'Click settings' }).click()
+    await expect(settings.getByRole('checkbox', { name: 'Hear rhythm' })).toHaveCount(0) // no rhythm drawn
+    await page.keyboard.press('Escape')
+    await chooseRhythm(page, 'Upbeats')
+    await rhythmDrawn(page)
+    await clickBar(page).getByRole('button', { name: 'Click settings' }).click()
+    const hear = settings.getByRole('checkbox', { name: 'Hear rhythm' })
+    await expect(hear).toBeChecked() // on until turned off
+    await hear.click()
+    await expect(hear).not.toBeChecked()
+    await hear.click()
+    await page.keyboard.press('Escape')
+    await clickBar(page).getByRole('button', { name: 'Start' }).click()
+    await expect(clickBar(page).locator('[data-testid=click-lights] i[data-on]')).toHaveCount(1) // running, with no error (the fixture fails on one)
+  })
 })
 
 test('a Scales or Arpeggios staff’s Play sounds it, and Stop or another Play stops it (#507)', async ({ page }) => {

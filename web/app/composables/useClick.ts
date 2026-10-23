@@ -1,5 +1,5 @@
 import type { InjectionKey, Ref } from 'vue'
-import { type Beats, type ClickFeel, type ClickPattern, type ClickPlan, type ClickState, type Feel, type PhraseNote, type TimedClick, type VoiceNote, CLICK_PATTERNS, clampTempo, defaultFeel, defaultPattern, defaultTempo, scheduleClicks, scheduleVoice, tapTempo, timePhrase } from '@chord-scale-maker/engine'
+import { type Beats, type ClickFeel, type ClickPattern, type ClickPlan, type ClickState, type Feel, type PhraseNote, type RhythmHit, type TimedClick, type VoiceNote, CLICK_PATTERNS, clampTempo, defaultFeel, defaultPattern, defaultTempo, scheduleClicks, scheduleRhythm, scheduleVoice, tapTempo, timePhrase } from '@chord-scale-maker/engine'
 import { type ClickAudio, type ClickSound, CLICK_SOUNDS, webAudio } from '~/utils/clickSounds'
 import { readStored, writeStored } from '~/utils/storage'
 
@@ -7,13 +7,16 @@ import { readStored, writeStored } from '~/utils/storage'
  * The click (#254, docs/superpowers/specs/2026-10-21-metronome-design.md): one per song page. The engine says which
  * clicks fall in each lookahead window; this books them on the AudioContext's clock, so a busy page never makes it
  * drift, and lights the beat that is sounding. Tempo, feel and Click on are remembered per chart, the rest in this browser.
- * With Hear line on, the Changes sheet's Line (setLine) sounds with it, from the same clock (#507); a staff's Play
+ * With Hear line on, the Changes sheet's Line (setLine) sounds with it, from the same clock (#507), and with Hear
+ * rhythm on its rhythm's attacks (setRhythm) on a rim (#521); a staff's Play
  * (play) sounds its phrase at the click's tempo and feel, on the click's next bar while it runs, else at once.
  */
-/** folded: the bar shows only Start/Stop, the tempo and the lights; hear: Hear line, the Line sounds with the click */
-export type ClickSettings = Readonly<{ hat: boolean; countIn: 0 | 1 | 2; sound: ClickSound; folded: boolean; hear: boolean }>
+/** folded: the bar shows only Start/Stop, the tempo and the lights; hear: Hear line, the Line sounds with the click; hearRhythm: Hear rhythm, its rhythm taps with it */
+export type ClickSettings = Readonly<{ hat: boolean; countIn: 0 | 1 | 2; sound: ClickSound; folded: boolean; hear: boolean; hearRhythm: boolean }>
 /** the Line to hear: its notes and the drawn bars it loops over */
 export type ClickLine = Readonly<{ notes: readonly VoiceNote[]; bars: number }>
+/** the rhythm to hear: its attacks and the drawn bars it loops over */
+export type ClickRhythm = Readonly<{ hits: readonly RhythmHit[]; bars: number }>
 /** rhythmFeel: the sheet's Feel, which Click on follows until it's set (in 4 when left out) */
 export type ClickChart = Readonly<{ beats: Beats; style: string; metreChanges: boolean; rhythmFeel?: Feel }>
 export type ClickDeps = Readonly<{
@@ -32,7 +35,7 @@ const PHRASE_LEAD = 0.05
 export const LOOKAHEAD = { interval: 25, ahead: 0.1, hiddenAhead: 1.2 } as const
 
 const SETTINGS_KEY = 'csm-click'
-const DEFAULT_SETTINGS: ClickSettings = { hat: false, countIn: 0, sound: 'wood', folded: false, hear: false }
+const DEFAULT_SETTINGS: ClickSettings = { hat: false, countIn: 0, sound: 'wood', folded: false, hear: false, hearRhythm: true }
 
 function parseSettings(raw: string | null): ClickSettings {
   try {
@@ -43,6 +46,7 @@ function parseSettings(raw: string | null): ClickSettings {
       sound: CLICK_SOUNDS.includes(v.sound as ClickSound) ? (v.sound as ClickSound) : DEFAULT_SETTINGS.sound,
       folded: typeof v.folded === 'boolean' ? v.folded : DEFAULT_SETTINGS.folded,
       hear: typeof v.hear === 'boolean' ? v.hear : DEFAULT_SETTINGS.hear,
+      hearRhythm: typeof v.hearRhythm === 'boolean' ? v.hearRhythm : DEFAULT_SETTINGS.hearRhythm,
     }
   } catch {
     return DEFAULT_SETTINGS
@@ -155,6 +159,12 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
   const setLine = (l: ClickLine | null): void => {
     line.value = l
   }
+  const rhythm = shallowRef<ClickRhythm | null>(null)
+  const hasRhythm = computed(() => !!rhythm.value?.hits.length)
+  /** the Changes sheet's rhythm as drawn, or null with none */
+  const setRhythm = (r: ClickRhythm | null): void => {
+    rhythm.value = r
+  }
 
   let audio: ClickAudio | null = null
   let timer: number | null = null
@@ -180,6 +190,7 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
     const next = scheduleClicks(plan.value, state, from, until)
     for (const e of next.events) if (e.kind !== 'tick') audio.play(e.kind, e.time, settings.value.sound)
     if (settings.value.hear && line.value) for (const n of scheduleVoice(line.value.notes, line.value.bars, plan.value, state, from, until)) audio.note(n.midi, n.time, n.length)
+    if (settings.value.hearRhythm && rhythm.value) for (const h of scheduleRhythm(rhythm.value.hits, rhythm.value.bars, plan.value, state, from, until)) audio.hit(h.time, h.accent)
     state = next.state
     booked = Math.max(booked, until) // a shorter lookahead (the tab shown again) mustn't reopen what's booked
     const beats = next.events.filter((e) => e.kind !== 'hat' && e.kind !== 'sub') // a pattern's ticks light the beats it leaves silent
@@ -309,7 +320,7 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
     audio = null
   }
 
-  return { shown, running, unavailable, tempo, feel, pattern, settings, beat, counting, hasLine, setLine, playing, play, stopPhrase, start, stop, toggle, tap, show, hide, dispose }
+  return { shown, running, unavailable, tempo, feel, pattern, settings, beat, counting, hasLine, setLine, hasRhythm, setRhythm, playing, play, stopPhrase, start, stop, toggle, tap, show, hide, dispose }
 }
 
 export type Click = ReturnType<typeof useClick>

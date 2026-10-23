@@ -5,7 +5,7 @@ import { webAudio } from '~/utils/clickSounds'
 function stubContext() {
   const made = { buffers: 0, oscillators: 0, faded: 0 }
   const param = () => ({ value: 0, setValueAtTime: () => {}, exponentialRampToValueAtTime: () => {}, linearRampToValueAtTime: () => {}, cancelScheduledValues: () => {}, setTargetAtTime: () => made.faded++ })
-  const node = () => ({ connect: (n: unknown) => n, gain: param(), frequency: param(), type: '', buffer: null, start: () => {}, stop: () => {} })
+  const node = () => ({ connect: (n: unknown) => n, gain: param(), frequency: param(), Q: param(), type: '', buffer: null, start: () => {}, stop: () => {} })
   class Ctx {
     sampleRate = 48000
     currentTime = 0
@@ -55,5 +55,13 @@ describe('clickSounds', () => {
     const made = stubContext()
     webAudio()!.note(65, 0, 1)()
     expect(made.faded).toBe(1)
+  })
+
+  it('Hear rhythm’s rim is the hat’s noise, no pitch', () => {
+    const made = stubContext()
+    const audio = webAudio()!
+    audio.play('hat', 0, 'wood')
+    for (const t of [0, 0.5]) audio.hit(t, t === 0)
+    expect([made.buffers, made.oscillators]).toEqual([1, 0])
   })
 })

@@ -680,12 +680,25 @@
 
         <DecisionSection v-if="hearLineOn" id="hear.swing">
           <UiText>
-            With the click's feel on <strong :class="EM">Swing</strong>, Hear line swings the Line's 8ths: an 8th off the beat
+            With the click's feel on <strong :class="EM">Swing</strong>, Hear line and Hear rhythm swing the 8ths: an 8th off the beat
             plays two thirds through the beat, where the click's skip note is, and the note before it holds until then.
             Triplets, 16ths and the rest play as drawn. Straight and Quarters play every note as drawn.
           </UiText>
           <UiText>
             <strong :class="EM">What you can change:</strong> the click's feel.
+          </UiText>
+        </DecisionSection>
+
+        <DecisionSection v-if="hearLineOn" id="hear.rhythm">
+          <UiText>
+            <strong :class="EM">Hear rhythm</strong> taps the Changes sheet's rhythm on a rim, a short knock unlike the click,
+            at the attacks drawn: the rhythm line's with the Line off, or the Line's with a Line poured into the rhythm, so the
+            two always agree. Accented notes sound louder; a rest, or a note tied over from the one before, strikes nothing. A
+            guide tone line without Restate takes no rhythm, so there is nothing to tap. It swings as Hear line does.
+          </UiText>
+          <UiText>
+            <strong :class="EM">What you can change:</strong> Hear rhythm, under the click's ⋯ (on until you turn it off), and the
+            rhythm itself.
           </UiText>
         </DecisionSection>
 

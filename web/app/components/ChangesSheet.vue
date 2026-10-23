@@ -74,7 +74,7 @@ import { SHEET_PAGED } from '~/utils/sheetPaged'
 import { CLICK } from '~/composables/useClick'
 import { PlusIcon, Square2StackIcon } from '@heroicons/vue/16/solid'
 import type { SheetChordEdit, SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
-import { type Approach, barKey, type Feel, type RhythmId, type RhythmPath, type RhythmStart, breakLines, buildChanges, otherChords, changesLinesPerPage, drawsTuplets, type ChangesSet, type ChartDoc, type ChordAt, type ChordPreview, chunk, type GridPos, isArpeggioPattern, pageSubtitle, type OverlayPlan, type Part, type PentatonicPlan, type PickKind, type ScaleView, showHexatonics, showPentatonics, showQuartals, type ChangesLineChoice, voiceNotes } from '@chord-scale-maker/engine'
+import { type Approach, barKey, type Feel, type RhythmId, type RhythmPath, type RhythmStart, breakLines, buildChanges, otherChords, changesLinesPerPage, drawsTuplets, type ChangesSet, type ChartDoc, type ChordAt, type ChordPreview, chunk, type GridPos, isArpeggioPattern, pageSubtitle, type OverlayPlan, type Part, type PentatonicPlan, type PickKind, type ScaleView, showHexatonics, showPentatonics, showQuartals, type ChangesLineChoice, rhythmHits, voiceNotes } from '@chord-scale-maker/engine'
 
 /** the Changes sheet (docs/plan-changes.md): the chart as a study lead sheet, 4 bars a line (2 on phones), fewer where the chords' names don't fit */
 const { shows } = useInterface()
@@ -134,14 +134,18 @@ const line = computed((): ChangesLineChoice => props.line ?? 'off')
 const lineName = computed(() => (typeof line.value === 'object' ? ({ pentatonic: 'pentatonic', 'triad-pair': 'triad pair', quartal: 'quartal', cells: 'cells' } as const)[line.value.kind] : undefined))
 const arpeggio = computed(() => !!lineName.value || isArpeggioPattern(line.value))
 const built = computed(() => buildChanges(props.doc, props.part, barsPerLine.value, true, line.value, props.view, props.overlay ?? null, props.approach ?? 'none', { rhythm: props.rhythm ?? 'off', targets: props.targets ?? false, start: props.rhythmStart ?? 'beat', anticipate: props.anticipate ?? 0, restate: props.restate ?? false, rhythmPath: props.rhythmPath, feel: props.feel ?? 4 }))
-// Hear line (#507): the drawn Line, for the click to sound (none on a page without a click)
+// Hear line (#507) and Hear rhythm (#521): the drawn Line and rhythm, for the click to sound (none on a page without a click)
 const click = inject(CLICK, null)
 if (click && useFeature('hearLine')) {
   watchEffect(() => {
     const bars = built.value.lines.flatMap((l) => l.bars)
     click.setLine({ notes: voiceNotes(bars, props.part.trans), bars: bars.length })
+    click.setRhythm({ hits: rhythmHits(bars), bars: bars.length })
   })
-  onBeforeUnmount(() => click.setLine(null))
+  onBeforeUnmount(() => {
+    click.setLine(null)
+    click.setRhythm(null)
+  })
 }
 /** the other set's chords in each bar where they differ (#215), written for the part and spelled at the level as the main set's are */
 const others = computed(() => (props.otherDoc ? otherChords(built.value, buildChanges(props.otherDoc, props.part, barsPerLine.value, true, 'off', props.view)) : null))
