@@ -199,6 +199,20 @@ describe("each bar's pulse (Phase 4 spec §1, D11)", () => {
   })
 })
 
+/** a flat record as one line of its set fields ("beat:0 value:h tie"), a bar of them as one line, so the regression snapshot stays readable (#553) */
+const compact = (v: unknown): unknown => {
+  if (Array.isArray(v)) {
+    const xs = v.map(compact)
+    const records = v.length > 0 && v.every((x) => x !== null && typeof x === 'object' && !Array.isArray(x)) && xs.every((x) => typeof x === 'string')
+    return records ? xs.join(' | ') : xs
+  }
+  if (v === null || typeof v !== 'object') return v
+  const entries = Object.entries(v)
+  if (entries.every(([, x]) => x === null || typeof x !== 'object'))
+    return entries.filter(([, x]) => x !== null && x !== false).map(([k, x]) => (x === true ? k : `${k}:${String(x)}`)).join(' ')
+  return Object.fromEntries(entries.map(([k, x]) => [k, compact(x)]))
+}
+
 // recorded on the four-pulse code before the pulse grid (Phase 4 spec §1): the grid must not move the old pulses
 describe('the old pulses on the pulse grid (regression)', () => {
   const ids: RhythmId[] = [
@@ -211,13 +225,15 @@ describe('the old pulses on the pulse grid (regression)', () => {
     const { pulses: _pulses, ...old } = laid as typeof laid & { pulses?: unknown }
     const line = lineRhythm(id, [4, 3, 4], [], [{ at: 0, sounds: true }, { at: 5.5, sounds: true }, { at: 7, sounds: false }], 'pickup-2', 0.5)!
     const { pulses: _linePulses, ...lineLaid } = line.laid as typeof line.laid & { pulses?: unknown }
-    expect({
-      laid: old,
-      notes: rhythmNotes(laid),
-      line: { ...line, laid: lineLaid },
-      card: cardBars(id, 3),
-      poured: pourRun(9, id, 4, null),
-    }).toMatchSnapshot()
+    expect(
+      compact({
+        laid: old,
+        notes: rhythmNotes(laid),
+        line: { ...line, laid: lineLaid },
+        card: cardBars(id, 3),
+        poured: pourRun(9, id, 4, null),
+      }),
+    ).toMatchSnapshot()
   })
 })
 
