@@ -83,6 +83,19 @@ describe('useRhythmPath (Phase 4 spec §3, §7)', () => {
     expect(make('mine:2').path.value.groups).toEqual([3, 4])
   })
 
+  it('takes a whole path back, for an undo (#553)', async () => {
+    const p = make('autumn')
+    const before = p.path.value
+    p.setGroups([3, 4])
+    p.setGears(['8t'])
+    p.setStep({ unit: 'bars', bars: 8 })
+    await nextTick()
+    p.setPath(before)
+    expect(p.path.value).toEqual(RHYTHM_PATH_OFF)
+    await nextTick()
+    expect(localStorage.getItem('csm-rhythm-path:autumn')).toBeNull()
+  })
+
   it('keeps its groups and its steps when the chart’s sections are renamed (it stores no section names)', async () => {
     make('aaba').setGroups([3, 4, 5, 6, 7])
     await nextTick()

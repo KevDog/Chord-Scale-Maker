@@ -31,6 +31,10 @@ export function useRhythmPath(key: string | undefined, initial?: RhythmPath) {
   })
   return {
     path: computed(() => path.value),
+    /** the whole path at once (an undo, #553) */
+    setPath(p: RhythmPath): void {
+      path.value = p
+    },
     setGroups(groups: readonly number[] | null): void {
       path.value = { ...path.value, groups: groups && [...groups] }
     },

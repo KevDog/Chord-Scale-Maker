@@ -693,6 +693,22 @@ describe('EditorView note choices undo (#315)', () => {
     await nextTick()
     expect(panel().props('selection')).toEqual({ preset: 'guideTones' })
   })
+
+  it('undoes and redoes the rhythm path (Groups, Gears, Step) as it does the pentatonic path (#553)', async () => {
+    const w = await mountSuspended(EditorView, { props: { initialText: TEXT, practiceKey: 'undo-path' }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } }, attachTo: document.body })
+    const controls = () => w.findComponent({ name: 'PreviewControls' })
+    const path = { groups: [3, 4, 5, 6, 7], gears: ['8', '16'], step: { unit: 'bars', bars: 2 } }
+    controls().vm.$emit('update:rhythmPath', path)
+    await nextTick()
+    expect(controls().props('rhythmPath')).toEqual(path)
+    const press = (shiftKey: boolean) => document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'z', metaKey: true, shiftKey, bubbles: true, cancelable: true }))
+    press(false)
+    await nextTick()
+    expect(controls().props('rhythmPath')).toEqual({ groups: null, gears: null, step: { unit: 'section', bars: 4 } })
+    press(true)
+    await nextTick()
+    expect(controls().props('rhythmPath')).toEqual(path)
+  })
 })
 
 describe('EditorView overlay', () => {
