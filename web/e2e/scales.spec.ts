@@ -83,12 +83,12 @@ test.describe('the Scales sheet’s tuplet pulses', () => {
     await expect(card.locator('.vf-tuplet')).toHaveCount(4 * bars)
     const d = await card.evaluate((svg) => {
       const rect = (e: Element) => e.getBoundingClientRect()
-      const groups = [...svg.querySelectorAll('[data-rhythm-bar]')]
-      const tuplets = [...svg.querySelectorAll('.vf-tuplet')].map(rect).sort((a, b) => a.left - b.left)
+      const groups = Array.from(svg.querySelectorAll('[data-rhythm-bar]'))
+      const tuplets = Array.from(svg.querySelectorAll('.vf-tuplet')).map(rect).sort((a, b) => a.left - b.left)
       return {
         overlaps: tuplets.slice(1).filter((t, i) => t.left < tuplets[i]!.right - 1).length,
         // each bar's last note ends inside its own stave
-        inside: groups.map((g) => Math.max(...[...g.querySelectorAll('.vf-stavenote')].map((n) => rect(n).right)) <= rect(g.querySelector('.vf-stave')!).right),
+        inside: groups.map((g) => Math.max(...Array.from(g.querySelectorAll('.vf-stavenote')).map((n) => rect(n).right)) <= rect(g.querySelector('.vf-stave')!).right),
       }
     })
     expect(d.overlaps).toBe(0)

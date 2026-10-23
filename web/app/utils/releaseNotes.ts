@@ -10,6 +10,7 @@ export const RELEASE_NOTES: readonly ReleaseNote[] = [
   {
     date: '2026-10-22',
     items: [
+      { text: 'Changes sheets with a triplet rhythm now print a sheet page to a letter page: a page holds one line fewer, as the triplet numbers stand over the beams. And a bar of the rhythm’s notes no longer runs past its barline: where a line can’t hold them, it breaks.' },
       { text: 'Rhythm for the Scales sheet. The Rhythm control (Intermediate interface) puts a slash rhythm card under each staff, one cycle long. Notes per bar (Intermediate interface; Whole notes, or 1 to 7 a bar, after Bergonzi) rewrites each scale as a run up and back in bars of that many notes, as tuplets where the number doesn’t divide the bar, or in the first notes of the Rhythm.', pr: 551 },
       { text: 'Rhythm for the Arpeggios sheet. The Rhythm pours each arpeggio into it, and its Grouping is 8ths in N, with accents (after Saindon).', pr: 551 },
       { text: 'Scale and chord pages drop Spell Scale (their staff is always spelled from the scale’s own root, written for your instrument) and the line of introduction under their title.' },

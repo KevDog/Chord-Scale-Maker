@@ -71,7 +71,7 @@
 import { SHEET_PAGED } from '~/utils/sheetPaged'
 import { PlusIcon, Square2StackIcon } from '@heroicons/vue/16/solid'
 import type { SheetChordEdit, SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
-import { type Approach, barKey, type RhythmId, type RhythmPath, type RhythmStart, breakLines, buildChanges, otherChords, changesLinesPerPage, type ChangesSet, type ChartDoc, type ChordAt, type ChordPreview, chunk, type GridPos, isArpeggioPattern, pageSubtitle, type OverlayPlan, type Part, type PentatonicPlan, type PickKind, type ScaleView, showHexatonics, showPentatonics, showQuartals, type ChangesLineChoice } from '@chord-scale-maker/engine'
+import { type Approach, barKey, type RhythmId, type RhythmPath, type RhythmStart, breakLines, buildChanges, otherChords, changesLinesPerPage, drawsTuplets, type ChangesSet, type ChartDoc, type ChordAt, type ChordPreview, chunk, type GridPos, isArpeggioPattern, pageSubtitle, type OverlayPlan, type Part, type PentatonicPlan, type PickKind, type ScaleView, showHexatonics, showPentatonics, showQuartals, type ChangesLineChoice } from '@chord-scale-maker/engine'
 
 /** the Changes sheet (docs/plan-changes.md): the chart as a study lead sheet, 4 bars a line (2 on phones), fewer where the chords' names don't fit */
 const { shows } = useInterface()
@@ -157,8 +157,8 @@ function onAlt(key: string, then: 'edit' | 'next' | 'prev' | 'close'): void {
 /** the plan counts: a path, the chord basis or a pick (the engine's post-pass rule) */
 const pentatonic = computed((): PentatonicPlan | null => (props.overlay?.kind === 'pentatonic' ? props.overlay : null))
 const counted = computed(() => !!pentatonic.value && (pentatonic.value.counts || pentatonic.value.basis === 'chord' || built.value.lines.some((l) => l.bars.some((b) => b.chords.some((c) => c.pentatonic?.picked)))))
-// 8 lines with slashes (a 32-bar AABA, one section a line pair); fewer with a guide tone or rhythm line, whose notes and labels are taller
-const linesPerPage = computed(() => changesLinesPerPage(line.value, { numerals: props.numerals, scales: props.scales, pentatonics: props.overlay?.kind === 'pentatonic', hexatonics: props.overlay?.kind === 'hexatonic', quartals: props.overlay?.kind === 'quartal' }, !!built.value.rhythmCaption, line.value !== 'off' && !!built.value.rhythmCaption))
+// 8 lines with slashes (a 32-bar AABA, one section a line pair); fewer with a guide tone or rhythm line, whose notes and labels are taller, and its tuplets (Task 3.2)
+const linesPerPage = computed(() => changesLinesPerPage(line.value, { numerals: props.numerals, scales: props.scales, pentatonics: props.overlay?.kind === 'pentatonic', hexatonics: props.overlay?.kind === 'hexatonic', quartals: props.overlay?.kind === 'quartal' }, !!built.value.rhythmCaption, line.value !== 'off' && !!built.value.rhythmCaption, drawsTuplets(built.value.lines)))
 const subtitleText = computed(() => [pageSubtitle(props.subtitle, props.instrumentLabel, 'Changes'), built.value.pentatonicCaption, built.value.rhythmCaption].filter(Boolean).join(' · '))
 const pages = computed(() =>
   chunk(

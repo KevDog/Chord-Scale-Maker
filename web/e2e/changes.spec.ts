@@ -771,9 +771,9 @@ test.describe('the tuplet pulses', () => {
       for (const line of all) {
         const d = await line.evaluate((svg) => {
           const rect = (e: Element) => e.getBoundingClientRect()
-          const staves = [...svg.querySelectorAll('.vf-stave')].map(rect)
-          const notes = [...svg.querySelectorAll('.vf-stavenote')].map(rect)
-          const tuplets = [...svg.querySelectorAll('.vf-tuplet')].map(rect).sort((a, b) => a.left - b.left)
+          const staves = Array.from(svg.querySelectorAll('.vf-stave')).map(rect)
+          const notes = Array.from(svg.querySelectorAll('.vf-stavenote')).map(rect)
+          const tuplets = Array.from(svg.querySelectorAll('.vf-tuplet')).map(rect).sort((a, b) => a.left - b.left)
           return {
             bars: staves.length,
             tuplets: tuplets.length,

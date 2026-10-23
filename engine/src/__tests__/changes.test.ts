@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { isRest } from '../chord'
 import { describe, expect, it, vi } from 'vitest'
-import { breakLines, buildChanges, type ChangesBar, type ChangesLine, type ChangesLineChoice, type ChangesSheet, changesLinesPerPage, changesSections, chordPositions, drawnChords, rowBarBeats, type PentatonicPlan, otherChords, type OverlayPlan, pickTargets, showHexatonics, showPentatonics, showQuartals, takesRhythm } from '../changes'
+import { breakLines, buildChanges, drawsTuplets, type ChangesBar, type ChangesLine, type ChangesLineChoice, type ChangesSheet, changesLinesPerPage, changesSections, chordPositions, drawnChords, rowBarBeats, type PentatonicPlan, otherChords, type OverlayPlan, pickTargets, showHexatonics, showPentatonics, showQuartals, takesRhythm } from '../changes'
 import { changesFor } from '../alternates'
 import { type ChartDoc, expandRowLines, parseChart } from '../chart'
 import { NO_PICKS, pickTarget, withPick } from '../chordPicks'
@@ -18,7 +18,7 @@ import type { ScaleView } from '../resolve'
 import { type PentatonicDegree, PENTATONIC_HOME, type PentatonicPathName, type PentatonicStep } from '../pentatonics'
 import { abbreviateScale } from '../scales'
 import { chunk, isSyncCopy } from '../util'
-import { layRhythm, type RhythmPath, rhythmNotes } from '../rhythm'
+import { layRhythm, type RhythmId, type RhythmPath, rhythmNotes } from '../rhythm'
 import { sectionLayout } from '../layout'
 import { stepUnits } from '../steps'
 
@@ -1374,6 +1374,25 @@ describe('the rhythm line and target beats (rhythm spec §8)', () => {
   it('counts a rhythm as a voiced line on a printed page', () => {
     expect(changesLinesPerPage('off', { numerals: true, scales: true }, true)).toBe(6)
     expect(changesLinesPerPage('off', { numerals: true, scales: true })).toBe(8)
+  })
+
+  // Task 3.2: the tuplets' numbers stand over the beams, the tallest rhythm line (measured on Autumn Leaves, trombone from B)
+  it('counts a rhythm line with tuplets one line fewer on a printed page; a poured Line already takes one fewer', () => {
+    expect(changesLinesPerPage('off', { numerals: true, scales: true }, true, false, true)).toBe(5)
+    expect(changesLinesPerPage('off', { numerals: false, scales: false }, true, false, true)).toBe(6)
+    expect(changesLinesPerPage('off', { numerals: true, scales: true }, true, false, false)).toBe(6)
+    expect(changesLinesPerPage('up-root', { numerals: true, scales: true }, true, true, true)).toBe(5)
+  })
+
+  it('tells a sheet whose rhythm draws tuplets, on its rhythm line or poured into a Line', () => {
+    const doc = parseChart('key: C\n\nsection: A\n1 | Dm7\n2 | G7\n3 | CMaj7\n4 | A7\n').value
+    const sheet = (rhythm: RhythmId, line: ChangesLineChoice = 'off') => buildChanges(doc, CONCERT, 4, false, line, undefined, null, 'none', { rhythm }).lines
+    expect(drawsTuplets(sheet('unit:8t:7:accents'))).toBe(true)
+    expect(drawsTuplets(sheet('unit:16s:7:accents'))).toBe(true)
+    expect(drawsTuplets(sheet('unit:8:7:accents'))).toBe(false)
+    expect(drawsTuplets(sheet('off'))).toBe(false)
+    expect(drawsTuplets(sheet('unit:8t:4:accents', 'up-root'))).toBe(true)
+    expect(drawsTuplets(sheet('unit:8:4:accents', 'up-root'))).toBe(false)
   })
 })
 

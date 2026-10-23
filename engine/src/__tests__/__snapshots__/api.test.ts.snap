@@ -193,6 +193,7 @@ exports[`exports the same names 1`] = `
   "dominantScaleTable",
   "drawnChords",
   "drawnLengths",
+  "drawsTuplets",
   "encodeShare",
   "enharmonics",
   "evenBar",
