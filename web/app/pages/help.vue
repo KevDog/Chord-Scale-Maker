@@ -294,6 +294,20 @@
                 names the path, and the path is kept with the chart in this browser and goes in a share link. Your rhythm…, Runs and Cards keep theirs.
               </dd>
             </div>
+            <div v-if="rhythmGearsOn">
+              <dt id="rhythm-gears" class="scroll-mt-6 font-semibold text-zinc-950 dark:text-white">Gears</dt>
+              <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
+                From the Everything interface, a unit or Your rhythm… on the Changes can change its pulse as the tune goes, after Jerry Bergonzi's
+                gears (<em>Inside Improvisation Vol. 4</em>, chs. 22–26): the same cells, played faster or slower. In
+                <strong class="font-semibold">Line options</strong>, <strong class="font-semibold">Gears</strong> is One (the rhythm's own pulse),
+                Up the gears (quarter-note triplets, 8ths, triplets, 16ths, sextuplets: Bergonzi's five), Down the gears (the same, from sextuplets)
+                or Your list… (pulses as Your rhythm… spells them, <UiCode>8 8t 16</UiCode>, separated by spaces). It takes the same
+                <strong class="font-semibold">Step</strong> as Groups, and with both on each keeps its own place in its list. Each step starts fresh, as
+                in mixed phrasing. The pulse's name in italics (<em>Triplets</em>) over a step's first note shows where it changes, after the circled
+                number when the grouping changes too. Contraction and expansion (ch. 26) is a gear path by 2 bars: Your list… <UiCode>8 8t 16</UiCode>,
+                Every 2 bars, say, squeezes the same unit into less time each step. Runs and Cards keep their pulse.
+              </dd>
+            </div>
             <div>
               <dt class="font-semibold text-zinc-950 dark:text-white">Runs</dt>
               <dd class="mt-1 text-zinc-600 dark:text-zinc-400">

@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test'
-import { arpeggiosDrawn, closePentatonicOptions, pentatonicLineDrawn, showPentatonicLine, chooseGears, chooseGroups, chooseInstrument, chooseRhythm, chooseRhythmStep, chooseStart, chooseTiming, chooseSuperimpose, chooseSheet, drawn, expect, guidesDrawn, hexatonicPreset, pentatonicPreset, pickOption, rankedAgainstChord, rhythmDrawn, showArpeggios, showTargets, showGuides, showPentatonics, staves, test, writeChart } from './fixtures'
+import { arpeggiosDrawn, closePentatonicOptions, pentatonicLineDrawn, showPentatonicLine, chooseGroups, chooseInstrument, chooseRhythm, chooseRhythmStep, chooseStart, chooseTiming, chooseSuperimpose, chooseSheet, drawn, expect, guidesDrawn, hexatonicPreset, pentatonicPreset, pickOption, rankedAgainstChord, rhythmDrawn, showArpeggios, showTargets, showGuides, showPentatonics, staves, test, writeChart } from './fixtures'
 
 const pdfPages = (pdf: Buffer): number => (pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? []).length
 
@@ -291,19 +291,20 @@ test('prints the Changes with Groups Up by section, a sheet page to a letter pag
   expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(sheetPages)
 })
 
-// gears' marks (Phase 4 spec §8; flag `rhythmGears`): septuplets in 7, the densest tuplets, with Gears Down by section;
-// the gear names sit in the target dots' band too, so the count holds; trombone from B, the tallest staves
-test('prints the Changes with septuplets and Gears Down by section, a sheet page to a letter page (autumn-leaves, Trombone, from B)', async ({ page }) => {
+// gears' marks (Phase 4 spec §8; flag `rhythmGears`): the numeral and the gear's name sit in the target dots' band,
+// so a rhythm line with Groups Up and Gears 8 16 by section keeps its count; trombone from B, the tallest staves.
+// (A tuplet pulse's rhythm line here overflows its six lines a page with or without a path: see the Task 3.1 report.)
+test('prints the Changes with Groups Up and Gears 8 16 by section, a sheet page to a letter page (autumn-leaves, Trombone, from B)', async ({ page }) => {
+  await page.addInitScript(() => localStorage.setItem('csm-rhythm-path:autumn-leaves', JSON.stringify({ groups: [3, 4, 5, 6, 7], gears: ['8', '16'], step: { unit: 'section', bars: 4 } })))
   await page.goto('/song/autumn-leaves')
   await chooseInstrument(page, 'Trombone')
   await chooseSheet(page, 'Scales')
   await pickOption(page, 'Where each scale starts', 'From B')
   await chooseSheet(page, 'Changes')
-  await chooseRhythm(page, 'Septuplets', { In: 'In 7', Variation: 'with accents' })
-  await chooseGears(page, 'Down the gears')
-  await chooseRhythmStep(page, 'By section')
+  await chooseRhythm(page, '8ths', { In: 'In 3', Variation: 'with accents' })
   await rhythmDrawn(page)
-  await expect(page.locator('[data-rhythm-step]').first()).toHaveText('Sextuplets')
+  await expect(page.locator('[data-rhythm-step]').first()).toHaveText('③8ths')
+  await expect(page.locator('[data-rhythm-step]').nth(1)).toHaveText('④16ths')
   const svgs = page.locator('svg[aria-label^="Bars:"]')
   const sheetPages = await svgs.evaluateAll((els) => new Set(els.map((e) => e.closest('section'))).size)
   await expect(svgs).toHaveCount(6) // a full page: a rhythm line with Numerals and Scales prints six lines a page

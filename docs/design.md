@@ -787,10 +787,13 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   first bar; the caption names the path. Paths act on units (Groups) and units or Your rhythm (Gears) on the Changes only.
 - **Web:** `useRhythmPath(key)` stores `csm-rhythm-path:<slug | mine:id>` (visit-only without a key, from a link's
   `rhythmPath`); removed when both lists are One; read off with the flag off. Line options adds Groups (One · Up · Down ·
-  Your list…) and Step at Everything (`CONTROL_TIERS['rhythm-gears']`); a path that acts raises the hidden-settings notice
-  under `rhythm-gears`, whose reset clears the chart's path. Drawing: a circled numeral (`data-rhythm-step`) over each
-  step's first note on the target dots' row (right of a dot there), and ", from bar N: in G" in the line's aria-label.
-  Print: the marks take no room; Autumn Leaves, trombone, 6 lines a page holds.
+  Your list…; units only), Gears (One · Up the gears · Down the gears · Your list… of `PULSES` spellings; units and Your
+  rhythm) and Step at Everything (`CONTROL_TIERS['rhythm-gears']`); a path that acts raises the hidden-settings notice
+  under `rhythm-gears`, whose reset clears the chart's path. Drawing: over each step's first note on the target dots'
+  row (right of a dot there), a circled numeral where the group changes, then the pulse's label in small italics where
+  the pulse changes (`data-rhythm-step`: the group and pulse), and ", from bar N: in G, pulse" in the line's aria-label.
+  Print: the marks take no room; Autumn Leaves, trombone, 6 lines a page holds (with a tuplet pulse it doesn't, path or
+  not: the tuplet numbers stand taller).
 
 ### Pentatonics on Changes ([spec](superpowers/specs/2026-10-13-pentatonic-ladders-design.md))
 
