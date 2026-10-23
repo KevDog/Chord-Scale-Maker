@@ -267,6 +267,20 @@
                 Where the time signature changes, the caption lists the bars.
               </dd>
             </div>
+            <div v-if="rhythmGearsOn">
+              <dt id="rhythm-tuplets" class="scroll-mt-6 font-semibold text-zinc-950 dark:text-white">Tuplet pulses</dt>
+              <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
+                From the Everything interface, Units also come at six tuplet pulses, after Ed Saindon's <em>Rhythmic Patterns</em> (ch. 10) and Jerry
+                Bergonzi's <em>Inside Improvisation Vol. 4</em> (ch. 24): quarter-note triplets (3 in the time of 2 beats), quarter-note quintuplets
+                (5 in 4 beats), 8th-note quintuplets (5 in 2 beats), 16th quintuplets (5 in a beat), sextuplets (6 in a beat) and septuplets (7 in a beat).
+                <strong class="font-semibold">Your rhythm…</strong> takes them too, as <UiCode>4t:</UiCode>, <UiCode>4q:</UiCode>, <UiCode>8q:</UiCode>,
+                <UiCode>16q:</UiCode>, <UiCode>16t:</UiCode> and <UiCode>16s:</UiCode>. Each bar draws its tuplets with their number over the bracket, and
+                a note held through whole tuplets merges into one plain note. A tuplet never crosses a barline, so a bar that doesn't hold a whole number
+                of its tuplets (2 beats each for quarter-note triplets and 8th-note quintuplets, 4 for quarter-note quintuplets) plays in plain quarters,
+                or plain 8ths for 8th-note quintuplets: a 3/4 bar under quarter-note triplets, say, or every bar of a 3/4 tune under quarter-note
+                quintuplets. The unit keeps counting through that bar.
+              </dd>
+            </div>
             <div>
               <dt class="font-semibold text-zinc-950 dark:text-white">Runs</dt>
               <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
@@ -688,6 +702,7 @@ const backupOn = useFeature('backup')
 const metronomeOn = useFeature('metronome')
 const rhythmOn = useFeature('rhythm')
 const rhythmSheetsOn = useFeature('rhythmSheets')
+const rhythmGearsOn = useFeature('rhythmGears')
 const SECTIONS = [
   { id: 'quick', title: 'The short version' },
   { id: 'sheets', title: 'The sheets' },
