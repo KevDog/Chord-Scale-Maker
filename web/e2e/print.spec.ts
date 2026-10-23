@@ -356,6 +356,29 @@ for (const [notes, instrument, pages] of [['Extended', 'Piano', 2], ['Extended',
     await expect(page.locator('svg[data-time-sig]')).toHaveCount(14)
     const sheetPages = await staves(page).evaluateAll((els) => new Set(els.map((e) => e.closest('section'))).size)
     expect(sheetPages).toBe(pages)
+    expect(await firstSheetStaves(page)).toBe(11) // a poured sheet prints 11 a page (§8's fallback)
+    await page.emulateMedia({ media: 'print' })
+    await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden()
+    expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(sheetPages)
+  })
+}
+
+/** how many staves the first sheet page holds */
+const firstSheetStaves = (page: Page): Promise<number> =>
+  staves(page).evaluateAll((els) => els.filter((e) => e.closest('section') === els[0]?.closest('section')).length)
+
+// Triad pairs, Arpeggiated, Up & down, in a rhythm (triplets in 4 with accents, the `unit:8t:4:accents` pour): a sheet page
+// to a letter page, 11 staves a page (carried from the rhythm-scales-arpeggios PR 3 review)
+for (const instrument of ['Piano', 'Trombone'] as const) {
+  test(`prints the Triad pairs, arpeggiated up & down in a rhythm, a sheet page to a letter page (autumn-leaves, ${instrument})`, async ({ page }) => {
+    await page.goto('/song/autumn-leaves')
+    await chooseSheet(page, 'Arpeggios')
+    await chooseInstrument(page, instrument)
+    await page.locator('label', { hasText: 'Triad pairs' }).click()
+    await pickOption(page, 'Arpeggio direction', 'Up & down')
+    await chooseRhythm(page, 'Triplets', { In: 'In 4', Variation: 'with accents' })
+    await expect(page.locator('svg[data-time-sig]')).toHaveCount(14)
+    const sheetPages = await staves(page).evaluateAll((els) => new Set(els.map((e) => e.closest('section'))).size)
     await page.emulateMedia({ media: 'print' })
     await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden()
     expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(sheetPages)
