@@ -830,8 +830,9 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
   // landings don't depend on forcing, so the caption reads the rhythm as laid
   const laid = line === 'off' || poured ? layRhythm(rhythm, lengths, breaks) : null
   const notes = laid && line === 'off' ? rhythmNotes(laid) : []
-  const caption = laid ? rhythmCaption(rhythm, laid, lengths) : null
+  const caption = laid ? rhythmCaption(rhythm, laid) : null
   const firstOf = counted.reduce<number[]>((acc, l) => [...acc, acc.at(-1)! + l.bars.length], [0]) // each line's first bar, counted over the sheet
+  // lines, then their bars: the rhythm's notes are laid over the whole sheet, so each bar finds its own by its line's first bar plus its place in the line
   const rhythmLines = counted.map((l, n): ChangesLine => ({
     ...l,
     bars: l.bars.map((b, j): ChangesBar => ({ ...b, rhythm: notes[firstOf[n]! + j] ?? [], targets: targets ? targetBeats(b.beats) : [] })),

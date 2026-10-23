@@ -3,7 +3,7 @@
  * Pure TypeScript; the notation (Task 5's notes, beams and brackets) reads these events.
  */
 import { rhythmLabel, rhythmOf, type RhythmId } from './library'
-import { PULSE_PER_BEAT, type Cell, type Pulse } from './rhythm'
+import { PULSE_PER_BEAT, range, type Cell, type Pulse } from './rhythm'
 
 /**
  * One note, rest or tied piece in a bar. `at` and `length` are in pulses from the bar's start; `statement` is the
@@ -35,35 +35,29 @@ export type Laid = Readonly<{
 /** A note (an attack and its following `_`) or one rest cell, in stream pulses. */
 type Segment = Readonly<{ start: number; length: number; rest: boolean; accent: boolean }>
 
-const range = (n: number): number[] => Array.from({ length: n }, (_, i) => i)
-
 /**
  * Cells to notes: a `_` holds the note before it, but sounds as an attack first on the sheet, after a rest, or at a
  * break (a pulse no tie crosses, as into a 2nd ending) (§2).
  */
 function segments(cells: readonly Cell[], breaks: ReadonlySet<number>): readonly Segment[] {
-  return cells.reduce<Segment[]>((out, c, i) => {
+  const out: Segment[] = [] // built in place: a spread per cell is quadratic over a long sheet
+  cells.forEach((c, i) => {
     const last = out.at(-1)
-    if (c === '.') return [...out, { start: i, length: 1, rest: true, accent: false }]
-    if (c === '_' && last && !last.rest && !breaks.has(i)) return [...out.slice(0, -1), { ...last, length: last.length + 1 }]
-    return [...out, { start: i, length: 1, rest: false, accent: c === '>x' }]
-  }, [])
+    if (c === '_' && last && !last.rest && !breaks.has(i)) out[out.length - 1] = { ...last, length: last.length + 1 }
+    else out.push({ start: i, length: 1, rest: c === '.', accent: c === '>x' })
+  })
+  return out
 }
 
 /** The cells with each forced pulse inside the sheet made an attack: `>x` stays accented, `.` and `_` become `x` (lines spec §3.2). */
 const forced = (cells: readonly Cell[], force: readonly number[]): readonly Cell[] =>
   cells.map((c, i): Cell => (force.includes(i) && (c === '.' || c === '_') ? 'x' : c))
 
+/** The drawn bars in pulses: each bar's length in beats and in pulses, its first pulse in the stream, and the total. */
+type Sheet = Readonly<{ beats: readonly number[]; lengths: readonly number[]; starts: readonly number[]; total: number }>
+
 /** A per-bar rhythm's cells over the sheet: each bar's own, then each run's attacks spilled past its barline (§3). */
-function perBarCells(
-  bar: (beats: number) => readonly Cell[],
-  n: number,
-  k: number,
-  beats: readonly number[],
-  lengths: readonly number[],
-  starts: readonly number[],
-  total: number,
-): readonly Cell[] {
+function perBarCells({ bar, n, k }: Readonly<{ bar: (beats: number) => readonly Cell[]; n: number; k: number }>, { beats, lengths, starts, total }: Sheet): readonly Cell[] {
   const cells: Cell[] = Array.from({ length: total }, (): Cell => '.')
   beats.forEach((b, i) => bar(b).forEach((c, p) => (cells[starts[i]! + p] = c)))
   // after every bar's own cells, so the spill merges with them; a bar too short to start its run has no spill
@@ -95,9 +89,9 @@ function barEvents(segs: readonly Segment[], start: number, length: number, stat
     })
     .reduce<RhythmEvent[]>((out, e) => {
       const last = out.at(-1)
-      return last?.rest && e.rest && last.statement === e.statement
-        ? [...out.slice(0, -1), { ...last, length: last.length + e.length }]
-        : [...out, e]
+      if (last?.rest && e.rest && last.statement === e.statement) out[out.length - 1] = { ...last, length: last.length + e.length }
+      else out.push(e)
+      return out
     }, [])
 }
 
@@ -113,8 +107,9 @@ export function layRhythm(id: RhythmId, bars: readonly number[], breaks: readonl
   const pulse = r.kind === 'repeat' ? r.rhythm.pulse : r.pulse
   const per = PULSE_PER_BEAT[pulse]
   const lengths = bars.map(b => b * per)
-  const starts = lengths.reduce<number[]>((acc, _, i) => [...acc, i === 0 ? 0 : acc[i - 1]! + lengths[i - 1]!], [])
-  const total = starts.at(-1)! + lengths.at(-1)!
+  let sum = 0
+  const starts = lengths.map(len => (sum += len) - len)
+  const total = sum
   const cut = new Set(breaks.map(b => starts[b]).filter((p): p is number => p !== undefined))
   if (r.kind === 'repeat') {
     // a repeating rhythm as one stream: the cells, statement after statement, over the total of the bars' pulses;
@@ -130,7 +125,7 @@ export function layRhythm(id: RhythmId, bars: readonly number[], breaks: readonl
       starts,
     }
   }
-  const segs = segments(forced(perBarCells(r.bar, r.n, r.k, bars, lengths, starts, total), force), cut)
+  const segs = segments(forced(perBarCells(r, { beats: bars, lengths, starts, total }), force), cut)
   return {
     pulse,
     kind: 'bar',
@@ -146,16 +141,14 @@ const gcd = (a: number, b: number): number => (b === 0 ? a : gcd(b, a % b))
 const MAX_LISTED = 6
 
 /** "Rhythm: <label> · <cycle>" for a repeating rhythm, "Rhythm: <label>" for a per-bar one (§4). */
-export function rhythmCaption(id: RhythmId, laid: Laid, bars: readonly number[]): string {
+export function rhythmCaption(id: RhythmId, laid: Laid): string {
   const caption = `Rhythm: ${rhythmLabel(id)}`
-  const r = rhythmOf(id)
-  if (!r || r.kind === 'bar') return caption
-  const { landings } = laid
+  if (laid.kind === 'bar') return caption
+  const { landings, unit } = laid
+  const pulses = laid.bars.map(events => events.reduce((n, e) => n + e.length, 0)) // each bar's length: its events fill it
   // bars of one length: the cycle, though a sheet shorter than it never gets there (#505)
-  if (bars.every(b => b === bars[0])) {
-    const unit = r.rhythm.cells.length
-    const bar = bars[0]! * PULSE_PER_BEAT[r.rhythm.pulse]
-    const n = unit / gcd(unit, bar)
+  if (pulses.every(p => p === pulses[0])) {
+    const n = unit / gcd(unit, pulses[0]!)
     return `${caption} · back on one every ${n === 1 ? 'bar' : `${n} bars`}`
   }
   if (landings.length === 1 && landings[0] === 0) return `${caption} · never back on one`

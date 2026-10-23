@@ -3,7 +3,7 @@ import { layRhythm, rhythmCaption } from '../rhythm/lay'
 import type { RhythmId } from '../rhythm/library'
 import { rhythmNotes } from '../rhythm/notation'
 
-const cap = (id: RhythmId, bars: number[]) => rhythmCaption(id, layRhythm(id, bars)!, bars)
+const cap = (id: RhythmId, bars: number[]) => rhythmCaption(id, layRhythm(id, bars)!)
 
 describe('layRhythm landings (§4)', () => {
   it('follows the landing table', () => {
@@ -118,6 +118,14 @@ describe('layRhythm events', () => {
     const r = layRhythm('custom:4:>x__', [2, 2])!
     expect(r.bars[0]![0]).toMatchObject({ accent: true, tie: true })
     expect(r.bars[1]![0]).toMatchObject({ tiedIn: true, accent: false })
+  })
+
+  it('ties a syncopated unit across a statement and a barline at once (#505)', () => {
+    // 8ths in 4, syncopated (_ x x x): the statement at pulse 8 starts with a hold of pulse 7, over the barline
+    const r = layRhythm('unit:8:4:syncopated', [4, 4])!
+    expect(r.bars[0]!.at(-1)).toMatchObject({ at: 7, length: 1, tie: true, statement: 1 })
+    expect(r.bars[1]![0]).toMatchObject({ at: 0, length: 1, tiedIn: true, accent: false, statement: 2 })
+    expect(r.bars[1]![1]).toMatchObject({ at: 1, tiedIn: false, statement: 2 })
   })
 
   it('gives a piece held into a bar the statement it belongs to', () => {
