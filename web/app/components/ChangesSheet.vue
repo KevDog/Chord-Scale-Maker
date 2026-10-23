@@ -19,8 +19,7 @@
             :key="l.index"
             :line="l.line"
             :first="l.index === 0"
-            :bars-per-line="lineBars"
-            :units="barsPerLine"
+            :bars-per-line="barsPerLine"
             :numerals="numerals"
             :scales="scales"
             :arpeggio="arpeggio"
@@ -55,7 +54,7 @@
             @dialog="(kind, section, bar) => emit('dialog', kind, section, bar)"
             @add-bar="emit('addBar', $event)"
             @overfull="breakAt"
-            @crowded="reflowAt"
+            @crowded="(at) => at.forEach(breakAt)"
             @alt="onAlt"
           />
         </div>
@@ -131,23 +130,13 @@ const line = computed((): ChangesLineChoice => props.line ?? 'off')
 /** an arpeggio, Pentatonic, Triad pair or Cells line: beamed cells, no label row; lineName: the latter three's, for the aria-label */
 const lineName = computed(() => (typeof line.value === 'object' ? ({ pentatonic: 'pentatonic', 'triad-pair': 'triad pair', quartal: 'quartal', cells: 'cells' } as const)[line.value.kind] : undefined))
 const arpeggio = computed(() => !!lineName.value || isArpeggioPattern(line.value))
-/**
- * the bars a line the sheet reflowed to because a line's notes didn't fit its bars (Task 3.2: sextuplets, septuplets),
- * the fewest any line asked for (ChangesSystem measures), until the sheet changes; null: barsPerLine. The whole sheet
- * reflows, so no line is left with a bar on its own and the lines line up; their drawings keep barsPerLine's width
- */
-const reflow = ref<number | null>(null)
-const lineBars = computed(() => Math.min(barsPerLine.value, reflow.value ?? barsPerLine.value))
-const sheetOf = (bars: number) => buildChanges(props.doc, props.part, bars, true, line.value, props.view, props.overlay ?? null, props.approach ?? 'none', { rhythm: props.rhythm ?? 'off', targets: props.targets ?? false, start: props.rhythmStart ?? 'beat', anticipate: props.anticipate ?? 0, restate: props.restate ?? false, rhythmPath: props.rhythmPath })
-const base = computed(() => sheetOf(barsPerLine.value))
-watch(base, () => (reflow.value = null))
-const built = computed(() => (lineBars.value < barsPerLine.value ? sheetOf(lineBars.value) : base.value))
-function reflowAt(bars: number): void {
-  if (bars < lineBars.value) reflow.value = bars
-}
+const built = computed(() => buildChanges(props.doc, props.part, barsPerLine.value, true, line.value, props.view, props.overlay ?? null, props.approach ?? 'none', { rhythm: props.rhythm ?? 'off', targets: props.targets ?? false, start: props.rhythmStart ?? 'beat', anticipate: props.anticipate ?? 0, restate: props.restate ?? false, rhythmPath: props.rhythmPath }))
 /** the other set's chords in each bar where they differ (#215), written for the part and spelled at the level as the main set's are */
 const others = computed(() => (props.otherDoc ? otherChords(built.value, buildChanges(props.otherDoc, props.part, barsPerLine.value, true, 'off', props.view)) : null))
-/** the bars that start a line because the names before them didn't fit (ChangesSystem measures): until the sheet changes */
+/**
+ * the bars that start a line because the names before them didn't fit, or the notes (Task 3.2: the line splits
+ * balanced, 2 2 not 3 1; ChangesSystem measures): until the sheet changes. Only the crowded lines split
+ */
 const breaks = shallowRef<ReadonlySet<string>>(new Set())
 watch(built, () => (breaks.value = new Set()))
 function breakAt(at: string): void {

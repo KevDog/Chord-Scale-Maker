@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import * as vf from 'vexflow/bravura'
 import type { ChangesBar, ChangesChord, ChangesLine, GuideNote, Letter, Pitched, RhythmCardModel, RhythmNote } from '@chord-scale-maker/engine'
-import { arpeggioAria, beamRuns, beatXs, bracketsCross, cardAria, cardFit, DURATIONS, fitBars, guideAria, mergeNames, restatedAccidental, rhythmAria, stepAria, stepNumeral, targetsAria, SLASH_TARGET_ROW, targetRow, tupletsOf, voicedBand, voltaShift, withTargets } from '~/utils/changesDrawing'
+import { arpeggioAria, balancedSplit, beamRuns, beatXs, bracketsCross, cardAria, cardFit, DURATIONS, evenChunks, fitBars, guideAria, mergeNames, restatedAccidental, rhythmAria, stepAria, stepNumeral, targetsAria, SLASH_TARGET_ROW, targetRow, tupletsOf, voicedBand, voltaShift, withTargets } from '~/utils/changesDrawing'
 
 const chord = (beat: number, text: string, guide: string): ChangesChord => ({
   beat,
@@ -177,7 +177,7 @@ describe('fitBars', () => {
     expect(fit.scales[1]).toEqual([1])
   })
   // a bar's notes' room (Task 3.2): sextuplet and septuplet 16ths overflowed their bars, so the next bar's notes and tuplets drew over theirs
-  it("widens a bar to its notes' room, and counts the leading bars whose notes fit (notes don't shrink as names do): where the sheet reflows", () => {
+  it("widens a bar to its notes' room, and counts the leading bars whose notes fit (notes don't shrink as names do): where the line splits", () => {
     const none = [[], [], [], []]
     const even = fitBars(FOUR, none)
     expect(fitBars(FOUR, none, [0, 0, 0, 0])).toEqual(even) // notes that fit: the line as before
@@ -187,6 +187,35 @@ describe('fitBars', () => {
     expect(fitBars(FOUR, none, [0.39, 0.39, 0.39, 0.39]).notes).toBe(2) // 1.17 of the line: names at 0.8 would keep 3
     expect(fitBars(FOUR, [[], [], null, null], [0.45, 0.45]).shares.map((s) => +s.toFixed(6))).toEqual([0.45, 0.45, 0.05, 0.05]) // a broken line's bars take the room past its end
     expect(fitBars(FOUR, [[at(0, 0.3)], [], [], []], [0.1, 0.1, 0.1, 0.1]).shares.map((s) => +s.toFixed(6))).toEqual(fitBars(FOUR, [[at(0, 0.3)], [], [], []]).shares.map((s) => +s.toFixed(6)))
+  })
+  // Task 3.2 final review: long names and 16ths each fit the line alone, but not together; a bar takes the wider of the two
+  it('counts names (shrunk as far as they go) and notes together: each fits alone, together the line splits', () => {
+    const names = [[at(0, 0.45)], [at(0, 0.45)], [], []]
+    const rooms = [0.1, 0.1, 0.4, 0.4]
+    expect(fitBars(FOUR, names).fits).toBe(4)
+    expect(fitBars(FOUR, [[], [], [], []], rooms).notes).toBe(4)
+    expect(fitBars(FOUR, names, rooms).notes).toBe(2) // 0.36 + 0.36 + 0.4 > 1
+    expect(fitBars(FOUR, names, [0, 0, 0, 0]).notes).toBe(4) // no rooms: the names alone break the line (fits)
+    // they fit with the names shrunk: the names give up room, the notes none (Stardust's Eb9 line ran past its barlines)
+    const shrunk = fitBars(FOUR, [[at(0, 0.35)], [], [], [at(0, 0.35)]], [0.2, 0.2, 0.2, 0.2])
+    expect(shrunk.notes).toBe(4)
+    expect(Math.min(...shrunk.shares.slice(1, 3))).toBeGreaterThanOrEqual(0.2 - 1e-9)
+    expect(shrunk.shares.reduce((a, b) => a + b, 0)).toBeCloseTo(1)
+  })
+})
+
+describe('balancedSplit (Task 3.2 final ruling)', () => {
+  const upTo = (n: number) => (_: number, size: number) => size <= n
+  it('splits a crowded line into the fewest even lines that fit, never a one-bar line beside a longer one but 2 1', () => {
+    expect(evenChunks(4, 3)).toEqual([2, 1, 1])
+    expect(evenChunks(7, 2)).toEqual([4, 3])
+    expect(balancedSplit(4, upTo(3))).toEqual([2, 2]) // not 3 1
+    expect(balancedSplit(4, upTo(2))).toEqual([2, 2])
+    expect(balancedSplit(4, upTo(1))).toEqual([1, 1, 1, 1])
+    expect(balancedSplit(4, (start, size) => size <= (start === 0 ? 1 : 3))).toEqual([1, 1, 1, 1]) // 2 2 doesn't fit; never 2 1 1
+    expect(balancedSplit(3, upTo(2))).toEqual([2, 1])
+    expect(balancedSplit(3, (start, size) => size <= (start === 0 ? 1 : 2))).toEqual([1, 1, 1])
+    expect(balancedSplit(2, upTo(1))).toEqual([1, 1])
   })
 })
 

@@ -749,7 +749,7 @@ test.describe('the tuplet pulses', () => {
   })
 
   // Task 3.2: a bar of 28 septuplet 16ths can't fit a quarter of a line (each note keeps its glyph's room), so it ran on
-  // under the next bar, its tuplets over that bar's; now a bar takes its notes' room and the whole sheet reflows: two bars a line, every line
+  // under the next bar, its tuplets over that bar's; now a bar takes its notes' room and each line splits, balanced: two bars a line, every line
   for (const [what, open] of [
     ['the rhythm line', async (page: Page) => {
       await page.addInitScript(() => localStorage.setItem('csm-rhythm', 'unit:16s:7:accents'))
@@ -805,38 +805,62 @@ test.describe('the tuplet pulses', () => {
       })
     })
 
-  // Task 3.2 fix round: straight 16ths keep four bars a line on every line, the first line's too (its clef, key and
-  // time signature take room), set close there, and no note reaches its barline (set close they clear it by 6 units,
-  // 5.5 px here). A phone's line is two bars, 600 units: the first line's two need 637 set close, so the whole sheet
-  // reflows to a bar a line. The slashes are Bravura's, sized by VexFlow's font metrics on every platform; 2 px margin
-  for (const [width, perLine] of [[1400, 4], [390, 1]] as const) {
-    test(`16ths in 4 at ${width} px: ${perLine} bars every line, each bar's notes clear of its barline`, async ({ page }) => {
-      await page.setViewportSize({ width, height: 900 })
-      await page.addInitScript(() => localStorage.setItem('csm-rhythm', 'unit:16:4:accents'))
-      await page.goto('/song/f-jazz-blues')
-      await rhythmDrawn(page)
-      const all = await lines(page).all()
-      expect(all.length).toBe(12 / perLine)
-      for (const line of all) {
-        const clear = await barClearances(line)
-        expect(clear).toHaveLength(perLine)
+  /** a song's sheet for an instrument and rhythm, once its crowded lines have split: each line's bar clearances */
+  const sheetLines = async (page: Page, song: string, instrument: string, rhythm: string): Promise<number[][]> => {
+    await page.addInitScript(([i, r]) => Object.entries({ 'csm-interface': 'everything', 'csm-instrument': i!, 'csm-rhythm': r! }).forEach(([k, v]) => localStorage.setItem(k, v)), [instrument, rhythm])
+    await page.goto(`/song/${song}`)
+    await rhythmDrawn(page)
+    let last = ''
+    await expect // a crowded line splits after it draws: until the lines stop changing
+      .poll(async () => {
+        const now = JSON.stringify(await lines(page).evaluateAll((svgs) => svgs.map((svg) => svg.querySelectorAll('.vf-stave').length)))
+        const same = now === last
+        last = now
+        return same
+      }, { intervals: [300] })
+      .toBe(true)
+    return Promise.all((await lines(page).all()).map(barClearances))
+  }
+
+  // Task 3.2 final ruling: a line whose notes can't fit splits on its own, balanced (2 2, never 3 1; on a phone 1 1),
+  // every other line keeps its bars. Straight 16ths set close keep four a line except where a key signature of two or
+  // more accidentals (or a long name) crowds the first line: Satin Doll for trumpet (E), Body and Soul for piano (Db).
+  // No note reaches its barline (set close they clear it by 6 units); the slashes are Bravura's, sized by VexFlow's
+  // font metrics on every platform, so 2 px is margin enough
+  for (const [song, instrument] of [['f-jazz-blues', 'piano'], ['satin-doll', 'trumpet'], ['body-and-soul', 'piano']] as const) {
+    for (const [width, perLine] of [[1400, 4], [390, 2]] as const) {
+      test(`16ths in 4, ${song} for ${instrument} at ${width} px: only crowded lines split, balanced, every note clear of its barline`, async ({ browser }) => {
+        const sheet = async (rhythm: string) => {
+          const page = await browser.newPage({ viewport: { width, height: 900 } })
+          const got = await sheetLines(page, song, instrument, rhythm)
+          await page.close()
+          return got
+        }
+        const eighths = await sheet('unit:8:4:accents')
+        const sixteenths = await sheet('unit:16:4:accents')
+        const bars = sixteenths.map((l) => l.length)
+        expect(bars.reduce((a, b) => a + b, 0)).toBe(eighths.reduce((a, l) => a + l.length, 0))
+        for (const c of sixteenths.flat()) expect(c).toBeGreaterThanOrEqual(2)
+        expect(sixteenths.length - eighths.length).toBeGreaterThanOrEqual(0)
+        expect(sixteenths.length - eighths.length).toBeLessThanOrEqual(2) // measured: +0 or +1 on desktop, +1 on a phone
+        expect(bars.filter((n) => n === perLine).length).toBeGreaterThanOrEqual(eighths.filter((l) => l.length === perLine).length - 1)
+        // balanced: no one-bar line beside a line of three or more
+        bars.slice(1).forEach((n, i) => expect(Math.min(n, bars[i]!) === 1 && Math.max(n, bars[i]!) >= 3).toBe(false))
+      })
+    }
+  }
+
+  // 16th quintuplets in 7: 20 notes a bar don't fit four a line; each line splits 2 2, so no bar is left on a line of
+  // its own (whole-sheet reflow to three left Autumn Leaves 3 3 … 2 1 and Stardust's 4-bar sections 3 1)
+  for (const song of ['autumn-leaves', 'stardust']) {
+    test(`16th quintuplets in 7 on ${song}: no one-bar line, each bar clear of its barline`, async ({ page }) => {
+      const all = await sheetLines(page, song, 'piano', 'unit:16q:7:accents')
+      for (const clear of all) {
+        expect(clear.length).toBeGreaterThanOrEqual(2)
         for (const c of clear) expect(c).toBeGreaterThanOrEqual(2)
       }
     })
   }
-
-  // 16th quintuplets in 7: 20 notes a bar fit three bars a line, so the whole sheet reflows to three, no bar left on a line of its own
-  test('16th quintuplets in 7: three bars every line, each bar clear of its barline', async ({ page }) => {
-    await page.addInitScript(() => localStorage.setItem('csm-rhythm', 'unit:16q:7:accents'))
-    await page.goto('/song/f-jazz-blues')
-    await rhythmDrawn(page)
-    await expect(lines(page)).toHaveCount(4)
-    for (const line of await lines(page).all()) {
-      const clear = await barClearances(line)
-      expect(clear).toHaveLength(3)
-      for (const c of clear) expect(c).toBeGreaterThanOrEqual(2)
-    }
-  })
 })
 
 // mixed phrasing (Phase 4 spec §3, §6, §7; flag `rhythmGears`): Groups Up by section on an AABA chart, 4 bars a line

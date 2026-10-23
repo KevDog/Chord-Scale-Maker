@@ -25,19 +25,18 @@ export const INK = { fillStyle: 'currentColor', strokeStyle: 'currentColor' } //
 
 /**
  * per bar, each beat's x (its slash's or note head's centre) and its right edge, as fractions of the width; each chord
- * name's scale; how many of the leading bars fit the line (fitBars): fewer than the line's, it should break there; how
- * many of them hold their notes (notes, Task 3.2): fewer than the line's, the sheet should reflow at that many a line; and
- * the target dots' row (rhythm spec §7) as a fraction of the drawing's height from its top (null: no target beats)
+ * name's scale; how many of the leading bars fit the line (fitBars): fewer than the line's, it should break there; where
+ * its notes can't all fit (Task 3.2), the balanced lines it should split into, their bars a line (split: null where they
+ * fit); and the target dots' row (rhythm spec §7) as a fraction of the drawing's height from its top (null: no target beats)
  */
-export type ChangesLayout = Readonly<{ xs: readonly (readonly number[])[]; ends: readonly number[]; scales: readonly (readonly number[])[]; fits: number; notes: number; dots: number | null }>
+export type ChangesLayout = Readonly<{ xs: readonly (readonly number[])[]; ends: readonly number[]; scales: readonly (readonly number[])[]; fits: number; split: readonly number[] | null; dots: number | null }>
 
 type Clef = 'treble' | 'bass'
 /** names: each bar's chords, their widths as fractions of the line, to widen the bars they crowd (fitBars) */
 /** first: the sheet's first line, which starts with the clef */
 /** rhythmCaption: the sheet's rhythm caption, for the aria-label of a line with a rhythm (rhythm spec §8) */
 /** fromBar: the line's first bar, counted from the sheet's first (1), for the step marks' aria-label (Phase 4 spec §6) */
-/** units: the line's drawing width in bars (BAR_UNITS each; barsPerLine when not given): a sheet reflowed to fewer bars a line (notes that don't fit, Task 3.2) keeps its lines' size */
-type Opts = Readonly<{ first: boolean; barsPerLine: number; units?: number; clef?: Clef; names?: readonly (readonly NamedBeat[])[]; arpeggio?: boolean; lineName?: string; rhythmCaption?: string | null; fromBar?: number }>
+type Opts = Readonly<{ first: boolean; barsPerLine: number; clef?: Clef; names?: readonly (readonly NamedBeat[])[]; arpeggio?: boolean; lineName?: string; rhythmCaption?: string | null; fromBar?: number }>
 type Band = Readonly<{ top: number; bottom: number }>
 type Beam = InstanceType<VexFlowModule['Beam']>
 type Stave = InstanceType<VexFlowModule['Stave']>
@@ -113,7 +112,8 @@ const DEFAULT_BEATS = 4
  * even; a crowded bar takes what its names need and the others share the rest; a line that can't fit them all is
  * shared by need, and the names that still don't fit shrink. A slot past the line's last bar (null) gives up its room.
  * rooms: each bar's notes' least share of the line (notesFit), which a bar takes as its names'; notes don't shrink,
- * so `notes` counts the leading bars whose rooms fit the line whole (all of them when they fit), where the sheet reflows
+ * so `notes` counts the leading bars whose names (shrunk as far as they go) or notes, the wider, fit the line (all of
+ * them where no bar has a room), where the line splits (balancedSplit)
  */
 export function fitBars(barBeats: readonly number[], bars: readonly (readonly NamedBeat[] | null)[], rooms: readonly number[] = []): BarFit {
   const floor = FLOOR / bars.length
@@ -123,8 +123,21 @@ export function fitBars(barBeats: readonly number[], bars: readonly (readonly Na
     const s = spans(beats, chords)
     return Math.max(floor, ...chords.map((c, i) => (c.width * beats) / (s[i] ?? beats)))
   })
-  const needs = named.map((n, b) => (bars[b] ? Math.max(n, rooms[b] ?? 0) : 0))
-  const total = needs.reduce((a, b) => a + b, 0)
+  // names shrink (to BREAK_SCALE) before notes give up their room: where both don't fit whole, the names' needs scale down
+  const needsAt = (scale: number): number[] => named.map((n, b) => (bars[b] ? Math.max(n * scale, rooms[b] ?? 0) : 0))
+  const sum = (xs: readonly number[]): number => xs.reduce((a, b) => a + b, 0)
+  let scale = 1
+  if (rooms.some((r) => r > 0) && sum(needsAt(1)) > 1) {
+    let [lo, hi] = [BREAK_SCALE, 1]
+    for (let i = 0; i < 30; i++) {
+      const mid = (lo + hi) / 2
+      if (sum(needsAt(mid)) > 1) hi = mid
+      else lo = mid
+    }
+    scale = lo
+  }
+  const needs = needsAt(scale)
+  const total = sum(needs)
   const shares = total >= 1 ? needs.map((n) => n / total) : waterFill(needs)
   const scales = bars.map((chords, b) => {
     if (!chords) return []
@@ -134,8 +147,10 @@ export function fitBars(barBeats: readonly number[], bars: readonly (readonly Na
   })
   const present = bars.filter((b) => b !== null).length
   const sums = named.map((_, b) => named.slice(0, b + 1).reduce((a, n) => a + n, 0)) // where the names alone break the line
-  const roomed = rooms.map((_, b) => rooms.slice(0, b + 1).reduce((a, n) => a + n, 0)).filter((n) => n <= 1 + 1e-9).length
-  return { shares, scales, fits: Math.max(1, Math.min(present, sums.filter((n) => n * BREAK_SCALE <= 1 + 1e-9).length)), notes: Math.max(1, Math.min(present, rooms.length ? roomed : present)) }
+  const both = named.map((n, b) => Math.max(n * BREAK_SCALE, rooms[b] ?? 0))
+  const roomed = both.map((_, b) => both.slice(0, b + 1).reduce((a, n) => a + n, 0)).filter((n) => n <= 1 + 1e-9).length
+  const notes = rooms.some((r) => r > 0) ? roomed : present
+  return { shares, scales, fits: Math.max(1, Math.min(present, sums.filter((n) => n * BREAK_SCALE <= 1 + 1e-9).length)), notes: Math.max(1, Math.min(present, notes)) }
 }
 
 /** each bar at least its need, the rest at one level, summing to 1 (the needs sum to less) */
@@ -239,7 +254,7 @@ type Geometry = Readonly<{ clef: Clef | undefined; total: number; widths: readon
 function geometry(vf: VexFlowModule, line: ChangesLine, opts: Opts, rooms: readonly number[] = []): Geometry {
   const clef = lineClef(opts)
   const leads = line.bars.map((bar, b) => (b === 0 && clef ? signatureLead(vf, clef, bar.keySig) : 0) + (bar.timeSignature ? TIME_SPACE : 0))
-  const total = BAR_UNITS * (opts.units ?? opts.barsPerLine)
+  const total = BAR_UNITS * opts.barsPerLine
   const area = total - 1 - leads.reduce((a, l) => a + l, 0)
   const slots = Array.from({ length: opts.barsPerLine }, (_, b) =>
     b < line.bars.length ? (opts.names?.[b] ?? []).map((c) => ({ beat: c.beat, width: (c.width * total) / area })) : null,
@@ -255,9 +270,9 @@ const lineClef = (opts: Opts): Clef | undefined => (opts.first ? opts.clef : und
 /**
  * each bar's room (notesFit) on its own stave at the width the names give it, the line's first with its signatures
  * (Task 3.2): all 0 where every bar's notes fit, else each the width its notes need set close, which geometry
- * widens the bar to and the sheet reflows by
+ * widens the bar to and the line splits by (balancedSplit)
  */
-function lineRooms(vf: VexFlowModule, line: ChangesLine, opts: Opts, notes: (bar: ChangesBar, b: number, stave: Stave) => Voice): number[] {
+function lineRooms(vf: VexFlowModule, line: ChangesLine, opts: Opts, notes: NotesOf): number[] {
   const { widths } = geometry(vf, line, opts)
   const fits = line.bars.map((bar, b) => {
     const stave = staveFor(vf, bar, b === 0, 0, widths[b] ?? BAR_UNITS, lineClef(opts))
@@ -266,6 +281,40 @@ function lineRooms(vf: VexFlowModule, line: ChangesLine, opts: Opts, notes: (bar
   // every bar fits at VexFlow's spacing: no rooms, the line as before; else every bar its notes' need, set close, so
   // none of them gives up the room it measured fitting in
   return fits.some((f) => f.tight) ? fits.map((f) => f.need) : fits.map(() => 0)
+}
+
+/** a bar's notes, built on its stave (b: its index in the line), for notesFit */
+type NotesOf = (bar: ChangesBar, b: number, stave: Stave) => Voice
+
+/**
+ * n bars in k lines as even as they go, the longer first: 4 in 3 → 2 1 1
+ */
+export function evenChunks(n: number, k: number): number[] {
+  return Array.from({ length: k }, (_, i) => Math.floor(n / k) + (i < n % k ? 1 : 0))
+}
+
+/**
+ * the lines a line whose notes can't all fit splits into (Task 3.2 final ruling), their bars each: the fewest even
+ * lines that each fit (fits: from bar `start`, `size` bars), never a one-bar line beside a longer one but 2 1 (4: 2 2,
+ * else 1 1 1 1; 3: 2 1, else 1 1 1); one bar a line where nothing else fits
+ */
+export function balancedSplit(n: number, fits: (start: number, size: number) => boolean): number[] {
+  for (let k = 2; k < n; k++) {
+    const chunks = evenChunks(n, k)
+    if (chunks.includes(1) && k > 2) continue
+    const starts = chunks.map((_, i) => chunks.slice(0, i).reduce((a, c) => a + c, 0))
+    if (chunks.every((c, i) => fits(starts[i] ?? 0, c))) return chunks
+  }
+  return Array.from({ length: n }, () => 1)
+}
+
+/** a crowded line's balanced split (balancedSplit), each part measured as the line it becomes: the sheet's first keeps the clef */
+function crowdedSplit(vf: VexFlowModule, line: ChangesLine, opts: Opts, notes: NotesOf): number[] {
+  return balancedSplit(line.bars.length, (start, size) => {
+    const part: ChangesLine = { ...line, bars: line.bars.slice(start, start + size) }
+    const o: Opts = { ...opts, first: opts.first && start === 0, ...(opts.names ? { names: opts.names.slice(start, start + size) } : {}) }
+    return geometry(vf, part, o, lineRooms(vf, part, o, notes)).notes >= size
+  })
 }
 
 /** each bar's right edge as a fraction of the line */
@@ -368,7 +417,7 @@ function tickFor(vf: VexFlowModule, n: GuideNote, clef: Clef, restate: string | 
 export function drawChangesLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, opts: Opts): ChangesLayout {
   if (line.bars.some((b) => b.voice.length)) return drawGuideLine(vf, el, line, opts)
   if (line.bars.some((b) => b.rhythm.length)) return drawRhythmLine(vf, el, line, opts)
-  const { clef, total, widths, scales, fits, notes } = geometry(vf, line, opts)
+  const { clef, total, widths, scales, fits } = geometry(vf, line, opts)
   const ctx = svgContext(vf, el, total)
   const xs: number[][] = []
   let x = 0
@@ -387,7 +436,7 @@ export function drawChangesLine(vf: VexFlowModule, el: HTMLElement, line: Change
   const plain = clef ? CLEF_BAND : BAND
   const { band, at } = withTargets(line.bars.some((b) => b.volta) ? { top: VOLTA_BAND.top, bottom: plain.bottom } : plain, hasTargets(line) ? SLASH_TARGET_ROW : null)
   fitSvg(el, band, total, barsLabel(line) + targetsAria(line))
-  return { xs, ends: endsOf(widths, total), scales, fits, notes, dots: at }
+  return { xs, ends: endsOf(widths, total), scales, fits, split: null, dots: at }
 }
 
 type Laid = Readonly<{
@@ -448,8 +497,10 @@ function drawGuideLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, op
   const noteClef: Clef = opts.clef ?? 'treble'
   // a poured rhythm's bars take their notes' room (Task 3.2): sextuplets and septuplets need more than a bar's share
   const pouredLine = line.bars.some((b) => b.voice.some((n) => n.mark))
-  const rooms = pouredLine ? lineRooms(vf, line, opts, (bar, b, stave) => guideVoices(vf, bar, b === 0, stave, noteClef, !!opts.arpeggio).all[0]!) : []
+  const notesOf: NotesOf = (bar, b, stave) => guideVoices(vf, bar, b === 0, stave, noteClef, !!opts.arpeggio).all[0]!
+  const rooms = pouredLine ? lineRooms(vf, line, opts, notesOf) : []
   const { clef, total, widths, scales, fits, notes } = geometry(vf, line, opts, rooms)
+  const split = notes < line.bars.length ? crowdedSplit(vf, line, opts, notesOf) : null
   const ctx = svgContext(vf, el, total)
 
   // pass 1: every bar's stave and notes, formatted (not drawn), so the stem tips are known
@@ -512,7 +563,7 @@ function drawGuideLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, op
   const poured = line.bars.some((b) => b.voice.some((n) => n.mark))
   if (marks !== null) drawStepMarks(ctx, laid, stepRow(marks, band.top), row === null ? null : xs.map((bar) => bar.map((x) => x * total)))
   fitSvg(el, band, total, barsLabel(line) + (opts.arpeggio ? arpeggioAria(line, opts.lineName) : guideAria(line)) + (poured ? rhythmAria(opts.rhythmCaption ?? null) + stepAria(line, opts.fromBar ?? 1) : '') + targetsAria(line))
-  return { xs, ends: endsOf(widths, total), scales, fits, notes, dots: at }
+  return { xs, ends: endsOf(widths, total), scales, fits, split, dots: at }
 }
 
 const ACCENT_RISE = 12 // an accent over a stem tip
@@ -705,8 +756,10 @@ function rhythmVoices(vf: VexFlowModule, rhythm: readonly RhythmNote[], beats: n
  */
 function drawRhythmLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, opts: Opts): ChangesLayout {
   const noteClef: Clef = opts.clef ?? 'treble'
-  const rooms = lineRooms(vf, line, opts, (bar, _, stave) => rhythmVoices(vf, bar.rhythm, bar.beats, stave, noteClef).all[0]!)
+  const notesOf: NotesOf = (bar, _, stave) => rhythmVoices(vf, bar.rhythm, bar.beats, stave, noteClef).all[0]!
+  const rooms = lineRooms(vf, line, opts, notesOf)
   const { clef, total, widths, scales, fits, notes } = geometry(vf, line, opts, rooms)
+  const split = notes < line.bars.length ? crowdedSplit(vf, line, opts, notesOf) : null
   const ctx = svgContext(vf, el, total)
 
   // pass 1: every bar's stave and notes, formatted (not drawn), so the stem tips are known
@@ -757,7 +810,7 @@ function drawRhythmLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, o
   const { band, at } = withTargets(voicedBand([...heads, ...tips, ...(hasBracket ? [under] : [])], bracket === null ? null : bracket + shift), row)
   if (marks !== null) drawStepMarks(ctx, laid, stepRow(marks, band.top), row === null ? null : xs.map((bar) => bar.map((x) => x * total)))
   fitSvg(el, band, total, barsLabel(line) + rhythmAria(opts.rhythmCaption ?? null) + stepAria(line, opts.fromBar ?? 1) + targetsAria(line))
-  return { xs, ends: endsOf(widths, total), scales, fits, notes, dots: at }
+  return { xs, ends: endsOf(widths, total), scales, fits, split, dots: at }
 }
 
 /** the rhythm card's aria-label (rhythm-scales-arpeggios spec §1): the rhythm, its bars, and ", continues" when cut */

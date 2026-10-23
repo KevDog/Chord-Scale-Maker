@@ -759,11 +759,14 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   28 16ths overflow a quarter of the line). Where a line's notes overrun at VexFlow's spacing they are set close
   (`formatVoices` tight: the 12 units VexFlow leaves before a bar's first note, `Stave.padding`, shrink to 4, and the
   last glyph clears the barline by 6), and every bar takes its notes' need (`fitBars` rooms); a line whose notes fit
-  lays out as before. Straight 16ths in 4/4 keep four bars a line this way, the first line's too. Where they can't all
-  fit, the whole sheet reflows (`ChangesSystem` emits `crowded`, `ChangesSheet` redraws at the largest bars a line that
-  fits every line, the bars' units staying the full line's): no line is left with one bar. Sextuplets and septuplets
-  in 4/4 draw two bars a line, 16th quintuplets in 7 three, straight 16ths on a phone (two bars, 600 units; the first
-  line's need 637) one. Where two tuplet brackets would still cross, a beamed tuplet draws its number alone
+  lays out as before; names shrink (to `BREAK_SCALE`) before notes give up room. Where a line's notes still can't all
+  fit, that line alone splits, balanced (`balancedSplit`: the fewest even lines that each fit, measured as the lines
+  they become; 4 → 2 2, else 1 1 1 1; 3 → 2 1, else 1 1 1; never 3 1): `ChangesSystem` emits `crowded` with the bars
+  that start the new lines and `ChangesSheet` adds them to its `breaks`, as for names. Straight 16ths in 4/4 keep four
+  bars a line except a first line whose clef and key signature (two or more accidentals) crowd it, which splits 2 2
+  (Stardust, Body and Soul, Satin Doll for trumpet: one line more than 8ths); on a phone (two bars, 600 units; a
+  first line's need about 637) that line splits 1 1. Sextuplets, septuplets and 16th quintuplets in 4/4 or 7 split
+  every line 2 2. Where two tuplet brackets would still cross, a beamed tuplet draws its number alone
   (`unbracketCrowded`). The Scales card widens such bars too and shows the ones that fit, then "…" (`cardFit`).
 - **UI:** the Rhythm controls are inside the Line's options (`PreviewControls.vue`): a listbox reading "Rhythm: <family>"
   (Off, Units by pulse, Runs, Cards, "Your rhythm…"), then In and Variation for a unit, Attacks and From for a run, or a text
@@ -1027,7 +1030,8 @@ paper and its focus-mode pages, the rail, the More menu, the header, the library
     a rhythm poured into a Line, one fewer. `print.spec.ts` prints the tallest
     case (one line, numerals, scales, an ending and a bass part, guide tones or 7th chords) a sheet page to a letter page.
   - The chord row and spacing are shorter in print; lines with a clef or guide tones close up (`print:space-y-0`).
-  - Print always uses 4 bars a line, fewer on every line where a bar's notes need more room (sextuplets, septuplets).
+  - Print always uses 4 bars a line; a line whose notes need more room splits 2 2 (sextuplets, septuplets), and pages
+    count the lines drawn.
   - Lines never split across pages.
 - **Saving a PDF:** users choose "Save as PDF" in the browser's print dialog. There is no server-side PDF.
 
