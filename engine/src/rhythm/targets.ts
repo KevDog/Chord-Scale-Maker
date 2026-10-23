@@ -1,5 +1,6 @@
 import type { GuideNote } from '../guideTones'
 import { pcOf } from '../pitch'
+import { EPS } from './pour'
 
 /** Target beats (rhythm spec §7, after Galper): the strong beats of a bar, counting beats from 0. */
 
@@ -15,7 +16,7 @@ export function targetBeats(beats: number): readonly number[] {
  */
 export function markTargets(voice: readonly GuideNote[], targets: readonly number[], tonesAt: (beat: number) => readonly number[] | null): GuideNote[] {
   return voice.map((n) => {
-    if (!n.pitch || n.tiedIn || !targets.includes(n.beat)) return n
+    if (!n.pitch || n.tiedIn || !targets.some((t) => Math.abs(t - n.beat) < EPS)) return n
     const tones = tonesAt(n.beat)
     if (!tones) return n
     return { ...n, target: tones.includes(pcOf(n.pitch)) ? 'tone' : 'other' }

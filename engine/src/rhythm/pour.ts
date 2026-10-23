@@ -33,7 +33,8 @@ export type RhythmPlan = Readonly<{
   breaks: readonly number[]
 }>
 
-const EPS = 1e-9
+/** the tolerance for comparing beats, which under triplets are inexact floats */
+export const EPS = 1e-9
 
 /**
  * Each chord's boundary in sheet beats (§2): `at − anticipate`, except the first chord's and a chord starting a
