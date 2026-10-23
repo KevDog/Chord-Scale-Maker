@@ -1,6 +1,6 @@
 <template>
-  <div class="grid grid-cols-[8rem_1fr] items-center gap-3 break-inside-avoid print:grid-cols-[8.5rem_1fr]">
-    <div class="text-right leading-tight">
+  <div :class="stacked ? 'space-y-2' : 'grid grid-cols-[8rem_1fr] items-center gap-3 break-inside-avoid print:grid-cols-[8.5rem_1fr]'">
+    <div :class="['leading-tight', !stacked && 'text-right']">
       <div v-if="staff.scale" class="text-base font-semibold"><NoteName :note="staff.scale.root" /> {{ staff.scale.name }}</div>
       <div class="text-sm text-zinc-500 dark:text-zinc-400 print:text-neutral-600">
         <template v-for="(tokens, i) in staff.chords" :key="i"><template v-if="i"><span class="sr-only">,</span><span aria-hidden="true"> · </span></template><ChordSymbol v-if="tokens" :tokens="tokens" /><span v-else>—</span></template>
@@ -50,7 +50,8 @@ import { choiceId, hexChoiceRows, pickFooter, pickHeader } from '~/utils/chordPi
 import type { ChoiceRow } from './ChordPickPopover.vue'
 
 /** intervals: label each note against the chord root (b9, #11…); part and pickable: the caption picks for every bar it covers (#303); quartal: the Quartal preset is on, so its caption shows (#432) */
-const props = defineProps<{ staff: StaffModel; clef: 'treble' | 'bass'; intervals?: boolean; part?: Part; pickable?: boolean; quartal?: boolean }>()
+/** stacked: its label above it, the staff across the full width and drawn larger (a reference page's one staff, #498) */
+const props = defineProps<{ staff: StaffModel; clef: 'treble' | 'bass'; intervals?: boolean; part?: Part; pickable?: boolean; quartal?: boolean; stacked?: boolean }>()
 const emit = defineEmits<{ pick: [kind: PickKind, positions: readonly ChordAt[], value: number | readonly [number, number] | null] }>()
 
 const kind = computed((): PickKind | null => (props.staff.pentatonic ? 'pentatonic' : props.staff.second ? 'hexatonic' : null))
@@ -86,6 +87,8 @@ function choose(id: string): void {
 }
 const el = useTemplateRef<HTMLDivElement>('el')
 const drawError = ref<string | null>(null)
+/** a stacked staff's drawing width: about two-thirds of a sheet staff's, so it draws half as large again */
+const STACKED_WIDTH = 440
 const xs = ref<number[]>([])
 const rendering = useRendering()
 
@@ -95,7 +98,7 @@ async function draw(): Promise<void> {
   try {
     const vf = await loadVexFlow()
     if (!el.value) return // still showing a previous draw error; keep it
-    xs.value = drawStaff(vf, el.value, props.staff, props.clef)
+    xs.value = drawStaff(vf, el.value, props.staff, props.clef, props.stacked ? STACKED_WIDTH : undefined)
     drawError.value = null
   } catch (e) {
     drawError.value = `Couldn't draw this staff (${e instanceof Error ? e.message : String(e)})`

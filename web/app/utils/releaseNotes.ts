@@ -10,6 +10,7 @@ export const RELEASE_NOTES: readonly ReleaseNote[] = [
   {
     date: '2026-10-22',
     items: [
+      { text: 'Chord pages: Chords, in the menu bar beside Scales, has a page for every chord quality with its notes and formula, a staff of its default scale for your instrument with the chord tones lit, the scales that play over it (each linked to its page), and the library tunes that use it. A scale’s Plays over chords link to them, and so does About this chord in a chord’s scale menu and in a phone’s chord editor. A scale page’s staff draws larger, across the full width.' },
       { text: 'Charts can now be in 7/4: write time: 7/4 in the heading, or choose Bar in 7/4 from the bar menu for a single bar.', pr: 487 },
       { text: 'A click to practise with: Click (the note icon, beside Print) puts a metronome at the foot of a song’s page, at a tempo and feel from the chart’s style. Feel plays Swing (the skip note), Straight (even eighths) or Quarters. Tap sets the tempo, Space starts and stops it, and its settings add a count-in, a hat on 2 and 4, and a wood or beep sound. Its chevron folds it to one row while it plays, and it comes into focus mode, still playing.', pr: 497 },
       { text: 'Edit alternate changes on the sheet: while editing, a small line above the bars takes each bar’s alternate (+ alt, then type; Tab for the next bar), and with Changes set to Alternate the big chords are the alternate set. A chart with alternates no longer forces its Source open.', pr: 490 },

@@ -13,6 +13,7 @@
             <UiInput v-model="draft" :invalid="!!error" autocomplete="off" autocapitalize="off" spellcheck="false" @keydown.enter.prevent="apply" @change="apply" />
             <UiErrorMessage v-if="error">{{ error }}</UiErrorMessage>
           </UiField>
+          <p v-if="about" class="text-sm/6"><UiTextLink :href="about">About this chord</UiTextLink></p>
           <UiText v-if="repeatOf" role="note" class="text-sm/6!">{{ target?.section }} repeats {{ repeatOf }}: a change here changes {{ repeatOf }} and every repeat of it.</UiText>
           <p v-if="row && !known" role="note" class="rounded-lg bg-amber-500/10 p-3 text-sm/6 text-amber-800 dark:text-amber-400">
             “{{ row.chord }}” isn’t a chord I know. Check the spelling (Cm7, F7♯9 is F7#9, B♭maj7 is Bbmaj7), or pick a scale for it below.
@@ -31,6 +32,7 @@
 import { Dialog as HDialog, DialogPanel as HDialogPanel, DialogTitle as HDialogTitle } from '@headlessui/vue'
 import { cellError, type ChangesSet, type ChartDoc, lineSections, type RowLine, setLineChordIn } from '@chord-scale-maker/engine'
 import ChordChoices from './ChordChoices.vue'
+import { chordPath } from '~/utils/chordPage'
 import { CANT_TAKE, noChords, notAChord } from '~/utils/refusals'
 import type { SheetChordEdit } from '~/utils/sheetChordEdit'
 
@@ -54,6 +56,7 @@ const repeatOf = computed(() => {
   return row.value && props.target && written && written !== props.target.section ? written : ''
 })
 const known = computed(() => scaleChoices(row.value?.chord ?? '').known)
+const about = computed(() => (row.value ? chordPath(row.value.chord) : null))
 
 const draft = ref('')
 const refused = ref('')

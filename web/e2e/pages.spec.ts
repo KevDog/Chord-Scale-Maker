@@ -139,7 +139,7 @@ test('on a phone, the menu lists every page flat', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 800 })
   await page.goto('/')
   await page.getByRole('button', { name: 'Open navigation' }).click()
-  await expect(page.getByRole('dialog').getByRole('link')).toHaveText(['Library', 'Scales', 'Composers', 'How it works', 'How it decides', 'Functions', 'About', 'Contact'])
+  await expect(page.getByRole('dialog').getByRole('link')).toHaveText(['Library', 'Scales', 'Chords', 'Composers', 'How it works', 'How it decides', 'Functions', 'About', 'Contact'])
 })
 
 test('Help is in the navbar and footer, and its contents jump to each section', async ({ page }) => {
