@@ -1,5 +1,5 @@
 import type { Ref, WritableComputedRef } from 'vue'
-import { type Approach, type ArpDirection, type CellId, type CellOrder, CHROMATIC_CELLS, fitRange, formatPattern, isCellId, parsePattern, type PatternNotes, type ArpeggioPattern, type ArpNotes, type InstrumentName, INSTRUMENTS, isApproach, isArpDirection, isArpeggioPattern, isArpNotes, isCellOrder, isInstrumentName, isAnticipate, isRhythmStart, type RhythmStart, isPairLineShape, isPairShape, isPatternNotes, isPentatonicLeave, isRhythmId, type RhythmId, type HexatonicBasis, type PairLineShape, type PairShape, type QuartalNotesChoice, type PentatonicBasis, PENTATONIC_LEAVE, type PentatonicLeave, type PentatonicDegree, pentatonicDegreeFrom, type PentatonicSide, type Range, type ShareView } from '@chord-scale-maker/engine'
+import { type Approach, type ArpDirection, type CellId, type CellOrder, CHROMATIC_CELLS, fitRange, formatPattern, isCellId, parsePattern, type PatternNotes, type ArpeggioPattern, type ArpNotes, type InstrumentName, INSTRUMENTS, isApproach, isArpDirection, isArpeggioPattern, isArpNotes, isCellOrder, isInstrumentName, isAnticipate, isRhythmStart, type RhythmStart, isPairLineShape, isPairShape, isPatternNotes, isPentatonicLeave, isNotesPerBar, isRhythmId, type NotesPerBar, type RhythmId, type HexatonicBasis, type PairLineShape, type PairShape, type QuartalNotesChoice, type PentatonicBasis, PENTATONIC_LEAVE, type PentatonicLeave, type PentatonicDegree, pentatonicDegreeFrom, type PentatonicSide, type Range, type ShareView } from '@chord-scale-maker/engine'
 import { type GuideFrom, type LineMode, lineChoiceOf } from '~/utils/sheetLine'
 import { FUNCTIONS_KEYS } from '~/utils/functionsKey'
 import { isSpell, type Spell } from '~/utils/scaleChoices'
@@ -18,6 +18,12 @@ const isChromatic = (id: CellId): boolean => CHROMATIC_CELLS.some((c) => c.id ==
 function canonicalPattern(text: string): string | undefined {
   const parsed = parsePattern(text)
   return 'moves' in parsed ? formatPattern(parsed.moves) : undefined
+}
+
+/** a stored Notes per bar: 'whole' or 1 to 7 */
+function notesPerBarFrom(s: string): NotesPerBar | undefined {
+  const n = s === 'whole' ? s : /^[1-7]$/.test(s) ? Number(s) : undefined
+  return isNotesPerBar(n) ? n : undefined
 }
 
 /** a ref kept in this browser's storage; a stored value that doesn't parse falls back */
@@ -71,6 +77,9 @@ export function usePreferences() {
   const rhythmStart = storedRef<RhythmStart>('csm-rhythm-start', (s) => (isRhythmStart(s) && rhythmOn ? s : undefined), 'beat')
   const anticipate = storedRef<number>('csm-anticipate', (s) => (rhythmOn && isAnticipate(Number(s)) ? Number(s) : undefined), 0, String)
   const restate = storedRef<boolean>('csm-guide-restate', (s) => (rhythmOn && (s === 'on' || s === 'off') ? s === 'on' : undefined), false, (v) => (v ? 'on' : 'off'))
+  // the Scales sheet's Notes per bar (rhythm-scales-arpeggios spec §9): Whole notes until chosen, and with the rhythmSheets flag off (stored still)
+  const rhythmSheetsOn = useFeature('rhythmSheets')
+  const notesPerBar = storedRef<NotesPerBar>('csm-notes-per-bar', (s) => (rhythmSheetsOn ? notesPerBarFrom(s) : undefined), 'whole')
   // the Cells line's system or cell (#298); a chromatic cell (#377) with the flag off reads as the default but stays stored
   const phraseOn = useFeature('phraseCells')
   const cells = storedRef<CellId>('csm-cells', (s) => (isCellId(s) && (phraseOn || !isChromatic(s)) ? s : undefined), DEFAULT_CELLS)
@@ -106,7 +115,7 @@ export function usePreferences() {
   const source = storedRef<boolean>('csm-source', (s) => s === 'on', false, (v) => (v ? 'on' : 'off'))
   // the /functions page's key: C major until another is picked
   const functionsKey = storedRef<string>('csm-functions-key', (s) => (FUNCTIONS_KEYS.includes(s) ? s : undefined), 'C')
-  return { instrument, range: rangeRef(instrument), spell, intervals, showEditor, numerals, scaleNames, lineMode, guideLine, approach, rhythm, targets, rhythmStart, anticipate, restate, arpeggio, cells, cellsOrder, cellsPhrase, arpNotes, arpDir, arpShape, pattern, patternNotes, patternDir, overlay, pentRung, pentSide, pentBasis, pentDegree, pentLeave, pairLine, hexBasis, quartNotes, quartPerfect, source, functionsKey }
+  return { instrument, range: rangeRef(instrument), spell, intervals, showEditor, numerals, scaleNames, lineMode, guideLine, approach, rhythm, targets, rhythmStart, anticipate, restate, notesPerBar, arpeggio, cells, cellsOrder, cellsPhrase, arpNotes, arpDir, arpShape, pattern, patternNotes, patternDir, overlay, pentRung, pentSide, pentBasis, pentDegree, pentLeave, pairLine, hexBasis, quartNotes, quartPerfect, source, functionsKey }
 }
 
 /** the same choices, starting from a share link's view over your own, for this visit only (nothing is saved) */
@@ -133,6 +142,7 @@ export function linkPreferences(view: ShareView) {
     rhythmStart: ref<RhythmStart>(useFeature('rhythm') ? (view.rhythmStart ?? 'beat') : 'beat'),
     anticipate: ref<number>(useFeature('rhythm') ? (view.anticipate ?? 0) : 0),
     restate: ref<boolean>(useFeature('rhythm') ? (view.restate ?? false) : false),
+    notesPerBar: ref<NotesPerBar>(useFeature('rhythmSheets') ? (view.notesPerBar ?? 'whole') : 'whole'), // a link shows what it was sent with: Whole notes without
     arpeggio: ref<ArpeggioPattern>(choice.arpeggio ?? own.arpeggio.value),
     cells: ref<CellId>(choice.cells === undefined ? own.cells.value : phraseOn || !isChromatic(choice.cells) ? choice.cells : DEFAULT_CELLS), // a chromatic cell (#377), the flag off: the default
     cellsOrder: ref<CellOrder>(phraseOn ? (choice.order ?? 'as-written') : 'as-written'), // a link shows what it was sent with: as written and on without (#376)

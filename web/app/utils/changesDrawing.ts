@@ -258,14 +258,14 @@ function slashes(vf: VexFlowModule, beats: number): StaveNote[] {
   })
 }
 
-const voiceOf = (vf: VexFlowModule, beats: number, ticks: readonly Tick[]): Voice =>
+export const voiceOf = (vf: VexFlowModule, beats: number, ticks: readonly Tick[]): Voice =>
   new vf.Voice({ numBeats: beats, beatValue: 4 }).setMode(vf.Voice.Mode.SOFT).addTickables([...ticks])
 
 /** room for the notes after the stave's modifiers */
-const room = (stave: Stave, x: number, width: number): number => width - (stave.getNoteStartX() - x) - 20
+export const staveRoom = (stave: Stave, x: number, width: number): number => width - (stave.getNoteStartX() - x) - 20
 
 /** a dot where the value ends in d (the engine's values are VexFlow's durations), and an accent */
-function marked(vf: VexFlowModule, note: StaveNote, value: string, accent: boolean): StaveNote {
+export function marked(vf: VexFlowModule, note: StaveNote, value: string, accent: boolean): StaveNote {
   if (value.endsWith('d')) vf.Dot.buildAndAttach([note], { all: true })
   if (accent) note.addModifier(new vf.Articulation('a>'), 0)
   return note
@@ -304,7 +304,7 @@ export function drawChangesLine(vf: VexFlowModule, el: HTMLElement, line: Change
     stave.setContext(ctx).draw()
     const notes = slashes(vf, bar.beats)
     const voice = voiceOf(vf, bar.beats, notes)
-    new vf.Formatter().joinVoices([voice]).format([voice], room(stave, x, width))
+    new vf.Formatter().joinVoices([voice]).format([voice], staveRoom(stave, x, width))
     voice.draw(ctx, stave)
     xs.push(notes.map((n) => headCentre(n, total)))
     x += width
@@ -371,7 +371,7 @@ function drawGuideLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, op
       : opts.arpeggio
         ? vf.Beam.generateBeams(ticks, { groups: [new vf.Fraction(1, 4)] })
         : []
-    new vf.Formatter().joinVoices(all).format(all, room(stave, x, width))
+    new vf.Formatter().joinVoices(all).format(all, staveRoom(stave, x, width))
     beams.forEach((b) => b.postFormat()) // beamed stems change length here, before the crop and the bracket read their tips
     x += width
     return { bar, stave, model, ticks, grid, plain, all, beams, tuplets }
@@ -438,7 +438,7 @@ function rhythmTick(vf: VexFlowModule, n: RhythmNote, clef: Clef): StaveNote {
 }
 
 /** notes grouped by an index (a tuplet's, a beam's), in order; null: in none */
-const groupsOf = <T, K = number>(ticks: readonly T[], index: (i: number) => K | null): T[][] => {
+export const groupsOf = <T, K = number>(ticks: readonly T[], index: (i: number) => K | null): T[][] => {
   const groups = new Map<K, T[]>()
   ticks.forEach((t, i) => {
     const g = index(i)
@@ -450,11 +450,11 @@ const groupsOf = <T, K = number>(ticks: readonly T[], index: (i: number) => K | 
 type Tuplet = InstanceType<VexFlowModule['Tuplet']>
 
 /** a bar's triplets: each group of its notes sharing a tuplet index, three in the time of two */
-const tripletsOf = (vf: VexFlowModule, ticks: readonly StaveNote[], tuplet: (i: number) => number | null): Tuplet[] =>
+export const tripletsOf = (vf: VexFlowModule, ticks: readonly StaveNote[], tuplet: (i: number) => number | null): Tuplet[] =>
   groupsOf(ticks, tuplet).map((notes) => new vf.Tuplet(notes, { numNotes: 3, notesOccupied: 2, location: 1 }))
 
 /** a line's ink tops: its stem tips (an accent's over them) and its triplets' 3s and brackets */
-const inkTips = (notes: readonly StaveNote[], accented: ReadonlySet<StaveNote>, tuplets: readonly Tuplet[]): number[] => [
+export const inkTips = (notes: readonly StaveNote[], accented: ReadonlySet<StaveNote>, tuplets: readonly Tuplet[]): number[] => [
   ...notes.filter((n) => n.hasStem()).map((n) => n.getStemExtents().topY - (accented.has(n) ? ACCENT_RISE : 0)),
   ...tuplets.map((t) => t.getYPosition() - TUPLET_RISE),
 ]
@@ -463,7 +463,7 @@ type Context = ReturnType<typeof svgContext>
 type RhythmBar = Readonly<{ rhythm: readonly RhythmNote[]; ticks: readonly StaveNote[] }>
 
 /** a rhythm's ties, one chain across its bars: open at its end, and a half-tie in where it starts tied */
-function rhythmTies(vf: VexFlowModule, ctx: Context, bars: readonly RhythmBar[]): void {
+export function rhythmTies(vf: VexFlowModule, ctx: Context, bars: readonly RhythmBar[]): void {
   const chain = bars.flatMap((l) => l.rhythm.map((m, i) => ({ m, t: l.ticks[i] ?? null })))
   const tie = (firstNote: StaveNote | null, lastNote: StaveNote | null): void => {
     new vf.StaveTie({ firstNote, lastNote, firstIndexes: [0], lastIndexes: [0] }).setContext(ctx).draw()
@@ -522,7 +522,7 @@ function drawRhythmLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, o
       return voiceOf(vf, bar.beats, list)
     })
     const beams = groupsOf(ticks, (i) => bar.rhythm[i]?.beam ?? null).filter((g) => g.length > 1).map((notes) => new vf.Beam(notes))
-    new vf.Formatter().joinVoices(all).format(all, room(stave, x, width))
+    new vf.Formatter().joinVoices(all).format(all, staveRoom(stave, x, width))
     beams.forEach((beam) => beam.postFormat())
     x += width
     return { bar, stave, ticks, grid, all, beams, tuplets }
@@ -598,7 +598,7 @@ export function drawRhythmCard(vf: VexFlowModule, el: HTMLElement, card: RhythmC
     const tuplets = tripletsOf(vf, ticks, (i) => rhythm[i]?.tuplet ?? null)
     const voice = voiceOf(vf, card.beats, ticks)
     const beams = groupsOf(ticks, (i) => rhythm[i]?.beam ?? null).filter((g) => g.length > 1).map((notes) => new vf.Beam(notes))
-    new vf.Formatter().joinVoices([voice]).format([voice], room(stave, x, barWidth))
+    new vf.Formatter().joinVoices([voice]).format([voice], staveRoom(stave, x, barWidth))
     beams.forEach((beam) => beam.postFormat())
     return { rhythm, stave, ticks, voice, beams, tuplets }
   })

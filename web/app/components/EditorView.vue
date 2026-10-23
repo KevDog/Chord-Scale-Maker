@@ -131,6 +131,7 @@
             v-model:guide-line="prefs.guideLine.value"
             v-model:approach="prefs.approach.value"
             v-model:rhythm="prefs.rhythm.value"
+            v-model:notes-per-bar="prefs.notesPerBar.value"
             v-model:rhythm-start="prefs.rhythmStart.value"
             v-model:anticipate="prefs.anticipate.value"
             v-model:restate="prefs.restate.value"
@@ -269,7 +270,7 @@
             :start="start"
             :mode="mode"
             :per-page="PER_PAGE"
-            :card-per-page="CARD_PER_PAGE"
+            :rhythm-per-page="RHYTHM_PER_PAGE"
             :intervals="prefs.intervals.value"
             :practice="selection"
             :home-key="homeKey"
@@ -279,6 +280,7 @@
             :positions="positionsNow"
             :pickable="ui.shows('chord-picks')"
             :rhythm="sheetRhythm"
+            :notes-per-bar="sheetNotesPerBar"
             :beats-of="beatsOf"
             @pick="onPick"
           >
@@ -384,6 +386,7 @@ import {
   remapOwned,
   chartName,
   type InstrumentName,
+  type NotesPerBar,
   type RhythmId,
   rowBarBeats,
   takesRhythm,
@@ -411,7 +414,7 @@ const props = defineProps<{ initialText: string; practiceKey?: string; saveTarge
 const emit = defineEmits<{ created: [id: string]; reload: [] }>()
 
 const PER_PAGE = 12
-const CARD_PER_PAGE = 8 // a Scales sheet with a rhythm card under a staff: 12, and 10 of the tallest staves (trombone from B), overflow a letter page (rhythm-scales-arpeggios spec §8)
+const RHYTHM_PER_PAGE = 8 // a Scales sheet with a rhythm card or a run on a staff (rhythm-scales-arpeggios spec §8): 12 and 10 of the tallest card staves (trombone from B), and 12 of its runs at 7 a bar, overflow a letter page
 
 /** the level is a view preference: a blank cell plays the analysis at it, and nothing is written */
 const scaleLevel = useScaleLevel(props.practiceKey, props.shared)
@@ -553,8 +556,10 @@ const sheetRhythm = computed((): RhythmId => {
   const block = sheet.value === 'arpeggios' && prefs.arpNotes.value === 'pairs' && prefs.arpShape.value === 'block'
   return rhythmSheetsOn && (sheet.value === 'scales' || sheet.value === 'arpeggios') && !block ? prefs.rhythm.value : 'off' // the Patterns sheet keeps today's run (spec D12)
 })
-/** each played row's bar length in beats (rowBarBeats), for each staff's metre (spec D8): 4 where a row has none */
-const barBeats = computed(() => rowBarBeats(playedDoc.value))
+/** the Scales sheet's Notes per bar (spec §2): Whole notes elsewhere, and with the rhythmSheets flag off (the preference reads so) */
+const sheetNotesPerBar = computed((): NotesPerBar => (sheet.value === 'scales' ? prefs.notesPerBar.value : 'whole'))
+/** each played row's bar length in beats (rowBarBeats), for each staff's metre (spec D8): 4 where a row has none; not figured while nothing on the sheet is timed */
+const barBeats = computed(() => (sheet.value !== 'changes' && (sheetRhythm.value !== 'off' || sheetNotesPerBar.value !== 'whole') ? rowBarBeats(playedDoc.value) : new Map<number, number>()))
 const beatsOf = (row: number): number => barBeats.value.get(row) ?? 4
 /**
  * chords on the Changes sheet open the chord editor while the editor is shown (on a phone, the whole editor); on a chart
@@ -659,7 +664,7 @@ const picksInForce = computed((): boolean => {
 const approachShown = computed(() => (approachApplies(prefs.lineMode.value, prefs.overlay.value) ? prefs.approach.value : 'none'))
 /** settings in force whose controls this Interface level hides (a share link, a stored preference): the notice offers to show them or reset them */
 const hidden = computed(() =>
-  hiddenSettings(ui.level.value, { sheet: sheet.value, scaleLevel: scaleLevel.level.value, numerals: showNumerals.value, scaleNames: showScaleNames.value, lineMode: prefs.lineMode.value, spell: prefs.spell.value, practice: selection.value, overlay: prefs.overlay.value, picks: picksInForce.value, approach: approachShown.value, rhythm: sheetRhythm.value, targets: prefs.targets.value, rhythmStart: prefs.rhythmStart.value, anticipate: prefs.anticipate.value, rhythmLine: lineTakesRhythm.value }),
+  hiddenSettings(ui.level.value, { sheet: sheet.value, scaleLevel: scaleLevel.level.value, numerals: showNumerals.value, scaleNames: showScaleNames.value, lineMode: prefs.lineMode.value, spell: prefs.spell.value, practice: selection.value, overlay: prefs.overlay.value, picks: picksInForce.value, approach: approachShown.value, rhythm: sheetRhythm.value, targets: prefs.targets.value, rhythmStart: prefs.rhythmStart.value, anticipate: prefs.anticipate.value, rhythmLine: lineTakesRhythm.value, notesPerBar: sheetNotesPerBar.value }),
 )
 /** each reset, given the mode in force before any of them ran (resetting the spelling changes the mode) */
 const RESETS: Readonly<Record<HiddenSetting, (inForce: Mode) => void>> = {
@@ -675,6 +680,7 @@ const RESETS: Readonly<Record<HiddenSetting, (inForce: Mode) => void>> = {
     prefs.anticipate.value = 0
     prefs.restate.value = false
   },
+  'notes-per-bar': () => (prefs.notesPerBar.value = 'whole'),
   'rhythm-phrasing': () => {
     prefs.rhythmStart.value = 'beat'
     prefs.anticipate.value = 0
@@ -961,6 +967,7 @@ async function shareUrl(): Promise<string> {
     sheet: sheet.value,
     ...(sheet.value === 'changes' && approachShown.value !== 'none' ? { approach: approachShown.value } : {}), // the line's Approach (#298, #381)
     ...(sheetRhythm.value !== 'off' ? { rhythm: sheetRhythm.value } : {}), // the rhythm line (rhythm spec §9), on the Scales and Arpeggios too with the rhythmSheets flag on; absent: off
+    ...(sheetNotesPerBar.value !== 'whole' ? { notesPerBar: sheetNotesPerBar.value } : {}), // the Scales sheet's (spec §9); absent: Whole notes
     ...(sheet.value === 'changes' && prefs.rhythm.value !== 'off' && prefs.rhythmStart.value !== 'beat' ? { rhythmStart: prefs.rhythmStart.value } : {}), // rhythm-on-lines spec §10; absent: on the beat
     ...(sheet.value === 'changes' && prefs.rhythm.value !== 'off' && prefs.anticipate.value !== 0 ? { anticipate: prefs.anticipate.value } : {}), // absent: on time
     ...(sheet.value === 'changes' && prefs.rhythm.value !== 'off' && prefs.restate.value ? { restate: true as const } : {}), // absent: off

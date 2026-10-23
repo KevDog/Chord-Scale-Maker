@@ -4,8 +4,8 @@ import { effectScope, nextTick } from 'vue'
 import { linkPreferences, usePreferences } from '~/composables/usePreferences'
 import { INSTRUMENTS, type ShareView } from '@chord-scale-maker/engine'
 
-const flags = vi.hoisted(() => ({ cells: true, approaches: true, phraseCells: true, rhythm: true }))
-mockNuxtImport('useFeature', () => (name: string) => (name === 'cells' && flags.cells) || (name === 'approaches' && flags.approaches) || (name === 'phraseCells' && flags.phraseCells) || (name === 'rhythm' && flags.rhythm))
+const flags = vi.hoisted(() => ({ cells: true, approaches: true, phraseCells: true, rhythm: true, rhythmSheets: true }))
+mockNuxtImport('useFeature', () => (name: string) => (name === 'cells' && flags.cells) || (name === 'approaches' && flags.approaches) || (name === 'phraseCells' && flags.phraseCells) || (name === 'rhythm' && flags.rhythm) || (name === 'rhythmSheets' && flags.rhythmSheets))
 
 function prefs() {
   const scope = effectScope()
@@ -28,6 +28,7 @@ describe('usePreferences', () => {
     flags.approaches = true
     flags.phraseCells = true
     flags.rhythm = true
+    flags.rhythmSheets = true
   })
 
   it("defaults to piano spelled from the chart's key, with interval labels on", () => {
@@ -159,6 +160,25 @@ describe('usePreferences', () => {
     expect(localStorage.getItem('csm-rhythm')).toBe('unit:8:5:accents')
   })
 
+  it('reads Notes per bar (rhythm-scales-arpeggios spec §9): 1 to 7, else Whole notes; Whole notes with the rhythmSheets flag off, keeping it stored', async () => {
+    expect(prefs().notesPerBar.value).toBe('whole')
+    localStorage.setItem('csm-notes-per-bar', '5')
+    expect(prefs().notesPerBar.value).toBe(5)
+    for (const bad of ['9', 'x', '0']) {
+      localStorage.setItem('csm-notes-per-bar', bad)
+      expect(prefs().notesPerBar.value).toBe('whole')
+    }
+    localStorage.setItem('csm-notes-per-bar', '5')
+    flags.rhythmSheets = false
+    expect(prefs().notesPerBar.value).toBe('whole')
+    expect(localStorage.getItem('csm-notes-per-bar')).toBe('5')
+    flags.rhythmSheets = true
+    const p = prefs()
+    p.notesPerBar.value = 3
+    await nextTick()
+    expect(localStorage.getItem('csm-notes-per-bar')).toBe('3')
+  })
+
   it('stores the target beats as on/off, off until chosen and with the flag off', () => {
     expect(prefs().targets.value).toBe(false)
     localStorage.setItem('csm-targets', 'on')
@@ -266,6 +286,15 @@ describe('linkPreferences', () => {
   afterEach(() => {
     localStorage.clear()
     flags.rhythm = true
+    flags.rhythmSheets = true
+  })
+
+  it("shows the Notes per bar a link was sent with, and Whole notes without one or with the rhythmSheets flag off", () => {
+    localStorage.setItem('csm-notes-per-bar', '3')
+    expect(linked({ sheet: 'scales', notesPerBar: 5 }).notesPerBar.value).toBe(5)
+    expect(linked({ sheet: 'scales' }).notesPerBar.value).toBe('whole')
+    flags.rhythmSheets = false
+    expect(linked({ sheet: 'scales', notesPerBar: 5 }).notesPerBar.value).toBe('whole')
   })
 
   it('shows the rhythm a link was sent with, and Off, no targets and no Restate without one, over your own (#505)', () => {

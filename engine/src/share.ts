@@ -1,6 +1,6 @@
 import { isSheetLine, type SheetLine } from './arpeggios'
 import { type Approach, isApproach } from './approaches'
-import { isAnticipate, isRhythmId, isRhythmStart, type RhythmId, type RhythmStart } from './rhythm'
+import { isAnticipate, isNotesPerBar, isRhythmId, isRhythmStart, type NotesPerBar, type RhythmId, type RhythmStart } from './rhythm'
 import { type CellId, isCellId, isSystemId } from './cells'
 import { type CellOrder, isCellOrder } from './cellOrder'
 import { type ArpDirection, type ArpNotes, isArpDirection, isArpNotes } from './arpeggioSheet'
@@ -61,6 +61,8 @@ export type ShareView = Readonly<{
   rhythmStart?: RhythmStart
   anticipate?: number
   restate?: true
+  /** the Scales sheet's Notes per bar (rhythm-scales-arpeggios spec §9); absent: Whole notes */
+  notesPerBar?: Exclude<NotesPerBar, 'whole'>
   sheet?: ShareSheet
   /** the Arpeggios sheet's choices: 7th Chord, Extended or Triad pairs; Up, Down or Up & down; Triad pairs' shape (#436) */
   arpNotes?: ArpNotes
@@ -164,6 +166,7 @@ export function shareViewFrom(v: unknown): ShareView | undefined {
     ...(isRhythmStart(o.rhythmStart) && o.rhythmStart !== 'beat' ? { rhythmStart: o.rhythmStart } : {}),
     ...(isAnticipate(o.anticipate) && o.anticipate !== 0 ? { anticipate: o.anticipate } : {}),
     ...(o.restate === true ? { restate: true as const } : {}),
+    ...(isNotesPerBar(o.notesPerBar) && o.notesPerBar !== 'whole' ? { notesPerBar: o.notesPerBar } : {}),
     ...(o.sheet === 'scales' || o.sheet === 'changes' || o.sheet === 'arpeggios' || o.sheet === 'patterns' ? { sheet: o.sheet } : {}),
     ...(isArpNotes(o.arpNotes) ? { arpNotes: o.arpNotes } : {}),
     ...(isArpDirection(o.arpDir) ? { arpDir: o.arpDir } : {}),
