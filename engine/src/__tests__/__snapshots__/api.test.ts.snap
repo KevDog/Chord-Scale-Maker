@@ -387,6 +387,7 @@ exports[`exports the same names 1`] = `
   "scaleLabel",
   "scaleLines",
   "scaleNotes",
+  "scaleRun",
   "scaleSlug",
   "scaleTitle",
   "scaleUsage",

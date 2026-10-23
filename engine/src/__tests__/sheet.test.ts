@@ -8,7 +8,8 @@ import type { ScaleLevel } from '../levels'
 import { CONCERT, type Part } from '../part'
 import { rootName } from '../pitch'
 import { resolveScales, rowKeys } from '../resolve'
-import { type ModeChoice, type SheetRhythm, type StaffModel, buildSheet, linePositions, noteText, pageSubtitle, scaleLines, sheetRhythmText, toVexKey } from '../sheet'
+import { type ModeChoice, type SheetRhythm, type StaffModel, buildSheet, linePositions, noteText, pageSubtitle, scaleLines, scaleRun, sheetRhythmText, toVexKey } from '../sheet'
+import { evenRun, pourRun, type RhythmId } from '../rhythm'
 import { parseKey } from '../analysis/keys'
 
 const TENOR: Part = { clef: 'treble', trans: 'Bb' }
@@ -347,6 +348,16 @@ describe('chord picks on the Scales sheet (#303)', () => {
     expect([g7(staves(all, HEX)).hexatonic?.name, g7(staves(all, HEX)).hexatonic?.picked, g7(staves(all, HEX)).varies]).toEqual(['B/D♭', true, false])
     expect(g7(staves(withPick(NO_PICKS, 'hexatonic', ['B:4:0'], [11, 1], targets), HEX)).varies).toBe(true)
   })
+  it('runs the notes the Pentatonic preset adds, each sourced at its staff index (D9, D15)', () => {
+    const picks = withPick(NO_PICKS, 'pentatonic', ['A1:1:0'], 5, targets) // Fm: A♭ B♭ E♭ from outside D Dorian
+    const s = dm(buildSheet(rows, CONCERT, 'root', 'C', 12, PENT, undefined, res, { picks, at }, undefined, { notesPerBar: 4 })[0]!.pages.flat())
+    const added = s.outside!.indexOf(true)
+    expect(added).toBeGreaterThan(0)
+    expect(s.run?.notes.length).toBe(2 * s.notes.length + 1)
+    expect(s.run?.source.indexOf(added)).toBe(added)
+    expect(s.run?.notes[added]).toEqual(s.notes[added])
+    expect(s.run?.source.lastIndexOf(added)).toBe(2 * s.notes.length - added)
+  })
   it('keeps the sounding pick on a B♭ part', () => {
     expect(dm(staves(withPick(NO_PICKS, 'pentatonic', ['A1:1:0'], 4, targets), PENT, TENOR)).pentatonic).toMatchObject({ name: 'F♯m', picked: true })
     expect(dm(staves(withPick(NO_PICKS, 'hexatonic', ['A1:1:0'], [5, 7], targets), { preset: 'hexatonic', pair: 0, grouping: 'triads' }, TENOR)).hexatonic).toMatchObject({ name: 'G/A', picked: true })
@@ -412,6 +423,67 @@ describe('rhythm card', () => {
   it('names the rhythm in the subtitle', () => {
     expect(pageSubtitle('Stella', 'Tenor Sax (Bb)', 'Spelled from C', sheetRhythmText('unit:8:3:accents'))).toBe('Stella – Tenor Sax (Bb) (Spelled from C) · Rhythm: 8ths in 3, with accents')
     expect(sheetRhythmText('off')).toEqual([])
+  })
+})
+
+describe('notes per bar: the run (§2, §3, D9, D10, D15)', () => {
+  const rows = [row('Dm7', '', '1'), row('G7', '', '2'), row('Cmaj7', '', '3')]
+  const sheet = (options?: SheetRhythm, key?: ReturnType<typeof parseKey>, rs: readonly Row[] = rows, start = 'C'): StaffModel[] =>
+    buildSheet(rs, CONCERT, 'from', start, 12, null, key, undefined, undefined, undefined, options)[0]?.pages.flat() ?? []
+  const C_IONIAN = sheet().find((s) => s.source?.chord === 'Cmaj7')!.notes
+
+  it('runs the staff notes up an octave and back down: 2K + 1 notes, sourced by staff index', () => {
+    const run = scaleRun(C_IONIAN)
+    expect(run.notes.map(toVexKey)).toEqual(['c/4', 'd/4', 'e/4', 'f/4', 'g/4', 'a/4', 'b/4', 'c/5', 'b/4', 'a/4', 'g/4', 'f/4', 'e/4', 'd/4', 'c/4'])
+    expect(run.source).toEqual([0, 1, 2, 3, 4, 5, 6, 0, 6, 5, 4, 3, 2, 1, 0])
+  })
+
+  it('draws every staff as the run in bars of n, with a time signature and no card', () => {
+    for (const s of sheet({ notesPerBar: 4 })) {
+      expect(s.run?.bars.length).toBe(4)
+      expect(s.run?.notes.length).toBe(15)
+      expect(s.run?.bars).toEqual(evenRun(15, 4, 4).bars)
+      expect(s.timeSig).toBe('4/4')
+      expect(s.card).toBeNull()
+    }
+  })
+
+  it('pours the run into a rhythm and draws no card (D10)', () => {
+    const R = 'unit:8:3:accents' as const
+    for (const s of sheet({ rhythm: R, notesPerBar: 4 })) {
+      expect(s.run?.bars).toEqual(pourRun(15, R, 4, 4)!.bars)
+      expect(s.card).toBeNull()
+      expect(s.timeSig).toBe('4/4')
+    }
+  })
+
+  it('takes its beats from beatsOf', () => {
+    const s = sheet({ notesPerBar: 6, beatsOf: () => 3 })[0]!
+    expect([s.timeSig, s.run?.beats, s.run?.bars]).toEqual(['3/4', 3, evenRun(15, 3, 6).bars])
+  })
+
+  it('figures accidentals bar by bar against the key signature (one per run note)', () => {
+    const d = (n: 4 | 7) => sheet({ notesPerBar: n }, parseKey('C'), [row('D7', 'D Mixolydian')], 'D')[0]!.run!
+    const spelled = (run: ReturnType<typeof d>) => run.bars.map((b) => b.notes.map((x) => (x.note === null ? 'r' : (run.accidentals[x.note] ?? '') + 'CDEFGAB'[run.notes[x.note]!.letter])).join(' '))
+    expect(d(4).accidentals.length).toBe(15)
+    expect(spelled(d(4))).toEqual(['D E #F G', 'A B C D', 'C B A G', '#F E D r'])
+    expect(spelled(d(7))).toEqual(['D E #F G A B C', 'D C B A G #F E', 'D r r r r r r'])
+  })
+
+  it('draws today’s whole notes when the rhythm pours nothing', () => {
+    const [s] = sheet({ rhythm: 'unit:8:3:nonsense' as RhythmId, notesPerBar: 4 })
+    expect([s?.run, s?.card, s?.timeSig, s?.id]).toEqual([null, null, null, sheet()[0]?.id])
+  })
+
+  it('(guard) Whole notes leaves the run null and the ids unchanged', () => {
+    const whole = sheet({ notesPerBar: 'whole' })
+    expect(whole.every((s) => s.run === null && s.card === null && s.timeSig === null)).toBe(true)
+    expect(whole.map((s) => s.id)).toEqual(sheet().map((s) => s.id))
+  })
+
+  it('changes the id with notes per bar', () => {
+    expect(sheet({ notesPerBar: 4 })[0]?.id).not.toBe(sheet({ notesPerBar: 5 })[0]?.id)
+    expect(sheet({ notesPerBar: 4 })[0]?.id).not.toBe(sheet()[0]?.id)
   })
 })
 
