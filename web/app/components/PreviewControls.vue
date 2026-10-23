@@ -313,6 +313,7 @@
     import { type Spell, spellLabel, SPELLS } from '~/utils/scaleChoices'
     import type { SheetKind } from '~/utils/sheets'
     import { RHYTHM_TEXT, useRhythmText } from '~/composables/useRhythmText'
+    import { RHYTHM_PATH_LISTS, useRhythmPathLists } from '~/composables/useRhythmPathLists'
     import type { FunctionalComponent } from 'vue'
     import { AdjustmentsHorizontalIcon } from '@heroicons/vue/16/solid'
     import ControlsDialog from './ControlsDialog.vue'
@@ -485,6 +486,8 @@
     provide(RHYTHM_TEXT, useRhythmText(rhythm, () => shows('rhythm'), () => shows('rhythm-gears')))
     /** the chart's rhythm path (Phase 4 spec §3, §7): Groups and its Step, on the Changes */
     const rhythmPath = defineModel<RhythmPath>('rhythmPath', { default: () => RHYTHM_PATH_OFF })
+    // Groups' and Gears' Your list… text lives here too, so text that doesn't read survives Line options closing (#553)
+    provide(RHYTHM_PATH_LISTS, useRhythmPathLists(rhythmPath))
     const targets = defineModel<boolean>('targets', { default: false })
     const rhythmOn = useFeature('rhythm')
     /** Feel in 4, 2 or 1 (Phase 4 spec §7), with the rhythmGears flag on */

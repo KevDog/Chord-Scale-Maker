@@ -514,14 +514,7 @@ const pentStepUnit = computed({ get: () => pentPath.step.value.unit, set: (unit)
 const pentStepBars = computed({ get: () => pentPath.step.value.bars, set: (bars) => pentPath.setStep({ ...pentPath.step.value, bars }) })
 /** the chart's rhythm path (Phase 4 spec §3, §7): stored per chart; a share link's for the visit */
 const rhythmPath = useRhythmPath(props.practiceKey, props.shared ? linkRhythmPath(props.shared) : undefined)
-const rhythmPathModel = computed({
-  get: () => rhythmPath.path.value,
-  set: (p) => {
-    rhythmPath.setGroups(p.groups)
-    rhythmPath.setGears(p.gears)
-    rhythmPath.setStep(p.step)
-  },
-})
+const rhythmPathModel = computed({ get: () => rhythmPath.path.value, set: (p) => rhythmPath.setPath(p) })
 /** the path acts on the Changes' rhythm (a unit's Groups, a unit's or your rhythm's Gears, D12): the link carries it */
 const rhythmPathActs = computed(() => rhythmPathCaption(prefs.rhythm.value, rhythmPath.path.value) !== null)
 /** what the sheets and the grid play a blank cell at; one resolution per revision, shared by the Scales sheet and practice */
@@ -644,6 +637,7 @@ const selection = computed(() => practice.selection(mode.value))
 const chartHistory = useChartHistory(editor, {
   picks: choice(() => picksBySet.standard.picks.value, picksBySet.standard.set),
   pentPath: choice(() => pentPath.state.value, pentPath.setState),
+  rhythmPath: choice(() => rhythmPath.path.value, rhythmPath.setPath),
   pentRung: refChoice(prefs.pentRung),
   pentSide: refChoice(prefs.pentSide),
   pentBasis: refChoice(prefs.pentBasis),

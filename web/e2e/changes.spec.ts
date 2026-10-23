@@ -868,7 +868,7 @@ test.describe('the Groups path', () => {
   const upBySection = async (page: Page) => {
     await page.goto('/song/satin-doll')
     await chooseRhythm(page, '8ths', { In: 'In 3', Variation: 'with accents' })
-    await chooseGroups(page, 'Up')
+    await chooseGroups(page, 'Up (3 4 5 6 7)')
     await chooseRhythmStep(page, 'By section')
     await rhythmDrawn(page)
   }
@@ -906,7 +906,7 @@ test.describe('the Gears path', () => {
   test('names each step’s pulse over its first bar and in the lines’ aria-labels', async ({ page }) => {
     await page.goto('/song/f-jazz-blues')
     await chooseRhythm(page, '8ths', { In: 'In 4', Variation: 'with accents' })
-    await chooseGears(page, 'Up the gears')
+    await chooseGears(page, 'Up the gears (4t 8 8t 16 16t)')
     await chooseRhythmStep(page, 'Every 2 bars')
     await rhythmDrawn(page)
     await expect(page.locator('section header p').first()).toContainText('quarter-note triplets → 8ths → triplets → 16ths → sextuplets · every 2 bars')
@@ -920,8 +920,8 @@ test.describe('the Gears path', () => {
   test('marks both where both change, the numeral first', async ({ page }) => {
     await page.goto('/song/f-jazz-blues')
     await chooseRhythm(page, '8ths', { In: 'In 3', Variation: 'with accents' })
-    await chooseGroups(page, 'Up')
-    await chooseGears(page, 'Down the gears')
+    await chooseGroups(page, 'Up (3 4 5 6 7)')
+    await chooseGears(page, 'Down the gears (16t 16 8t 8 4t)')
     await chooseRhythmStep(page, 'Every 4 bars')
     await rhythmDrawn(page)
     await expect(page.locator('[data-rhythm-step]').first()).toHaveText('③Sextuplets')
@@ -932,8 +932,8 @@ test.describe('the Gears path', () => {
   test('keeps each mark clear of the target dots and inside its bar (phone width, Target beats on)', async ({ page }) => {
     await page.goto('/song/f-jazz-blues')
     await chooseRhythm(page, '8ths', { In: 'In 3', Variation: 'with accents' })
-    await chooseGroups(page, 'Up')
-    await chooseGears(page, 'Up the gears')
+    await chooseGroups(page, 'Up (3 4 5 6 7)')
+    await chooseGears(page, 'Up the gears (4t 8 8t 16 16t)')
     await chooseRhythmStep(page, 'Every 2 bars')
     await showTargets(page)
     await page.setViewportSize({ width: 390, height: 844 }) // the controls set, the lines redraw at phone width
@@ -1050,8 +1050,8 @@ test.describe('Feel', () => {
   test('keeps the mark clear of the step mark and the target dots on the first bar (phone width)', async ({ page }) => {
     await page.goto('/song/f-jazz-blues')
     await chooseRhythm(page, '8ths', { In: 'In 3', Variation: 'with accents' })
-    await chooseGroups(page, 'Up')
-    await chooseGears(page, 'Up the gears')
+    await chooseGroups(page, 'Up (3 4 5 6 7)')
+    await chooseGears(page, 'Up the gears (4t 8 8t 16 16t)')
     await chooseRhythmStep(page, 'Every 2 bars')
     await chooseFeel(page, 'In 2')
     await showTargets(page)
@@ -1067,8 +1067,8 @@ test.describe('Feel', () => {
   test('fits the marks into a narrow first bar (2/4, phone width)', async ({ page }) => {
     await writeChart(page, 'title: T\nkey: C\n\nsection: A\n1 | Dm7\n2 | G7\n3 | CMaj7\n4 | A7\n@time 1 2/4\n@time 2 4/4\n')
     await chooseRhythm(page, '8ths', { In: 'In 3', Variation: 'with accents' })
-    await chooseGroups(page, 'Up')
-    await chooseGears(page, 'Up the gears')
+    await chooseGroups(page, 'Up (3 4 5 6 7)')
+    await chooseGears(page, 'Up the gears (4t 8 8t 16 16t)')
     await chooseRhythmStep(page, 'Every 2 bars')
     await chooseFeel(page, 'In 2')
     await showTargets(page)

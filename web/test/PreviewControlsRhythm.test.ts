@@ -98,10 +98,10 @@ describe('the Rhythm controls (rhythm spec §9)', () => {
       const w = await at('unit:8:3:accents')
       expect(w.find('[aria-label="Groups"]').text()).toContain('Groups: One')
       expect(w.find('[aria-label="Step"]').exists()).toBe(false)
-      await choose(w, 'Groups', 'Up')
+      await choose(w, 'Groups', 'Up (3 4 5 6 7)')
       expect(w.emitted('update:rhythmPath')?.at(-1)).toEqual([UP])
       const on = await at('unit:8:3:accents', UP)
-      expect(on.find('[aria-label="Groups"]').text()).toContain('Groups: Up')
+      expect(on.find('[aria-label="Groups"]').text()).toBe('Groups: Up (3 4 5 6 7)')
       expect(on.find('[aria-label="Step"]').text()).toContain('Step: By section')
       await choose(on, 'Step', 'Every 2 bars')
       expect(on.emitted('update:rhythmPath')?.at(-1)).toEqual([{ ...UP, step: { unit: 'bars', bars: 2 } }])
@@ -122,6 +122,8 @@ describe('the Rhythm controls (rhythm spec §9)', () => {
       expect(input.attributes('placeholder')).toBe('3 4 5')
       await input.setValue('3 5')
       await nextTick()
+      expect(w.emitted('update:rhythmPath')?.at(-1)).toEqual([OFF]) // typing plays after a pause (#553)
+      await input.trigger('keydown.enter') // or at once on Enter
       expect(w.emitted('update:rhythmPath')?.at(-1)).toEqual([{ ...OFF, groups: [3, 5] }])
       await input.setValue('3 9')
       await nextTick()
@@ -132,14 +134,27 @@ describe('the Rhythm controls (rhythm spec §9)', () => {
     it('shows Gears for a unit and your rhythm, and the Step while it acts; not for a per-bar rhythm', async () => {
       const w = await at('unit:8:3:accents')
       expect(w.find('[aria-label="Gears"]').text()).toContain('Gears: One')
-      await choose(w, 'Gears', 'Up the gears')
+      await choose(w, 'Gears', 'Up the gears (4t 8 8t 16 16t)')
       expect(w.emitted('update:rhythmPath')?.at(-1)).toEqual([{ ...OFF, gears: ['4t', '8', '8t', '16', '16t'] }])
       const custom = await at('custom:8:>xx', { ...OFF, gears: ['16t', '16', '8t', '8', '4t'] })
       expect(custom.find('[aria-label="Groups"]').exists()).toBe(false)
-      expect(custom.find('[aria-label="Gears"]').text()).toContain('Gears: Down the gears')
+      expect(custom.find('[aria-label="Gears"]').text()).toBe('Gears: Down the gears (16t 16 8t 8 4t)')
       expect(custom.find('[aria-label="Step"]').exists()).toBe(true)
       expect((await at('run:8:4:0', { ...OFF, gears: ['8', '16'] })).find('[aria-label="Gears"]').exists()).toBe(false)
       expect((await at('card:downbeats', { ...OFF, gears: ['8', '16'] })).find('[aria-label="Gears"]').exists()).toBe(false)
+    })
+
+    it('names the Gears presets’ pulses in words to a screen reader, as Help does, their codes shown (#553 review)', async () => {
+      const w = await at('unit:8:3:accents')
+      await w.find('[aria-label="Gears"]').trigger('click')
+      const options = w.findAll('[role=option]')
+      expect(options.map((o) => o.text())).toEqual(['One', 'Up the gears (4t 8 8t 16 16t)', 'Down the gears (16t 16 8t 8 4t)', 'Your list…'])
+      expect(options.map((o) => o.attributes('aria-label'))).toEqual([
+        undefined,
+        'Up the gears (quarter-note triplets, 8ths, triplets, 16ths, sextuplets)',
+        'Down the gears (sextuplets, 16ths, triplets, 8ths, quarter-note triplets)',
+        undefined,
+      ])
     })
 
     it('reads Gears’ Your list… by the pulses’ spellings, with an error under it', async () => {
@@ -147,12 +162,29 @@ describe('the Rhythm controls (rhythm spec §9)', () => {
       await choose(w, 'Gears', 'Your list…')
       const input = w.find('input[aria-label="Your gears"]')
       await input.setValue('8 16s')
-      await nextTick()
+      await input.trigger('blur') // leaving the field plays it at once (#553)
       expect(w.emitted('update:rhythmPath')?.at(-1)).toEqual([{ ...OFF, gears: ['8', '16s'] }])
       await input.setValue('8 32')
       await nextTick()
       expect(w.find('#gears-error').text()).toContain('Pulses from 4, 8')
       expect(w.find('[aria-label="Gears"]').text()).toContain('Your list…')
+    })
+
+    it('keeps Your list…’s text that doesn’t read, in Groups and Gears, when Line options closes and opens again (#553)', async () => {
+      const w = await at('unit:8:3:accents')
+      await choose(w, 'Groups', 'Your list…')
+      await w.find('input[aria-label="Your groups"]').setValue('3 9')
+      await choose(w, 'Gears', 'Your list…')
+      await w.find('input[aria-label="Your gears"]').setValue('8 32')
+      await nextTick()
+      await w.findAll('button').find((b) => b.attributes('aria-label') === 'Line options')!.trigger('click') // close
+      await nextTick()
+      expect(w.find('input[aria-label="Your groups"]').exists()).toBe(false)
+      await openPanel(w, 'Line options')
+      expect(w.find('[aria-label="Groups"]').text()).toContain('Your list…')
+      expect((w.find('input[aria-label="Your groups"]').element as HTMLInputElement).value).toBe('3 9')
+      expect(w.find('[aria-label="Gears"]').text()).toContain('Your list…')
+      expect((w.find('input[aria-label="Your gears"]').element as HTMLInputElement).value).toBe('8 32')
     })
   })
 

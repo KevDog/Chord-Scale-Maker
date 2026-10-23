@@ -7,6 +7,7 @@ import { CHART_REPORT_KEY } from '~/utils/chartReport'
 import { loadChart, saveChart } from '~/utils/myCharts'
 import { decodeShare, parseChart, practiceSelectionFrom, serializeChart, type ShareView } from '@chord-scale-maker/engine'
 import { openPanel } from './railPanels'
+import { LIST_PAUSE_MS } from '~/composables/useRhythmPathLists'
 import { INSTRUMENT_GROUPS, instrumentOption } from '~/utils/instrumentChoices'
 
 const { navigate } = vi.hoisted(() => ({ navigate: vi.fn() }))
@@ -692,6 +693,65 @@ describe('EditorView note choices undo (#315)', () => {
     press(true)
     await nextTick()
     expect(panel().props('selection')).toEqual({ preset: 'guideTones' })
+  })
+
+  it('undoes and redoes the rhythm path (Groups, Gears, Step) as it does the pentatonic path (#553)', async () => {
+    const w = await mountSuspended(EditorView, { props: { initialText: TEXT, practiceKey: 'undo-path' }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } }, attachTo: document.body })
+    const controls = () => w.findComponent({ name: 'PreviewControls' })
+    const path = { groups: [3, 4, 5, 6, 7], gears: ['8', '16'], step: { unit: 'bars', bars: 2 } }
+    controls().vm.$emit('update:rhythmPath', path)
+    await nextTick()
+    expect(controls().props('rhythmPath')).toEqual(path)
+    const press = (shiftKey: boolean) => document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'z', metaKey: true, shiftKey, bubbles: true, cancelable: true }))
+    press(false)
+    await nextTick()
+    expect(controls().props('rhythmPath')).toEqual({ groups: null, gears: null, step: { unit: 'section', bars: 4 } })
+    press(true)
+    await nextTick()
+    expect(controls().props('rhythmPath')).toEqual(path)
+  })
+
+  describe('a typed Your list… (#553)', () => {
+    const OFF = { groups: null, gears: null, step: { unit: 'section', bars: 4 } }
+    const press = () => document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'z', metaKey: true, bubbles: true, cancelable: true }))
+    const pause = () => new Promise((r) => setTimeout(r, LIST_PAUSE_MS + 100)) // past the typing pause
+    const typedList = async () => {
+      localStorage.setItem('csm-rhythm', 'unit:8:3:accents')
+      const w = await mountSuspended(EditorView, { props: { initialText: TEXT, practiceKey: 'undo-list' }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } }, attachTo: document.body })
+      await openPanel(w, 'Line options')
+      await w.find('[aria-label="Groups"]').trigger('click')
+      await w.findAll('[role=option]').find((o) => o.text() === 'Your list…')!.trigger('click')
+      await nextTick()
+      const input = () => w.find('input[aria-label="Your groups"]')
+      const type = async (text: string) => {
+        for (let i = 1; i <= text.length; i++) await input().setValue(text.slice(0, i)) // a keystroke at a time
+        await pause()
+      }
+      return { w, input, type, path: () => w.findComponent({ name: 'PreviewControls' }).props('rhythmPath') }
+    }
+
+    it('is one undo step, however many keystrokes it took', async () => {
+      const { type, path } = await typedList()
+      await type('3 4 5')
+      expect(path()).toEqual({ ...OFF, groups: [3, 4, 5] })
+      press()
+      await nextTick()
+      expect(path()).toEqual(OFF)
+    })
+
+    it('undoes back to the list typed before, with Your list… still chosen and its text following', async () => {
+      const { w, input, type, path } = await typedList()
+      await type('3 4')
+      await input().setValue('')
+      await type('3 4 5')
+      expect(path()).toEqual({ ...OFF, groups: [3, 4, 5] })
+      press()
+      await nextTick()
+      await nextTick()
+      expect(path()).toEqual({ ...OFF, groups: [3, 4] })
+      expect(w.find('[aria-label="Groups"]').text()).toBe('Groups: Your list…')
+      expect((input().element as HTMLInputElement).value).toBe('3 4')
+    })
   })
 })
 
