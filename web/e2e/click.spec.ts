@@ -1,5 +1,5 @@
 import type { Locator, Page } from '@playwright/test'
-import { expect, showGuides, test } from './fixtures'
+import { chooseSheet, expect, showGuides, test } from './fixtures'
 
 /** click until it takes: a click before hydration is lost */
 async function clickUntil(page: Page, button: Locator, shown: Locator): Promise<void> {
@@ -155,4 +155,21 @@ test('Hear line shows with a Line on the Changes, and plays with the click (#507
   await page.reload()
   await clickUntil(page, page.getByRole('button', { name: 'Click', exact: true }), clickBar(page))
   await expect(clickBar(page).getByRole('button', { name: 'Hear line' })).toHaveAttribute('aria-pressed', 'true') // remembered, with the Line
+})
+
+test('a Scales or Arpeggios staff’s Play sounds it, and Stop or another Play stops it (#507)', async ({ page }) => {
+  await page.goto('/song/autumn-leaves')
+  await chooseSheet(page, 'Scales')
+  const plays = page.getByRole('button', { name: /^Play / })
+  await expect(async () => {
+    await plays.first().click({ timeout: 1000 }) // a click before hydration is lost
+    await expect(page.getByRole('button', { name: /^Stop / })).toHaveCount(1, { timeout: 1000 })
+  }).toPass({ timeout: 10_000 })
+  await plays.nth(1).click() // another staff: one at a time
+  await expect(page.getByRole('button', { name: /^Stop / })).toHaveCount(1)
+  await page.getByRole('button', { name: /^Stop / }).click()
+  await expect(page.getByRole('button', { name: /^Stop / })).toHaveCount(0)
+  await chooseSheet(page, 'Arpeggios')
+  await plays.first().click()
+  await expect(page.getByRole('button', { name: /^Stop / })).toHaveCount(1) // with no error (the fixture fails on one)
 })

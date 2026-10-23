@@ -478,6 +478,15 @@
                 Listen first, then play it with the sound, then turn it off and play it alone.
               </dd>
             </div>
+            <div v-if="hearLineOn">
+              <dt class="font-semibold text-zinc-950 dark:text-white">Play a staff</dt>
+              <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
+                On the Scales and Arpeggios sheets, the <strong class="font-semibold">Play</strong> button by each staff's
+                label sounds it at the click's tempo: a scale up and down (with Practice on, only the notes you picked), an
+                arpeggio as drawn (<DecisionLink id="hear.play">how</DecisionLink>). With the click running it comes in on the
+                next bar. Press it again to stop.
+              </dd>
+            </div>
           </dl>
         </div>
       </section>

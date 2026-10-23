@@ -1,7 +1,7 @@
 <template>
   <div data-slot="scale-staff" :class="stacked ? 'space-y-2' : 'grid grid-cols-[8rem_1fr] items-center gap-3 break-inside-avoid print:grid-cols-[8.5rem_1fr]'">
     <div :class="['leading-tight', !stacked && 'text-right']">
-      <div v-if="staff.scale" class="text-base font-semibold"><NoteName :note="staff.scale.root" /> {{ staff.scale.name }}</div>
+      <div v-if="staff.scale" class="text-base font-semibold"><NoteName :note="staff.scale.root" /> {{ staff.scale.name }} <PhraseButton v-if="part && staff.notes.length && !staff.error" :id="staff.id" :label="playLabel" :phrase="() => scalePhrase(staff.notes, staff.selected, part!.trans)" /></div>
       <div class="text-sm text-zinc-500 dark:text-zinc-400 print:text-neutral-600">
         <template v-for="(tokens, i) in staff.chords" :key="i"><template v-if="i"><span class="sr-only">,</span><span aria-hidden="true"> · </span></template><ChordSymbol v-if="tokens" :tokens="tokens" /><span v-else>—</span></template>
       </div>
@@ -47,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { type ChordAt, glyphs, hexatonicCaption, hexatonicChoices, type Part, PENTATONIC_DEGREE_LABELS, pentatonicCaption, pentatonicChoices, pickBars, pickHeading, type PickKind, quartalCaption, type RhythmId, rhythmLabel, rootName, type StaffModel } from '@chord-scale-maker/engine'
+import { type ChordAt, glyphs, hexatonicCaption, hexatonicChoices, type Part, PENTATONIC_DEGREE_LABELS, pentatonicCaption, pentatonicChoices, pickBars, pickHeading, type PickKind, quartalCaption, type RhythmId, rhythmLabel, rootName, scalePhrase, type StaffModel } from '@chord-scale-maker/engine'
 import { choiceId, hexChoiceRows, pickFooter, pickHeader } from '~/utils/chordPicks'
 import type { ChoiceRow } from './ChordPickPopover.vue'
 
@@ -87,6 +87,8 @@ function choose(id: string): void {
   if (kind.value === 'pentatonic' && p) emit('pick', 'pentatonic', props.staff.positions, p.pc)
   else if (kind.value === 'hexatonic' && h) emit('pick', 'hexatonic', props.staff.positions, h.roots)
 }
+/** what Play sounds, in words (#507) */
+const playLabel = computed(() => (props.staff.scale ? glyphs(`${rootName(props.staff.scale.root)} ${props.staff.scale.name}`) : 'this scale'))
 /** the staff note each drawn note repeats: a run's (D15), else each its own */
 const sources = computed((): readonly number[] => props.staff.run?.source ?? props.staff.notes.map((_, i) => i))
 /** the interval labels, one a drawn note: a run's repeat its staff note's */

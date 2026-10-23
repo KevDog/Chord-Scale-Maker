@@ -1,7 +1,7 @@
 <template>
   <div class="grid grid-cols-[8rem_1fr] items-center gap-3 break-inside-avoid print:grid-cols-[8.5rem_1fr]">
     <div class="text-right leading-tight">
-      <div v-if="staff.scale" class="text-base font-semibold"><NoteName :note="staff.scale.root" /> {{ staff.scale.name }}</div>
+      <div v-if="staff.scale" class="text-base font-semibold"><NoteName :note="staff.scale.root" /> {{ staff.scale.name }} <PhraseButton v-if="part && staff.notes.length && !staff.error" :id="staff.id" :label="playLabel" :phrase="() => arpeggioPhrase(staff.notes, staff.groups, !!staff.block, part!.trans)" /></div>
       <div class="text-sm text-zinc-500 dark:text-zinc-400 print:text-neutral-600">
         <template v-for="(tokens, i) in staff.chords" :key="i"><template v-if="i"><span class="sr-only">,</span><span aria-hidden="true"> · </span></template><ChordSymbol v-if="tokens" :tokens="tokens" /><span v-else>—</span></template>
       </div>
@@ -43,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { type ArpeggioStaffModel, type ChordAt, glyphs, hexatonicChoices, pairCaption, pickBars, pickHeading, type Part, type PickKind, type RhythmId, rhythmLabel } from '@chord-scale-maker/engine'
+import { arpeggioPhrase, type ArpeggioStaffModel, type ChordAt, glyphs, hexatonicChoices, pairCaption, pickBars, pickHeading, type Part, type PickKind, type RhythmId, rhythmLabel, rootName } from '@chord-scale-maker/engine'
 import { choiceId, hexChoiceRows, pickFooter, pickHeader } from '~/utils/chordPicks'
 import type { ChoiceRow } from './ChordPickPopover.vue'
 
@@ -52,6 +52,8 @@ const props = defineProps<{ staff: ArpeggioStaffModel; clef: 'treble' | 'bass'; 
 const emit = defineEmits<{ pick: [kind: PickKind, positions: readonly ChordAt[], value: number | readonly [number, number] | null] }>()
 
 const pair = computed(() => props.staff.pair ?? null)
+/** what Play sounds, in words (#507) */
+const playLabel = computed(() => (props.staff.scale ? `the line in ${glyphs(`${rootName(props.staff.scale.root)} ${props.staff.scale.name}`)}` : 'this line'))
 const caption = computed(() => (pair.value ? pairCaption(pair.value) : ''))
 const canPick = computed(() => !!props.pickable && !!props.part && !!pair.value?.source && !!pair.value.hexatonic && pair.value.positions.length > 0)
 const bars = computed(() => pickBars(pair.value?.positions ?? []))

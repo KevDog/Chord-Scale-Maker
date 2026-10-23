@@ -3,8 +3,8 @@ import { webAudio } from '~/utils/clickSounds'
 
 /** just enough of an AudioContext to build the click's nodes, counting the buffers it makes */
 function stubContext() {
-  const made = { buffers: 0, oscillators: 0 }
-  const param = () => ({ value: 0, setValueAtTime: () => {}, exponentialRampToValueAtTime: () => {}, linearRampToValueAtTime: () => {} })
+  const made = { buffers: 0, oscillators: 0, faded: 0 }
+  const param = () => ({ value: 0, setValueAtTime: () => {}, exponentialRampToValueAtTime: () => {}, linearRampToValueAtTime: () => {}, cancelScheduledValues: () => {}, setTargetAtTime: () => made.faded++ })
   const node = () => ({ connect: (n: unknown) => n, gain: param(), frequency: param(), type: '', buffer: null, start: () => {}, stop: () => {} })
   class Ctx {
     sampleRate = 48000
@@ -49,5 +49,11 @@ describe('clickSounds', () => {
     const made = stubContext()
     webAudio()!.note(65, 0, 1)
     expect(made.oscillators).toBe(2)
+  })
+
+  it('a note’s stop fades it out (a staff’s Stop)', () => {
+    const made = stubContext()
+    webAudio()!.note(65, 0, 1)()
+    expect(made.faded).toBe(1)
   })
 })

@@ -688,6 +688,19 @@
             <strong :class="EM">What you can change:</strong> the click's feel.
           </UiText>
         </DecisionSection>
+
+        <DecisionSection v-if="hearLineOn" id="hear.play">
+          <UiText>
+            A staff's <strong :class="EM">Play</strong> sounds a Scales staff up and down, the top note once, in 8ths at the
+            click's tempo, the last note a quarter; with Practice on, only the notes picked, in the same order. An Arpeggios
+            staff plays its notes as drawn, in 8ths; a Block triad pair plays each group as one chord, a quarter each. It
+            sounds at concert pitch and swings as Hear line does. With the click stopped it starts at once; with the click
+            running it starts on the click's next bar.
+          </UiText>
+          <UiText>
+            <strong :class="EM">What you can change:</strong> the click's tempo and feel, and Practice's notes.
+          </UiText>
+        </DecisionSection>
       </section>
     </article>
     <PageIndex :sections="SECTIONS" column :current="current" />

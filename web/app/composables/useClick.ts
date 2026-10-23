@@ -1,5 +1,5 @@
 import type { InjectionKey, Ref } from 'vue'
-import { type Beats, type ClickFeel, type ClickPattern, type ClickPlan, type ClickState, type Feel, type TimedClick, type VoiceNote, CLICK_PATTERNS, clampTempo, defaultFeel, defaultPattern, defaultTempo, scheduleClicks, scheduleVoice, tapTempo } from '@chord-scale-maker/engine'
+import { type Beats, type ClickFeel, type ClickPattern, type ClickPlan, type ClickState, type Feel, type PhraseNote, type TimedClick, type VoiceNote, CLICK_PATTERNS, clampTempo, defaultFeel, defaultPattern, defaultTempo, scheduleClicks, scheduleVoice, tapTempo, timePhrase } from '@chord-scale-maker/engine'
 import { type ClickAudio, type ClickSound, CLICK_SOUNDS, webAudio } from '~/utils/clickSounds'
 import { readStored, writeStored } from '~/utils/storage'
 
@@ -7,7 +7,8 @@ import { readStored, writeStored } from '~/utils/storage'
  * The click (#254, docs/superpowers/specs/2026-10-21-metronome-design.md): one per song page. The engine says which
  * clicks fall in each lookahead window; this books them on the AudioContext's clock, so a busy page never makes it
  * drift, and lights the beat that is sounding. Tempo, feel and Click on are remembered per chart, the rest in this browser.
- * With Hear line on, the Changes sheet's Line (setLine) sounds with it, from the same clock (#507).
+ * With Hear line on, the Changes sheet's Line (setLine) sounds with it, from the same clock (#507); a staff's Play
+ * (play) sounds its phrase at the click's tempo and feel, on the click's next bar while it runs, else at once.
  */
 /** folded: the bar shows only Start/Stop, the tempo and the lights; hear: Hear line, the Line sounds with the click */
 export type ClickSettings = Readonly<{ hat: boolean; countIn: 0 | 1 | 2; sound: ClickSound; folded: boolean; hear: boolean }>
@@ -19,8 +20,13 @@ export type ClickDeps = Readonly<{
   audio?: () => ClickAudio | null
   setInterval?: (fn: () => void, ms: number) => number
   clearInterval?: (id: number) => void
+  setTimeout?: (fn: () => void, ms: number) => number
+  clearTimeout?: (id: number) => void
   raf?: (fn: () => void) => number
 }>
+
+/** a Play with the click stopped starts this far ahead (s), so its first note isn't clipped */
+const PHRASE_LEAD = 0.05
 
 /** how often the scheduler runs (ms) and how far ahead it books (s): further while the tab is hidden, as browsers slow its timers */
 export const LOOKAHEAD = { interval: 25, ahead: 0.1, hiddenAhead: 1.2 } as const
@@ -63,6 +69,8 @@ function readChart(key: string | undefined): Chosen {
 export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<Ref<string | undefined>>, deps: ClickDeps = {}) {
   const setTimer = deps.setInterval ?? ((fn, ms) => window.setInterval(fn, ms))
   const clearTimer = deps.clearInterval ?? ((id) => window.clearInterval(id))
+  const setEnd = deps.setTimeout ?? ((fn, ms) => window.setTimeout(fn, ms))
+  const clearEnd = deps.clearTimeout ?? ((id) => window.clearTimeout(id))
   const raf = deps.raf ?? ((fn) => requestAnimationFrame(fn))
   const makeAudio = deps.audio ?? webAudio
 
@@ -211,7 +219,60 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
     raf(frame)
   }
 
+  const playing = ref<string | null>(null)
+  let phraseStops: readonly (() => void)[] = []
+  let phraseEnd: number | null = null
+  let phraseRun = 0 // each Play and Stop: a Play whose resume settles after another gives way
+
+  /** silence the phrase sounding, if any */
+  function stopPhrase(): void {
+    phraseRun++
+    for (const s of phraseStops) s()
+    phraseStops = []
+    if (phraseEnd !== null) clearEnd(phraseEnd)
+    phraseEnd = null
+    playing.value = null
+  }
+
+  /** a staff's Play (#507): its phrase, alone; one at a time */
+  async function play(id: string, phrase: readonly PhraseNote[]): Promise<void> {
+    stopPhrase()
+    audio ??= makeAudio()
+    if (!audio) {
+      unavailable.value = true
+      return
+    }
+    const mine = phraseRun
+    playing.value = id
+    if (!running.value) {
+      try {
+        await audio.resume()
+      } catch {
+        if (mine !== phraseRun) return
+        playing.value = null
+        unavailable.value = true
+        return
+      }
+      if (mine !== phraseRun) return
+    }
+    const now = audio.now()
+    const bar = (plan.value.options.beats * 60) / plan.value.tempo
+    const next = state.barStart > now ? state.barStart : state.barStart + bar
+    const start = running.value ? next : now + PHRASE_LEAD
+    const notes = timePhrase(phrase, plan.value.tempo, feel.value, start)
+    const a = audio
+    phraseStops = notes.map((n) => a.note(n.midi, n.time, n.length))
+    const end = Math.max(...notes.map((n) => n.time + n.length), start)
+    phraseEnd = setEnd(() => {
+      phraseStops = []
+      phraseEnd = null
+      playing.value = null
+      if (!running.value) void audio?.suspend()
+    }, (end - now) * 1000)
+  }
+
   function stop(): void {
+    stopPhrase()
     run++
     if (timer !== null) clearTimer(timer)
     timer = null
@@ -248,7 +309,7 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
     audio = null
   }
 
-  return { shown, running, unavailable, tempo, feel, pattern, settings, beat, counting, hasLine, setLine, start, stop, toggle, tap, show, hide, dispose }
+  return { shown, running, unavailable, tempo, feel, pattern, settings, beat, counting, hasLine, setLine, playing, play, stopPhrase, start, stop, toggle, tap, show, hide, dispose }
 }
 
 export type Click = ReturnType<typeof useClick>
