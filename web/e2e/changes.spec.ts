@@ -738,6 +738,7 @@ test.describe('the rhythm line', () => {
 
 // the tuplet pulses (Phase 4 spec §2, §7; flag `rhythmGears`): Units families at Everything, drawn at their ratio
 test.describe('the tuplet pulses', () => {
+  test.use({ interfaceLevel: 'everything' }) // the tuplet pulses are Everything's (#553): said here, not left to the fixture's default
   test('quarter-note quintuplets in 5: one tuplet a bar, its number 5', async ({ page }) => {
     await page.goto('/song/f-jazz-blues') // 4/4, 4 bars a line
     await chooseRhythm(page, 'Quarter-note quintuplets', { In: 'In 5', Variation: 'with accents' })
@@ -865,6 +866,7 @@ test.describe('the tuplet pulses', () => {
 
 // mixed phrasing (Phase 4 spec §3, §6, §7; flag `rhythmGears`): Groups Up by section on an AABA chart, 4 bars a line
 test.describe('the Groups path', () => {
+  test.use({ interfaceLevel: 'everything' }) // the path is Everything's (#553)
   const upBySection = async (page: Page) => {
     await page.goto('/song/satin-doll')
     await chooseRhythm(page, '8ths', { In: 'In 3', Variation: 'with accents' })
