@@ -66,3 +66,19 @@ parts of #507.
 
 ## Not in this part
 - The Pentatonic overlay's rungs sounding their pentatonic (#507, part 3).
+
+# Part 3: play a rung (#507)
+
+## What it does
+- The Changes sheet's Key-basis pentatonic label opens its key's ladder (`PentatonicLadder.vue`). Each pentatonic on
+  it gets a **Play** button beside its name: the minor pentatonic up to its octave and back down (root, ♭3, 4, 5, ♭7,
+  root, then down, the top once), in 8ths, the last a quarter, swung with the click on Swing.
+- Its register: the root placed as a Scales staff's root-mode root (`CLEF_ROOT_LOW`), written for the part, sounding
+  at concert pitch (decision `hear.pitch`).
+- The same player as part 2 (`<PhraseButton>`): Stop while it plays, one phrase at a time, the click's next bar when
+  the click runs. Inline beside the name, so the popover keeps its size. The overlay's Rung control gets no button:
+  the ladder already lists every rung, and the rail stays two rows.
+- Behind the `hearLine` flag; `hear.play` in How it decides names the ladder too.
+
+## The notes (engine `voice.ts`, pure)
+- `pentatonicPhrase(root, part)`: the phrase above from a rung's written root.

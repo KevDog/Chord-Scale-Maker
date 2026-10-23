@@ -4,8 +4,9 @@
  */
 import type { ClickFeel, ClickPlan, ClickState } from './click'
 import type { GuideNote } from './guideTones'
-import { type Transposition, TRANSPOSITIONS } from './instruments'
-import type { Pitched } from './part'
+import { CLEF_ROOT_LOW, type Transposition, TRANSPOSITIONS } from './instruments'
+import type { Part, Pitched } from './part'
+import { mod, pcOf, type Spelled } from './pitch'
 
 /** a drawn bar's beats and its Line's voice (a ChangesBar's) */
 export type VoiceBar = Readonly<{ beats: number; voice: readonly GuideNote[] }>
@@ -50,6 +51,16 @@ const concert = (notes: readonly Pitched[], trans: Transposition): number[] => n
 /** a Scales staff up and down, the top once; with Practice on (selected), its selected notes alone */
 export function scalePhrase(notes: readonly Pitched[], selected: readonly boolean[] | null, trans: Transposition): PhraseNote[] {
   const up = concert(selected ? notes.filter((_, i) => selected[i]) : notes, trans)
+  return eighths([...up, ...up.slice(0, -1).reverse()])
+}
+
+const MINOR_PENT = [0, 3, 5, 7, 10, 12] as const
+
+/** a pentatonic ladder's rung (#507, part 3): its minor pentatonic up to the octave and back, the root where a Scales staff's root-mode root sits */
+export function pentatonicPhrase(root: Spelled, part: Part): PhraseNote[] {
+  const low = CLEF_ROOT_LOW[part.clef]
+  const p0 = low + mod(pcOf(root) - low, 12) - TRANSPOSITIONS[part.trans][1]
+  const up = MINOR_PENT.map((s) => p0 + s)
   return eighths([...up, ...up.slice(0, -1).reverse()])
 }
 

@@ -483,8 +483,9 @@
               <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
                 On the Scales and Arpeggios sheets, the <strong class="font-semibold">Play</strong> button by each staff's
                 label sounds it at the click's tempo: a scale up and down (with Practice on, only the notes you picked), an
-                arpeggio as drawn (<DecisionLink id="hear.play">how</DecisionLink>). With the click running it comes in on the
-                next bar. Press it again to stop.
+                arpeggio as drawn (<DecisionLink id="hear.play">how</DecisionLink>). On the Changes sheet, each pentatonic on a
+                label's ladder has one too: it plays that minor pentatonic up to its octave and back. With the click running it
+                comes in on the next bar. Press it again to stop.
               </dd>
             </div>
           </dl>
