@@ -76,7 +76,7 @@
 </template>
 
 <script setup lang="ts">
-import { formatRhythm, LIBRARY_IDS, parseRhythmId, PENTATONIC_STEP_BARS, positionLabel, type Pulse, PULSE_LABELS, RHYTHM_PATH_OFF, type RhythmId, rhythmLabel, type RhythmPath, rhythmPathCaption, type RhythmStep, RUN_ATTACKS, runPositions, stepLabel, UNIT_GROUPS, unitRhythm, type Variation, VARIATION_LABELS, VARIATIONS } from '@chord-scale-maker/engine'
+import { formatRhythm, LIBRARY_IDS, parseRhythmId, PENTATONIC_STEP_BARS, positionLabel, type Pulse, PULSE_LABELS, RHYTHM_GEAR_PRESETS, RHYTHM_GROUP_PRESETS, RHYTHM_PATH_OFF, type RhythmId, rhythmLabel, type RhythmPath, rhythmPathCaption, type RhythmStep, RUN_ATTACKS, runPositions, stepLabel, UNIT_GROUPS, unitRhythm, type Variation, VARIATION_LABELS, VARIATIONS } from '@chord-scale-maker/engine'
 import type { FunctionalComponent } from 'vue'
 import { customRhythmId, RHYTHM_TEXT, useRhythmText } from '~/composables/useRhythmText'
 import { LIST_CHOICES, type ListChoice, RHYTHM_PATH_LISTS, useRhythmPathLists } from '~/composables/useRhythmPathLists'
@@ -164,8 +164,10 @@ function setRun(change: Readonly<{ attacks?: number; from?: number }>): void {
  */
 const pathsShown = computed(() => !!props.paths && gearsOn && shows('rhythm-gears') && (parsedRhythm.value?.kind === 'unit' || parsedRhythm.value?.kind === 'custom'))
 const pathActs = computed(() => rhythmPathCaption(rhythm.value, path.value) !== null)
-const GROUPS_LABELS: Readonly<Record<ListChoice, string>> = { one: 'One', up: 'Up', down: 'Down', custom: 'Your list…' }
-const GEARS_LABELS: Readonly<Record<ListChoice, string>> = { one: 'One', up: 'Up the gears', down: 'Down the gears', custom: 'Your list…' }
+/** a preset names its list, as spec §3 does: "Up (3 4 5 6 7)", "Up the gears (4t 8 8t 16 16t)" (#553) */
+const withList = (name: string, list: readonly unknown[]): string => `${name} (${list.join(' ')})`
+const GROUPS_LABELS: Readonly<Record<ListChoice, string>> = { one: 'One', up: withList('Up', RHYTHM_GROUP_PRESETS.up), down: withList('Down', RHYTHM_GROUP_PRESETS.down), custom: 'Your list…' }
+const GEARS_LABELS: Readonly<Record<ListChoice, string>> = { one: 'One', up: withList('Up the gears', RHYTHM_GEAR_PRESETS.up), down: withList('Down the gears', RHYTHM_GEAR_PRESETS.down), custom: 'Your list…' }
 /** Groups' and Gears' choices and Your list… text: the owner's (PreviewControls), so text that doesn't read survives the panel closing */
 const lists = inject(RHYTHM_PATH_LISTS, () => useRhythmPathLists(path), true)
 const { choice: groupsChoice, text: groupsText } = lists.groups

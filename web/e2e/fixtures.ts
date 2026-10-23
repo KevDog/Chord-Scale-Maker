@@ -443,10 +443,10 @@ async function chooseInLineOptions(page: Page, name: string, option: string, sho
   })
 }
 
-/** with a unit on the Changes, choose its Groups path (Phase 4 spec §7): "One", "Up", "Down" */
+/** with a unit on the Changes, choose its Groups path (Phase 4 spec §7): "One", "Up (3 4 5 6 7)", "Down (7 6 5 4 3)", by their labels */
 export const chooseGroups = (page: Page, label: string): Promise<void> => chooseInLineOptions(page, 'Groups', label, `Groups: ${label}`)
 
-/** with a unit or your rhythm on the Changes, choose its Gears path (Phase 4 spec §7): "One", "Up the gears", "Down the gears" */
+/** with a unit or your rhythm on the Changes, choose its Gears path (Phase 4 spec §7): "One", "Up the gears (4t 8 8t 16 16t)", …, by their labels */
 export const chooseGears = (page: Page, label: string): Promise<void> => chooseInLineOptions(page, 'Gears', label, `Gears: ${label}`)
 
 /** with a rhythm path on, choose its Step (Phase 4 spec §7): "By section", "By key area", "Every 2 bars", … */

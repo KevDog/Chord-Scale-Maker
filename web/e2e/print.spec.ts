@@ -278,7 +278,7 @@ test('prints the Changes with Groups Up by section, a sheet page to a letter pag
   await pickOption(page, 'Where each scale starts', 'From B')
   await chooseSheet(page, 'Changes')
   await chooseRhythm(page, '8ths', { In: 'In 3', Variation: 'with accents' })
-  await chooseGroups(page, 'Up')
+  await chooseGroups(page, 'Up (3 4 5 6 7)')
   await chooseRhythmStep(page, 'By section')
   await rhythmDrawn(page)
   await expect(page.locator('[data-rhythm-step]').first()).toBeAttached()

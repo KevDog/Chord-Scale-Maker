@@ -159,8 +159,8 @@ for (const theme of ['light', 'dark'] as const) {
       await page.goto(SONG)
       if (theme === 'dark') await darkMode(page)
       await chooseRhythm(page, '8ths', { In: 'In 3', Variation: 'with accents' })
-      await chooseGroups(page, 'Up')
-      await chooseGears(page, 'Up the gears')
+      await chooseGroups(page, 'Up (3 4 5 6 7)')
+      await chooseGears(page, 'Up the gears (4t 8 8t 16 16t)')
       await rhythmDrawn(page)
       await expect(page.locator('[data-rhythm-step]').first()).toHaveText('③♩ triplets')
       await openPanel(page, 'Line options') // the Groups, Gears and Step listboxes, scanned too
