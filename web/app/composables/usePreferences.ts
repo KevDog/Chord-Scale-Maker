@@ -4,6 +4,7 @@ import { type GuideFrom, type LineMode, lineChoiceOf } from '~/utils/sheetLine'
 import { FUNCTIONS_KEYS } from '~/utils/functionsKey'
 import { isSpell, type Spell } from '~/utils/scaleChoices'
 import { isOverlay, type Overlay } from '~/utils/overlay'
+import { isGearsRhythm } from '~/utils/rhythmText'
 
 /** the pattern the Changes sheet and the Patterns sheet start with */
 export const DEFAULT_PATTERN = '+1 +1 +1 −2'
@@ -70,8 +71,10 @@ export function usePreferences() {
   const approachesOn = useFeature('approaches')
   const approach = storedRef<Approach>('csm-approach', (s) => (isApproach(s) && approachesOn ? s : undefined), 'none')
   // the Changes sheet's rhythm line and target beats (rhythm spec §9): Off until chosen; with the flag off stored ones read as off but stay stored
+  // a rhythm at a tuplet pulse plays with the rhythmGears flag on only (Phase 4 spec D8); off, it reads as off but stays stored
   const rhythmOn = useFeature('rhythm')
-  const rhythm = storedRef<RhythmId>('csm-rhythm', (s) => (isRhythmId(s) && rhythmOn ? s : undefined), 'off')
+  const gearsOn = useFeature('rhythmGears')
+  const rhythm = storedRef<RhythmId>('csm-rhythm', (s) => (isRhythmId(s) && rhythmOn && (gearsOn || !isGearsRhythm(s)) ? s : undefined), 'off')
   const targets = storedRef<boolean>('csm-targets', (s) => (rhythmOn && (s === 'on' || s === 'off') ? s === 'on' : undefined), false, (v) => (v ? 'on' : 'off'))
   // where the rhythm starts, its timing and Restate (rhythm spec §10): on the beat, on time and off until chosen
   const rhythmStart = storedRef<RhythmStart>('csm-rhythm-start', (s) => (isRhythmStart(s) && rhythmOn ? s : undefined), 'beat')
@@ -137,7 +140,7 @@ export function linkPreferences(view: ShareView) {
     lineMode: ref<LineMode>(choice.mode === 'cells' && !useFeature('cells') ? 'off' : choice.mode), // a link without a line (or a Cells line, the flag off) shows none
     guideLine: ref<GuideFrom>(choice.guide ?? own.guideLine.value),
     approach: ref<Approach>(useFeature('approaches') ? (view.approach ?? 'none') : 'none'), // a link shows what it was sent with: none without
-    rhythm: ref<RhythmId>(useFeature('rhythm') ? (view.rhythm ?? 'off') : 'off'), // a link shows what it was sent with: off without
+    rhythm: ref<RhythmId>(useFeature('rhythm') && (useFeature('rhythmGears') || !isGearsRhythm(view.rhythm ?? 'off')) ? (view.rhythm ?? 'off') : 'off'), // a link shows what it was sent with: off without (or at a tuplet pulse, the rhythmGears flag off)
     targets: ref<boolean>(useFeature('rhythm') ? (view.targets ?? false) : false),
     rhythmStart: ref<RhythmStart>(useFeature('rhythm') ? (view.rhythmStart ?? 'beat') : 'beat'),
     anticipate: ref<number>(useFeature('rhythm') ? (view.anticipate ?? 0) : 0),

@@ -46,6 +46,40 @@ describe('the Rhythm controls (rhythm spec §9)', () => {
     expect((w.find('input[aria-label="Your rhythm"]').element as HTMLInputElement).value).toBe('8: xq')
   })
 
+  it('lists the tuplet pulses as Units families at Everything only (Phase 4 spec §7, D22)', async () => {
+    const units = async (): Promise<string[]> => {
+      const w = await mount()
+      await openPanel(w, 'Line options')
+      await w.find('[aria-label="Rhythm"]').trigger('click')
+      return w.findAll('[role=option]').map((o) => o.text())
+    }
+    const tuplets = ['Quarter-note triplets', 'Quarter-note quintuplets', '8th-note quintuplets', '16th quintuplets', 'Sextuplets', 'Septuplets']
+    expect(await units()).toEqual(expect.arrayContaining(['Triplets', ...tuplets]))
+    useInterface().level.value = 'intermediate'
+    const fewer = await units()
+    expect(fewer).toContain('Triplets')
+    expect(fewer.filter((o) => tuplets.includes(o))).toEqual([])
+  })
+
+  it('reads a typed tuplet pulse at Everything only: below it the field shows its error and nothing applies (Phase 4 spec D22)', async () => {
+    const typed = async (level: 'everything' | 'intermediate') => {
+      useInterface().level.value = level
+      const w = await mount()
+      await openPanel(w, 'Line options')
+      await w.find('[aria-label="Rhythm"]').trigger('click')
+      await w.findAll('[role=option]').find((o) => o.text() === 'Your rhythm…')!.trigger('click')
+      await w.find('input[aria-label="Your rhythm"]').setValue('8q: x_x__')
+      await nextTick()
+      return w
+    }
+    const at = await typed('everything')
+    expect(at.find('#rhythm-error').exists()).toBe(false)
+    expect(at.emitted('update:rhythm')?.at(-1)).toEqual(['custom:8q:x_x__'])
+    const below = await typed('intermediate')
+    expect(below.find('#rhythm-error').text()).toContain('Use x, ., _ and > after')
+    expect((below.emitted('update:rhythm') ?? []).flat()).not.toContain('custom:8q:x_x__')
+  })
+
   it('ties the Start and Timing help to their buttons, for a screen reader (#505)', async () => {
     const w = await mountSuspended(PreviewControls, { props: { sheet: 'changes', instrument: 'piano', spell: 'key', intervals: true, keyStart: 'C', lineMode: 'arpeggio', rhythm: 'card:downbeats', lineTakesRhythm: true } })
     await openPanel(w, 'Line options')

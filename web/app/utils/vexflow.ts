@@ -1,5 +1,5 @@
 import { type ArpeggioStaffModel, type Pitched, type RunNote, type StaffModel, type StaffRun, toVexKey } from '@chord-scale-maker/engine'
-import { groupsOf, INK, inkTips, marked, REST_KEY, rhythmAria, rhythmTies, staveRoom, tripletsOf, voiceOf } from './changesDrawing'
+import { groupsOf, INK, inkTips, marked, REST_KEY, rhythmAria, rhythmTies, staveRoom, tupletsOf, voiceOf } from './changesDrawing'
 
 export type VexFlowModule = typeof import('vexflow/bravura')
 type Context = ReturnType<InstanceType<VexFlowModule['Renderer']>['getContext']>
@@ -206,7 +206,7 @@ type StaveNote = InstanceType<VexFlowModule['StaveNote']>
  * sharing the width by their note counts after the first bar's clef, key and time signatures; each note from its
  * mark (value, dot, accent; a rest at the clef's rest line), its pitch from `pitches` with its accidental at its attack
  * only (a tied-in piece draws none), stems by autoStem; one tuplet a bar with a bar-long tuplet (numNotes in the time of
- * notesOccupied, rests included), else the rhythm's triplets; beams by mark.beam; ties as one chain across the bars.
+ * notesOccupied, rests included), else the rhythm's tuplets at their ratios (Phase 4 spec §2); beams by mark.beam; ties as one chain across the bars.
  * Ends with the final barline when last, else a double one. Returns the run's notes in order, rests included.
  */
 export function drawRun(
@@ -249,7 +249,7 @@ export function drawRun(
     const tuplet = bar.tuplet
     const tuplets = tuplet
       ? groupsOf(ticks, (i) => rhythm[i]?.tuplet ?? null).map((g) => new vf.Tuplet(g, { numNotes: tuplet.notes, notesOccupied: tuplet.of, location: 1, ratioed: tuplet.notes < tuplet.of }))
-      : tripletsOf(vf, ticks, (i) => rhythm[i]?.tuplet ?? null)
+      : tupletsOf(vf, ticks, (i) => rhythm[i])
     const voice = voiceOf(vf, run.beats, ticks)
     const beams = groupsOf(ticks, (i) => rhythm[i]?.beam ?? null).filter((g) => g.length > 1).map((g) => new vf.Beam(g, true))
     new vf.Formatter().joinVoices([voice]).format([voice], staveRoom(stave, x, w))

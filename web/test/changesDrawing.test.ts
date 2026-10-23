@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
+import * as vf from 'vexflow/bravura'
 import type { ChangesBar, ChangesChord, ChangesLine, GuideNote, Letter, Pitched, RhythmCardModel, RhythmNote } from '@chord-scale-maker/engine'
-import { arpeggioAria, beamRuns, beatXs, cardAria, DURATIONS, fitBars, guideAria, mergeNames, restatedAccidental, rhythmAria, targetsAria, SLASH_TARGET_ROW, targetRow, voicedBand, voltaShift, withTargets } from '~/utils/changesDrawing'
+import { arpeggioAria, beamRuns, beatXs, cardAria, DURATIONS, fitBars, guideAria, mergeNames, restatedAccidental, rhythmAria, targetsAria, SLASH_TARGET_ROW, targetRow, tupletsOf, voicedBand, voltaShift, withTargets } from '~/utils/changesDrawing'
 
 const chord = (beat: number, text: string, guide: string): ChangesChord => ({
   beat,
@@ -258,7 +259,7 @@ describe('targetsAria (#505)', () => {
 
 describe('beamRuns (rhythm-on-lines spec §8)', () => {
   const C4: Pitched = { letter: 0, acc: 0, midi: 60 }
-  const n = (beam: number | null, pitched = true): GuideNote => ({ pitch: pitched ? C4 : null, beat: 0, beats: 0.5, tie: false, tiedIn: false, accidental: null, mark: { value: '8', tuplet: null, beam, accent: false } })
+  const n = (beam: number | null, pitched = true): GuideNote => ({ pitch: pitched ? C4 : null, beat: 0, beats: 0.5, tie: false, tiedIn: false, accidental: null, mark: { value: '8', tuplet: null, ratio: null, beam, accent: false } })
   it('beams runs of two or more pitched notes sharing a mark beam; a rest splits a run', () => {
     expect(beamRuns([n(0), n(0, false), n(0), n(1), n(1), n(1)])).toEqual([[3, 4, 5]])
     expect(beamRuns([n(0), n(0), n(null), n(2), n(2)])).toEqual([[0, 1], [3, 4]])
@@ -266,10 +267,28 @@ describe('beamRuns (rhythm-on-lines spec §8)', () => {
 })
 
 describe('cardAria (rhythm-scales-arpeggios spec §1)', () => {
-  const q: RhythmNote = { beat: 0, value: 'q', rest: false, accent: false, tie: false, tiedIn: false, tuplet: null, beam: null, bracket: null }
+  const q: RhythmNote = { beat: 0, value: 'q', rest: false, accent: false, tie: false, tiedIn: false, tuplet: null, ratio: null, beam: null, bracket: null }
   const card = (bars: number, cut: boolean): RhythmCardModel => ({ bars: Array.from({ length: bars }, () => [q, q, q, q]), cut, beats: 4 })
   it('names the rhythm and its bars, and says a cut card continues', () => {
     expect(cardAria('8ths in 5, with accents', card(4, true))).toBe('Rhythm card: 8ths in 5, with accents, 4 bars, continues')
     expect(cardAria('Downbeats', card(1, false))).toBe('Rhythm card: Downbeats, 1 bar')
+  })
+})
+
+describe('tupletsOf (Phase 4 spec §2)', () => {
+  const tick = (value: RhythmNote['value'], tuplet: number | null, ratio: RhythmNote['ratio']): RhythmNote => ({ beat: 0, value, rest: false, accent: false, tie: false, tiedIn: false, tuplet, ratio, beam: null, bracket: null })
+  const tupletsFor = (notes: readonly RhythmNote[]) => {
+    const ticks = notes.map((n) => new vf.StaveNote({ keys: ['b/4'], duration: n.value }))
+    return tupletsOf(vf, ticks, (i) => notes[i])
+  }
+  it('makes one tuplet a group, its ratio from the notes: a 5:4 bar gives one tuplet of 5 in the time of 4', () => {
+    const tuplets = tupletsFor(Array.from({ length: 5 }, () => tick('q', 0, { notes: 5, of: 4 })))
+    expect(tuplets.map((t) => [t.getNoteCount(), t.getNotesOccupied(), t.getNotes().length])).toEqual([[5, 4, 5]])
+  })
+  it('keeps triplets 3:2 and septuplets 7:4, and gives straight notes none', () => {
+    const trip = tupletsFor([0, 0, 0, 1, 1, 1].map((g) => tick('8', g, { notes: 3, of: 2 })))
+    expect(trip.map((t) => [t.getNoteCount(), t.getNotesOccupied()])).toEqual([[3, 2], [3, 2]])
+    expect(tupletsFor(Array.from({ length: 7 }, () => tick('16', 0, { notes: 7, of: 4 }))).map((t) => [t.getNoteCount(), t.getNotesOccupied()])).toEqual([[7, 4]])
+    expect(tupletsFor([tick('q', null, null), tick('q', null, null)])).toEqual([])
   })
 })

@@ -736,6 +736,19 @@ test.describe('the rhythm line', () => {
   })
 })
 
+// the tuplet pulses (Phase 4 spec §2, §7; flag `rhythmGears`): Units families at Everything, drawn at their ratio
+test.describe('the tuplet pulses', () => {
+  test('quarter-note quintuplets in 5: one tuplet a bar, its number 5', async ({ page }) => {
+    await page.goto('/song/f-jazz-blues') // 4/4, 4 bars a line
+    await chooseRhythm(page, 'Quarter-note quintuplets', { In: 'In 5', Variation: 'with accents' })
+    await rhythmDrawn(page)
+    const line = lines(page).first()
+    await expect(line.locator('.vf-tuplet')).toHaveCount(4)
+    await expect(line.locator('.vf-tuplet text')).toHaveText(Array(4).fill(String.fromCodePoint(0xe885))) // Bravura's tuplet 5
+    await expect(page.getByText(/Couldn.t draw/)).toHaveCount(0)
+  })
+})
+
 // a rhythm poured into the Line (rhythm-on-lines spec §8): Rhythm, Start, Timing and Target beats set in storage before load
 test.describe('a rhythm on the Lines', () => {
   const CHART = 'title: T\nkey: C\n\nsection: A\n1 | CMaj7\n2 | Dm7\n3 | G7\n4 | CMaj7\n'

@@ -24,6 +24,7 @@ describe('interface levels', () => {
       rhythm: 'intermediate',
       'notes-per-bar': 'intermediate',
       'rhythm-phrasing': 'everything',
+      'rhythm-gears': 'everything',
       'scale-choice': 'intermediate',
       'form-editing': 'intermediate',
       why: 'intermediate',
@@ -98,6 +99,15 @@ describe('hiddenSettings', () => {
     expect(hiddenSettings('essentials', { ...DEFAULTS, sheet: 'scales', rhythm: 'unit:8:3:accents' })).toEqual({ settings: ['rhythm'], needs: 'intermediate' })
     expect(hiddenSettings('essentials', { ...DEFAULTS, sheet: 'scales', rhythm: 'off' })).toBeNull() // what EditorView passes with the rhythmSheets flag off
     expect(hiddenSettings('essentials', { ...DEFAULTS, sheet: 'arpeggios', rhythm: 'unit:8:3:accents' })).toEqual({ settings: ['rhythm'], needs: 'intermediate' })
+  })
+
+  it('lists a rhythm at a tuplet pulse under rhythm-gears, at Everything, where the rhythm draws (Phase 4 spec D22)', () => {
+    expect(hiddenSettings('essentials', { ...DEFAULTS, rhythm: 'unit:8q:5:accents' })).toEqual({ settings: ['rhythm', 'rhythm-gears'], needs: 'everything' })
+    expect(hiddenSettings('intermediate', { ...DEFAULTS, rhythm: 'unit:8q:5:accents' })).toEqual({ settings: ['rhythm-gears'], needs: 'everything' })
+    expect(hiddenSettings('intermediate', { ...DEFAULTS, sheet: 'scales', rhythm: 'custom:16s:>xxxxxx' })).toEqual({ settings: ['rhythm-gears'], needs: 'everything' })
+    expect(hiddenSettings('everything', { ...DEFAULTS, rhythm: 'unit:8q:5:accents' })).toBeNull()
+    expect(hiddenSettings('intermediate', { ...DEFAULTS, rhythm: 'unit:8t:3:accents' })).toBeNull() // the old pulses stay Intermediate's
+    expect(hiddenSettings('intermediate', { ...DEFAULTS, lineMode: 'guide', rhythm: 'unit:8q:5:accents' })).toBeNull() // a Line that doesn't take it
   })
 
   it('lists Notes per bar on the Scales sheet only (rhythm-scales-arpeggios spec §9)', () => {

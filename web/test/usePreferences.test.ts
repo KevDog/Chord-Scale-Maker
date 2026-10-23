@@ -4,8 +4,8 @@ import { effectScope, nextTick } from 'vue'
 import { linkPreferences, usePreferences } from '~/composables/usePreferences'
 import { INSTRUMENTS, type ShareView } from '@chord-scale-maker/engine'
 
-const flags = vi.hoisted(() => ({ cells: true, approaches: true, phraseCells: true, rhythm: true, rhythmSheets: true }))
-mockNuxtImport('useFeature', () => (name: string) => (name === 'cells' && flags.cells) || (name === 'approaches' && flags.approaches) || (name === 'phraseCells' && flags.phraseCells) || (name === 'rhythm' && flags.rhythm) || (name === 'rhythmSheets' && flags.rhythmSheets))
+const flags = vi.hoisted(() => ({ cells: true, approaches: true, phraseCells: true, rhythm: true, rhythmSheets: true, rhythmGears: true }))
+mockNuxtImport('useFeature', () => (name: string) => (name === 'cells' && flags.cells) || (name === 'approaches' && flags.approaches) || (name === 'phraseCells' && flags.phraseCells) || (name === 'rhythm' && flags.rhythm) || (name === 'rhythmSheets' && flags.rhythmSheets) || (name === 'rhythmGears' && flags.rhythmGears))
 
 function prefs() {
   const scope = effectScope()
@@ -29,6 +29,7 @@ describe('usePreferences', () => {
     flags.phraseCells = true
     flags.rhythm = true
     flags.rhythmSheets = true
+    flags.rhythmGears = true
   })
 
   it("defaults to piano spelled from the chart's key, with interval labels on", () => {
@@ -160,6 +161,19 @@ describe('usePreferences', () => {
     expect(localStorage.getItem('csm-rhythm')).toBe('unit:8:5:accents')
   })
 
+  it('reads a stored rhythm at a tuplet pulse as Off with the rhythmGears flag off, keeping it stored (Phase 4 spec D8)', () => {
+    for (const id of ['unit:16s:7:accents', 'custom:8q:x_x__']) {
+      localStorage.setItem('csm-rhythm', id)
+      expect(prefs().rhythm.value).toBe(id)
+      flags.rhythmGears = false
+      expect(prefs().rhythm.value).toBe('off')
+      expect(localStorage.getItem('csm-rhythm')).toBe(id)
+      localStorage.setItem('csm-rhythm', 'unit:8t:3:accents') // the old pulses play with the flag off
+      expect(prefs().rhythm.value).toBe('unit:8t:3:accents')
+      flags.rhythmGears = true
+    }
+  })
+
   it('reads Notes per bar (rhythm-scales-arpeggios spec §9): 1 to 7, else Whole notes; Whole notes with the rhythmSheets flag off, keeping it stored', async () => {
     expect(prefs().notesPerBar.value).toBe('whole')
     localStorage.setItem('csm-notes-per-bar', '5')
@@ -287,6 +301,14 @@ describe('linkPreferences', () => {
     localStorage.clear()
     flags.rhythm = true
     flags.rhythmSheets = true
+    flags.rhythmGears = true
+  })
+
+  it('shows a linked rhythm at a tuplet pulse, and Off with the rhythmGears flag off (Phase 4 spec D8)', () => {
+    expect(linked({ rhythm: 'unit:16s:7:accents' }).rhythm.value).toBe('unit:16s:7:accents')
+    flags.rhythmGears = false
+    expect(linked({ rhythm: 'unit:16s:7:accents' }).rhythm.value).toBe('off')
+    expect(linked({ rhythm: 'unit:8t:3:accents' }).rhythm.value).toBe('unit:8t:3:accents')
   })
 
   it("shows the Notes per bar a link was sent with, and Whole notes without one or with the rhythmSheets flag off", () => {

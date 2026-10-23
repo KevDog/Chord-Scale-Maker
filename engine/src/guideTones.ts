@@ -71,8 +71,8 @@ export type GuideLine = 'off' | 'third' | 'seventh'
 
 export { drawnLengths, type NoteBeats, voiceAccidentals } from './noteValues'
 
-/** a poured note's notation: its value, tuplet, beam group and accent */
-export type RhythmMark = Pick<RhythmNote, 'value' | 'tuplet' | 'beam' | 'accent'>
+/** a poured note's notation: its value, tuplet and its ratio (Phase 4 spec §2), beam group and accent */
+export type RhythmMark = Pick<RhythmNote, 'value' | 'tuplet' | 'ratio' | 'beam' | 'accent'>
 
 /** one note (or rest) of a guide tone voice, within a bar */
 export type GuideNote = Readonly<{

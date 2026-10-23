@@ -10,8 +10,8 @@ import { baseQuality } from './qualities'
 import { spellFrom } from './scales'
 import { orNull } from './util'
 import { lineRhythm, type LineRhythm, type LineSpan, type RhythmPlan } from './rhythm/pour'
-import { restPieces, type RhythmNote, type RhythmValue } from './rhythm/notation'
-import { PULSE_PER_BEAT, type Pulse } from './rhythm/rhythm'
+import { restPieces, type RhythmNote, type RhythmValue, tupletGroup, type TupletRatio } from './rhythm/notation'
+import { pulseAt, pulseBeat, type Pulse } from './rhythm/rhythm'
 
 /**
  * 7th chord arpeggios on the Changes sheet (docs/superpowers/specs/2026-10-12-seventh-chord-arpeggios-design.md):
@@ -400,9 +400,10 @@ function lineSpans(chords: readonly GuideInput[], cells: readonly (Cells | null)
   })
 }
 
-/** a rhythm value's length in beats (in a triplet, ⅔ of it) */
+/** a rhythm value's length in beats (in a tuplet, scaled by its ratio: ⅔ of it in a triplet) */
 const VALUE_BEATS: Readonly<Record<RhythmValue, number>> = { w: 4, hd: 3, h: 2, qd: 1.5, q: 1, '8d': 0.75, '8': 0.5, '16': 0.25 }
-const valueBeats = (n: RhythmNote): number => VALUE_BEATS[n.value] * (n.tuplet === null ? 1 : 2 / 3)
+const tupletBeats = (value: RhythmValue, ratio: TupletRatio | null): number => VALUE_BEATS[value] * (ratio === null ? 1 : ratio.of / ratio.notes)
+const valueBeats = (n: RhythmNote): number => tupletBeats(n.value, n.ratio)
 
 /** under a rhythm, a segment a chord: its span's poured attacks (§3.3: owned, below 0), in order, in drawn bars */
 function spanSegments(chords: readonly GuideInput[], poured: LineRhythm, beats: Metre): readonly Segment[] {
@@ -452,10 +453,10 @@ function pourVoices(poured: LineRhythm, rhythm: RhythmPlan, played: readonly Pla
     for (const [i, n] of bar.entries()) {
       if (!n.tiedIn) held = n.rest || !poured.owners[d]?.[i] ? null : (pitchAt.get(`${d}:${n.beat}`) ?? null)
       const pitch = n.rest ? null : held
-      voice.push({ pitch, beat: n.beat, beats: valueBeats(n), tie: !!pitch && n.tie, tiedIn: !!pitch && n.tiedIn, accidental: null, mark: { value: n.value, tuplet: n.tuplet, beam: n.beam, accent: !!pitch && n.accent } })
+      voice.push({ pitch, beat: n.beat, beats: valueBeats(n), tie: !!pitch && n.tie, tiedIn: !!pitch && n.tiedIn, accidental: null, mark: { value: n.value, tuplet: n.tuplet, ratio: n.ratio, beam: n.beam, accent: !!pitch && n.accent } })
     }
     const silent = voice.map((n, i) => !n.pitch && !poured.owners[d]?.[i])
-    bars.set(rhythm.clockBars[d] ?? d, voiceAccidentals(mergeSilence(voice, silent, poured.laid.pulse), keySig))
+    bars.set(rhythm.clockBars[d] ?? d, voiceAccidentals(mergeSilence(voice, silent, poured.laid.pulses[d]!), keySig))
   })
   return bars
 }
@@ -466,12 +467,13 @@ function pourVoices(poured: LineRhythm, rhythm: RhythmPlan, played: readonly Pla
  * a scale-below pick-up out of range keeps its own rest
  */
 function mergeSilence(voice: readonly GuideNote[], silent: readonly boolean[], pulse: Pulse): readonly GuideNote[] {
-  const per = PULSE_PER_BEAT[pulse]
-  const pulseOf = (beat: number): number => Math.round(beat * per)
+  // the bar's pulse (Phase 4 spec §1): silences merge within a beat, or a tuplet's group
+  const pulseOf = (beat: number): number => pulseAt(pulse, beat)
+  const groupOf = (n: GuideNote): number => tupletGroup(pulse, pulseOf(n.beat))
   const runs = voice.reduce<GuideNote[][]>((out, n, i) => {
     const last = out.at(-1)
     const prev = voice[i - 1]
-    const joins = silent[i] && prev && silent[i - 1] && last && Math.floor(pulseOf(n.beat) / per) === Math.floor(pulseOf(last[0]!.beat) / per)
+    const joins = silent[i] && prev && silent[i - 1] && last && groupOf(n) === groupOf(last[0]!)
     return joins ? [...out.slice(0, -1), [...last, n]] : [...out, [n]]
   }, [])
   return runs.flatMap((run) => {
@@ -479,9 +481,9 @@ function mergeSilence(voice: readonly GuideNote[], silent: readonly boolean[], p
     if (run.length === 1) return run
     const at = pulseOf(first.beat)
     const length = run.reduce((a, n) => a + pulseOf(n.beat + n.beats) - pulseOf(n.beat), 0)
-    return restPieces(at, length, per, pulse === '8t').map((p): GuideNote => {
-      const tuplet = p.triplet ? (first.mark?.tuplet ?? null) : null
-      return { ...first, beat: p.at / per, beats: VALUE_BEATS[p.value] * (tuplet === null ? 1 : 2 / 3), mark: { value: p.value, tuplet, beam: null, accent: false } }
+    return restPieces(at, length, pulse).map((p): GuideNote => {
+      const tuplet = p.ratio ? (first.mark?.tuplet ?? null) : null
+      return { ...first, beat: pulseBeat(pulse, p.at), beats: tupletBeats(p.value, p.ratio), mark: { value: p.value, tuplet, ratio: tuplet === null ? null : p.ratio, beam: null, accent: false } }
     })
   })
 }
