@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { CONTROL_TIERS, hiddenSettings, initialLevel, INTERFACE_LEVELS, isInterfaceLevel, levelLabel, shows, type ViewSettings } from '~/utils/interface'
 
-const DEFAULTS: ViewSettings = { sheet: 'changes', scaleLevel: 'standard', numerals: true, scaleNames: true, lineMode: 'off', spell: 'key', practice: null, overlay: 'off', picks: false, approach: 'none', rhythm: 'off', targets: false }
+const DEFAULTS: ViewSettings = { sheet: 'changes', scaleLevel: 'standard', numerals: true, scaleNames: true, lineMode: 'off', spell: 'key', practice: null, overlay: 'off', picks: false, approach: 'none', rhythm: 'off', targets: false, rhythmStart: 'beat', anticipate: 0, rhythmLine: false }
 
 describe('interface levels', () => {
   it('orders the levels and names them', () => {
@@ -22,6 +22,7 @@ describe('interface levels', () => {
       cells: 'intermediate',
       approaches: 'intermediate',
       rhythm: 'intermediate',
+      'rhythm-phrasing': 'everything',
       'scale-choice': 'intermediate',
       'form-editing': 'intermediate',
       why: 'intermediate',
@@ -74,6 +75,14 @@ describe('hiddenSettings', () => {
     expect(hiddenSettings('essentials', { ...DEFAULTS, approach: 'enclosure' })).toEqual({ settings: ['approaches'], needs: 'intermediate' })
     expect(hiddenSettings('intermediate', { ...DEFAULTS, approach: 'enclosure' })).toBeNull()
     expect(hiddenSettings('essentials', { ...DEFAULTS, sheet: 'scales', approach: 'enclosure' })).toBeNull()
+  })
+
+  it('names Start and timing in force only when the Line takes the rhythm', () => {
+    const away = { ...DEFAULTS, lineMode: 'arpeggio', rhythm: 'card:upbeats', rhythmLine: true, rhythmStart: 'pickup-1' } as const satisfies ViewSettings
+    expect(hiddenSettings('intermediate', away)).toEqual({ settings: ['rhythm-phrasing'], needs: 'everything' })
+    expect(hiddenSettings('intermediate', { ...away, rhythmStart: 'beat', anticipate: -1 })).toEqual({ settings: ['rhythm-phrasing'], needs: 'everything' })
+    expect(hiddenSettings('intermediate', { ...away, rhythmLine: false })).toBeNull()
+    expect(hiddenSettings('everything', away)).toBeNull()
   })
 
   it('names a rhythm or target beats in force on the Changes sheet at Intermediate', () => {

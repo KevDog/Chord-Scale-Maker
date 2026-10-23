@@ -168,6 +168,30 @@ describe('usePreferences', () => {
     expect(localStorage.getItem('csm-targets')).toBe('on')
   })
 
+  it('reads a stored Start, timing and Restate, defaults for a bad one or with the flag off, keeping them stored', () => {
+    localStorage.setItem('csm-rhythm-start', 'pickup-2')
+    localStorage.setItem('csm-anticipate', '-1.5')
+    localStorage.setItem('csm-guide-restate', 'on')
+    expect(prefs().rhythmStart.value).toBe('pickup-2')
+    expect(prefs().anticipate.value).toBe(-1.5)
+    expect(prefs().restate.value).toBe(true)
+    localStorage.setItem('csm-rhythm-start', 'pickup-4')
+    expect(prefs().rhythmStart.value).toBe('beat')
+    for (const bad of ['0.25', '4']) {
+      localStorage.setItem('csm-anticipate', bad)
+      expect(prefs().anticipate.value).toBe(0)
+    }
+    localStorage.setItem('csm-rhythm-start', 'pickup-2')
+    localStorage.setItem('csm-anticipate', '-1.5')
+    flags.rhythm = false
+    expect(prefs().rhythmStart.value).toBe('beat')
+    expect(prefs().anticipate.value).toBe(0)
+    expect(prefs().restate.value).toBe(false)
+    expect(localStorage.getItem('csm-rhythm-start')).toBe('pickup-2')
+    expect(localStorage.getItem('csm-anticipate')).toBe('-1.5')
+    expect(localStorage.getItem('csm-guide-restate')).toBe('on')
+  })
+
   it('reads a stored Approach as None with the approaches flag off, and keeps it stored', async () => {
     localStorage.setItem('csm-approach', 'enclosure')
     flags.approaches = false

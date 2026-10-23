@@ -1,5 +1,5 @@
 import type { Ref, WritableComputedRef } from 'vue'
-import { type Approach, type ArpDirection, type CellId, type CellOrder, CHROMATIC_CELLS, fitRange, formatPattern, isCellId, parsePattern, type PatternNotes, type ArpeggioPattern, type ArpNotes, type InstrumentName, INSTRUMENTS, isApproach, isArpDirection, isArpeggioPattern, isArpNotes, isCellOrder, isInstrumentName, isPairLineShape, isPairShape, isPatternNotes, isPentatonicLeave, isRhythmId, type RhythmId, type HexatonicBasis, type PairLineShape, type PairShape, type QuartalNotesChoice, type PentatonicBasis, PENTATONIC_LEAVE, type PentatonicLeave, type PentatonicDegree, pentatonicDegreeFrom, type PentatonicSide, type Range, type ShareView } from '@chord-scale-maker/engine'
+import { type Approach, type ArpDirection, type CellId, type CellOrder, CHROMATIC_CELLS, fitRange, formatPattern, isCellId, parsePattern, type PatternNotes, type ArpeggioPattern, type ArpNotes, type InstrumentName, INSTRUMENTS, isApproach, isArpDirection, isArpeggioPattern, isArpNotes, isCellOrder, isInstrumentName, isAnticipate, isRhythmStart, type RhythmStart, isPairLineShape, isPairShape, isPatternNotes, isPentatonicLeave, isRhythmId, type RhythmId, type HexatonicBasis, type PairLineShape, type PairShape, type QuartalNotesChoice, type PentatonicBasis, PENTATONIC_LEAVE, type PentatonicLeave, type PentatonicDegree, pentatonicDegreeFrom, type PentatonicSide, type Range, type ShareView } from '@chord-scale-maker/engine'
 import { type GuideFrom, type LineMode, lineChoiceOf } from '~/utils/sheetLine'
 import { FUNCTIONS_KEYS } from '~/utils/functionsKey'
 import { isSpell, type Spell } from '~/utils/scaleChoices'
@@ -67,6 +67,10 @@ export function usePreferences() {
   const rhythmOn = useFeature('rhythm')
   const rhythm = storedRef<RhythmId>('csm-rhythm', (s) => (isRhythmId(s) && rhythmOn ? s : undefined), 'off')
   const targets = storedRef<boolean>('csm-targets', (s) => (rhythmOn && (s === 'on' || s === 'off') ? s === 'on' : undefined), false, (v) => (v ? 'on' : 'off'))
+  // where the rhythm starts, its timing and Restate (rhythm spec §10): on the beat, on time and off until chosen
+  const rhythmStart = storedRef<RhythmStart>('csm-rhythm-start', (s) => (isRhythmStart(s) && rhythmOn ? s : undefined), 'beat')
+  const anticipate = storedRef<number>('csm-anticipate', (s) => (rhythmOn && isAnticipate(Number(s)) ? Number(s) : undefined), 0, String)
+  const restate = storedRef<boolean>('csm-guide-restate', (s) => (rhythmOn && (s === 'on' || s === 'off') ? s === 'on' : undefined), false, (v) => (v ? 'on' : 'off'))
   // the Cells line's system or cell (#298); a chromatic cell (#377) with the flag off reads as the default but stays stored
   const phraseOn = useFeature('phraseCells')
   const cells = storedRef<CellId>('csm-cells', (s) => (isCellId(s) && (phraseOn || !isChromatic(s)) ? s : undefined), DEFAULT_CELLS)
@@ -102,7 +106,7 @@ export function usePreferences() {
   const source = storedRef<boolean>('csm-source', (s) => s === 'on', false, (v) => (v ? 'on' : 'off'))
   // the /functions page's key: C major until another is picked
   const functionsKey = storedRef<string>('csm-functions-key', (s) => (FUNCTIONS_KEYS.includes(s) ? s : undefined), 'C')
-  return { instrument, range: rangeRef(instrument), spell, intervals, showEditor, numerals, scaleNames, lineMode, guideLine, approach, rhythm, targets, arpeggio, cells, cellsOrder, cellsPhrase, arpNotes, arpDir, arpShape, pattern, patternNotes, patternDir, overlay, pentRung, pentSide, pentBasis, pentDegree, pentLeave, pairLine, hexBasis, quartNotes, quartPerfect, source, functionsKey }
+  return { instrument, range: rangeRef(instrument), spell, intervals, showEditor, numerals, scaleNames, lineMode, guideLine, approach, rhythm, targets, rhythmStart, anticipate, restate, arpeggio, cells, cellsOrder, cellsPhrase, arpNotes, arpDir, arpShape, pattern, patternNotes, patternDir, overlay, pentRung, pentSide, pentBasis, pentDegree, pentLeave, pairLine, hexBasis, quartNotes, quartPerfect, source, functionsKey }
 }
 
 /** the same choices, starting from a share link's view over your own, for this visit only (nothing is saved) */
@@ -126,6 +130,9 @@ export function linkPreferences(view: ShareView) {
     approach: ref<Approach>(useFeature('approaches') ? (view.approach ?? 'none') : 'none'), // a link shows what it was sent with: none without
     rhythm: ref<RhythmId>(useFeature('rhythm') ? (view.rhythm ?? 'off') : 'off'), // a link shows what it was sent with: off without
     targets: ref<boolean>(useFeature('rhythm') ? (view.targets ?? false) : false),
+    rhythmStart: ref<RhythmStart>(useFeature('rhythm') ? (view.rhythmStart ?? 'beat') : 'beat'),
+    anticipate: ref<number>(useFeature('rhythm') ? (view.anticipate ?? 0) : 0),
+    restate: ref<boolean>(useFeature('rhythm') ? (view.restate ?? false) : false),
     arpeggio: ref<ArpeggioPattern>(choice.arpeggio ?? own.arpeggio.value),
     cells: ref<CellId>(choice.cells === undefined ? own.cells.value : phraseOn || !isChromatic(choice.cells) ? choice.cells : DEFAULT_CELLS), // a chromatic cell (#377), the flag off: the default
     cellsOrder: ref<CellOrder>(phraseOn ? (choice.order ?? 'as-written') : 'as-written'), // a link shows what it was sent with: as written and on without (#376)

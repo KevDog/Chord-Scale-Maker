@@ -153,6 +153,12 @@ describe('share links', () => {
     expect(shareViewFrom({ line: 'cells:1-2-3-5~free' })).toEqual({ line: 'cells:1-2-3-5' })
   })
 
+  it('keeps Start, timing and Restate, dropping what is not valid or is the default', () => {
+    expect(shareViewFrom({ rhythmStart: 'pickup-2', anticipate: 1.5, restate: true })).toEqual({ rhythmStart: 'pickup-2', anticipate: 1.5, restate: true })
+    expect(shareViewFrom({ rhythmStart: 'pickup-9', anticipate: 0.3, restate: 'yes' })).toBeUndefined()
+    expect(shareViewFrom({ anticipate: 0 })).toBeUndefined()
+  })
+
   it('keeps a rhythm and the target beats, dropping what is not one', () => {
     expect(shareViewFrom({ rhythm: 'run:8:4:3', targets: true })).toEqual({ rhythm: 'run:8:4:3', targets: true })
     expect(shareViewFrom({ sheet: 'changes', rhythm: 'bogus', targets: 'yes' })).toEqual({ sheet: 'changes' })

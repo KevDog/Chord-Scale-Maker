@@ -1,4 +1,4 @@
-import { type Approach, isHexatonicSelection, isPentatonicSelection, type PracticeSelection, type RhythmId, type ScaleLevel } from '@chord-scale-maker/engine'
+import { type Approach, type RhythmStart, isHexatonicSelection, isPentatonicSelection, type PracticeSelection, type RhythmId, type ScaleLevel } from '@chord-scale-maker/engine'
 import type { LineMode } from '~/utils/sheetLine'
 import type { Overlay } from '~/utils/overlay'
 import type { Spell } from '~/utils/scaleChoices'
@@ -22,6 +22,7 @@ export const CONTROL_TIERS = {
   cells: 'intermediate', // the Cells line's cell choice (#298), its Order and Phrase (#376)
   approaches: 'intermediate', // the guide tone line's Approach listbox (#298)
   rhythm: 'intermediate', // the Changes sheet's rhythm line and target beats (rhythm spec §9)
+  'rhythm-phrasing': 'everything', // the rhythm's Start and timing (rhythm spec §10)
   'scale-choice': 'intermediate', // a chord's scale: the scale label picker, ChordChoices' Scale section
   'form-editing': 'intermediate', // Repeat a section, Write out, endings, segno, coda, Jump, New section here, Paste bars
   why: 'intermediate', // the "why" notes on numerals and scales, ChordChoices' why
@@ -40,8 +41,8 @@ const rank = (l: InterfaceLevel): number => INTERFACE_LEVELS.indexOf(l)
 export const shows = (level: InterfaceLevel, id: ControlId): boolean => rank(level) >= rank(CONTROL_TIERS[id])
 
 /** the sheet's settings a control governs: what decides the notice */
-export type ViewSettings = Readonly<{ sheet: SheetKind; scaleLevel: ScaleLevel; numerals: boolean; scaleNames: boolean; lineMode: LineMode; spell: Spell; practice: PracticeSelection | null; overlay: Overlay; picks: boolean; approach: Approach; rhythm: RhythmId; targets: boolean }> // picks: live chord picks of the kind the sheet shows (#303)
-export type HiddenSetting = 'scale-level' | 'numerals' | 'scale-names' | 'line' | 'spell' | 'practice' | 'pentatonics' | 'chord-picks' | 'patterns' | 'approaches' | 'rhythm'
+export type ViewSettings = Readonly<{ sheet: SheetKind; scaleLevel: ScaleLevel; numerals: boolean; scaleNames: boolean; lineMode: LineMode; spell: Spell; practice: PracticeSelection | null; overlay: Overlay; picks: boolean; approach: Approach; rhythm: RhythmId; targets: boolean; rhythmStart: RhythmStart; anticipate: number; rhythmLine: boolean }> // picks: live chord picks of the kind the sheet shows (#303)
+export type HiddenSetting = 'scale-level' | 'numerals' | 'scale-names' | 'line' | 'spell' | 'practice' | 'pentatonics' | 'chord-picks' | 'patterns' | 'approaches' | 'rhythm' | 'rhythm-phrasing'
 
 /** each setting away from its default on this sheet, and the level its control needs */
 function setAway(v: ViewSettings): readonly (readonly [HiddenSetting, InterfaceLevel])[] {
@@ -57,6 +58,7 @@ function setAway(v: ViewSettings): readonly (readonly [HiddenSetting, InterfaceL
     ...(changes && v.overlay !== 'off' ? [['pentatonics', 'everything'] as const] : []), // Superimpose's control id
     ...(changes && v.approach !== 'none' ? [['approaches', 'intermediate'] as const] : []),
     ...(changes && (v.rhythm !== 'off' || v.targets) ? [['rhythm', 'intermediate'] as const] : []),
+    ...(changes && v.rhythm !== 'off' && v.rhythmLine && (v.rhythmStart !== 'beat' || v.anticipate !== 0) ? [['rhythm-phrasing', 'everything'] as const] : []), // rhythmLine: the Line takes the rhythm (spec C3)
     ...(v.sheet === 'patterns' ? [['patterns', 'intermediate'] as const] : []),
     ...((changes || scales) && v.picks ? [['chord-picks', 'everything'] as const] : []),
   ]
