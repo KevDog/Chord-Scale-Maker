@@ -46,6 +46,12 @@
           <UiListboxOption v-for="p in patterns" :key="p" :value="p"><UiListboxLabel>{{ PATTERN_LABELS[p] }}</UiListboxLabel></UiListboxOption>
         </UiListbox>
       </div>
+      <!-- the swing dial (#521): where Swing's 8th falls, from straight to a dotted 8th and a 16th -->
+      <label v-if="hearOn && click.feel.value === 'swing'" class="flex items-center gap-2">
+        <UiText>Swing</UiText>
+        <input v-model.number="swingPercent" type="range" min="50" max="75" step="1" aria-label="Swing" class="w-32 accent-zinc-950 dark:accent-white">
+        <UiText class="w-10 tabular-nums">{{ swingPercent }}%</UiText>
+      </label>
       <UiCheckbox v-if="chart.beats === 4" v-model="hat">Hat on 2 &amp; 4</UiCheckbox>
       <!-- Hear rhythm (#521): the sheet's rhythm taps on a rim with the click -->
       <UiCheckbox v-if="hearOn && click.hasRhythm.value" v-model="hearRhythm">Hear rhythm</UiCheckbox>
@@ -159,6 +165,10 @@ function setting<K extends keyof ClickSettings>(key: K) {
 const hat = setting('hat')
 const hear = setting('hear')
 const hearRhythm = setting('hearRhythm')
+const swingPercent = computed({
+  get: (): number => Math.round(click.swing.value * 100),
+  set: (p: number) => (click.swing.value = p / 100),
+})
 const hearOn = useFeature('hearLine')
 const folded = setting('folded')
 const sound = setting('sound')

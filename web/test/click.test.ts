@@ -206,6 +206,33 @@ describe('useClick', () => {
     expect(useClick(ref({ ...c4.value }), ref('autumn-leaves'), { audio: fakeAudio }).pattern.value).toBe('3')
   })
 
+  it('Swing: two thirds until moved, then the chart remembers it, clamped', () => {
+    localStorage.clear()
+    const c = useClick(chart(), ref('autumn-leaves'), { audio: fakeAudio })
+    expect(c.swing.value).toBeCloseTo(2 / 3)
+    expect(localStorage.getItem('csm-click:autumn-leaves')).toBeNull() // not moved, not stored
+    c.swing.value = 0.6
+    expect(JSON.parse(localStorage.getItem('csm-click:autumn-leaves')!)).toEqual({ swing: 0.6 })
+    expect(useClick(chart(), ref('autumn-leaves'), { audio: fakeAudio }).swing.value).toBe(0.6)
+    localStorage.setItem('csm-click:autumn-leaves', JSON.stringify({ swing: 0.9 }))
+    expect(useClick(chart(), ref('autumn-leaves'), { audio: fakeAudio }).swing.value).toBe(0.75)
+  })
+
+  it('puts the skip note where the swing dial says', async () => {
+    const audio = fakeAudio()
+    const t = timers()
+    const c = useClick(ref({ beats: 4 as const, style: 'Ballad', metreChanges: false }), ref(undefined), { audio: () => audio, ...t }) // 66 bpm, swing
+    c.swing.value = 0.75
+    await c.start()
+    audio.clock.t = 0
+    t.tick()
+    for (let at = 0; at < 1; at += 0.05) {
+      audio.clock.t = at
+      t.tick()
+    }
+    expect(audio.played.find((p) => p.kind === 'sub')?.time).toBeCloseTo(0.75 * (60 / 66))
+  })
+
   it('on 2 and 4 plays those beats alone and still lights the beat', async () => {
     const audio = fakeAudio()
     const t = timers()
@@ -345,6 +372,14 @@ describe('useClick', () => {
       t.end()
       expect(c.playing.value).toBe(null)
       expect(audio.suspended.n).toBe(1)
+    })
+
+    it('swings as far as the dial says', async () => {
+      const { audio, c } = player()
+      c.feel.value = 'swing'
+      c.swing.value = 0.75
+      await c.play('a', phrase)
+      expect(audio.notes[1]!.time - audio.notes[0]!.time).toBeCloseTo((60 / 160) * 0.75)
     })
 
     it('with the click running, starts on its next bar', async () => {
