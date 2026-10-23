@@ -1,5 +1,5 @@
 import type { Locator, Page } from '@playwright/test'
-import { chooseRhythm, chooseSheet, chooseStart, closePanel, closePentatonicOptions, expect, openPanel, pentatonicPreset, pickOption, rhythmDrawn, showApproach, showArpeggios, showCell, showPentatonics, showTargets, staves, test } from '../fixtures'
+import { chooseGroups, chooseRhythm, chooseSheet, chooseStart, closePanel, closePentatonicOptions, expect, openPanel, pentatonicPreset, pickOption, rhythmDrawn, showApproach, showArpeggios, showCell, showPentatonics, showTargets, staves, test } from '../fixtures'
 import { expectAccessible } from './axe'
 
 const SONG = '/song/autumn-leaves'
@@ -152,6 +152,18 @@ for (const theme of ['light', 'dark'] as const) {
       await expect(staves(page).first()).toBeVisible()
       await chooseRhythm(page, '8ths', { In: 'In 5', Variation: 'with accents' })
       await expect(page.locator('[data-slot=rhythm-card] [data-rhythm-bar]').first()).toBeVisible()
+      await expectAccessible(page)
+    })
+
+    test('the Changes with Groups Up and its step marks (Phase 4 spec §6; flag rhythmGears)', async ({ page }) => {
+      await page.goto(SONG)
+      if (theme === 'dark') await darkMode(page)
+      await chooseRhythm(page, '8ths', { In: 'In 3', Variation: 'with accents' })
+      await chooseGroups(page, 'Up')
+      await rhythmDrawn(page)
+      await expect(page.locator('[data-rhythm-step]').first()).toBeAttached()
+      await openPanel(page, 'Line options') // the Groups and Step listboxes, scanned too
+      await expect(page.getByRole('button', { name: 'Step', exact: true })).toBeVisible()
       await expectAccessible(page)
     })
 

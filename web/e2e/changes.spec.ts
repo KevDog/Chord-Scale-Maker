@@ -1,5 +1,5 @@
 import type { Locator, Page } from '@playwright/test'
-import { chooseInstrument, chooseInterface, chooseRhythm, chooseSheet, chooseStart, closePanel, type Drawn, drawn, expect, openPanel, GLYPH, arpeggiosDrawn, guidesDrawn, openEditor, restateOn, rhythmDrawn, sheetChord, showArpeggios, showApproach, showCell, showGuides, showOrder, test, writeChart } from './fixtures'
+import { chooseGroups, chooseInstrument, chooseInterface, chooseRhythm, chooseRhythmStep, chooseSheet, chooseStart, closePanel, type Drawn, drawn, expect, openPanel, GLYPH, arpeggiosDrawn, guidesDrawn, openEditor, restateOn, rhythmDrawn, sheetChord, showArpeggios, showApproach, showCell, showGuides, showOrder, test, writeChart } from './fixtures'
 
 const lines = (page: Page) => page.locator('svg[aria-label^="Bars:"]')
 /** the sheet itself, not the controls above it (whose menus name the same scales) */
@@ -746,6 +746,43 @@ test.describe('the tuplet pulses', () => {
     await expect(line.locator('.vf-tuplet')).toHaveCount(4)
     await expect(line.locator('.vf-tuplet text')).toHaveText(Array(4).fill(String.fromCodePoint(0xe885))) // Bravura's tuplet 5
     await expect(page.getByText(/Couldn.t draw/)).toHaveCount(0)
+  })
+})
+
+// mixed phrasing (Phase 4 spec §3, §6, §7; flag `rhythmGears`): Groups Up by section on an AABA chart, 4 bars a line
+test.describe('the Groups path', () => {
+  const upBySection = async (page: Page) => {
+    await page.goto('/song/satin-doll')
+    await chooseRhythm(page, '8ths', { In: 'In 3', Variation: 'with accents' })
+    await chooseGroups(page, 'Up')
+    await chooseRhythmStep(page, 'By section')
+    await rhythmDrawn(page)
+  }
+
+  test('marks each section’s grouping, ③ ④ ⑤ ⑥, and names them in the lines’ aria-labels', async ({ page }) => {
+    await upBySection(page)
+    await expect(page.locator('section header p').first()).toContainText('in 3 → 4 → 5 → 6 → 7 · by section')
+    await expect(lines(page).nth(0)).toHaveAttribute('aria-label', /, from bar 1: in 3/)
+    await expect(lines(page).nth(2)).toHaveAttribute('aria-label', /, from bar 9: in 4/)
+    await expect(lines(page).nth(4)).toHaveAttribute('aria-label', /, from bar 17: in 5/)
+    await expect(lines(page).nth(6)).toHaveAttribute('aria-label', /, from bar 25: in 6/)
+    await expect(lines(page).nth(1)).not.toHaveAttribute('aria-label', /from bar/)
+    await expect(page.locator('[data-rhythm-step]')).toHaveText(['③', '④', '⑤', '⑥'])
+    await expect(page.getByText(/Couldn.t draw/)).toHaveCount(0)  })
+
+  test('a share link carries the path: it opens with the same marks', async ({ page, browser }) => {
+    await upBySection(page)
+    await page.getByRole('button', { name: 'Share' }).click()
+    const box = page.getByRole('dialog').getByLabel('Link')
+    await expect(box).toHaveValue(/\/song#s=[A-Za-z0-9_-]+$/)
+    const link = await box.inputValue()
+    const other = await browser.newContext() // fresh storage: no path of its own
+    await chooseInterface(other, 'everything')
+    const visitor = await other.newPage()
+    await visitor.goto(link)
+    await rhythmDrawn(visitor)
+    await expect(visitor.locator('[data-rhythm-step]')).toHaveText(['③', '④', '⑤', '⑥'])
+    await other.close()
   })
 })
 

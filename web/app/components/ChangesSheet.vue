@@ -25,6 +25,7 @@
             :arpeggio="arpeggio"
             :line-name="lineName"
             :rhythm-caption="built.rhythmCaption"
+            :from-bar="l.fromBar"
             :clef="part.clef"
             :part="part"
             :editable="editable"
@@ -161,7 +162,7 @@ const linesPerPage = computed(() => changesLinesPerPage(line.value, { numerals: 
 const subtitleText = computed(() => [pageSubtitle(props.subtitle, props.instrumentLabel, 'Changes'), built.value.pentatonicCaption, built.value.rhythmCaption].filter(Boolean).join(' · '))
 const pages = computed(() =>
   chunk(
-    sheet.value.lines.map((line, index) => ({ line, index })),
+    sheet.value.lines.map((line, index, all) => ({ line, index, fromBar: 1 + all.slice(0, index).reduce((n, l) => n + l.bars.length, 0) })), // fromBar: its first bar, from the sheet's first
     linesPerPage.value,
   ).map((lines) => ({ subtitle: subtitleText.value, lines })),
 )
