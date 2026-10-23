@@ -1,6 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { arpeggioTones } from '../arpeggios'
+import type { RhythmId } from '../rhythm'
 import { expandRows, parseChart, type Row } from '../chart'
 import { resolveScales, rowKeys } from '../resolve'
 import { buildSheet } from '../sheet'
@@ -290,8 +291,10 @@ describe('buildArpeggioSheet: Triad pairs (#436)', () => {
 })
 
 describe('the run poured into the rhythm', () => {
-  const first = (rhythm?: Parameters<typeof buildArpeggioSheet>[7] extends infer O ? (O extends { rhythm?: infer R } ? R : never) : never, beats?: number) =>
+  const first = (rhythm?: RhythmId, beats?: number) =>
     buildArpeggioSheet([row('Cmaj7')], CONCERT, 12, 'seventh', 'up', undefined, undefined, { rhythm, ...(beats ? { beatsOf: () => beats } : {}) }).pages[0]![0]!
+  /** a bar as [note index or 'r', value, beat] */
+  const seq = (bar: NonNullable<ReturnType<typeof first>['run']>['bars'][number]) => bar.notes.map((n) => [n.note ?? 'r', n.mark.value, n.mark.beat])
 
   it('pours the nine notes as accents in 3 (Grouping in 3)', () => {
     const s = first('unit:8:3:accents')
@@ -301,30 +304,46 @@ describe('the run poured into the rhythm', () => {
     const b0 = bars[0]!.notes
     expect(b0.map((n) => n.note)).toEqual([0, 1, 2, 3, 4, 5, 6, 7])
     expect(b0.map((n) => !!n.mark.accent)).toEqual([true, false, false, true, false, false, true, false])
-    expect(bars[1]!.notes[0]).toMatchObject({ note: 8 })
-    expect(bars[1]!.notes[0]!.mark.accent).toBeFalsy()
-    expect(bars[1]!.notes.slice(1).every((n) => n.note === null && n.mark.rest)).toBe(true)
+    expect(b0.map((n) => n.mark.beam)).toEqual([0, 0, 0, 1, 1, 1, 2, 2])
+    expect(seq(bars[1]!)).toEqual([[8, '8', 0], ['r', '8', 0.5], ['r', 'q', 1], ['r', 'h', 2]])
+    expect(bars[1]!.notes[0]!.mark.accent).toBe(false)
     expect(s.notes).toHaveLength(9)
     expect(s.accidentals).toHaveLength(9)
   })
 
   it('pours rests until the 9th note', () => {
     const run = first('unit:8:3:rests').run!
-    const played = run.bars.flatMap((b) => b.notes).filter((n) => n.note !== null)
-    expect(played.map((n) => n.note)).toEqual([0, 1, 2, 3, 4, 5, 6, 7, 8])
-    expect(run.bars[0]!.notes.some((n) => n.mark.rest)).toBe(true)
+    expect(run.bars.map(seq)).toEqual([
+      [[0, '8', 0], ['r', '8', 0.5], ['r', '8', 1], [1, '8', 1.5], ['r', 'q', 2], [2, '8', 3], ['r', '8', 3.5]],
+      [['r', '8', 0], [3, '8', 0.5], ['r', 'q', 1], [4, '8', 2], ['r', '8', 2.5], ['r', '8', 3], [5, '8', 3.5]],
+      [['r', 'q', 0], [6, '8', 1], ['r', '8', 1.5], ['r', '8', 2], [7, '8', 2.5], ['r', 'q', 3]],
+      [[8, '8', 0], ['r', '8', 0.5], ['r', 'q', 1], ['r', 'h', 2]],
+    ])
   })
 
-  it('pours card:downbeats four then four then one', () => {
+  it('pours card:downbeats four then four then one, resting by the beats its length divides', () => {
     const run = first('card:downbeats').run!
-    expect(run.bars[0]!.notes.map((n) => n.note)).toEqual([0, 1, 2, 3])
-    expect(run.bars[1]!.notes.filter((n) => n.note !== null).map((n) => n.note)).toEqual([4, 5, 6, 7])
-    expect(run.bars[2]!.notes.filter((n) => n.note !== null).map((n) => n.note)).toEqual([8])
+    expect(run.bars.map(seq)).toEqual([
+      [[0, 'q', 0], [1, 'q', 1], [2, 'q', 2], [3, 'q', 3]],
+      [[4, 'q', 0], [5, 'q', 1], [6, 'q', 2], [7, 'q', 3]],
+      [[8, 'q', 0], ['r', 'q', 1], ['r', 'h', 2]],
+    ])
+  })
+
+  it('takes the beats per bar from beatsOf', () => {
+    expect(first('card:downbeats', 3).timeSig).toBe('3/4')
+    expect(first('card:downbeats', 3).run!.beats).toBe(3)
   })
 
   it('has no run on an error staff', () => {
     const [bad] = buildArpeggioSheet([row('Xyz')], CONCERT, 12, 'seventh', 'up', undefined, undefined, { rhythm: 'unit:8:3:accents' }).pages.flat()
     expect(bad).toMatchObject({ error: expect.any(String), run: null, timeSig: null })
+  })
+
+  it('leaves the staff as today where pourRun gives none (Off)', () => {
+    const plain = first(undefined)
+    expect(first('off')).toEqual(plain)
+    expect(first('off')).toMatchObject({ run: null, timeSig: null, id: plain.id })
   })
 
   it('(guard) leaves ids and groups as they were with no rhythm', () => {
