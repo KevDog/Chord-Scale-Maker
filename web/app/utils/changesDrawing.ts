@@ -325,7 +325,7 @@ type Laid = Readonly<{
   plain: readonly StaveNote[] // slashes, for a bar without guide tones
   all: readonly Voice[]
   beams: readonly Beam[] // eighths and sixteenths of an arpeggio line, grouped by the beat; a poured bar's by its marks
-  tuplets: readonly InstanceType<VexFlowModule['Tuplet']>[] // a poured bar's triplets
+  tuplets: readonly InstanceType<VexFlowModule['Tuplet']>[] // a poured bar's tuplets
 }>
 
 /**
@@ -358,7 +358,7 @@ function drawGuideLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, op
     const model = bar.voice
     const ticks = model.map((n, i) => tickFor(vf, n, noteClef, b === 0 && i === 0 ? restatedAccidental(n, bar.keySig) : null))
     const poured = model.some((n) => n.mark)
-    const tuplets = tripletsOf(vf, ticks, (i) => model[i]?.mark?.tuplet ?? null)
+    const tuplets = tupletsOf(vf, ticks, (i) => model[i]?.mark)
     const grid = ticks.length ? Array.from({ length: bar.beats }, () => new vf.GhostNote('q')) : []
     const plain = ticks.length ? [] : slashes(vf, bar.beats)
     const lists: readonly (readonly Tick[])[] = ticks.length ? [ticks, grid] : [plain]
@@ -377,7 +377,7 @@ function drawGuideLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, op
     return { bar, stave, model, ticks, grid, plain, all, beams, tuplets }
   })
 
-  // pass 2: raise the brackets over the highest stem tip, accidental, accent or triplet, level across the line; draw staves, then notes
+  // pass 2: raise the brackets over the highest stem tip, accidental, accent or tuplet, level across the line; draw staves, then notes
   const pitched = laid.flatMap((l) => l.ticks).filter((t) => !t.isRest())
   const accented = new Set(laid.flatMap((l) => l.ticks.filter((t, i) => !t.isRest() && l.model[i]?.mark?.accent)))
   const heads = pitched.flatMap((n) => n.getYs())
@@ -424,7 +424,7 @@ function drawGuideLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, op
 }
 
 const ACCENT_RISE = 12 // an accent over a stem tip
-const TUPLET_RISE = 10 // a triplet's 3 over its bracket's line
+const TUPLET_RISE = 10 // a tuplet's number over its bracket's line
 const BRACKET_DROP = 10 // Saindon's bracket: under the staff's bottom line
 const BRACKET_FOOT = 5 // its feet, up towards the staff
 const onBeat = (beat: number): boolean => Math.abs(beat - Math.round(beat)) < 1e-6 // a beat in thirds is never exact
@@ -449,11 +449,23 @@ export const groupsOf = <T, K = number>(ticks: readonly T[], index: (i: number) 
 
 type Tuplet = InstanceType<VexFlowModule['Tuplet']>
 
-/** a bar's triplets: each group of its notes sharing a tuplet index, three in the time of two */
-export const tripletsOf = (vf: VexFlowModule, ticks: readonly StaveNote[], tuplet: (i: number) => number | null): Tuplet[] =>
-  groupsOf(ticks, tuplet).map((notes) => new vf.Tuplet(notes, { numNotes: 3, notesOccupied: 2, location: 1 }))
+/**
+ * a bar's tuplets (Phase 4 spec §2): each group of its notes sharing a tuplet index, at its first note's ratio (3:2,
+ * 5:4, 6:4, 7:4; 3:2 where it carries none), drawn as a bare number since more notes crowd the time
+ */
+export const tupletsOf = (vf: VexFlowModule, ticks: readonly StaveNote[], note: (i: number) => Pick<RhythmNote, 'tuplet' | 'ratio'> | undefined): Tuplet[] =>
+  groupsOf(
+    ticks.map((_, i) => i),
+    (i) => note(i)?.tuplet ?? null,
+  ).map((group) => {
+    const { notes, of } = note(group[0]!)?.ratio ?? { notes: 3, of: 2 }
+    return new vf.Tuplet(
+      group.map((i) => ticks[i]!),
+      { numNotes: notes, notesOccupied: of, location: 1, ratioed: false },
+    )
+  })
 
-/** a line's ink tops: its stem tips (an accent's over them) and its triplets' 3s and brackets */
+/** a line's ink tops: its stem tips (an accent's over them) and its tuplets' numbers and brackets */
 export const inkTips = (notes: readonly StaveNote[], accented: ReadonlySet<StaveNote>, tuplets: readonly Tuplet[]): number[] => [
   ...notes.filter((n) => n.hasStem()).map((n) => n.getStemExtents().topY - (accented.has(n) ? ACCENT_RISE : 0)),
   ...tuplets.map((t) => t.getYPosition() - TUPLET_RISE),
@@ -515,7 +527,7 @@ function drawRhythmLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, o
     const width = widths[b] ?? 0
     const stave = staveFor(vf, bar, b === 0, x, width, clef)
     const ticks = bar.rhythm.length ? bar.rhythm.map((n) => rhythmTick(vf, n, noteClef)) : slashes(vf, bar.beats)
-    const tuplets = tripletsOf(vf, ticks, (i) => bar.rhythm[i]?.tuplet ?? null)
+    const tuplets = tupletsOf(vf, ticks, (i) => bar.rhythm[i])
     const grid = Array.from({ length: bar.beats }, () => new vf.GhostNote('q'))
     const all = [ticks, grid].map((list) => {
       list.forEach((t) => t.setStave(stave))
@@ -528,7 +540,7 @@ function drawRhythmLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, o
     return { bar, stave, ticks, grid, all, beams, tuplets }
   })
 
-  // pass 2: raise the brackets over the highest stem tip, accent or triplet, level across the line; draw staves, then notes
+  // pass 2: raise the brackets over the highest stem tip, accent or tuplet, level across the line; draw staves, then notes
   const struck = laid.flatMap((l) => l.ticks.filter((t, i) => !t.isRest() && l.bar.rhythm[i]))
   const accented = new Set(laid.flatMap((l) => l.ticks.filter((_, i) => l.bar.rhythm[i]?.accent)))
   const tips = inkTips(struck, accented, laid.flatMap((l) => l.tuplets))
@@ -595,7 +607,7 @@ export function drawRhythmCard(vf: VexFlowModule, el: HTMLElement, card: RhythmC
     if (b === 0) stave.addTimeSignature(`${card.beats}/4`)
     const ticks = rhythm.map((n) => rhythmTick(vf, n, 'treble'))
     ticks.forEach((t) => t.setStave(stave))
-    const tuplets = tripletsOf(vf, ticks, (i) => rhythm[i]?.tuplet ?? null)
+    const tuplets = tupletsOf(vf, ticks, (i) => rhythm[i])
     const voice = voiceOf(vf, card.beats, ticks)
     const beams = groupsOf(ticks, (i) => rhythm[i]?.beam ?? null).filter((g) => g.length > 1).map((notes) => new vf.Beam(notes))
     new vf.Formatter().joinVoices([voice]).format([voice], staveRoom(stave, x, barWidth))
@@ -624,7 +636,7 @@ export function drawRhythmCard(vf: VexFlowModule, el: HTMLElement, card: RhythmC
   const accented = new Set(laid.flatMap((l) => l.ticks.filter((_, i) => l.rhythm[i]?.accent)))
   const tips = inkTips(struck, accented, laid.flatMap((l) => l.tuplets))
   const hasBracket = card.bars.some((bar) => bar.some((m) => m.bracket))
-  // the band: the time signature (two spaces over and under the line), the stem tips, accents and triplets, the bracket
+  // the band: the time signature (two spaces over and under the line), the stem tips, accents and tuplets, the bracket
   const top = line - 2 * space
   const bottom = line + 2 * space
   fitSvg(el, { top: Math.min(top, ...tips) - 4, bottom: Math.max(bottom, hasBracket ? under : bottom) + 4 }, total, label)

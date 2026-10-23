@@ -5,7 +5,7 @@
     <UiListbox v-model="rhythmFamily" :class="popover && !inline ? 'w-56' : 'w-full'" aria-label="Rhythm" :aria-describedby="describedby">
       <template #selected="{ value }"><UiListboxLabel>Rhythm: {{ familyLabel(value) }}</UiListboxLabel></template>
       <UiListboxOption value="off"><UiListboxLabel>Off</UiListboxLabel></UiListboxOption>
-      <UiListboxGroup v-for="g in RHYTHM_FAMILIES" :key="g.label" :label="g.label">
+      <UiListboxGroup v-for="g in rhythmFamilies" :key="g.label" :label="g.label">
         <UiListboxOption v-for="f in g.options" :key="f" :value="f"><UiListboxLabel>{{ familyLabel(f) }}</UiListboxLabel></UiListboxOption>
       </UiListboxGroup>
       <UiListboxOption value="custom"><UiListboxLabel>{{ familyLabel('custom') }}</UiListboxLabel></UiListboxOption>
@@ -52,7 +52,7 @@
 import { formatRhythm, LIBRARY_IDS, parseRhythmId, positionLabel, type Pulse, PULSE_LABELS, type RhythmId, rhythmLabel, RUN_ATTACKS, runPositions, UNIT_GROUPS, unitRhythm, type Variation, VARIATION_LABELS, VARIATIONS } from '@chord-scale-maker/engine'
 import type { FunctionalComponent } from 'vue'
 import { customRhythmId, RHYTHM_TEXT, useRhythmText } from '~/composables/useRhythmText'
-import { rhythmTextError } from '~/utils/rhythmText'
+import { isGearsRhythm, rhythmTextError } from '~/utils/rhythmText'
 import RailPopover from './RailPopover.vue'
 
 /**
@@ -77,11 +77,18 @@ const familyOf = (id: RhythmId): RhythmFamily => {
   if (!p) return 'off'
   return p.kind === 'unit' || p.kind === 'run' ? `${p.kind}:${p.pulse}` : p.kind === 'card' ? `card:${p.card}` : 'custom'
 }
-/** the library's families, grouped as LIBRARY_IDS lists them: Units and Runs by pulse, then Cards */
-const RHYTHM_FAMILIES = (['unit', 'run', 'card'] as const).map((kind) => ({
-  label: ({ unit: 'Units', run: 'Runs', card: 'Cards' } as const)[kind],
-  options: [...new Set(LIBRARY_IDS.filter((id) => id.startsWith(`${kind}:`)).map(familyOf))],
-}))
+/**
+ * the library's families, grouped as LIBRARY_IDS lists them: Units and Runs by pulse, then Cards; the tuplet pulses'
+ * units with the rhythmGears flag on and at Everything only (Phase 4 spec §7, D22)
+ */
+const gearsOn = useFeature('rhythmGears')
+const rhythmFamilies = computed(() => {
+  const gears = gearsOn && shows('rhythm-gears')
+  return (['unit', 'run', 'card'] as const).map((kind) => ({
+    label: ({ unit: 'Units', run: 'Runs', card: 'Cards' } as const)[kind],
+    options: [...new Set(LIBRARY_IDS.filter((id) => id.startsWith(`${kind}:`) && (gears || !isGearsRhythm(id))).map(familyOf))],
+  }))
+})
 const familyLabel = (f: RhythmFamily): string => {
   if (f === 'off') return 'Off'
   if (f === 'custom') return 'Your rhythm…'
@@ -92,7 +99,7 @@ const familyLabel = (f: RhythmFamily): string => {
 const parsedRhythm = computed(() => parseRhythmId(rhythm.value))
 /** Your rhythm…: chosen, and its text; the owner's (PreviewControls), so text that doesn't read survives the panel closing */
 const { custom: rhythmCustom, text: rhythmText } = inject(RHYTHM_TEXT, () => useRhythmText(rhythm, () => shows('rhythm')), true)
-const rhythmError = computed(() => rhythmTextError(rhythmText.value))
+const rhythmError = computed(() => rhythmTextError(rhythmText.value, gearsOn))
 const rhythmFamily = computed<RhythmFamily>({
   get: () => (rhythmCustom.value ? 'custom' : familyOf(rhythm.value)),
   set: (f) => {
@@ -101,7 +108,7 @@ const rhythmFamily = computed<RhythmFamily>({
     if (f === 'custom') {
       // start from the unit in force, as text to edit
       if (was?.kind === 'unit' && !rhythmText.value) rhythmText.value = formatRhythm(unitRhythm(was.pulse, was.group, was.variation))
-      rhythm.value = customRhythmId(rhythmText.value)
+      rhythm.value = customRhythmId(rhythmText.value, gearsOn)
     } else if (f === 'off' || f.startsWith('card:')) {
       rhythm.value = f as RhythmId
     } else {

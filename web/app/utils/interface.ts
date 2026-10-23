@@ -3,6 +3,7 @@ import type { LineMode } from '~/utils/sheetLine'
 import type { Overlay } from '~/utils/overlay'
 import type { Spell } from '~/utils/scaleChoices'
 import type { SheetKind } from '~/utils/sheets'
+import { isGearsRhythm } from '~/utils/rhythmText'
 
 /** the Interface setting (#273, docs/superpowers/specs/2026-10-14-interface-levels-design.md): which controls show; each level a superset of the one before */
 export type InterfaceLevel = 'essentials' | 'intermediate' | 'everything'
@@ -24,6 +25,7 @@ export const CONTROL_TIERS = {
   rhythm: 'intermediate', // the Changes sheet's rhythm line and target beats (rhythm spec §9); the Rhythm on the Scales and Arpeggios sheets
   'notes-per-bar': 'intermediate', // the Scales sheet's Notes per bar (rhythm-scales-arpeggios spec D16): Bergonzi's first exercise
   'rhythm-phrasing': 'everything', // the rhythm's Start and timing (rhythm spec §10)
+  'rhythm-gears': 'everything', // the Rhythm listbox's tuplet pulse families (Phase 4 spec D22)
   'scale-choice': 'intermediate', // a chord's scale: the scale label picker, ChordChoices' Scale section
   'form-editing': 'intermediate', // Repeat a section, Write out, endings, segno, coda, Jump, New section here, Paste bars
   why: 'intermediate', // the "why" notes on numerals and scales, ChordChoices' why
@@ -43,12 +45,14 @@ export const shows = (level: InterfaceLevel, id: ControlId): boolean => rank(lev
 
 /** the sheet's settings a control governs: what decides the notice */
 export type ViewSettings = Readonly<{ sheet: SheetKind; scaleLevel: ScaleLevel; numerals: boolean; scaleNames: boolean; lineMode: LineMode; spell: Spell; practice: PracticeSelection | null; overlay: Overlay; picks: boolean; approach: Approach; rhythm: RhythmId; targets: boolean; rhythmStart: RhythmStart; anticipate: number; rhythmLine: boolean; notesPerBar: NotesPerBar }> // picks: live chord picks of the kind the sheet shows (#303)
-export type HiddenSetting = 'scale-level' | 'numerals' | 'scale-names' | 'line' | 'spell' | 'practice' | 'pentatonics' | 'chord-picks' | 'patterns' | 'approaches' | 'rhythm' | 'rhythm-phrasing' | 'notes-per-bar'
+export type HiddenSetting = 'scale-level' | 'numerals' | 'scale-names' | 'line' | 'spell' | 'practice' | 'pentatonics' | 'chord-picks' | 'patterns' | 'approaches' | 'rhythm' | 'rhythm-phrasing' | 'rhythm-gears' | 'notes-per-bar'
 
 /** each setting away from its default on this sheet, and the level its control needs */
 function setAway(v: ViewSettings): readonly (readonly [HiddenSetting, InterfaceLevel])[] {
   const changes = v.sheet === 'changes'
   const scales = v.sheet === 'scales'
+  // a rhythm draws as the rhythm line, or in a Line that takes it (#505); on Scales and Arpeggios, the rhythm in force there (Off with the rhythmSheets flag off)
+  const rhythmDrawn = v.rhythm !== 'off' && ((changes && (v.lineMode === 'off' || v.rhythmLine)) || scales || v.sheet === 'arpeggios')
   return [
     ...((changes || scales) && v.scaleLevel !== 'standard' ? [['scale-level', 'intermediate'] as const] : []),
     ...(changes && !v.numerals ? [['numerals', 'intermediate'] as const] : []),
@@ -58,8 +62,9 @@ function setAway(v: ViewSettings): readonly (readonly [HiddenSetting, InterfaceL
     ...(scales && v.practice ? [['practice', isPentatonicSelection(v.practice) || isHexatonicSelection(v.practice) ? 'everything' : 'intermediate'] as const] : []),
     ...(changes && v.overlay !== 'off' ? [['pentatonics', 'everything'] as const] : []), // Superimpose's control id
     ...(changes && v.approach !== 'none' ? [['approaches', 'intermediate'] as const] : []),
-    ...((changes && ((v.rhythm !== 'off' && (v.lineMode === 'off' || v.rhythmLine)) || v.targets)) || ((scales || v.sheet === 'arpeggios') && v.rhythm !== 'off') ? [['rhythm', 'intermediate'] as const] : []), // a rhythm draws as the rhythm line, or in a Line that takes it (#505); on Scales and Arpeggios, the rhythm in force there (Off with the rhythmSheets flag off)
+    ...(rhythmDrawn || (changes && v.targets) ? [['rhythm', 'intermediate'] as const] : []),
     ...(changes && v.rhythm !== 'off' && v.rhythmLine && (v.rhythmStart !== 'beat' || v.anticipate !== 0) ? [['rhythm-phrasing', 'everything'] as const] : []), // rhythmLine: the Line takes the rhythm (spec C3)
+    ...(rhythmDrawn && isGearsRhythm(v.rhythm) ? [['rhythm-gears', 'everything'] as const] : []), // at a tuplet pulse (Phase 4 spec D22; Off with the rhythmGears flag off)
     ...(scales && v.notesPerBar !== 'whole' ? [['notes-per-bar', 'intermediate'] as const] : []), // Whole notes with the rhythmSheets flag off
     ...(v.sheet === 'patterns' ? [['patterns', 'intermediate'] as const] : []),
     ...((changes || scales) && v.picks ? [['chord-picks', 'everything'] as const] : []),

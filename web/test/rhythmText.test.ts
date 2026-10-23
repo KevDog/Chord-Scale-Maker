@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { rhythmTextError } from '~/utils/rhythmText'
+import { isGearsRhythm, rhythmTextError } from '~/utils/rhythmText'
 
 describe('rhythmTextError', () => {
   it('says nothing for a valid rhythm, or for an empty box', () => {
@@ -20,5 +20,21 @@ describe('rhythmTextError', () => {
   it('says a hold can’t follow a rest', () => {
     expect(rhythmTextError('8: x._')).toBe('A _ holds a note, so it can’t follow a rest (.).')
     expect(rhythmTextError('8: x. | _x')).toBe('A _ holds a note, so it can’t follow a rest (.).')
+  })
+})
+
+describe('rhythmTextError with the tuplet pulses (Phase 4 spec D8)', () => {
+  it('reads them with the rhythmGears flag on, and says how to write one with it off', () => {
+    expect(rhythmTextError('8q: x_x__', true)).toBe('')
+    expect(rhythmTextError('8q: x_x__')).toBe('Use x, ., _ and > after 4:, 8:, 8t: or 16:')
+    expect(rhythmTextError('32: x', true)).toBe('Use x, ., _ and > after 4:, 8:, 8t:, 16:, 4t:, 4q:, 8q:, 16q:, 16t: or 16s:')
+    expect(rhythmTextError('16s: ...', true)).toBe('At least one x, and at most 64 cells.')
+  })
+})
+
+describe('isGearsRhythm (Phase 4 spec D8)', () => {
+  it('is true for a unit or your rhythm at a tuplet pulse, false for the old pulses, cards and off', () => {
+    expect(['unit:8q:5:accents', 'unit:4t:3:rests', 'custom:16s:>xxxxxx'].map(isGearsRhythm)).toEqual([true, true, true])
+    expect(['unit:8t:3:accents', 'run:16:4:0', 'card:upbeats', 'custom:8:x.x', 'off'].map(isGearsRhythm)).toEqual([false, false, false, false, false])
   })
 })

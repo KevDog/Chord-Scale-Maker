@@ -689,6 +689,7 @@ const RESETS: Readonly<Record<HiddenSetting, (inForce: Mode) => void>> = {
     prefs.rhythmStart.value = 'beat'
     prefs.anticipate.value = 0
   },
+  'rhythm-gears': () => (prefs.rhythm.value = 'off'), // a rhythm at a tuplet pulse (Phase 4 spec §7)
   spell: () => (prefs.spell.value = 'key'),
   practice: (inForce) => practice.setSelection(inForce, null),
   pentatonics: () => {
