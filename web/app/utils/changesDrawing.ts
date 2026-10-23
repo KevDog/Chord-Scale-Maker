@@ -358,7 +358,7 @@ function drawGuideLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, op
     const model = bar.voice
     const ticks = model.map((n, i) => tickFor(vf, n, noteClef, b === 0 && i === 0 ? restatedAccidental(n, bar.keySig) : null))
     const poured = model.some((n) => n.mark)
-    const tuplets = groupsOf(ticks, (i) => model[i]?.mark?.tuplet ?? null).map((notes) => new vf.Tuplet(notes, { numNotes: 3, notesOccupied: 2, location: 1 }))
+    const tuplets = tripletsOf(vf, ticks, (i) => model[i]?.mark?.tuplet ?? null)
     const grid = ticks.length ? Array.from({ length: bar.beats }, () => new vf.GhostNote('q')) : []
     const plain = ticks.length ? [] : slashes(vf, bar.beats)
     const lists: readonly (readonly Tick[])[] = ticks.length ? [ticks, grid] : [plain]
@@ -381,10 +381,7 @@ function drawGuideLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, op
   const pitched = laid.flatMap((l) => l.ticks).filter((t) => !t.isRest())
   const accented = new Set(laid.flatMap((l) => l.ticks.filter((t, i) => !t.isRest() && l.model[i]?.mark?.accent)))
   const heads = pitched.flatMap((n) => n.getYs())
-  const tips = [
-    ...pitched.filter((n) => n.hasStem()).map((n) => n.getStemExtents().topY - (accented.has(n) ? ACCENT_RISE : 0)),
-    ...laid.flatMap((l) => l.tuplets.map((t) => t.getYPosition() - TUPLET_RISE)), // the triplets' 3s and brackets
-  ]
+  const tips = inkTips(pitched, accented, laid.flatMap((l) => l.tuplets))
   const first = laid[0]?.stave
   const bracket = first && line.bars.some((b) => b.volta) ? first.getYForTopText(first.getNumLines()) + VOLTA_Y : null
   const tops = [...tips, ...heads.map((y) => y - ACCIDENTAL_RISE)]
@@ -450,6 +447,18 @@ const groupsOf = <T, K = number>(ticks: readonly T[], index: (i: number) => K | 
   return [...groups.values()]
 }
 
+type Tuplet = InstanceType<VexFlowModule['Tuplet']>
+
+/** a bar's triplets: each group of its notes sharing a tuplet index, three in the time of two */
+const tripletsOf = (vf: VexFlowModule, ticks: readonly StaveNote[], tuplet: (i: number) => number | null): Tuplet[] =>
+  groupsOf(ticks, tuplet).map((notes) => new vf.Tuplet(notes, { numNotes: 3, notesOccupied: 2, location: 1 }))
+
+/** a line's ink tops: its stem tips (an accent's over them) and its triplets' 3s and brackets */
+const inkTips = (notes: readonly StaveNote[], accented: ReadonlySet<StaveNote>, tuplets: readonly Tuplet[]): number[] => [
+  ...notes.filter((n) => n.hasStem()).map((n) => n.getStemExtents().topY - (accented.has(n) ? ACCENT_RISE : 0)),
+  ...tuplets.map((t) => t.getYPosition() - TUPLET_RISE),
+]
+
 type RhythmLaid = Readonly<{
   bar: ChangesBar
   stave: Stave
@@ -476,7 +485,7 @@ function drawRhythmLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, o
     const width = widths[b] ?? 0
     const stave = staveFor(vf, bar, b === 0, x, width, clef)
     const ticks = bar.rhythm.length ? bar.rhythm.map((n) => rhythmTick(vf, n, noteClef)) : slashes(vf, bar.beats)
-    const tuplets = groupsOf(ticks, (i) => bar.rhythm[i]?.tuplet ?? null).map((notes) => new vf.Tuplet(notes, { numNotes: 3, notesOccupied: 2, location: 1 }))
+    const tuplets = tripletsOf(vf, ticks, (i) => bar.rhythm[i]?.tuplet ?? null)
     const grid = Array.from({ length: bar.beats }, () => new vf.GhostNote('q'))
     const all = [ticks, grid].map((list) => {
       list.forEach((t) => t.setStave(stave))
@@ -492,10 +501,7 @@ function drawRhythmLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, o
   // pass 2: raise the brackets over the highest stem tip, accent or triplet, level across the line; draw staves, then notes
   const struck = laid.flatMap((l) => l.ticks.filter((t, i) => !t.isRest() && l.bar.rhythm[i]))
   const accented = new Set(laid.flatMap((l) => l.ticks.filter((_, i) => l.bar.rhythm[i]?.accent)))
-  const tips = [
-    ...struck.filter((n) => n.hasStem()).map((n) => n.getStemExtents().topY - (accented.has(n) ? ACCENT_RISE : 0)),
-    ...laid.flatMap((l) => l.tuplets.map((t) => t.getYPosition() - TUPLET_RISE)), // the triplets' 3s and brackets
-  ]
+  const tips = inkTips(struck, accented, laid.flatMap((l) => l.tuplets))
   const heads = struck.flatMap((n) => n.getYs())
   const first = laid[0]?.stave
   const bracket = first && line.bars.some((b) => b.volta) ? first.getYForTopText(first.getNumLines()) + VOLTA_Y : null

@@ -258,7 +258,7 @@ export function cellVoices(
     return found
   })
   const poured = rhythm ? lineRhythm(rhythm.id, rhythm.bars, rhythm.breaks, lineSpans(chords, cells, beats, rhythm), rhythm.start, rhythm.anticipate) : null
-  const segments: readonly Segment[] = poured ? spanSegments(chords, poured) : barSegments(chords, cells, beats, valueOf)
+  const segments: readonly Segment[] = poured ? spanSegments(chords, poured, beats) : barSegments(chords, cells, beats, valueOf)
 
   const played: Played[] = []
   let prev: number | null = null
@@ -284,7 +284,7 @@ export function cellVoices(
       continue
     }
     const t = c.tones
-    const v = s.slots[0]?.beats ?? 1 // without a rhythm, every slot's note value
+    const v = s.slots[0]?.beats ?? 1 // without a rhythm, every slot's note value; with no slots nothing plays, so any will do
     const slots = s.slots.length
     const byChord = poured !== null || (c.turn === 'chord' && Math.round(barLength(beats, s.bar) / v) % 4 === 0)
     if (!byChord || wholeOf !== s.chord) whole = null
@@ -293,7 +293,8 @@ export function cellVoices(
     let k = 0
     const play = (notes: readonly NonNullable<GuideNote['pitch']>[]): void => {
       for (const pitch of notes) {
-        const at = s.slots[k++] as Slot
+        const at = s.slots[k++]
+        if (!at) return // callers take no more notes than slots are left
         played.push({ chord: s.chord, bar: at.bar, note: { pitch, beat: at.beat, beats: at.beats, tie: false, tiedIn: false, accidental: null } })
       }
     }
@@ -404,7 +405,7 @@ const VALUE_BEATS: Readonly<Record<RhythmValue, number>> = { w: 4, hd: 3, h: 2, 
 const valueBeats = (n: RhythmNote): number => VALUE_BEATS[n.value] * (n.tuplet === null ? 1 : 2 / 3)
 
 /** under a rhythm, a segment a chord: its span's poured attacks (§3.3: owned, below 0), in order, in drawn bars */
-function spanSegments(chords: readonly GuideInput[], poured: LineRhythm): readonly Segment[] {
+function spanSegments(chords: readonly GuideInput[], poured: LineRhythm, beats: Metre): readonly Segment[] {
   const slots = chords.map((): Slot[] => [])
   poured.bars.forEach((bar, d) =>
     bar.forEach((n, i) => {
@@ -412,7 +413,7 @@ function spanSegments(chords: readonly GuideInput[], poured: LineRhythm): readon
       if (owner && owner.below === 0 && !n.rest && !n.tiedIn) slots[owner.chord]?.push({ bar: d, beat: n.beat, beats: valueBeats(n) })
     }),
   )
-  return chords.map((c, chord) => ({ chord, bar: -1, beat: 0, at: c.start, length: c.beats, slots: slots[chord] ?? [] }))
+  return chords.map((c, chord) => ({ chord, bar: barAt(beats, c.start), beat: c.start - barStart(beats, barAt(beats, c.start)), at: c.start, length: c.beats, slots: slots[chord] ?? [] }))
 }
 
 /**
@@ -421,11 +422,13 @@ function spanSegments(chords: readonly GuideInput[], poured: LineRhythm): readon
  */
 function pickups(poured: LineRhythm, played: readonly Played[], chords: readonly GuideInput[], part: Part): readonly Played[] {
   const range = rangeOf(part)
+  const firstOf = new Map<number, NonNullable<GuideNote['pitch']>>() // each chord's first poured pitch
+  for (const p of played) if (p.note.pitch && !firstOf.has(p.chord)) firstOf.set(p.chord, p.note.pitch)
   return poured.bars.flatMap((bar, d) =>
     bar.flatMap((n, i): Played[] => {
       const owner = poured.owners[d]?.[i]
       if (!owner || owner.below === 0 || n.rest || n.tiedIn) return []
-      const first = played.find((p) => p.chord === owner.chord && p.note.pitch)?.note.pitch
+      const first = firstOf.get(owner.chord)
       const c = chords[owner.chord]
       const text = c?.shown ?? c?.scale
       const scale = text ? orNull(() => writtenScale(part, text).notes) : null
@@ -442,14 +445,15 @@ function pickups(poured: LineRhythm, played: readonly Played[], chords: readonly
  */
 function pourVoices(poured: LineRhythm, rhythm: RhythmPlan, played: readonly Played[], keySig: string | null): ReadonlyMap<number, readonly GuideNote[]> {
   const pitchAt = new Map(played.map((p) => [`${p.bar}:${p.note.beat}`, p.note.pitch]))
-  let held: GuideNote['pitch'] = null
   const bars = new Map<number, readonly GuideNote[]>()
+  let held: GuideNote['pitch'] = null // the last attack's pitch: a tied-in piece sounds it, across barlines too
   poured.bars.forEach((bar, d) => {
-    const voice = bar.map((n, i): GuideNote => {
+    const voice: GuideNote[] = []
+    for (const [i, n] of bar.entries()) {
       if (!n.tiedIn) held = n.rest || !poured.owners[d]?.[i] ? null : (pitchAt.get(`${d}:${n.beat}`) ?? null)
       const pitch = n.rest ? null : held
-      return { pitch, beat: n.beat, beats: valueBeats(n), tie: !!pitch && n.tie, tiedIn: !!pitch && n.tiedIn, accidental: null, mark: { value: n.value, tuplet: n.tuplet, beam: n.beam, accent: !!pitch && n.accent } }
-    })
+      voice.push({ pitch, beat: n.beat, beats: valueBeats(n), tie: !!pitch && n.tie, tiedIn: !!pitch && n.tiedIn, accidental: null, mark: { value: n.value, tuplet: n.tuplet, beam: n.beam, accent: !!pitch && n.accent } })
+    }
     const silent = voice.map((n, i) => !n.pitch && !poured.owners[d]?.[i])
     bars.set(rhythm.clockBars[d] ?? d, voiceAccidentals(mergeSilence(voice, silent, poured.laid.pulse), keySig))
   })

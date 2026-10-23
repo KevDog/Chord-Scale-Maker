@@ -31,12 +31,16 @@ describe('anticipate (§2)', () => {
   it('labels', () => {
     expect([0, 0.5, 1, 1.5, -0.5, -2].map(anticipateLabel)).toEqual(['On time', 'Anticipate ½ beat', 'Anticipate 1 beat', 'Anticipate 1½ beats', 'Resolve late ½ beat', 'Resolve late 2 beats'])
   })
+  it('labels a value off the steps as it is, not as the nearest half (#505)', () => {
+    expect([0.3, -1.25].map(anticipateLabel)).toEqual(['Anticipate 0.3 beat', 'Resolve late 1.25 beats'])
+  })
 })
 
 describe('phrasingCaption', () => {
   it('appends only what is set', () => {
     expect(phrasingCaption('Rhythm: X', 'beat', 0)).toBe('Rhythm: X')
     expect(phrasingCaption('Rhythm: X', 'pickup-2', 1.5)).toBe('Rhythm: X · 2-note pick-ups · anticipate 1½ beats')
+    expect(phrasingCaption('Rhythm: X', 'pickup-3', -1)).toBe('Rhythm: X · 3-note pick-ups · resolve late 1 beat')
     expect(phrasingCaption('Rhythm: X', 'pickup-1', -0.5)).toBe('Rhythm: X · 1-note pick-ups · resolve late ½ beat')
     expect(phrasingCaption('Rhythm: X', 'beat', 2)).toBe('Rhythm: X · anticipate 2 beats')
   })

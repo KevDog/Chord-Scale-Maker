@@ -21,7 +21,7 @@ describe('Help', () => {
 
   it('ends each group of controls with its link into How it decides', async () => {
     const groups = (await mountSuspended(Help)).findAll('[aria-labelledby="controls"] [data-controls-group]')
-    expect(groups.map((g) => g.find('h3').text())).toEqual(['Reading it on your instrument', 'Seeing the analysis', 'Superimposing', 'Choosing a level', 'Alternate changes', 'How much shows', 'Practicing with a click'])
+    expect(groups.map((g) => g.find('h3').text())).toEqual(['Reading it on your instrument', 'Seeing the analysis', 'Superimposing', 'Choosing a level', 'Alternate changes', 'Rhythm', 'How much shows', 'Practicing with a click'])
     for (const g of groups.slice(0, 4)) expect(g.findAll('a').at(-1)?.attributes('href'), g.find('h3').text()).toMatch(/^\/how-it-decides#/)
   })
 

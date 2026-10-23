@@ -164,6 +164,10 @@ describe('share links', () => {
     expect(shareViewFrom({ sheet: 'changes', rhythm: 'bogus', targets: 'yes' })).toEqual({ sheet: 'changes' })
   })
 
+  it('drops the rhythm settings at their defaults, as a link never writes them (#505)', () => {
+    expect(shareViewFrom({ sheet: 'changes', rhythm: 'off', targets: false, rhythmStart: 'beat', anticipate: 0, restate: false })).toEqual({ sheet: 'changes' })
+  })
+
   it("carries the Changes sheet's Approach (#298), dropping an unknown one", async () => {
     for (const approach of ['enclosure', 'chromatic-below', 'none'] as const) {
       const view = { sheet: 'changes', line: 'third', approach } as const

@@ -729,11 +729,18 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
   // target beats colored by the chord sounding there: the drawn chord starting latest at or before the note (by the
   // clock, not the drawn order), as its arpeggio tones' pitch classes, spelled from the scale the sheet shows (not
   // ChangesChord.scale, the written display label); null when it can't be read
-  const inputs = targets ? drawn((i, row) => resolved.get(i)?.scale ?? qualityScale(row)) : []
+  // sorted by start once (stable: of chords starting together, the last drawn), each one's tones read once (#505)
+  const byStart = (targets ? drawn((i, row) => resolved.get(i)?.scale ?? qualityScale(row)) : []).toSorted((a, b) => a.start - b.start)
+  const tonesOf = byStart.map((x) => arpeggioTones(part, x.chord, x.scale)?.map(pcOf) ?? null)
   const tonesAt = (bar: number) => (beat: number): readonly number[] | null => {
     const at = barStart(clock, bar) + beat
-    const input = inputs.reduce<GuideInput | undefined>((best, x) => (x.start <= at && (!best || x.start >= best.start) ? x : best), undefined)
-    return input ? (arpeggioTones(part, input.chord, input.scale)?.map(pcOf) ?? null) : null
+    let lo = 0 // the first chord starting after the note
+    for (let hi = byStart.length; lo < hi; ) {
+      const mid = (lo + hi) >> 1
+      if (byStart[mid]!.start <= at) lo = mid + 1
+      else hi = mid
+    }
+    return tonesOf[lo - 1] ?? null
   }
   let lastKey = ''
   const lastForm = blocks.findLastIndex((b) => b.part === 'form')
@@ -830,8 +837,9 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
   // landings don't depend on forcing, so the caption reads the rhythm as laid
   const laid = line === 'off' || poured ? layRhythm(rhythm, lengths, breaks) : null
   const notes = laid && line === 'off' ? rhythmNotes(laid) : []
-  const caption = laid ? rhythmCaption(rhythm, laid, lengths) : null
+  const caption = laid ? rhythmCaption(rhythm, laid) : null
   const firstOf = counted.reduce<number[]>((acc, l) => [...acc, acc.at(-1)! + l.bars.length], [0]) // each line's first bar, counted over the sheet
+  // lines, then their bars: the rhythm's notes are laid over the whole sheet, so each bar finds its own by its line's first bar plus its place in the line
   const rhythmLines = counted.map((l, n): ChangesLine => ({
     ...l,
     bars: l.bars.map((b, j): ChangesBar => ({ ...b, rhythm: notes[firstOf[n]! + j] ?? [], targets: targets ? targetBeats(b.beats) : [] })),

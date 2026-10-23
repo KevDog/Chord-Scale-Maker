@@ -263,7 +263,26 @@ describe('usePreferences', () => {
 })
 
 describe('linkPreferences', () => {
-  afterEach(() => localStorage.clear())
+  afterEach(() => {
+    localStorage.clear()
+    flags.rhythm = true
+  })
+
+  it('shows the rhythm a link was sent with, and Off, no targets and no Restate without one, over your own (#505)', () => {
+    localStorage.setItem('csm-rhythm', 'card:upbeats')
+    localStorage.setItem('csm-targets', 'on')
+    localStorage.setItem('csm-guide-restate', 'on')
+    const sent = linked({ rhythm: 'unit:8:5:accents', targets: true, restate: true })
+    expect([sent.rhythm.value, sent.targets.value, sent.restate.value]).toEqual(['unit:8:5:accents', true, true])
+    const none = linked({ sheet: 'changes' })
+    expect([none.rhythm.value, none.targets.value, none.restate.value]).toEqual(['off', false, false])
+  })
+
+  it('shows no rhythm from a link with the rhythm flag off (#505)', () => {
+    flags.rhythm = false
+    const p = linked({ rhythm: 'unit:8:5:accents', targets: true, restate: true })
+    expect([p.rhythm.value, p.targets.value, p.restate.value]).toEqual(['off', false, false])
+  })
 
   it("takes a link's line over your own, for this visit only", async () => {
     localStorage.setItem('csm-line', 'arpeggio')

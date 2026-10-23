@@ -25,6 +25,12 @@ describe('rhythm text form (spec §1, §2)', () => {
     expect(parseRhythm('4: x | . | x x')).toEqual(parseRhythm('4:x.xx'))
   })
 
+  it('reads the pulse with spaces round it, but only in lower case (#505)', () => {
+    expect(parseRhythm(' 8 : x')).toEqual({ pulse: '8', cells: ['x'] })
+    expect(parseRhythm('8t : x')).toEqual({ pulse: '8t', cells: ['x'] })
+    expect(parseRhythm('8T: x')).toBeNull()
+  })
+
   it('allows a leading tie', () => {
     expect(parseRhythm('8t: _xx')?.cells[0]).toBe('_')
   })

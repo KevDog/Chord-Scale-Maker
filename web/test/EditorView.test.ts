@@ -729,6 +729,26 @@ describe('EditorView overlay', () => {
     expect(changesSheet(w).props('overlay')).toBeNull()
     expect(localStorage.getItem('csm-overlay')).toBe('off')
   })
+
+  it('at Essentials, a rhythm in force shows the notice, and Reset puts every rhythm setting back (#505)', async () => {
+    const features = useRuntimeConfig().public.features as Record<string, unknown>
+    const was = { ...features }
+    Object.assign(features, { rhythm: true })
+    try {
+      useInterface().level.value = 'essentials'
+      const stored = { 'csm-rhythm': 'unit:8:3:rests', 'csm-targets': 'on', 'csm-rhythm-start': 'pickup-2', 'csm-anticipate': '1', 'csm-guide-restate': 'on' }
+      for (const [k, v] of Object.entries(stored)) localStorage.setItem(k, v)
+      const w = await mountSuspended(EditorView, { props: { initialText: TEXT }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } } })
+      const notice = w.findComponent({ name: 'InterfaceNotice' })
+      expect(notice.props('needs')).toBe('intermediate')
+      notice.vm.$emit('reset')
+      await nextTick()
+      const s = changesSheet(w)
+      expect([s.props('rhythm'), s.props('targets'), s.props('rhythmStart'), s.props('anticipate'), s.props('restate')]).toEqual(['off', false, 'beat', 0, false])
+    } finally {
+      Object.assign(features, was)
+    }
+  })
 })
 
 describe('EditorView pentatonic practice (#266)', () => {
