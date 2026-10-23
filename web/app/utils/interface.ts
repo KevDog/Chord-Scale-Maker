@@ -57,7 +57,7 @@ function setAway(v: ViewSettings): readonly (readonly [HiddenSetting, InterfaceL
     ...(scales && v.practice ? [['practice', isPentatonicSelection(v.practice) || isHexatonicSelection(v.practice) ? 'everything' : 'intermediate'] as const] : []),
     ...(changes && v.overlay !== 'off' ? [['pentatonics', 'everything'] as const] : []), // Superimpose's control id
     ...(changes && v.approach !== 'none' ? [['approaches', 'intermediate'] as const] : []),
-    ...(changes && (v.rhythm !== 'off' || v.targets) ? [['rhythm', 'intermediate'] as const] : []),
+    ...(changes && ((v.rhythm !== 'off' && (v.lineMode === 'off' || v.rhythmLine)) || v.targets) ? [['rhythm', 'intermediate'] as const] : []), // a rhythm draws as the rhythm line, or in a Line that takes it (#505)
     ...(changes && v.rhythm !== 'off' && v.rhythmLine && (v.rhythmStart !== 'beat' || v.anticipate !== 0) ? [['rhythm-phrasing', 'everything'] as const] : []), // rhythmLine: the Line takes the rhythm (spec C3)
     ...(v.sheet === 'patterns' ? [['patterns', 'intermediate'] as const] : []),
     ...((changes || scales) && v.picks ? [['chord-picks', 'everything'] as const] : []),

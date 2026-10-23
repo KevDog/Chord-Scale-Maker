@@ -1272,11 +1272,11 @@ describe('the rhythm line and target beats (rhythm spec §8)', () => {
     const s = buildChanges(two, CONCERT, 4, false, 'up-root', undefined, null, 'none', { rhythm: 'unit:8:3:rests' })
     expect(bars(s).every((b) => b.rhythm.length === 0)).toBe(true)
     expect(letters(bars(s)[0]!)).toEqual(['C', 'r', 'r', 'E', 'r', 'G', 'r'])
-    expect(s.rhythmCaption).toBe('Rhythm: 8ths in 3, with rests · never back on one')
+    expect(s.rhythmCaption).toBe('Rhythm: 8ths in 3, with rests · back on one every 3 bars')
   })
 
   it("names the Start and the Timing in a Line's caption (D20)", () => {
-    expect(buildChanges(two, CONCERT, 4, false, 'up-root', undefined, null, 'none', { rhythm: 'unit:8:3:rests', start: 'pickup-2', anticipate: 1.5 }).rhythmCaption).toBe('Rhythm: 8ths in 3, with rests · never back on one · 2-note pick-ups · anticipate 1½ beats')
+    expect(buildChanges(two, CONCERT, 4, false, 'up-root', undefined, null, 'none', { rhythm: 'unit:8:3:rests', start: 'pickup-2', anticipate: 1.5 }).rhythmCaption).toBe('Rhythm: 8ths in 3, with rests · back on one every 3 bars · 2-note pick-ups · anticipate 1½ beats')
   })
 
   it('restates the guide line on every attack with Restate (§5)', () => {

@@ -136,9 +136,10 @@ The result has two parts:
   Bar 0 is always a landing.
 
 **The cycle caption** (repeating rhythms only), from the landings:
-- only bar 0 is a landing: "never back on one";
 - every bar has the same length: "back on one every n bars" ("every bar" when n is 1), where n is the least
-  common multiple of the unit and the bar (both in pulses) divided by the bar;
+  common multiple of the unit and the bar (both in pulses) divided by the bar, even on a sheet shorter than n bars
+  (#505);
+- the metre changes and only bar 0 is a landing: "never back on one";
 - the metre changes: "back on one at bars 1, 5, 12", counting sheet bars from 1. It lists six at most, then "…".
 
 Examples (the tests' oracle):

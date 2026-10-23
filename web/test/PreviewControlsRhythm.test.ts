@@ -30,4 +30,14 @@ describe('the Rhythm controls (rhythm spec §9)', () => {
     await openPanel(w, 'Line options')
     expect(w.find('[aria-label="Rhythm"]').text()).toContain('Rhythm: Off')
   })
+
+  it('ties the Start and Timing help to their buttons, for a screen reader (#505)', async () => {
+    const w = await mountSuspended(PreviewControls, { props: { sheet: 'changes', instrument: 'piano', spell: 'key', intervals: true, keyStart: 'C', lineMode: 'arpeggio', rhythm: 'card:downbeats', lineTakesRhythm: true } })
+    await openPanel(w, 'Line options')
+    for (const [name, says] of [['Start', /pick-up/], ['Timing', /anticipate/]] as const) {
+      const id = w.find(`button[aria-label="${name}"]`).attributes('aria-describedby')
+      expect(id).toBeTruthy()
+      expect(w.find(`#${id}`).text()).toMatch(says)
+    }
+  })
 })

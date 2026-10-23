@@ -17,4 +17,8 @@ describe('rhythmTextError', () => {
     expect(rhythmTextError('8:')).toBe('At least one x, and at most 64 cells.')
     expect(rhythmTextError(`16: ${'x'.repeat(65)}`)).toBe('At least one x, and at most 64 cells.')
   })
+  it('says a hold can’t follow a rest', () => {
+    expect(rhythmTextError('8: x._')).toBe('A _ holds a note, so it can’t follow a rest (.).')
+    expect(rhythmTextError('8: x. | _x')).toBe('A _ holds a note, so it can’t follow a rest (.).')
+  })
 })
