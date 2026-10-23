@@ -98,8 +98,9 @@ const familyLabel = (f: RhythmFamily): string => {
 }
 const parsedRhythm = computed(() => parseRhythmId(rhythm.value))
 /** Your rhythm…: chosen, and its text; the owner's (PreviewControls), so text that doesn't read survives the panel closing */
-const { custom: rhythmCustom, text: rhythmText } = inject(RHYTHM_TEXT, () => useRhythmText(rhythm, () => shows('rhythm')), true)
-const rhythmError = computed(() => rhythmTextError(rhythmText.value, gearsOn))
+const { custom: rhythmCustom, text: rhythmText } = inject(RHYTHM_TEXT, () => useRhythmText(rhythm, () => shows('rhythm'), () => shows('rhythm-gears')), true)
+const typedGears = computed(() => gearsOn && shows('rhythm-gears')) // typed tuplet pulses: Everything only, as the listbox families (Phase 4 spec D22)
+const rhythmError = computed(() => rhythmTextError(rhythmText.value, typedGears.value))
 const rhythmFamily = computed<RhythmFamily>({
   get: () => (rhythmCustom.value ? 'custom' : familyOf(rhythm.value)),
   set: (f) => {
@@ -108,7 +109,7 @@ const rhythmFamily = computed<RhythmFamily>({
     if (f === 'custom') {
       // start from the unit in force, as text to edit
       if (was?.kind === 'unit' && !rhythmText.value) rhythmText.value = formatRhythm(unitRhythm(was.pulse, was.group, was.variation))
-      rhythm.value = customRhythmId(rhythmText.value, gearsOn)
+      rhythm.value = customRhythmId(rhythmText.value, typedGears.value)
     } else if (f === 'off' || f.startsWith('card:')) {
       rhythm.value = f as RhythmId
     } else {

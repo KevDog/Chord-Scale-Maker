@@ -477,7 +477,7 @@
     /** the rhythm line and target beats (rhythm spec §9) */
     const rhythm = defineModel<RhythmId>('rhythm', { default: 'off' })
     // Your rhythm…'s text lives here, not in RhythmControls, so text that doesn't read survives Line options closing
-    provide(RHYTHM_TEXT, useRhythmText(rhythm, () => shows('rhythm')))
+    provide(RHYTHM_TEXT, useRhythmText(rhythm, () => shows('rhythm'), () => shows('rhythm-gears')))
     const targets = defineModel<boolean>('targets', { default: false })
     const rhythmOn = useFeature('rhythm')
     /** the Rhythm on the Scales and Arpeggios sheets (rhythm-scales-arpeggios spec D7) */
