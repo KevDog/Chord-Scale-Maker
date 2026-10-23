@@ -333,6 +333,7 @@ const props = defineProps<{
   line: ChangesLine
   first: boolean // starts with the clef
   barsPerLine: number
+  units?: number // the line's drawing width in bars: the sheet's bars a line where it reflowed to fewer (Task 3.2); undefined: barsPerLine
   numerals: boolean
   scales: boolean
   clef?: 'treble' | 'bass' // with key signatures or a guide tone on: the part's clef, drawn (with any signature) on the first line only
@@ -369,6 +370,7 @@ const emit = defineEmits<{
   dialog: [kind: 'split' | 'nav' | 'paste' | 'rename', section: string, bar: number]
   addBar: [section: string]
   overfull: [at: string] // the names don't fit the line: break it before this bar (barKey)
+  crowded: [bars: number] // the notes don't fit the line (Task 3.2): only its first `bars` do, so the sheet should reflow at that many a line
   alt: [key: string, then: 'edit' | 'next' | 'prev' | 'close'] // a bar's alternate (barKey): open its field, move on (Tab, ⇧Tab), or it closed
 }>()
 
@@ -616,14 +618,15 @@ async function draw(): Promise<void> {
     await document.fonts?.ready // names measured in their own font
     const names = measureNames()
     drawn = key(names)
-    const layout = drawChangesLine(vf, el.value, props.line, { first: props.first, barsPerLine: props.barsPerLine, ...(props.clef ? { clef: props.clef } : {}), ...(props.arpeggio ? { arpeggio: true } : {}), ...(props.lineName ? { lineName: props.lineName } : {}), ...(props.rhythmCaption ? { rhythmCaption: props.rhythmCaption } : {}), ...(props.fromBar ? { fromBar: props.fromBar } : {}), ...(names ? { names } : {}) })
+    const layout = drawChangesLine(vf, el.value, props.line, { first: props.first, barsPerLine: props.barsPerLine, ...(props.units ? { units: props.units } : {}), ...(props.clef ? { clef: props.clef } : {}), ...(props.arpeggio ? { arpeggio: true } : {}), ...(props.lineName ? { lineName: props.lineName } : {}), ...(props.rhythmCaption ? { rhythmCaption: props.rhythmCaption } : {}), ...(props.fromBar ? { fromBar: props.fromBar } : {}), ...(names ? { names } : {}) })
     xs.value = layout.xs
     ends.value = layout.ends
     dotsAt.value = layout.dots
     nameScales.value = nameScalesOf(names, layout.scales)
     otherScales.value = otherScalesOf(names, layout.scales)
     const breakAt = props.line.bars[layout.fits]
-    if (breakAt) emit('overfull', barKey(breakAt.at))
+    if (layout.notes < props.line.bars.length) emit('crowded', layout.notes)
+    else if (breakAt) emit('overfull', barKey(breakAt.at))
     drawError.value = null
   } catch (e) {
     drawError.value = `Couldn't draw these bars (${e instanceof Error ? e.message : String(e)})`
@@ -648,5 +651,5 @@ onBeforeUnmount(() => {
   observer?.disconnect()
   clearTimeout(resized)
 })
-watch(() => [props.line, props.first, props.barsPerLine, props.clef, props.arpeggio, props.lineName, props.rhythmCaption, props.fromBar, props.others], () => nextTick(draw))
+watch(() => [props.line, props.first, props.barsPerLine, props.units, props.clef, props.arpeggio, props.lineName, props.rhythmCaption, props.fromBar, props.others], () => nextTick(draw))
 </script>

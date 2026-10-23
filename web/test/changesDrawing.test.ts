@@ -140,7 +140,7 @@ describe('fitBars', () => {
 
   const at = (beat: number, width: number) => ({ beat, width })
   it('keeps bars even when every name fits', () => {
-    expect(fitBars(FOUR, [[at(0, 0.1)], [at(0, 0.05), at(2, 0.05)], [], [at(0, 0.2)]])).toEqual({ shares: [0.25, 0.25, 0.25, 0.25], scales: [[1], [1, 1], [], [1]], fits: 4 })
+    expect(fitBars(FOUR, [[at(0, 0.1)], [at(0, 0.05), at(2, 0.05)], [], [at(0, 0.2)]])).toEqual({ shares: [0.25, 0.25, 0.25, 0.25], scales: [[1], [1, 1], [], [1]], fits: 4, notes: 4 })
   })
   it('widens a crowded bar by what its names need, and the others share the rest evenly', () => {
     const fit = fitBars(FOUR, [[at(0, 0.1), at(1, 0.1), at(2, 0.1), at(3, 0.1)], [at(0, 0.05)], [], [at(0, 0.05)]])
@@ -177,13 +177,14 @@ describe('fitBars', () => {
     expect(fit.scales[1]).toEqual([1])
   })
   // a bar's notes' room (Task 3.2): sextuplet and septuplet 16ths overflowed their bars, so the next bar's notes and tuplets drew over theirs
-  it("widens a bar to its notes' room, and breaks a line whose notes can't all fit (notes don't shrink as names do)", () => {
+  it("widens a bar to its notes' room, and counts the leading bars whose notes fit (notes don't shrink as names do): where the sheet reflows", () => {
     const none = [[], [], [], []]
     const even = fitBars(FOUR, none)
+    expect(fitBars(FOUR, none, [0, 0, 0, 0])).toEqual(even) // notes that fit: the line as before
     expect(fitBars(FOUR, none, [0.2, 0.2, 0.2, 0.2])).toEqual(even)
     expect(fitBars(FOUR, none, [0.4, 0.1, 0.1, 0.1]).shares.map((s) => +s.toFixed(6))).toEqual([0.4, 0.2, 0.2, 0.2])
-    expect(fitBars(FOUR, none, [0.45, 0.45, 0.45, 0.45]).fits).toBe(2)
-    expect(fitBars(FOUR, none, [0.39, 0.39, 0.39, 0.39]).fits).toBe(2) // 1.17 of the line: names at 0.8 would keep 3
+    expect(fitBars(FOUR, none, [0.45, 0.45, 0.45, 0.45])).toMatchObject({ notes: 2, fits: 4 }) // the names still fit: no break of their own
+    expect(fitBars(FOUR, none, [0.39, 0.39, 0.39, 0.39]).notes).toBe(2) // 1.17 of the line: names at 0.8 would keep 3
     expect(fitBars(FOUR, [[], [], null, null], [0.45, 0.45]).shares.map((s) => +s.toFixed(6))).toEqual([0.45, 0.45, 0.05, 0.05]) // a broken line's bars take the room past its end
     expect(fitBars(FOUR, [[at(0, 0.3)], [], [], []], [0.1, 0.1, 0.1, 0.1]).shares.map((s) => +s.toFixed(6))).toEqual(fitBars(FOUR, [[at(0, 0.3)], [], [], []]).shares.map((s) => +s.toFixed(6)))
   })

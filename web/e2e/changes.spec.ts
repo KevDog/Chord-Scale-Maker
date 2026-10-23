@@ -749,7 +749,7 @@ test.describe('the tuplet pulses', () => {
   })
 
   // Task 3.2: a bar of 28 septuplet 16ths can't fit a quarter of a line (each note keeps its glyph's room), so it ran on
-  // under the next bar, its tuplets over that bar's; now a bar takes its notes' room and the line breaks: two bars a line
+  // under the next bar, its tuplets over that bar's; now a bar takes its notes' room and the whole sheet reflows: two bars a line, every line
   for (const [what, open] of [
     ['the rhythm line', async (page: Page) => {
       await page.addInitScript(() => localStorage.setItem('csm-rhythm', 'unit:16s:7:accents'))
@@ -783,7 +783,7 @@ test.describe('the tuplet pulses', () => {
             inside: staves.map((s, b) => notes.filter((n) => n.left >= s.left && n.left < (staves[b + 1]?.left ?? s.right) && n.right <= s.right).length),
           }
         })
-        expect(d.bars).toBeLessThanOrEqual(2)
+        expect(d.bars).toBe(2)
         expect(d.tuplets).toBe(4 * d.bars)
         expect(d.overlaps).toBe(0)
         expect(d.inside).toEqual(Array(d.bars).fill(28))
@@ -791,6 +791,52 @@ test.describe('the tuplet pulses', () => {
       await expect(page.getByText(/Couldn.t draw/)).toHaveCount(0)
     })
   }
+
+  /** each line's bars, and how far (px) each bar's notes stop short of its barline (negative: they cross it) */
+  const barClearances = (line: Locator) =>
+    line.evaluate((svg) => {
+      const rect = (e: Element) => e.getBoundingClientRect()
+      const staves = Array.from(svg.querySelectorAll('.vf-stave')).map(rect)
+      const notes = Array.from(svg.querySelectorAll('.vf-stavenote')).map(rect).sort((a, b) => a.left - b.left)
+      // a bar's notes: those starting in it, by order; its last note's right edge against the bar's right edge
+      return staves.map((s, b) => {
+        const mine = notes.filter((n) => n.left >= s.left && n.left < (staves[b + 1]?.left ?? Infinity))
+        return s.right - Math.max(...mine.map((n) => n.right))
+      })
+    })
+
+  // Task 3.2 fix round: straight 16ths keep four bars a line on every line, the first line's too (its clef, key and
+  // time signature take room), set close there, and no note reaches its barline (set close they clear it by 6 units,
+  // 5.5 px here). A phone's line is two bars, 600 units: the first line's two need 637 set close, so the whole sheet
+  // reflows to a bar a line. The slashes are Bravura's, sized by VexFlow's font metrics on every platform; 2 px margin
+  for (const [width, perLine] of [[1400, 4], [390, 1]] as const) {
+    test(`16ths in 4 at ${width} px: ${perLine} bars every line, each bar's notes clear of its barline`, async ({ page }) => {
+      await page.setViewportSize({ width, height: 900 })
+      await page.addInitScript(() => localStorage.setItem('csm-rhythm', 'unit:16:4:accents'))
+      await page.goto('/song/f-jazz-blues')
+      await rhythmDrawn(page)
+      const all = await lines(page).all()
+      expect(all.length).toBe(12 / perLine)
+      for (const line of all) {
+        const clear = await barClearances(line)
+        expect(clear).toHaveLength(perLine)
+        for (const c of clear) expect(c).toBeGreaterThanOrEqual(2)
+      }
+    })
+  }
+
+  // 16th quintuplets in 7: 20 notes a bar fit three bars a line, so the whole sheet reflows to three, no bar left on a line of its own
+  test('16th quintuplets in 7: three bars every line, each bar clear of its barline', async ({ page }) => {
+    await page.addInitScript(() => localStorage.setItem('csm-rhythm', 'unit:16q:7:accents'))
+    await page.goto('/song/f-jazz-blues')
+    await rhythmDrawn(page)
+    await expect(lines(page)).toHaveCount(4)
+    for (const line of await lines(page).all()) {
+      const clear = await barClearances(line)
+      expect(clear).toHaveLength(3)
+      for (const c of clear) expect(c).toBeGreaterThanOrEqual(2)
+    }
+  })
 })
 
 // mixed phrasing (Phase 4 spec §3, §6, §7; flag `rhythmGears`): Groups Up by section on an AABA chart, 4 bars a line
