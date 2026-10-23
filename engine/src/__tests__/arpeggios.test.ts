@@ -422,6 +422,15 @@ describe('a rhythm poured into the line (rhythm-on-lines spec §4)', () => {
     expect(marks(poured(nc, 4, plan('unit:8t:4:accents', [4, 4])).get(0))).toEqual([0, 1, 2, 3].map((b) => [b, 1, 'q', null, false]))
     expect(letters(poured(nc, 4, plan('unit:16:4:accents', [4, 4])).get(1))).toHaveLength(16) // the played bar keeps its 16ths
   })
+  it('carries each poured note\'s tuplet ratio onto its mark: 5:4 at 8q, 3:2 at 8t, none straight (Phase 4 spec §2)', () => {
+    const ratios = (id: Parameters<typeof plan>[0]) => (poured(seq(['CMaj7', 4]), 4, plan(id, [4])).get(0) ?? []).map((n) => n.mark?.ratio)
+    expect(ratios('unit:8q:5:accents')).toEqual(Array(10).fill({ notes: 5, of: 4 }))
+    expect(ratios('unit:8t:3:accents')).toEqual(Array(12).fill({ notes: 3, of: 2 }))
+    expect(ratios('unit:8:3:accents')).toEqual(Array(8).fill(null))
+    // merged silences keep the ratio of the group they sit in
+    const nc = poured(seq(['N.C.', 4], ['CMaj7', 4]), 4, plan('unit:16s:7:accents', [4, 4])).get(0) ?? []
+    expect(nc.every((n) => n.mark?.ratio === null || (n.mark?.ratio?.notes === 7 && n.mark.ratio.of === 4))).toBe(true)
+  })
   it('(guard) a plan whose rhythm is off gives the voices of no plan', () => {
     const cs = seq(['CMaj7', 4], ['Dm7', 4])
     expect(arpeggioVoices(cs, CONCERT, 4, null, 'up-root', 'none', plan('off', [4, 4]))).toEqual(arpeggioVoices(cs, CONCERT, 4, null, 'up-root'))

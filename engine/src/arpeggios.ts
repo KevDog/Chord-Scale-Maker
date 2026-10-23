@@ -453,7 +453,7 @@ function pourVoices(poured: LineRhythm, rhythm: RhythmPlan, played: readonly Pla
     for (const [i, n] of bar.entries()) {
       if (!n.tiedIn) held = n.rest || !poured.owners[d]?.[i] ? null : (pitchAt.get(`${d}:${n.beat}`) ?? null)
       const pitch = n.rest ? null : held
-      voice.push({ pitch, beat: n.beat, beats: valueBeats(n), tie: !!pitch && n.tie, tiedIn: !!pitch && n.tiedIn, accidental: null, mark: { value: n.value, tuplet: n.tuplet, beam: n.beam, accent: !!pitch && n.accent } })
+      voice.push({ pitch, beat: n.beat, beats: valueBeats(n), tie: !!pitch && n.tie, tiedIn: !!pitch && n.tiedIn, accidental: null, mark: { value: n.value, tuplet: n.tuplet, ratio: n.ratio, beam: n.beam, accent: !!pitch && n.accent } })
     }
     const silent = voice.map((n, i) => !n.pitch && !poured.owners[d]?.[i])
     bars.set(rhythm.clockBars[d] ?? d, voiceAccidentals(mergeSilence(voice, silent, poured.laid.pulses[d]!), keySig))
@@ -483,7 +483,7 @@ function mergeSilence(voice: readonly GuideNote[], silent: readonly boolean[], p
     const length = run.reduce((a, n) => a + pulseOf(n.beat + n.beats) - pulseOf(n.beat), 0)
     return restPieces(at, length, pulse).map((p): GuideNote => {
       const tuplet = p.ratio ? (first.mark?.tuplet ?? null) : null
-      return { ...first, beat: pulseBeat(pulse, p.at), beats: tupletBeats(p.value, p.ratio), mark: { value: p.value, tuplet, beam: null, accent: false } }
+      return { ...first, beat: pulseBeat(pulse, p.at), beats: tupletBeats(p.value, p.ratio), mark: { value: p.value, tuplet, ratio: tuplet === null ? null : p.ratio, beam: null, accent: false } }
     })
   })
 }
