@@ -313,8 +313,8 @@
               <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
                 From the Everything interface, <strong class="font-semibold">Feel</strong> in <strong class="font-semibold">Line options</strong> groups
                 the Changes' beats in 4, in 2 (half time) or in 1, after Jerry Bergonzi's feels (<em>Inside Improvisation Vol. 4</em>, ch. 30) and Hal
-                Galper's half time. In 2 the slashes are half notes (a dotted half in 3/4, a dotted half and a half in 5/4) and 8ths beam by the half
-                bar; the target dots stay on 1 and 3. In 1 a slash, and a beam, is the bar long, tied where it's longer than a whole note, and beat 1 is
+                Galper's half time. In 2 the slashes are half notes (a dotted half in 3/4, a dotted half and a half in 5/4) and 8ths beam by the
+                group; the target dots stay on 1 and 3. In 1 a slash, and a beam, is the bar long, tied where it's longer than a whole note, and beat 1 is
                 the only target. It changes only how the sheet is written: the rhythm plays the same, and units keep their own beams. It shows with or
                 without a rhythm, "in 2" or "in 1" in italics over the first bar, and "feel in 2" in the caption with a rhythm; it is kept in this
                 browser and goes in a share link. The Scales and Arpeggios sheets keep the beat.

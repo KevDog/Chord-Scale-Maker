@@ -304,7 +304,7 @@
     </template>
 
     <script setup lang="ts">
-    import { type Approach, APPROACH_LABELS, APPROACHES, ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, CELL_ORDER_LABELS, CELL_ORDERS, CELL_SYSTEMS, type CellId, type CellOrder, cellLabel, CHROMATIC_CELLS, isCellId, SINGLE_CELLS, type ArpeggioPattern, type ArpNotes, fitRange, type InstrumentName, formatPattern, noteName, parsePattern, partFor, PATTERN_LIBRARY, type PatternNotes, type HexatonicBasis, type QuartalNotesChoice, type PentatonicBasis, type PentatonicDegree, PENTATONIC_LEAVE_LABELS, PENTATONIC_LEAVES, type PairShape, PAIR_SHAPE_LABELS, type PairLineShape, PAIR_LINE_SHAPE_LABELS, PAIR_LINE_SHAPES, type PentatonicLeave, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit, type Range, rangeChoices, type RhythmId, type RhythmPath, RHYTHM_PATH_OFF, type Feel, FEELS, ANTICIPATE_STEPS, anticipateLabel, RHYTHM_START_LABELS, RHYTHM_STARTS, type RhythmStart, NOTES_PER_BAR, NOTES_PER_BAR_LABELS, type NotesPerBar } from '@chord-scale-maker/engine'
+    import { type Approach, APPROACH_LABELS, APPROACHES, ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, CELL_ORDER_LABELS, CELL_ORDERS, CELL_SYSTEMS, type CellId, type CellOrder, cellLabel, CHROMATIC_CELLS, isCellId, SINGLE_CELLS, type ArpeggioPattern, type ArpNotes, fitRange, type InstrumentName, formatPattern, noteName, parsePattern, partFor, PATTERN_LIBRARY, type PatternNotes, type HexatonicBasis, type QuartalNotesChoice, type PentatonicBasis, type PentatonicDegree, PENTATONIC_LEAVE_LABELS, PENTATONIC_LEAVES, type PairShape, PAIR_SHAPE_LABELS, type PairLineShape, PAIR_LINE_SHAPE_LABELS, PAIR_LINE_SHAPES, type PentatonicLeave, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit, type Range, rangeChoices, type RhythmId, type RhythmPath, RHYTHM_PATH_OFF, type Feel, FEEL_LABELS, FEELS, ANTICIPATE_STEPS, anticipateLabel, RHYTHM_START_LABELS, RHYTHM_STARTS, type RhythmStart, NOTES_PER_BAR, NOTES_PER_BAR_LABELS, type NotesPerBar } from '@chord-scale-maker/engine'
     import { degreeLabel, PENT_BASES, PENT_DEGREE_CHOICES, PENT_PATHS, PENT_RUNGS, PENT_SIDES, PENT_STEP_BARS, PENT_STEP_UNITS, pathLabel, rungLabel, sideShown } from '~/utils/pentatonics'
     import { approachApplies, type GuideFrom, type LineMode, lineModes } from '~/utils/sheetLine'
     import { HEX_BASES } from '~/utils/hexatonics'
@@ -490,7 +490,6 @@
     /** Feel in 4, 2 or 1 (Phase 4 spec §7), with the rhythmGears flag on */
     const gearsOn = useFeature('rhythmGears')
     const feel = defineModel<Feel>('feel', { default: 4 })
-    const FEEL_LABELS: Readonly<Record<Feel, string>> = { 4: 'In 4', 2: 'In 2', 1: 'In 1' }
     /** the Rhythm on the Scales and Arpeggios sheets (rhythm-scales-arpeggios spec D7) */
     const rhythmSheetsOn = useFeature('rhythmSheets')
     /** the Scales sheet's Notes per bar (spec §2, §9) */

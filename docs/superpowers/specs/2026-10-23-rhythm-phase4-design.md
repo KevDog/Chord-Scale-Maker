@@ -322,7 +322,7 @@ The drawing changes are in `web/app/utils/changesDrawing.ts`:
   - **Step** (aria-label "Step"), shown when either path is on.
 
   *Your list…* reveals a text field validated as the custom rhythm field is, with an error under it.
-- **Feel:** a listbox on the Changes rail's Rhythm group (aria-label "Feel", options *In 4*, *In 2*, *In 1*, title
+- **Feel:** a listbox in Line options, under the rhythm (the Changes rhythm controls' home; the rail has no Rhythm group) (aria-label "Feel", options *In 4*, *In 2*, *In 1*, title
   "Group the beats in 4, in 2 (half time) or in 1"), with the flag on and `shows('feel')`. It is shown with or
   without a rhythm, because it changes the plain slashes and the target beats too.
 - **Preferences:**

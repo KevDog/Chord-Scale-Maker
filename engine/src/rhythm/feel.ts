@@ -10,6 +10,9 @@ export type Feel = 4 | 2 | 1
 
 export const FEELS: readonly Feel[] = [4, 2, 1]
 
+/** The Feel control's names (Phase 4 spec §7). */
+export const FEEL_LABELS: Readonly<Record<Feel, string>> = { 4: 'In 4', 2: 'In 2', 1: 'In 1' }
+
 export function isFeel(f: unknown): f is Feel {
   return typeof f === 'number' && (FEELS as readonly number[]).includes(f)
 }

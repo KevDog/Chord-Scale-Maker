@@ -182,7 +182,7 @@ describe('usePreferences', () => {
     expect(prefs().feel.value).toBe(4)
     expect(localStorage.getItem('csm-feel')).toBe('1')
     flags.rhythmGears = true
-    for (const bad of ['3', 'in 2', '']) {
+    for (const bad of ['3', 'in 2', '', ' 2', '2.0']) {
       localStorage.setItem('csm-feel', bad)
       expect(prefs().feel.value).toBe(4)
     }

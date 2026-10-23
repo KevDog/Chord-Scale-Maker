@@ -1,5 +1,5 @@
 import type { Ref, WritableComputedRef } from 'vue'
-import { type Approach, type ArpDirection, type Feel, isFeel, type CellId, type CellOrder, CHROMATIC_CELLS, fitRange, formatPattern, isCellId, parsePattern, type PatternNotes, type ArpeggioPattern, type ArpNotes, type InstrumentName, INSTRUMENTS, isApproach, isArpDirection, isArpeggioPattern, isArpNotes, isCellOrder, isInstrumentName, isAnticipate, isRhythmStart, type RhythmStart, isPairLineShape, isPairShape, isPatternNotes, isPentatonicLeave, isNotesPerBar, isRhythmId, type NotesPerBar, type RhythmId, type HexatonicBasis, type PairLineShape, type PairShape, type QuartalNotesChoice, type PentatonicBasis, PENTATONIC_LEAVE, type PentatonicLeave, type PentatonicDegree, pentatonicDegreeFrom, type PentatonicSide, type Range, RHYTHM_PATH_OFF, type RhythmPath, type ShareRhythmPath, type ShareView } from '@chord-scale-maker/engine'
+import { type Approach, type ArpDirection, type Feel, type CellId, type CellOrder, CHROMATIC_CELLS, fitRange, formatPattern, isCellId, parsePattern, type PatternNotes, type ArpeggioPattern, type ArpNotes, type InstrumentName, INSTRUMENTS, isApproach, isArpDirection, isArpeggioPattern, isArpNotes, isCellOrder, isInstrumentName, isAnticipate, isRhythmStart, type RhythmStart, isPairLineShape, isPairShape, isPatternNotes, isPentatonicLeave, isNotesPerBar, isRhythmId, type NotesPerBar, type RhythmId, type HexatonicBasis, type PairLineShape, type PairShape, type QuartalNotesChoice, type PentatonicBasis, PENTATONIC_LEAVE, type PentatonicLeave, type PentatonicDegree, pentatonicDegreeFrom, type PentatonicSide, type Range, RHYTHM_PATH_OFF, type RhythmPath, type ShareRhythmPath, type ShareView } from '@chord-scale-maker/engine'
 import { type GuideFrom, type LineMode, lineChoiceOf } from '~/utils/sheetLine'
 import { FUNCTIONS_KEYS } from '~/utils/functionsKey'
 import { isSpell, type Spell } from '~/utils/scaleChoices'
@@ -76,7 +76,7 @@ export function usePreferences() {
   const gearsOn = useFeature('rhythmGears')
   const rhythm = storedRef<RhythmId>('csm-rhythm', (s) => (isRhythmId(s) && rhythmOn && (gearsOn || !isGearsRhythm(s)) ? s : undefined), 'off')
   // the Changes sheet's Feel (Phase 4 spec §7): in 4 until chosen, global like the rhythm; with the rhythmGears flag off a stored one reads as 4 but stays stored
-  const feel = storedRef<Feel>('csm-feel', (s) => (gearsOn && isFeel(Number(s)) ? (Number(s) as Feel) : undefined), 4, String)
+  const feel = storedRef<Feel>('csm-feel', (s) => (gearsOn && (s === '4' || s === '2' || s === '1') ? (Number(s) as Feel) : undefined), 4, String)
   const targets = storedRef<boolean>('csm-targets', (s) => (rhythmOn && (s === 'on' || s === 'off') ? s === 'on' : undefined), false, (v) => (v ? 'on' : 'off'))
   // where the rhythm starts, its timing and Restate (rhythm spec §10): on the beat, on time and off until chosen
   const rhythmStart = storedRef<RhythmStart>('csm-rhythm-start', (s) => (isRhythmStart(s) && rhythmOn ? s : undefined), 'beat')
