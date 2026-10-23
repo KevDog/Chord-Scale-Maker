@@ -3,6 +3,9 @@ import type { PentatonicStep } from './pentatonics'
 /** a drawn block, as `changes.ts` cuts the form: its part, its clock bars `from`..`to`, the chart rows in it */
 export type StepBlock = Readonly<{ part: string; from: number; to: number; rows: readonly number[] }>
 
+/** a drawn block's bars: one at least (a block whose rows sit in one bar still draws it) */
+export const blockBars = (b: Readonly<{ from: number; to: number }>): number => Math.max(1, b.to - b.from + 1)
+
 export type StepUnits = Readonly<{
   /** a chord's unit: its block k, its bar j in the block, its row i; null outside the form */
   ofChord: (block: number, bar: number, row: number) => number | null
@@ -33,7 +36,7 @@ export function stepUnits(
     for (const k of formBlocks) {
       const b = blocks[k]!
       formStart.set(k, formBars)
-      formBars += Math.max(1, b.to - b.from + 1)
+      formBars += blockBars(b)
       for (const i of b.rows) {
         const here = keyOfRow(i)
         if (here !== undefined && key !== undefined && here !== key) run++
@@ -50,7 +53,7 @@ export function stepUnits(
     return areaUnit.get(i) ?? 0
   }
   const ofDrawnBar = blocks.flatMap((b, k) =>
-    Array.from({ length: Math.max(1, b.to - b.from + 1) }, (_, j): number | null => {
+    Array.from({ length: blockBars(b) }, (_, j): number | null => {
       const bar = b.from + j
       // the bar's first chord, else the chord still sounding from an earlier bar of the block
       const row = b.rows.find((i) => barOf(i) === bar) ?? b.rows.findLast((i) => (barOf(i) ?? Infinity) < bar)

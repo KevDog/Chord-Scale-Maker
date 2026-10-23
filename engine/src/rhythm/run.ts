@@ -5,7 +5,7 @@
 import { cycleBars, layRhythm } from './lay'
 import { rhythmOf, type RhythmId } from './library'
 import { restPieces, rhythmNotes, tupletGroup, type RhythmNote, type RhythmValue, type TupletRatio } from './notation'
-import { barPulse, PULSE_GRID, pulseAt, pulseBeat, pulsesIn, range, type Pulse } from './rhythm'
+import { barPulse, PULSE_GRID, pulseAt, pulseBeat, pulsesIn, range, type Pulse, VALUE_BEATS } from './rhythm'
 
 /** The longest card: a cycle longer than this is cut and the card says it continues. */
 const MAX_CARD_BARS = 4
@@ -45,7 +45,6 @@ export type RunNote = Readonly<{ note: number | null; mark: RhythmNote }>
 export type RunBar = Readonly<{ notes: readonly RunNote[]; tuplet: BarTuplet | null }>
 export type StaffRun = Readonly<{ beats: number; bars: readonly RunBar[] }>
 
-const VALUE_BEATS: Readonly<Record<RhythmValue, number>> = { w: 4, hd: 3, h: 2, qd: 1.5, q: 1, '8d': 0.75, '8': 0.5, '16': 0.25 }
 const UNDOTTED: readonly RhythmValue[] = ['w', 'h', 'q', '8', '16']
 const DOTTED: readonly RhythmValue[] = ['hd', 'qd', '8d']
 /** a bar-long tuplet's values, longest first (§2 rule 3) */

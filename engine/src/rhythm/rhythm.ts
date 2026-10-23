@@ -10,6 +10,9 @@ export const PULSES: readonly Pulse[] = ['4', '8', '8t', '16', '4t', '4q', '8q',
 /** A note value: whole, dotted half, half, dotted quarter, quarter, dotted 8th, 8th, 16th. */
 export type RhythmValue = 'w' | 'hd' | 'h' | 'qd' | 'q' | '8d' | '8' | '16'
 
+/** A value's length in beats (a quarter note is one): the one table every rhythm module reads. */
+export const VALUE_BEATS: Readonly<Record<RhythmValue, number>> = { w: 4, hd: 3, h: 2, qd: 1.5, q: 1, '8d': 0.75, '8': 0.5, '16': 0.25 }
+
 /**
  * A pulse as a ratio (Phase 4 spec §1): `n` pulses in a group of `beats` beats, each drawn as `value`, inside a
  * `notes:of` tuplet (null when straight); `fallback` is the pulse of a bar the group doesn't fit (D11).
@@ -35,11 +38,11 @@ export const PULSE_GRID: Readonly<Record<Pulse, PulseGrid>> = {
   '16s': { n: 7, beats: 1, value: '16', tuplet: { notes: 7, of: 4 }, fallback: null },
 }
 
-/** The six pulses Phase 4 adds (tuplets over more than a beat, and quintuplets to septuplets), which sit behind the rhythmGears flag. */
-export const isPhase4Pulse = (p: Pulse): boolean => p === '4t' || p === '4q' || p === '8q' || p === '16q' || p === '16t' || p === '16s'
-
 /** Pulses in one beat for the four pulses with a whole number of them (a beat is a quarter note in every metre). */
 export const PULSE_PER_BEAT: Readonly<Record<'4' | '8' | '8t' | '16', number>> = { '4': 1, '8': 2, '8t': 3, '16': 4 }
+
+/** The six pulses Phase 4 adds (tuplets over more than a beat, and quintuplets to septuplets), which sit behind the rhythmGears flag: every pulse but the four above. */
+export const isPhase4Pulse = (p: Pulse): boolean => !(p in PULSE_PER_BEAT)
 
 /** A bar's pulse: `p`, or its fallback where the bar isn't a whole number of its groups (Phase 4 spec D11). */
 export function barPulse(p: Pulse, beats: number): Pulse {
