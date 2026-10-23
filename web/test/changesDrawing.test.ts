@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import * as vf from 'vexflow/bravura'
 import type { ChangesBar, ChangesChord, ChangesLine, GuideNote, Letter, Pitched, RhythmCardModel, RhythmNote } from '@chord-scale-maker/engine'
-import { arpeggioAria, balancedSplit, beamRuns, beatXs, bracketsCross, cardAria, cardFit, DURATIONS, evenChunks, fitBars, guideAria, mergeNames, restatedAccidental, rhythmAria, stepAria, stepNumeral, targetsAria, SLASH_TARGET_ROW, targetRow, tupletsOf, voicedBand, voltaShift, withTargets } from '~/utils/changesDrawing'
+import { arpeggioAria, balancedSplit, beamRuns, beatXs, bracketsCross, cardAria, cardFit, DURATIONS, evenChunks, feelAria, feelMark, fitBars, guideAria, mergeNames, restatedAccidental, rhythmAria, stepAria, stepNumeral, targetsAria, SLASH_TARGET_ROW, targetRow, tupletsOf, voicedBand, voltaShift, withTargets } from '~/utils/changesDrawing'
 
 const chord = (beat: number, text: string, guide: string): ChangesChord => ({
   beat,
@@ -310,6 +310,16 @@ describe('stepNumeral and stepAria (Phase 4 spec §6, D17)', () => {
   })
   it('is empty with no step on the line', () => {
     expect(stepAria(line([at(null), bar([], [])]), 1)).toBe('')
+  })
+})
+
+describe('feelMark and feelAria (Phase 4 spec §6, D21)', () => {
+  it('marks in 2 and in 1, and nothing in 4', () => {
+    expect([4, 2, 1, undefined].map((f) => feelMark(f as 4 | 2 | 1 | undefined))).toEqual([null, 'in 2', 'in 1', null])
+  })
+  it("names the mark in the line's aria-label, as the caption does", () => {
+    expect(feelAria('in 2')).toBe('; feel in 2')
+    expect(feelAria(null)).toBe('')
   })
 })
 
