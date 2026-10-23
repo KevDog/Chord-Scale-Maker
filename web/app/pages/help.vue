@@ -344,6 +344,18 @@
                 the rhythm. A sheet with cards prints eight staves a page.
               </dd>
             </div>
+            <div v-if="rhythmSheetsOn">
+              <dt id="notes-per-bar" class="scroll-mt-6 font-semibold text-zinc-950 dark:text-white">Notes per bar</dt>
+              <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
+                Beside the Rhythm on the Scales sheet, <strong class="font-semibold">Notes per bar</strong> rewrites each staff as a run, after Jerry Bergonzi's
+                <em>Inside Improvisation Vol. 4</em> (ch. 1): the scale up from its first note to the octave above and back down, in bars of that many notes
+                (a seven-note scale is 15 notes). The bars are even: a note the bar long for 1; one value for all of them where it fits the bar (four quarters in 4/4,
+                two dotted quarters in 3/4); otherwise a tuplet of the longest value that fits, such as five quarters in the time of four. The last bar's spare notes
+                rest. With a Rhythm too, each bar plays the rhythm's first notes up to that many, and rests the rest, so the rhythm keeps its own values and accents.
+                Practice lights a note each time the run plays it, and the intervals follow the run. The time signature is the staff's, as for the rhythm card, and the
+                page's subtitle names the number. <em>Whole notes</em> is the staff as it was. A sheet with runs prints eight staves a page.
+              </dd>
+            </div>
           </dl>
         </div>
 

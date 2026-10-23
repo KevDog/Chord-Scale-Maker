@@ -1,4 +1,4 @@
-import { chooseInstrument, chooseRhythm, chooseSheet, expect, staves, test } from './fixtures'
+import { chooseInstrument, chooseInterface, chooseRhythm, chooseSheet, expect, pickOption, staves, test } from './fixtures'
 
 test.describe('without JavaScript', () => {
   test.use({ javaScriptEnabled: false })
@@ -87,5 +87,51 @@ test.describe('the Scales sheet’s rhythm', () => {
     await expect(page.locator('svg[data-time-sig]')).toHaveCount(0)
     await expect(page.locator('[data-rhythm-bar]')).toHaveCount(0)
     await expect(staves(page)).toHaveCount(count)
+  })
+
+  // Notes per bar (spec §2, §7, D15): the run in bars of N, the time signature on; practice and the intervals by staff note
+  test('notes per bar draws the run in bars, its lit notes repeating on the way down', async ({ page }) => {
+    await page.goto('/song/f-blues')
+    await chooseSheet(page, 'Scales')
+    await pickOption(page, 'Where each scale starts', 'From root')
+    const panel = page.locator('fieldset', { hasText: 'Practice' })
+    for (const box of [/^1$/, /^3$/, /^5$/]) await panel.locator('label', { hasText: box }).first().click()
+    const first = staves(page).first()
+    await expect(first).toHaveAttribute('aria-label', /; practice:/)
+    const lit = await staves(page).evaluateAll((els) => els.map((e) => e.querySelectorAll('.vf-selected').length))
+    expect(lit.every((n) => n > 0)).toBe(true)
+    await pickOption(page, 'Notes per bar', '4 a bar')
+    await expect(page.getByRole('button', { name: 'Notes per bar' })).toHaveText('Notes per bar: 4 a bar')
+    await expect(first).toHaveAttribute('data-time-sig', '4/4')
+    await expect(first.locator('.vf-stave')).toHaveCount(4)
+    // every lit staff note twice (up, then down), and the root a third time (the top)
+    await expect.poll(() => staves(page).evaluateAll((els) => els.map((e) => e.querySelectorAll('.vf-selected').length))).toEqual(lit.map((n) => 2 * n + 1))
+    // its label names the run's notes and the last bar's rest, then the lit ones in run order
+    const [names, practice] = ((await first.getAttribute('aria-label')) ?? '').split('; practice: ')
+    expect(names?.split(' ')).toHaveLength(16)
+    expect(names).toMatch(/ rest$/)
+    expect(practice?.split(' ')).toHaveLength(2 * (lit[0] ?? 0) + 1)
+    // the intervals: one label a run note
+    await expect(page.locator('[data-slot=scale-staff]').first().locator('p span:not(.sr-only)')).toHaveCount(15)
+    // Whole notes: today's staves again
+    await pickOption(page, 'Notes per bar', 'Whole notes')
+    await expect(page.locator('svg[data-time-sig]')).toHaveCount(0)
+  })
+
+  test('a share link carries Notes per bar', async ({ page, browser }) => {
+    await page.goto('/song/f-blues')
+    await chooseSheet(page, 'Scales')
+    await pickOption(page, 'Notes per bar', '5 a bar')
+    await page.getByRole('button', { name: 'Share' }).click()
+    const box = page.getByRole('dialog').getByLabel('Link')
+    await expect(box).toHaveValue(/\/song#s=[A-Za-z0-9_-]+$/)
+    const link = await box.inputValue()
+    const fresh = await browser.newContext() // fresh storage: the link alone carries it
+    await chooseInterface(fresh, 'intermediate')
+    const visitor = await fresh.newPage()
+    await visitor.goto(link)
+    await expect(visitor.getByRole('button', { name: 'Notes per bar' })).toHaveText('Notes per bar: 5 a bar')
+    await expect(staves(visitor).first()).toHaveAttribute('data-time-sig', '4/4')
+    await fresh.close()
   })
 })

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { CONTROL_TIERS, hiddenSettings, initialLevel, INTERFACE_LEVELS, isInterfaceLevel, levelLabel, shows, type ViewSettings } from '~/utils/interface'
 
-const DEFAULTS: ViewSettings = { sheet: 'changes', scaleLevel: 'standard', numerals: true, scaleNames: true, lineMode: 'off', spell: 'key', practice: null, overlay: 'off', picks: false, approach: 'none', rhythm: 'off', targets: false, rhythmStart: 'beat', anticipate: 0, rhythmLine: false }
+const DEFAULTS: ViewSettings = { sheet: 'changes', scaleLevel: 'standard', numerals: true, scaleNames: true, lineMode: 'off', spell: 'key', practice: null, overlay: 'off', picks: false, approach: 'none', rhythm: 'off', targets: false, rhythmStart: 'beat', anticipate: 0, rhythmLine: false, notesPerBar: 'whole' }
 
 describe('interface levels', () => {
   it('orders the levels and names them', () => {
@@ -22,6 +22,7 @@ describe('interface levels', () => {
       cells: 'intermediate',
       approaches: 'intermediate',
       rhythm: 'intermediate',
+      'notes-per-bar': 'intermediate',
       'rhythm-phrasing': 'everything',
       'scale-choice': 'intermediate',
       'form-editing': 'intermediate',
@@ -97,6 +98,13 @@ describe('hiddenSettings', () => {
     expect(hiddenSettings('essentials', { ...DEFAULTS, sheet: 'scales', rhythm: 'unit:8:3:accents' })).toEqual({ settings: ['rhythm'], needs: 'intermediate' })
     expect(hiddenSettings('essentials', { ...DEFAULTS, sheet: 'scales', rhythm: 'off' })).toBeNull() // what EditorView passes with the rhythmSheets flag off
     expect(hiddenSettings('essentials', { ...DEFAULTS, sheet: 'arpeggios', rhythm: 'unit:8:3:accents' })).toEqual({ settings: ['rhythm'], needs: 'intermediate' })
+  })
+
+  it('lists Notes per bar on the Scales sheet only (rhythm-scales-arpeggios spec §9)', () => {
+    expect(hiddenSettings('essentials', { ...DEFAULTS, sheet: 'scales', notesPerBar: 3 })).toEqual({ settings: ['notes-per-bar'], needs: 'intermediate' })
+    expect(hiddenSettings('intermediate', { ...DEFAULTS, sheet: 'scales', notesPerBar: 3 })).toBeNull()
+    expect(hiddenSettings('essentials', { ...DEFAULTS, sheet: 'arpeggios', notesPerBar: 3 })).toBeNull()
+    expect(hiddenSettings('essentials', { ...DEFAULTS, sheet: 'scales', notesPerBar: 'whole' })).toBeNull()
   })
 
   it('names a rhythm only where it draws: the rhythm line, or a Line that takes it (#505)', () => {

@@ -1,7 +1,9 @@
-import { type ArpeggioStaffModel, type StaffModel, toVexKey } from '@chord-scale-maker/engine'
+import { type ArpeggioStaffModel, type Pitched, type StaffModel, type StaffRun, toVexKey } from '@chord-scale-maker/engine'
+import { groupsOf, INK, inkTips, marked, REST_KEY, rhythmTies, staveRoom, tripletsOf, voiceOf } from './changesDrawing'
 
 export type VexFlowModule = typeof import('vexflow/bravura')
 type Context = ReturnType<InstanceType<VexFlowModule['Renderer']>['getContext']>
+type Stave = InstanceType<VexFlowModule['Stave']>
 
 let loading: Promise<VexFlowModule> | undefined
 
@@ -86,6 +88,7 @@ export const headCentre = (n: { getNoteHeadBeginX(): number; getNoteHeadEndX(): 
  * Returns each note head's centre as a fraction of the width, for labels placed under it.
  */
 export function drawStaff(vf: VexFlowModule, el: HTMLElement, staff: StaffModel, clef: 'treble' | 'bass'): number[] {
+  if (staff.run) return drawRunStaff(vf, el, staff, staff.run, clef)
   const ctx = svgContext(vf, el, STAFF_WIDTH)
 
   const stave = staffStave(vf, staff, clef)
@@ -106,17 +109,130 @@ export function drawStaff(vf: VexFlowModule, el: HTMLElement, staff: StaffModel,
 
   // practice: VexFlow keeps an element's classes off its drawn group, so tag the groups after drawing (main.css styles them)
   notes.forEach((n, i) => {
-    const pick = staff.selected?.[i]
-    // a hexatonic's group B, or a pentatonic's notes from outside the scale (#308), take the second accent
-    if (pick !== undefined) n.getSVGElement()?.classList.add(...(pick ? ['vf-selected', ...(staff.second?.[i] || staff.outside?.[i] ? ['vf-second'] : [])] : ['vf-dimmed']))
+    const classes = practiceClasses(staff, i)
+    if (classes.length) n.getSVGElement()?.classList.add(...classes)
   })
-  const names = staff.notes.map((n) => toVexKey(n).replace('/', ''))
+  const names = staff.notes.map(ariaName)
   const picked = staff.selected ? names.filter((_, i) => staff.selected?.[i]) : null
   const added = names.filter((_, i) => staff.outside?.[i])
   const label = names.join(' ') + (picked ? `; practice: ${picked.length ? picked.join(' ') : 'none'}` : '') + (added.length ? `; added from the pentatonic: ${added.join(' ')}` : '')
   fitSvg(el, cropBand(notes.flatMap((n) => n.getYs())), STAFF_WIDTH, label)
   if (staff.timeSig) el.querySelector('svg')?.setAttribute('data-time-sig', staff.timeSig)
   return notes.map((n) => headCentre(n, STAFF_WIDTH))
+}
+
+/** a pitch's name in an aria-label: "eb4" */
+const ariaName = (n: Pitched): string => toVexKey(n).replace('/', '')
+
+/** practice classes (main.css): the staff note's pick, its second accent for a hexatonic's group B or a pentatonic's added note (#308) */
+function practiceClasses(staff: StaffModel, i: number): readonly string[] {
+  const pick = staff.selected?.[i]
+  if (pick === undefined) return []
+  return pick ? ['vf-selected', ...(staff.second?.[i] || staff.outside?.[i] ? ['vf-second'] : [])] : ['vf-dimmed']
+}
+
+const RUN_MARGIN = 4 // the crop's room past a stem tip, a tuplet's number or an accent
+
+/**
+ * a Scales staff with Notes per bar (rhythm-scales-arpeggios spec §7): its run bar by bar (drawRun); practice classes by
+ * the staff note each run note repeats (D15); its aria-label the run's notes, "rest" for a rest, then the practice part.
+ * Returns each run note's head centre (at its attack) as a fraction of the width, for the intervals under it.
+ */
+function drawRunStaff(vf: VexFlowModule, el: HTMLElement, staff: StaffModel, run: NonNullable<StaffModel['run']>, clef: 'treble' | 'bass'): number[] {
+  const ctx = svgContext(vf, el, STAFF_WIDTH)
+  const ticks = drawRun(vf, ctx, run, run.notes, run.accidentals, clef, 0, STAFF_WIDTH - 1, { clef: staff.showClefAndKey, keySig: staff.keySig, timeSig: staff.timeSig ?? `${run.beats}/4`, last: staff.last })
+  const marks = run.bars.flatMap((b) => b.notes)
+  marks.forEach((m, i) => {
+    const classes = m.note === null ? [] : practiceClasses(staff, run.source[m.note] ?? -1)
+    if (classes.length) ticks[i]?.getSVGElement()?.classList.add(...classes)
+  })
+  const attacks = marks.filter((m) => !m.mark.tiedIn)
+  const names = attacks.map((m) => (m.note === null ? 'rest' : ariaName(run.notes[m.note]!)))
+  const sourced = (pick: readonly boolean[] | null | undefined) => attacks.flatMap((m) => (m.note !== null && pick?.[run.source[m.note] ?? -1] ? [ariaName(run.notes[m.note]!)] : []))
+  const picked = staff.selected ? sourced(staff.selected) : null
+  const added = sourced(staff.outside)
+  const label = names.join(' ') + (picked ? `; practice: ${picked.length ? picked.join(' ') : 'none'}` : '') + (added.length ? `; added from the pentatonic: ${added.join(' ')}` : '')
+  const pitched = ticks.filter((t) => !t.isRest())
+  const heads = pitched.flatMap((n) => n.getYs())
+  const stems = pitched.filter((n) => n.hasStem()).map((n) => n.getStemExtents().topY)
+  const accented = new Set(ticks.filter((_, i) => marks[i]?.mark.accent))
+  const band = cropBand(heads)
+  const tuplets = [...new Set(ticks.flatMap((t) => t.getTuplet() ?? []))]
+  const tops = inkTips(pitched, accented, tuplets)
+  fitSvg(el, { top: Math.min(band.top, ...tops.map((y) => y - RUN_MARGIN)), bottom: Math.max(band.bottom, ...stems.map((y) => y + RUN_MARGIN)) }, STAFF_WIDTH, label)
+  el.querySelector('svg')?.setAttribute('data-time-sig', staff.timeSig ?? `${run.beats}/4`)
+  // each run note's x: at its attack
+  return run.notes.map((_, k) => {
+    const at = marks.findIndex((m) => m.note === k && !m.mark.tiedIn)
+    const t = ticks[at]
+    return t ? headCentre(t, STAFF_WIDTH) : 0
+  })
+}
+
+type StaveNote = InstanceType<VexFlowModule['StaveNote']>
+
+/**
+ * a run drawn bar by bar (rhythm-scales-arpeggios spec §7) into ctx, from x0 across width: one stave a bar, the bars
+ * sharing the width by their note counts after the first bar's clef, key and time signatures; each note from its
+ * mark (value, dot, accent; a rest at the clef's rest line), its pitch from `pitches` with its accidental at its attack
+ * only (a tied-in piece draws none), stems by autoStem; one tuplet a bar with a bar-long tuplet (numNotes in the time of
+ * notesOccupied, rests included), else the rhythm's triplets; beams by mark.beam; ties as one chain across the bars.
+ * Ends with the final barline when last, else a double one. Returns the run's notes in order, rests included.
+ */
+export function drawRun(
+  vf: VexFlowModule,
+  ctx: Context,
+  run: StaffRun,
+  pitches: readonly Pitched[],
+  accidentals: readonly (string | null)[],
+  clef: 'treble' | 'bass',
+  x0: number,
+  width: number,
+  opts: Readonly<{ clef: boolean; keySig: string | null; timeSig: string; last: boolean }>,
+): StaveNote[] {
+  const lead = (stave: Stave): number => stave.getNoteStartX() - stave.getX()
+  const first = inkStave(vf, x0, STAVE_Y, width)
+  if (opts.clef) first.addClef(clef)
+  if (opts.clef && opts.keySig) first.addKeySignature(opts.keySig)
+  first.addTimeSignature(opts.timeSig)
+  const extra = lead(first) - lead(inkStave(vf, 0, STAVE_Y, width))
+  const weights = run.bars.map((b) => b.notes.length + 1) // a bar's notes and its barline's room
+  const total = weights.reduce((a, w) => a + w, 0)
+  let x = x0
+  const laid = run.bars.map((bar, b) => {
+    const w = ((width - extra) * (weights[b] ?? 0)) / total + (b === 0 ? extra : 0)
+    const stave = b === 0 ? first : inkStave(vf, x, STAVE_Y, w)
+    if (b === 0) stave.setWidth(w)
+    stave.setEndBarType(b < run.bars.length - 1 ? vf.BarlineType.SINGLE : opts.last ? vf.BarlineType.END : vf.BarlineType.DOUBLE)
+    const rhythm = bar.notes.map((n) => n.mark)
+    const ticks = bar.notes.map((n) => {
+      const pitch = n.note === null ? undefined : pitches[n.note]
+      if (!pitch) return marked(vf, new vf.StaveNote({ keys: [REST_KEY[clef]], duration: `${n.mark.value}r`, clef }), n.mark.value, false)
+      const note = marked(vf, new vf.StaveNote({ keys: [toVexKey(pitch)], duration: n.mark.value, clef, autoStem: true }), n.mark.value, n.mark.accent)
+      note.setStemStyle(INK) // stems carry their own default (black), not the context's currentColor
+      const acc = n.mark.tiedIn || n.note === null ? null : accidentals[n.note]
+      if (acc) note.addModifier(new vf.Accidental(acc), 0)
+      return note
+    })
+    ticks.forEach((t) => t.setStave(stave))
+    // tuplets before the voice: they set their notes' ticks; a bare number where more notes crowd the time (7 in 4), the ratio where fewer stretch over it (2:5)
+    const tuplet = bar.tuplet
+    const tuplets = tuplet
+      ? groupsOf(ticks, (i) => rhythm[i]?.tuplet ?? null).map((g) => new vf.Tuplet(g, { numNotes: tuplet.notes, notesOccupied: tuplet.of, location: 1, ratioed: tuplet.notes < tuplet.of }))
+      : tripletsOf(vf, ticks, (i) => rhythm[i]?.tuplet ?? null)
+    const voice = voiceOf(vf, run.beats, ticks)
+    const beams = groupsOf(ticks, (i) => rhythm[i]?.beam ?? null).filter((g) => g.length > 1).map((g) => new vf.Beam(g, true))
+    new vf.Formatter().joinVoices([voice]).format([voice], staveRoom(stave, x, w))
+    beams.forEach((beam) => beam.postFormat())
+    x += w
+    return { stave, rhythm, ticks, voice, beams, tuplets }
+  })
+  laid.forEach((l) => l.stave.setContext(ctx).draw())
+  laid.forEach((l) => l.voice.draw(ctx, l.stave))
+  laid.forEach((l) => l.beams.forEach((beam) => beam.setContext(ctx).draw()))
+  laid.forEach((l) => l.tuplets.forEach((t) => t.setContext(ctx).draw()))
+  rhythmTies(vf, ctx, laid)
+  return laid.flatMap((l) => l.ticks)
 }
 
 /** a Scales staff's stave: the clef and key signature on every line's first staff (a Patterns continuation has neither), then its time signature (with a rhythm card) */
@@ -165,8 +281,6 @@ export function drawArpeggioStaff(vf: VexFlowModule, el: HTMLElement, staff: Arp
   fitSvg(el, cropBand(notes.flatMap((n) => [...n.getYs(), n.getStemExtents().topY])), STAFF_WIDTH, staff.notes.map((n) => toVexKey(n).replace('/', '')).join(' '))
   return notes.map((n) => headCentre(n, STAFF_WIDTH))
 }
-
-type Stave = InstanceType<VexFlowModule['Stave']>
 
 /** how much later notes start on a stave with these modifiers than on a bare one (drawing units), from a probe stave */
 function startWidth(vf: VexFlowModule, add: (stave: Stave) => void): number {

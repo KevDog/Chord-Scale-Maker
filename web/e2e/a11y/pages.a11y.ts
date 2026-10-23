@@ -155,6 +155,19 @@ for (const theme of ['light', 'dark'] as const) {
       await expectAccessible(page)
     })
 
+    test('the Scales sheet with Notes per bar 5 and Practice on (rhythm-scales-arpeggios spec §2)', async ({ page }) => {
+      await page.goto(SONG)
+      if (theme === 'dark') await darkMode(page)
+      await chooseSheet(page, 'Scales')
+      await expect(staves(page).first()).toBeVisible()
+      await pickOption(page, 'Where each scale starts', 'From root')
+      await page.locator('fieldset', { hasText: 'Practice' }).getByRole('button', { name: 'Chord tones' }).click()
+      await pickOption(page, 'Notes per bar', '5 a bar')
+      await expect(staves(page).first()).toHaveAttribute('data-time-sig', '4/4')
+      await expect(page.locator('svg[data-time-sig] .vf-selected').first()).toBeVisible()
+      await expectAccessible(page)
+    })
+
     test('the Patterns sheet, with the Custom box open', async ({ page }) => {
       await page.goto(SONG)
       if (theme === 'dark') await darkMode(page)

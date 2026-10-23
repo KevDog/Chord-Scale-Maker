@@ -470,6 +470,19 @@ describe('notes per bar: the run (§2, §3, D9, D10, D15)', () => {
     expect(spelled(d(7))).toEqual(['D E #F G A B C', 'D C B A G #F E', 'D r r r r r r'])
   })
 
+  it('(guard) ties a held note across the barline: the tied-in piece plays the same note, its accidental only at the attack', () => {
+    // quarters x x x _ _: the third attack (F#) is held over the 4/4 barline into the next bar
+    const run = sheet({ rhythm: 'custom:4:xxx__', notesPerBar: 4 }, parseKey('C'), [row('D7', 'D Mixolydian')], 'D')[0]!.run!
+    const [first, second] = run.bars
+    const held = first!.notes.at(-1)!
+    const tiedIn = second!.notes[0]!
+    expect([held.mark.tie, tiedIn.mark.tiedIn]).toEqual([true, true])
+    expect(tiedIn.note).toBe(held.note)
+    expect(run.notes[held.note!]!.acc).toBe(1)
+    expect(run.accidentals[held.note!]).toBe('#') // one per run note: drawn at its attack, so the tied-in piece draws none
+    expect(run.accidentals.filter((a) => a === '#').length).toBe(2) // the F# up and the F# down, each once
+  })
+
   it('draws today’s whole notes when the rhythm pours nothing', () => {
     const [s] = sheet({ rhythm: 'unit:8:3:nonsense' as RhythmId, notesPerBar: 4 })
     expect([s?.run, s?.card, s?.timeSig, s?.id]).toEqual([null, null, null, sheet()[0]?.id])

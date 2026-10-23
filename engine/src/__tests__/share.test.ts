@@ -168,6 +168,12 @@ describe('share links', () => {
     expect(shareViewFrom({ sheet: 'changes', rhythm: 'off', targets: false, rhythmStart: 'beat', anticipate: 0, restate: false })).toEqual({ sheet: 'changes' })
   })
 
+  it('carries Notes per bar (rhythm-scales-arpeggios spec §9), dropping Whole notes and what is not 1 to 7', async () => {
+    const view = { sheet: 'scales', notesPerBar: 4 } as const
+    expect(await decodeShare(await encodeShare({ chart: CHART, view }))).toEqual({ chart: CHART, view })
+    for (const bad of [0, 8, 'whole', '4', 2.5]) expect(shareViewFrom({ sheet: 'scales', notesPerBar: bad })).toEqual({ sheet: 'scales' })
+  })
+
   it("carries the Changes sheet's Approach (#298), dropping an unknown one", async () => {
     for (const approach of ['enclosure', 'chromatic-below', 'none'] as const) {
       const view = { sheet: 'changes', line: 'third', approach } as const

@@ -31,12 +31,12 @@
     <div v-else>
       <div ref="el" class="text-zinc-900 dark:text-zinc-100 print:text-black" />
       <!-- on screen only, so print keeps its 12 staves a page -->
-      <p v-if="intervals && staff.intervals && xs.length" class="relative h-4 text-xs/4 text-zinc-600 tabular-nums dark:text-zinc-400 print:hidden">
+      <p v-if="intervals && labels && xs.length" class="relative h-4 text-xs/4 text-zinc-600 tabular-nums dark:text-zinc-400 print:hidden">
         <span class="sr-only">Intervals from the chord root:</span>
         <span
-          v-for="(label, i) in staff.intervals"
+          v-for="(label, i) in labels"
           :key="i"
-          :class="['absolute -translate-x-1/2', staff.selected?.[i] && 'font-semibold text-zinc-950 dark:text-zinc-50']"
+          :class="['absolute -translate-x-1/2', staff.selected?.[sources[i] ?? i] && 'font-semibold text-zinc-950 dark:text-zinc-50']"
           :style="{ left: `${(xs[i] ?? 0) * 100}%` }"
         >{{ glyphs(label) }}</span>
       </p>
@@ -86,6 +86,10 @@ function choose(id: string): void {
   if (kind.value === 'pentatonic' && p) emit('pick', 'pentatonic', props.staff.positions, p.pc)
   else if (kind.value === 'hexatonic' && h) emit('pick', 'hexatonic', props.staff.positions, h.roots)
 }
+/** the staff note each drawn note repeats: a run's (D15), else each its own */
+const sources = computed((): readonly number[] => props.staff.run?.source ?? props.staff.notes.map((_, i) => i))
+/** the interval labels, one a drawn note: a run's repeat its staff note's */
+const labels = computed(() => (props.staff.intervals ? sources.value.map((s) => props.staff.intervals?.[s] ?? '') : null))
 const el = useTemplateRef<HTMLDivElement>('el')
 const cardEl = useTemplateRef<HTMLDivElement>('card')
 const drawError = ref<string | null>(null)

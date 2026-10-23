@@ -320,6 +320,28 @@ for (const [song, instrument, start, pages] of [['f-blues', 'Piano', null, 1], [
   })
 }
 
+// Notes per bar (rhythm-scales-arpeggios spec §8): a run is a voiced staff with stems; 7 a bar (tuplets) and 1 a bar
+// (15 bars on a staff), a sheet page to a letter page: F Blues (§8's check) and Autumn Leaves (14: a full page at the
+// reduced count, as with cards: 12 of trombone-from-B runs at 7 a bar overflow), also trombone from B
+for (const perBar of ['7 a bar', '1 a bar'] as const) {
+  for (const [song, instrument, start, pages] of [['f-blues', 'Piano', null, 1], ['autumn-leaves', 'Piano', null, 2], ['autumn-leaves', 'Trombone', 'B', 2]] as const) {
+    test(`prints the Scales with Notes per bar ${perBar}, a sheet page to a letter page (${song}, ${instrument}${start ? `, from ${start}` : ''})`, async ({ page }) => {
+      await page.goto(`/song/${song}`)
+      await chooseSheet(page, 'Scales')
+      await chooseInstrument(page, instrument)
+      if (start) await pickOption(page, 'Where each scale starts', `From ${start}`)
+      await pickOption(page, 'Notes per bar', perBar)
+      const staffs = page.locator('[data-slot=scale-staff]')
+      await expect(page.locator('[data-slot=scale-staff] svg[data-time-sig]')).toHaveCount(await staffs.count())
+      const sheetPages = await staffs.evaluateAll((els) => new Set(els.map((e) => e.closest('section'))).size)
+      expect(sheetPages).toBe(pages)
+      await page.emulateMedia({ media: 'print' })
+      await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden()
+      expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(sheetPages)
+    })
+  }
+}
+
 /** how many captions are taller than one line of their text */
 const wrappedCaptions = (page: Page, slot: 'hexatonic' | 'pentatonic' = 'hexatonic'): Promise<number> =>
   page.locator(`[data-slot="${slot}"]`).evaluateAll((els) => els.filter((el) => el.getBoundingClientRect().height > 1.5 * parseFloat(getComputedStyle(el).fontSize)).length)

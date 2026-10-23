@@ -398,9 +398,18 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   signature on its first bar; aria-label `cardAria` ("Rhythm card: 8ths in 5, with accents, 4 bars, continues"). The
   whole notes stay; the staff gains the time signature (`StaffModel.timeSig`: the beats of the bar holding the line's
   first row, `rowBarBeats`, over 4; DECISIONS `rhythm.staff-metre`). The subtitle appends "· Rhythm: …". A sheet with
-  cards prints 8 staves a page (`ScaleSheet`'s `cardPerPage`, §8's fallback: 12, and 10 of trombone-from-B staves,
+  cards prints 8 staves a page (`ScaleSheet`'s `rhythmPerPage`, §8's fallback: 12, and 10 of trombone-from-B staves,
   overflowed letter). The card draws at a cue size (`CARD_SCALE` 0.8) with one-line barlines; an uncut card's bar is
   exactly a quarter of the notes width, a cut card's leaves room for the "…".
+- **Notes per bar** (flag `rhythmSheets`; spec §2, §3, §7, §8, §9): the Scales rail's Notes per bar group, beside the Rhythm (it leaves at once, so the rail never wraps while both fade), holds its listbox (`csm-notes-per-bar`: `whole` or 1–7; read as `whole` with the flag off; tier `notes-per-bar`, Intermediate;
+  in share links as `notesPerBar` on the Scales sheet, absent at Whole notes). Any number rewrites each staff as its run
+  (`StaffModel.run`: `scaleRun`'s 2K + 1 notes in `evenRun`'s bars, or `pourRun`'s into the Rhythm, its first N attacks a
+  bar; DECISIONS `rhythm.notes-per-bar`). `drawRun` (`web/app/utils/vexflow.ts`) draws it a stave a bar, the bars sharing the
+  width by note count, with one tuplet a tuplet bar (a bare number when the notes crowd the time, the ratio when they
+  stretch over it), the rhythm's triplets, beams by `mark.beam`, ties, and an accidental only at a note's attack. Practice
+  classes and the interval labels map each run note to the staff note it repeats (`run.source`). The subtitle appends
+  "· N a bar"; it names the rhythm and the number only where a staff draws a card or a run. A sheet with runs prints 8 a page
+  too (`ScaleSheet`'s `rhythmPerPage`: 12 of trombone-from-B runs at 7 a bar overflowed letter, 10 fit).
 - **Interval labels:** the Intervals toggle, on by default and saved per browser, labels every note against the chord's written
   root (`engine/src/intervals.ts`). Labels read b9, #9, #11 and b13, a minor 3rd reads #9 on chords with a major
   3rd, sus chords get a 4, and sixth chords a 6. They are HTML placed under the note heads, on screen only, so
