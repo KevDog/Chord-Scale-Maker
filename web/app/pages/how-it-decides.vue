@@ -706,6 +706,22 @@
           </UiText>
         </DecisionSection>
 
+        <DecisionSection v-if="hearLineOn" id="hear.form">
+          <UiText>
+            On the Changes sheet the click, Hear line and Hear rhythm play the form as a player reads it, once through, then
+            from the top again. A repeat sign goes back to its start sign (or the top) as many times as it says, each ending
+            on its pass. A D.S. goes back to the segno and a D.C. to the form's first bar (past an intro), once, at the end of
+            the section it's written in; after it no repeat is taken again and only the last ending plays. "al Fine" stops at
+            Fine; "al Coda" leaves at the coda sign or To Coda (with neither, at the D.S.'s section end) for the Coda, which
+            plays to the end. A Coda section plays only by its jump, unless the chart has no "al Coda". Each bar clicks in
+            its own meter; the count-in is in the chart's main meter. A section only a cue reaches (an interlude "on cue")
+            isn't played.
+          </UiText>
+          <UiText>
+            <strong :class="EM">What you can change:</strong> the chart's repeats, endings and navigation marks.
+          </UiText>
+        </DecisionSection>
+
         <DecisionSection v-if="hearLineOn" id="hear.play">
           <UiText>
             A staff's <strong :class="EM">Play</strong> sounds a Scales staff up and down, the top note once, in 8ths at the
