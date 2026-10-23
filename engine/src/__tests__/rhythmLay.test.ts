@@ -3,7 +3,7 @@ import { layRhythm, rhythmCaption } from '../rhythm/lay'
 import type { RhythmId } from '../rhythm/library'
 import { rhythmNotes } from '../rhythm/notation'
 
-const cap = (id: RhythmId, bars: number[]) => rhythmCaption(id, layRhythm(id, bars)!, bars)
+const cap = (id: RhythmId, bars: number[]) => rhythmCaption(id, layRhythm(id, bars)!)
 
 describe('layRhythm landings (§4)', () => {
   it('follows the landing table', () => {
@@ -120,6 +120,14 @@ describe('layRhythm events', () => {
     expect(r.bars[1]![0]).toMatchObject({ tiedIn: true, accent: false })
   })
 
+  it('ties a syncopated unit across a statement and a barline at once (#505)', () => {
+    // 8ths in 4, syncopated (_ x x x): the statement at pulse 8 starts with a hold of pulse 7, over the barline
+    const r = layRhythm('unit:8:4:syncopated', [4, 4])!
+    expect(r.bars[0]!.at(-1)).toMatchObject({ at: 7, length: 1, tie: true, statement: 1 })
+    expect(r.bars[1]![0]).toMatchObject({ at: 0, length: 1, tiedIn: true, accent: false, statement: 2 })
+    expect(r.bars[1]![1]).toMatchObject({ at: 1, tiedIn: false, statement: 2 })
+  })
+
   it('gives a piece held into a bar the statement it belongs to', () => {
     // 8ths in 3, tied: the statement on pulses 6–8 is the sheet's third (index 2)
     const r = layRhythm('unit:8:3:tied', [4, 4])!
@@ -152,6 +160,14 @@ describe('layRhythm forced attacks (lines spec §3.2)', () => {
 
   it('makes an attack of a hold, so the tie after it holds the new note', () => {
     expect(ats(layRhythm('unit:8:3:tied', [4], [], [1]))).toEqual([[0, 1], [1, 2], [3, 3], [6, 2]])
+  })
+
+  it('forces a pulse on a break as the break already sounds it: one attack, no tie into it (#505)', () => {
+    // 8ths in 4, syncopated (_ x x x): pulse 8, a 2nd ending's first, holds pulse 7 but for the break
+    const broken = layRhythm('unit:8:4:syncopated', [4, 4], [1])!
+    expect(layRhythm('unit:8:4:syncopated', [4, 4], [1], [8])).toEqual(broken)
+    expect(broken.bars[0]!.at(-1)).toMatchObject({ tie: false })
+    expect(broken.bars[1]![0]).toMatchObject({ at: 0, rest: false, tiedIn: false })
   })
 
   it('keeps an accent (guard)', () => {

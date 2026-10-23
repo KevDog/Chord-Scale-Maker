@@ -30,7 +30,7 @@ export function anticipateLabel(n: number): string {
   if (n === 0) return 'On time'
   const a = Math.abs(n)
   const whole = Math.floor(a)
-  const text = a % 1 === 0 ? `${whole}` : whole === 0 ? '½' : `${whole}½`
+  const text = a % 1 === 0 ? `${whole}` : a % 1 === 0.5 ? `${whole || ''}½` : `${a}` // a value off the steps as it is
   return `${n > 0 ? 'Anticipate' : 'Resolve late'} ${text} ${a > 1 ? 'beats' : 'beat'}`
 }
 

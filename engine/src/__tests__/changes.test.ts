@@ -1286,6 +1286,23 @@ describe('the rhythm line and target beats (rhythm spec §8)', () => {
     expect(bars(r)[0]!.chords[0]!.guide).toBe('3')
   })
 
+  it('restates the 7ths line too, a held figure into the next chord, and rests under N.C. (#505)', () => {
+    const on = { rhythm: 'card:downbeats', restate: true } as const
+    expect(bars(buildChanges(two, CONCERT, 4, false, 'seventh', undefined, null, 'none', on)).map(letters)).toEqual([['B', 'B', 'B', 'B'], ['C', 'C', 'C', 'C']])
+    expect(bars(buildChanges(two, CONCERT, 4, false, 'third', undefined, null, 'below-above', on)).map(letters)).toEqual([['E', 'E', 'E', 'Gb'], ['F', 'F', 'F', 'F']])
+    const nc = parseChart('key: C\n\nsection: A\n1 | CMaj7\n2 | N.C.\n').value
+    expect(bars(buildChanges(nc, CONCERT, 4, false, 'third', undefined, null, 'none', on)).map(letters)).toEqual([['E', 'E', 'E', 'E'], ['r', 'r', 'r', 'r']])
+  })
+
+  it('leaves Restate inert without a rhythm (#505)', () => {
+    expect(buildChanges(two, CONCERT, 4, false, 'third', undefined, null, 'none', { restate: true })).toEqual(buildChanges(two, CONCERT, 4, false, 'third'))
+  })
+
+  it('pours a Line over a repeat drawn once, its second time in no drawn bar (#505)', () => {
+    const rep = parseChart('key: C\n\nsection: A1\n1 | CMaj7\n2 | Dm7\n\nsection: A2\ncopy: A1\n').value
+    expect(bars(buildChanges(rep, CONCERT, 4, false, 'up-root', undefined, null, 'none', { rhythm: 'card:downbeats' })).map(letters)).toEqual([['C', 'E', 'G', 'B'], ['D', 'F', 'A', 'C']])
+  })
+
   it('pours the rhythm into the Cells, Pentatonic, Triad pair and Quartal lines', () => {
     for (const [line, overlay] of LINES) expect(bars(buildChanges(two, CONCERT, 4, false, line, undefined, overlay, 'none', { rhythm: 'card:upbeats' })).every((b) => b.voice[0]?.pitch === null && b.voice.every((n) => n.mark))).toBe(true)
   })

@@ -2,7 +2,7 @@
  * The rhythm library and its ids (rhythm spec §3): units, runs, cards and custom rhythms,
  * each one string that the preference, the share link and the listboxes carry.
  */
-import { PULSES, PULSE_LABELS, PULSE_PER_BEAT, formatRhythm, parseRhythm, type Cell, type Pulse, type Rhythm } from './rhythm'
+import { PULSES, PULSE_LABELS, PULSE_PER_BEAT, formatRhythm, parseRhythm, range, type Cell, type Pulse, type Rhythm } from './rhythm'
 
 export type Variation = 'accents' | 'rests' | 'rest-last' | 'syncopated' | 'tied'
 
@@ -29,8 +29,6 @@ export type RhythmId = 'off' | `unit:${string}` | `run:${string}` | `card:${Rhyt
 
 /** One bar's cells at the id's pulse; a run's holds only its own attacks (spill is laid elsewhere). */
 export type BarRhythm = (beats: number) => readonly Cell[]
-
-const range = (n: number): number[] => Array.from({ length: n }, (_, i) => i)
 
 /** A unit's group sizes ("In"). */
 export const UNIT_GROUPS: readonly number[] = [2, 3, 4, 5, 6, 7]

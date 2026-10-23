@@ -3,7 +3,7 @@
  * forced into the rhythm, and who plays each of the laid notes. Pure TypeScript; the line builders pick the pitches.
  */
 import { layRhythm, type Laid } from './lay'
-import type { RhythmId } from './library'
+import { rhythmOf, type RhythmId } from './library'
 import { rhythmNotes, type RhythmNote } from './notation'
 import { pickupNotes, type RhythmStart } from './phrasing'
 import { PULSE_PER_BEAT } from './rhythm'
@@ -66,11 +66,12 @@ export function lineRhythm(
   start: RhythmStart,
   anticipate: number,
 ): LineRhythm | null {
-  const plain = layRhythm(id, bars, breaks)
-  if (!plain) return null
-  const per = PULSE_PER_BEAT[plain.pulse]
+  const r = rhythmOf(id)
+  if (!r || bars.length === 0) return null
+  const per = PULSE_PER_BEAT[r.kind === 'repeat' ? r.rhythm.pulse : r.pulse]
   const total = bars.reduce((a, b) => a + b, 0)
-  const breakBeats = breaks.map(b => plain.starts[b]).filter((p): p is number => p !== undefined).map(p => p / per)
+  const before = (d: number): number => bars.slice(0, d).reduce((a, b) => a + b, 0)
+  const breakBeats = breaks.filter(b => b >= 0 && b < bars.length).map(before) // each break bar's first beat
   const breakPulses = breakBeats.map(b => b * per)
   const bounds = boundaries(chords, anticipate, breakBeats, total)
   const end = (j: number): number => bounds[j + 1] ?? total

@@ -51,6 +51,18 @@ describe('lineRhythm (rhythm-on-lines spec §2–3)', () => {
     expect(who(lineRhythm('card:downbeats', [4, 4], [], [S(0), S(4), S(6)], 'beat', -3)!, 1)).toEqual([0, 0, 0, 1])
   })
 
+  it('gives a pulse two chords\' pick-ups both claim to the earlier chord (#505)', () => {
+    // after N.C., 3-note pick-ups into chords at beats 4 and 4½: pulses 6 and 7 are both's, and stay the first's
+    const r = lineRhythm('card:upbeats', [4, 4], [], [S(0, false), S(4), S(4.5)], 'pickup-3', 0)!
+    expect(who(r, 0).slice(-3)).toEqual(['1<3', '1<2', '1<1'])
+  })
+
+  it('forces no target for a chord whose span holds no pulse, nor pick-ups for it (#505)', () => {
+    // 4.1 to 4.4: its target, pulse 9, is past its end, so pulse 8 is the next chord's pick-up
+    const r = lineRhythm('card:upbeats', [4, 4], [], [S(0, false), S(4.1), S(4.4)], 'pickup-1', 0)!
+    expect(who(r, 1).slice(0, 2)).toEqual(['2<1', 2])
+  })
+
   it('gives a tied piece its attack\'s owner', () => {
     expect(who(lineRhythm('unit:8:3:tied', [4], [], [S(0), S(2)], 'beat', 0)!, 0)).toEqual([0, 0, 0, 1])
   })
