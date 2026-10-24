@@ -628,43 +628,12 @@
           <li>With the editor open, you can also tap a chord on the Changes sheet to change it there. On a phone that's the way to edit: the bars need a bigger screen.</li>
         </ul>
 
-        <UiSubheading :level="3" class="pt-2">The source</UiSubheading>
+        <UiSubheading id="source" :level="3" class="scroll-mt-6 pt-2">The source</UiSubheading>
         <UiText>
           Under the <strong class="font-semibold text-zinc-950 dark:text-white">⋯</strong> menu, <strong class="font-semibold text-zinc-950 dark:text-white">Show source</strong> opens the chart as plain
-          text, the same chart as the bars (edit either): a <UiCode>section:</UiCode> line for each section, then one line per
-          chord, its bar counted from 1 in the section, always in concert pitch:
+          text, the same chart as the bars (edit either), and lists anything I can't make sense of under it, with the line number.
+          <UiTextLink href="/chart-format">Chart format</UiTextLink> has every line it reads, with an example.
         </UiText>
-        <pre class="overflow-x-auto rounded-lg bg-zinc-950/2.5 p-4 font-mono text-sm/6 text-zinc-950 ring-1 ring-zinc-950/10 dark:bg-white/5 dark:text-white dark:ring-white/10">{{ EXAMPLE }}</pre>
-        <ul class="list-disc space-y-2 pl-5 text-base/6 text-zinc-600 sm:text-sm/6 dark:text-zinc-400">
-          <li>Leave the scale off and you get the chord's default (<UiCode>Cm7</UiCode> gives C Dorian).</li>
-          <li>
-            Chords can be written the way you'd write them on a napkin: <UiCode>Cm7</UiCode>, <UiCode>C-7</UiCode>,
-            <UiCode>Am7b5</UiCode>, <UiCode>G7#9b13</UiCode>, <UiCode>EbMaj7</UiCode>, <UiCode>D7/F#</UiCode>.
-          </li>
-          <li>
-            <UiCode>copy: A1</UiCode> under a <UiCode>section:</UiCode> line repeats section A1 there, which saves typing
-            out every AABA tune twice.
-          </li>
-          <li>
-            Under its <UiCode>section:</UiCode> line, a section can have its own <UiCode>key:</UiCode> (and
-            <UiCode>@key 5 D</UiCode> changes key from its bar 5), until the section ends. <UiCode>bars: 8</UiCode> says
-            how long it is when its last chord is held past its last written bar.
-          </li>
-          <li>
-            Name a section <UiCode>Intro</UiCode>, <UiCode>Coda</UiCode>, <UiCode>Tag</UiCode> or <UiCode>Ending</UiCode>
-            and it sits outside the form: it prints where it stands, but the tune's turnaround still goes back to bar 1,
-            not to the intro. <UiCode>outside: yes</UiCode> does the same for a section of any name.
-          </li>
-          <li>
-            <UiCode>time: 3/4</UiCode> makes it a waltz (<UiCode>2/4</UiCode>, <UiCode>4/4</UiCode>, <UiCode>5/4</UiCode>,
-            <UiCode>6/4</UiCode> and <UiCode>7/4</UiCode> work too; 4/4 is what you get without it). With a guide tone line on, the Changes
-            sheet writes its guide tones in it. Under a <UiCode>section:</UiCode> line, <UiCode>time:</UiCode> sets that
-            section's meter, and <UiCode>@time 11 2/4</UiCode> changes it from bar 11 to the section's end (follow it with
-            <UiCode>@time 12 4/4</UiCode> for a single 2/4 bar). The bar menu's Bar in 2/4 … 7/4 does it for you.
-          </li>
-          <li><UiCode>title:</UiCode> and <UiCode>subtitle:</UiCode> set the heading. <UiCode>composer:</UiCode>, <UiCode>style:</UiCode>, <UiCode>key:</UiCode> and <UiCode>form:</UiCode> fill in the line under it (the subtitle, if there is one, takes the style's place), <UiCode>aka:</UiCode> gives the tune's other titles (a <UiCode>;</UiCode> between them; the library search finds them too), <UiCode>kind:</UiCode> says whether the chart is a <UiCode>tune</UiCode> (without one), a <UiCode>form</UiCode> with no composer (F Blues, Rhythm Changes) or an <UiCode>exercise</UiCode>, <UiCode>context:</UiCode> how the analysis reads it (<UiCode>functional</UiCode>, <UiCode>modal</UiCode> or <UiCode>blues</UiCode>; <strong class="font-semibold">Read as</strong> in the heading sets it, and blues reads it as a blues whatever its form: <DecisionLink id="scale.blues">how</DecisionLink>), and lines starting with <UiCode>#</UiCode> are notes to yourself. A row can end in a note too, after a space and a <UiCode>#</UiCode>: the library's say why each scale was chosen.</li>
-          <li>Anything I can't make sense of is listed under the source, with the line number.</li>
-        </ul>
 
         <UiSubheading :level="3" class="pt-2">Transposing</UiSubheading>
         <UiText>
@@ -830,19 +799,6 @@ const SECTIONS = [
   { id: 'printing', title: 'Printing and Focus' },
   { id: 'odds', title: 'Odds and ends' },
 ]
-
-const EXAMPLE = `title: Autumn Leaves
-subtitle: Full Form
-
-section: A1
-# bar | chord | scale
-1 | Cm7 | C Dorian
-2 | F7  | F Mixolydian
-3 | BbMaj7
-4 | EbMaj7
-
-section: A2
-copy: A1`
 
 const current = useCurrentSection(() => SECTIONS.map((s) => s.id))
 

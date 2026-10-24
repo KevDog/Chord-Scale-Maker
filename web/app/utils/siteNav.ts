@@ -1,5 +1,5 @@
 import type { Component } from 'vue'
-import { BookOpenIcon, EnvelopeIcon, InformationCircleIcon, LightBulbIcon, MusicalNoteIcon, QuestionMarkCircleIcon, Squares2X2Icon, UserGroupIcon, VariableIcon } from '@heroicons/vue/20/solid'
+import { BookOpenIcon, DocumentTextIcon, EnvelopeIcon, InformationCircleIcon, LightBulbIcon, MusicalNoteIcon, QuestionMarkCircleIcon, Squares2X2Icon, UserGroupIcon, VariableIcon } from '@heroicons/vue/20/solid'
 
 /** a page in the navbar (icon: the phone menu's) */
 export type NavLink = Readonly<{ label: string; href: string; icon: Component }>
@@ -19,6 +19,7 @@ export const NAV: readonly NavEntry[] = [
       { label: 'How it works', href: '/help', icon: QuestionMarkCircleIcon },
       { label: 'How it decides', href: '/how-it-decides', icon: LightBulbIcon },
       { label: 'Functions', href: '/functions', icon: VariableIcon },
+      { label: 'Chart format', href: '/chart-format', icon: DocumentTextIcon },
       { label: 'About', href: '/about', icon: InformationCircleIcon },
       { label: 'Contact', href: '/contact', icon: EnvelopeIcon },
     ],
