@@ -1,5 +1,5 @@
 import type { InjectionKey, Ref } from 'vue'
-import { DEFAULT_MIX, MIX_TRACKS, type Mix, type MixTrack, parseMix, trackGain, type BassStyle, type Beats, type ClickFeel, type DrumHit, type GrooveSet, scheduleDrums, styleGroove, type ClickForm, type ClickPattern, type ClickPlan, type ClickState, type Feel, type PhraseNote, type RhythmHit, type TimedClick, type VoiceNote, CLICK_PATTERNS, clampSwing, clampTempo, defaultFeel, defaultPattern, defaultTempo, formBar, scheduleClicks, scheduleRhythm, scheduleVoice, tapTempo, timePhrase } from '@chord-scale-maker/engine'
+import { chorusOf, chorusShift, KEY_CYCLES, type KeyCycle, rampTempo, DEFAULT_MIX, MIX_TRACKS, type Mix, type MixTrack, parseMix, trackGain, type BassStyle, type Beats, type ClickFeel, type DrumHit, type GrooveSet, scheduleDrums, styleGroove, type ClickForm, type ClickPattern, type ClickPlan, type ClickState, type Feel, type PhraseNote, type RhythmHit, type TimedClick, type VoiceNote, CLICK_PATTERNS, clampSwing, clampTempo, defaultFeel, defaultPattern, defaultTempo, formBar, scheduleClicks, scheduleRhythm, scheduleVoice, tapTempo, timePhrase } from '@chord-scale-maker/engine'
 import { type ClickAudio, type ClickSound, CLICK_SOUNDS, webAudio } from '~/utils/clickSounds'
 import { readStored, writeStored } from '~/utils/storage'
 
@@ -17,11 +17,14 @@ import { readStored, writeStored } from '~/utils/storage'
  * hearRhythm: Hear rhythm, its rhythm taps with it; piano, bass: Hear changes (#508), the chart's voicings and its bass;
  * groove: the style's pattern set (#509), the piano comping and the bass walking in place of the held changes; drums: its kit
  */
-export type ClickSettings = Readonly<{ hat: boolean; countIn: 0 | 1 | 2; sound: ClickSound; folded: boolean; hear: boolean; hearRhythm: boolean; piano: boolean; bass: ClickBass; groove: boolean; drums: boolean; mix: Mix }>
+export type ClickSettings = Readonly<{ hat: boolean; countIn: 0 | 1 | 2; sound: ClickSound; folded: boolean; hear: boolean; hearRhythm: boolean; piano: boolean; bass: ClickBass; groove: boolean; drums: boolean; mix: Mix; keys: KeyCycle; ramp: ClickRamp }>
 /** the style's groove to play (#509): its set, its tracks, and the drawn bars they loop over */
 export type ClickGroove = Readonly<{ set: GrooveSet; piano: readonly VoiceNote[]; bass: readonly VoiceNote[]; drums: readonly DrumHit[]; bars: number }>
 export type ClickBass = 'off' | BassStyle
 export const CLICK_BASSES: readonly ClickBass[] = ['off', 'roots', 'two']
+/** the tempo ramp (#509): beats a minute faster each chorus */
+export type ClickRamp = 0 | 2 | 4 | 8
+export const CLICK_RAMPS: readonly ClickRamp[] = [0, 2, 4, 8]
 /** the changes to hear (#508): the piano's voicings, the bass in roots and in two, and the drawn bars they loop over */
 export type ClickHarmony = Readonly<{ piano: readonly VoiceNote[]; roots: readonly VoiceNote[]; two: readonly VoiceNote[]; bars: number }>
 /** the Line to hear: its notes and the drawn bars it loops over */
@@ -53,7 +56,7 @@ const ready = (load: Promise<boolean>): Promise<unknown> => Promise.race([load, 
 export const LOOKAHEAD = { interval: 25, ahead: 0.1, hiddenAhead: 1.2 } as const
 
 const SETTINGS_KEY = 'csm-click'
-const DEFAULT_SETTINGS: ClickSettings = { hat: false, countIn: 0, sound: 'wood', folded: false, hear: false, hearRhythm: true, piano: false, bass: 'off', groove: false, drums: false, mix: DEFAULT_MIX }
+const DEFAULT_SETTINGS: ClickSettings = { hat: false, countIn: 0, sound: 'wood', folded: false, hear: false, hearRhythm: true, piano: false, bass: 'off', groove: false, drums: false, mix: DEFAULT_MIX, keys: 'off', ramp: 0 }
 
 function parseSettings(raw: string | null): ClickSettings {
   try {
@@ -70,6 +73,8 @@ function parseSettings(raw: string | null): ClickSettings {
       groove: typeof v.groove === 'boolean' ? v.groove : DEFAULT_SETTINGS.groove,
       drums: typeof v.drums === 'boolean' ? v.drums : DEFAULT_SETTINGS.drums,
       mix: parseMix(v.mix),
+      keys: KEY_CYCLES.includes(v.keys as KeyCycle) ? (v.keys as KeyCycle) : DEFAULT_SETTINGS.keys,
+      ramp: CLICK_RAMPS.includes(v.ramp as ClickRamp) ? (v.ramp as ClickRamp) : DEFAULT_SETTINGS.ramp,
     }
   } catch {
     return DEFAULT_SETTINGS
@@ -202,6 +207,7 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
       tempo: clampTempo(tempo.value),
       countIn: settings.value.countIn,
       ...(form.value ? { form: form.value } : {}),
+      ...(settings.value.keys !== 'off' ? { keys: settings.value.keys } : {}),
     }),
   )
 
@@ -276,10 +282,27 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
     if (g && settings.value.drums && heard('drums')) for (const d of scheduleDrums(g.drums, g.bars, plan.value, state, from, until)) audio.drum(d.kind, d.time, d.velocity)
     if (settings.value.hearRhythm && rhythm.value && heard('rhythm')) for (const h of scheduleRhythm(rhythm.value.hits, rhythm.value.bars, plan.value, state, from, until)) audio.hit(h.time, h.accent)
     state = next.state
+    practise(now)
     booked = Math.max(booked, until) // a shorter lookahead (the tab shown again) mustn't reopen what's booked
     const beats = next.events.filter((e) => e.kind !== 'hat' && e.kind !== 'sub') // a pattern's ticks light the beats it leaves silent
     recent = [...recent.filter((e) => e.time > now - 2), ...beats]
     lights()
+  }
+
+  // the practice tools (#509), from the chorus being booked: its key's shift, and the ramp's tempo
+  const shift = ref(0)
+  let startTempo: number | null = null
+  let lastChorus = 0
+  function practise(now: number): void {
+    const chorus = chorusOf(plan.value, state.bar) // the next bar to book: the ramp's tempo is set before it
+    const sounding = state.barStart <= now ? state.bar : Math.max(0, state.bar - 1)
+    shift.value = chorusShift(settings.value.keys, chorusOf(plan.value, sounding))
+    const ramp = settings.value.ramp
+    if (!ramp || chorus === lastChorus) return
+    lastChorus = chorus
+    startTempo ??= tempo.value
+    const start = startTempo
+    follow(() => (tempo.value = rampTempo(start, ramp, chorus)))
   }
 
   function frame(): void {
@@ -404,6 +427,13 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
     running.value = false
     beat.value = null
     counting.value = false
+    shift.value = 0
+    lastChorus = 0
+    if (startTempo !== null) {
+      const back = startTempo
+      follow(() => (tempo.value = back)) // the ramp's tempo isn't the player's
+      startTempo = null
+    }
     void audio?.suspend()
   }
 
@@ -434,7 +464,7 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
     audio = null
   }
 
-  return { shown, running, unavailable, tempo, feel, pattern, swing, settings, beat, counting, hasLine, setLine, hasRhythm, setRhythm, hasHarmony, setHarmony, grooveSet, setGroove, hasForm, setForm, playing, play, stopPhrase, start, stop, toggle, tap, show, hide, dispose }
+  return { shift, shown, running, unavailable, tempo, feel, pattern, swing, settings, beat, counting, hasLine, setLine, hasRhythm, setRhythm, hasHarmony, setHarmony, grooveSet, setGroove, hasForm, setForm, playing, play, stopPhrase, start, stop, toggle, tap, show, hide, dispose }
 }
 
 export type Click = ReturnType<typeof useClick>

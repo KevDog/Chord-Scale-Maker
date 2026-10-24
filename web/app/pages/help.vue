@@ -530,6 +530,16 @@
                 without the part you play. A muted part keeps its level and settings for when it's back. Remembered in this browser.
               </dd>
             </div>
+            <div v-if="practiceToolsOn">
+              <dt class="font-semibold text-zinc-950 dark:text-white">All keys and Ramp</dt>
+              <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
+                With the Changes sheet, under the click's ⋯: <strong class="font-semibold">All keys</strong> plays each time
+                through the form in the next key, up a 4th (round the cycle) or up a half step, so twelve choruses visit every
+                key; the Line, the piano and the bass move, the drums and the click don't, and the sheet stays as written. The bar
+                says how far the chorus is from the written key, never more than a tritone. <strong class="font-semibold">Ramp</strong>
+                plays each chorus 2, 4 or 8 beats a minute faster; Stop puts the tempo back.
+              </dd>
+            </div>
           </dl>
         </div>
       </section>
@@ -805,6 +815,7 @@ const metronomeOn = useFeature('metronome')
 const hearLineOn = useFeature('hearLine')
 const harmonyOn = hearLineOn && useFeature('harmony')
 const mixerOn = hearLineOn && useFeature('mixer')
+const practiceToolsOn = hearLineOn && useFeature('practiceTools')
 const grooveOn = { swing: harmonyOn && useFeature('grooveSwing'), ballad: harmonyOn && useFeature('grooveBallad'), bossa: harmonyOn && useFeature('grooveBossa') }
 const rhythmOn = useFeature('rhythm')
 const rhythmSheetsOn = useFeature('rhythmSheets')

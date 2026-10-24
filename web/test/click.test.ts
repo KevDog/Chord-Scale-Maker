@@ -105,8 +105,8 @@ describe('useClick', () => {
   it('keeps its settings in this browser', () => {
     localStorage.clear()
     const c = useClick(chart(), ref(undefined), { audio: fakeAudio })
-    c.settings.value = { hat: true, countIn: 2, sound: 'beep', folded: true, hear: true, hearRhythm: false, piano: false, bass: 'off', groove: false, drums: false, mix: DEFAULT_MIX }
-    expect(useClick(chart(), ref(undefined), { audio: fakeAudio }).settings.value).toEqual({ hat: true, countIn: 2, sound: 'beep', folded: true, hear: true, hearRhythm: false, piano: false, bass: 'off', groove: false, drums: false, mix: DEFAULT_MIX })
+    c.settings.value = { hat: true, countIn: 2, sound: 'beep', folded: true, hear: true, hearRhythm: false, piano: false, bass: 'off', groove: false, drums: false, mix: DEFAULT_MIX, keys: 'off', ramp: 0 }
+    expect(useClick(chart(), ref(undefined), { audio: fakeAudio }).settings.value).toEqual({ hat: true, countIn: 2, sound: 'beep', folded: true, hear: true, hearRhythm: false, piano: false, bass: 'off', groove: false, drums: false, mix: DEFAULT_MIX, keys: 'off', ramp: 0 })
   })
 
   it('back from a hidden tab, books no beat twice', async () => {
@@ -640,6 +640,48 @@ describe('useClick', () => {
       expect(c.grooveSet.value).toBe(null)
       c.setGroove(groove)
       expect(c.grooveSet.value).toBe('swing')
+    })
+  })
+
+  describe('practice tools (#509)', () => {
+    async function practising(settings: Partial<{ keys: 'off' | 'fourths' | 'half'; ramp: number }>, seconds: number) {
+      const audio = fakeAudio()
+      const t = timers()
+      const c = useClick(ref({ beats: 4 as const, style: 'Ballad', metreChanges: false }), ref(undefined), { audio: () => audio, ...t })
+      c.feel.value = 'quarters'
+      c.tempo.value = 60
+      c.settings.value = { ...c.settings.value, piano: true, ...settings }
+      c.setForm({ order: [0], beats: [4] }) // a one-bar form: a chorus a bar
+      c.setHarmony({ piano: [{ bar: 0, at: 0, beats: 1, midi: 60 }], roots: [], two: [], bars: 1 })
+      await c.start()
+      for (let at = 0; at < seconds; at += 0.05) {
+        audio.clock.t = at
+        t.tick()
+      }
+      return { audio, c }
+    }
+
+    it('start off, and are remembered in this browser', () => {
+      localStorage.removeItem('csm-click')
+      const c = useClick(chart(), ref(undefined), { audio: fakeAudio })
+      expect([c.settings.value.keys, c.settings.value.ramp]).toEqual(['off', 0])
+      c.settings.value = { ...c.settings.value, keys: 'half', ramp: 4 }
+      const again = useClick(chart(), ref(undefined), { audio: fakeAudio }).settings.value
+      expect([again.keys, again.ramp]).toEqual(['half', 4])
+    })
+
+    it('all twelve keys: the piano moves up a 4th each chorus, and says how far', async () => {
+      const { audio, c } = await practising({ keys: 'fourths' }, 7.9)
+      expect(audio.comps.map((n) => n.midi)).toEqual([60, 65])
+      expect(c.shift.value).toBe(5)
+    })
+
+    it('the tempo ramp: faster each chorus, back to the start tempo at Stop', async () => {
+      const { audio, c } = await practising({ ramp: 4 }, 8)
+      expect(audio.comps.length).toBeGreaterThan(1)
+      expect(c.tempo.value).toBeGreaterThan(60)
+      c.stop()
+      expect(c.tempo.value).toBe(60)
     })
   })
 

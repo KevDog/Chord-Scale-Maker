@@ -2,6 +2,7 @@
  * The click (#254, docs/superpowers/specs/2026-10-21-metronome-design.md): a metronome's bar patterns and tempo
  * arithmetic. Pure: the app books these events on its audio clock (web/app/composables/useClick.ts).
  */
+import type { KeyCycle } from './drill'
 import type { Beats } from './chart'
 import type { Feel } from './rhythm/feel'
 
@@ -104,7 +105,8 @@ export type ClickState = Readonly<{ barStart: number; bar: number }>
 /** the form as played (playOrder, decision hear.form): the drawn bars in order, and each drawn bar's beats */
 export type ClickForm = Readonly<{ order: readonly number[]; beats: readonly number[] }>
 /** form: the bars the click follows past the count-in, looping; with none, every bar the main meter */
-export type ClickPlan = Readonly<{ options: ClickOptions; tempo: number; countIn: 0 | 1 | 2; form?: ClickForm }>
+/** keys: all twelve keys (drill.ts), the pitched tracks moved a key a chorus */
+export type ClickPlan = Readonly<{ options: ClickOptions; tempo: number; countIn: 0 | 1 | 2; form?: ClickForm; keys?: KeyCycle }>
 
 /** the click's bar n (count-in bars first): the drawn bar it plays (null in a count-in, or with no form) and its beats */
 export function formBar(plan: ClickPlan, n: number): Readonly<{ drawn: number | null; beats: number }> {

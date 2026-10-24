@@ -119,6 +119,7 @@ export default defineNuxtConfig({
         grooveBallad: false, // the ballad pattern set: brushes, a held piano and a bass in two (#509)
         grooveBossa: false, // the bossa pattern set: cross-stick, a syncopated piano and a bossa bass (#509)
         mixer: false, // the click's mixer: a level and a mute a track, and the duo presets (#509)
+        practiceTools: false, // all twelve keys and the tempo ramp, a chorus at a time (#509)
         harmony: false, // Hear changes: a piano's voicings and a bass under the click (#508; docs/superpowers/specs/2026-10-24-hear-changes-design.md)
         ireal: true, // iReal Pro import: Library's Open chart… and Import iReal link…, Paste bars (#261; docs/superpowers/specs/2026-10-17-ireal-import-design.md)
       },

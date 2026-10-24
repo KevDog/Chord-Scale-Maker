@@ -236,6 +236,28 @@ describe('ClickBar', () => {
     }
   })
 
+  it('practice tools (#509): All keys and Ramp with a form, and the chorus’s key while it runs', async () => {
+    const features = useRuntimeConfig().public.features as Record<string, unknown>
+    const was = { ...features }
+    try {
+      Object.assign(features, { hearLine: true, practiceTools: true })
+      const { w, click, button } = await mountBar()
+      await button('Click settings')!.trigger('click')
+      expect(w.text()).not.toContain('All keys') // no form
+      click.setForm({ order: [0], beats: [4] })
+      await nextTick()
+      expect(w.text()).toContain('All keys')
+      expect(w.text()).toContain('Ramp')
+      click.settings.value = { ...click.settings.value, keys: 'fourths' }
+      click.running.value = true
+      click.shift.value = 5
+      await nextTick()
+      expect(w.find('[role=status]').text()).toBe('Up a 4th')
+    } finally {
+      Object.assign(features, was)
+    }
+  })
+
   it('Mix (#509): a level and a mute for each sound that plays, and the duo presets', async () => {
     const features = useRuntimeConfig().public.features as Record<string, unknown>
     const was = { ...features }
