@@ -271,7 +271,9 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
     const until = now + (hidden ? LOOKAHEAD.hiddenAhead : LOOKAHEAD.ahead)
     const from = Math.max(booked, now)
     const next = scheduleClicks(plan.value, state, from, until)
-    if (heard('click')) for (const e of next.events) if (e.kind !== 'tick') audio.play(e.kind, e.time, settings.value.sound)
+    // with Drums on, the drummer keeps time: the click sounds only its count-in
+    const clicks = hearsDrums() ? next.events.filter((e) => e.kind === 'count') : next.events
+    if (heard('click')) for (const e of clicks) if (e.kind !== 'tick') audio.play(e.kind, e.time, settings.value.sound)
     if (settings.value.hear && line.value && heard('line')) for (const n of scheduleVoice(line.value.notes, line.value.bars, plan.value, state, from, until)) audio.note(n.midi, n.time, n.length)
     const h = harmony.value
     const g = grooving() ? groove.value : null
