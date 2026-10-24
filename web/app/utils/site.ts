@@ -43,6 +43,10 @@ export const PAGE_HEAD = {
     title: 'Functions and rules',
     description: 'How to write a chord’s function in a chart, the scale every function gets in any key, and the rules that choose it.',
   },
+  'chart-format': {
+    title: 'Chart format',
+    description: 'How a Chord Scale Maker chart is written: every header field, section, row and directive, with an example, and what each error message means.',
+  },
   scales: {
     title: 'Scales',
     description: 'Every scale Chord Scale Maker plays, by family: its formula, its notes, the chords it plays over and the jazz standards that use it.',

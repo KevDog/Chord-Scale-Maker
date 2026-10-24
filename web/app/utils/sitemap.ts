@@ -33,7 +33,7 @@ const chordPaths = (): string[] => CHORD_QUALITIES.map((q) => `/chords/${chordSl
 /** the pages search engines should find, prerendered too: the site's, the scales, the chords, the composers (by slug), then each
  * library song; never a bare /song (noindex) or /ui */
 export const sitemapPaths = (songPaths: readonly string[], composerSlugs: readonly string[]): string[] => [
-  '/', '/library', '/help', '/how-it-decides', '/release-notes', '/functions', '/about', '/contact', '/privacy', '/scales', ...scalePaths(),
+  '/', '/library', '/help', '/how-it-decides', '/release-notes', '/functions', '/chart-format', '/about', '/contact', '/privacy', '/scales', ...scalePaths(),
   '/chords', ...chordPaths(),
   '/composers', ...composerSlugs.map((s) => `/composers/${s}`), ...songPaths,
 ]
