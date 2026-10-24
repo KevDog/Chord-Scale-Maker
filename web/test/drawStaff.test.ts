@@ -49,12 +49,26 @@ describe('drawStaff practice tags', () => {
   })
 })
 
+describe('drawArpeggioStaff at a width', () => {
+  it('draws narrower, so larger, for a stacked reference staff (#523)', () => {
+    const staff = buildArpeggioSheet([{ section: '', bar: '', chord: 'Cm7', scale: '' }], CONCERT, 1, 'seventh', 'up').pages.flat()[0]!
+    const viewBox = (width?: number): string => {
+      const el = document.body.appendChild(document.createElement('div'))
+      drawArpeggioStaff(vf, el, staff, 'treble', width)
+      el.remove()
+      return el.querySelector('svg')?.getAttribute('viewBox')?.split(' ')[2] ?? ''
+    }
+    expect(viewBox(440)).toBe('440')
+    expect(Number(viewBox())).toBeGreaterThan(440)
+  })
+})
+
 // rhythm-scales-arpeggios spec §4, §7: an Arpeggios run drawn bar by bar, as the Scales run is; no Saindon bracket (P2 D19)
 describe('drawArpeggioStaff with a rhythm', () => {
   const draw = (rhythm?: 'unit:8:3:accents'): HTMLElement => {
     const staff = buildArpeggioSheet([{ section: 'A', bar: '1', chord: 'Cmaj7', scale: '' }], CONCERT, 12, 'seventh', 'up', undefined, undefined, rhythm ? { rhythm } : {}).pages.flat()[0]!
     const el = document.body.appendChild(document.createElement('div'))
-    drawArpeggioStaff(vf, el, staff, 'treble', rhythm ? 'Rhythm: 8ths in 3, with accents' : null)
+    drawArpeggioStaff(vf, el, staff, 'treble', undefined, rhythm ? 'Rhythm: 8ths in 3, with accents' : null)
     el.remove()
     return el
   }

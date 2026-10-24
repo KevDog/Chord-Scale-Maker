@@ -20,6 +20,15 @@ export function scalePath(scale: string): string | null {
   }
 }
 
+/** the title of a scale's page from its text ("C Dorian" → "Dorian"), or null if it can't be read */
+export function scalePageTitle(scale: string): string | null {
+  try {
+    return scaleTitle(parseScale(scale).key)
+  } catch {
+    return null
+  }
+}
+
 const ORDINAL: Readonly<Record<string, string>> = { 1: 'st', 2: 'nd', 3: 'rd' }
 /** "6" -> "6th", "b2" -> "♭2nd" */
 const ordinal = (degree: string): string => `${glyphs(degree)}${ORDINAL[degree.replace(/\D/g, '')] ?? 'th'}`

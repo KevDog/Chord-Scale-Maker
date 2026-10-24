@@ -21,7 +21,7 @@
 
       <section class="space-y-4" aria-labelledby="practice">
         <UiSubheading id="practice" class="scroll-mt-6">Practice it</UiSubheading>
-        <UiText>Its default scale, with the chord tones lit.</UiText>
+        <UiText>The chord, then each scale it takes with the chord tones lit, written for your instrument.</UiText>
         <ClientOnly>
           <SheetRail>
             <template #left>
@@ -31,8 +31,18 @@
               </UiField>
             </template>
           </SheetRail>
-          <div class="mt-4 rounded-paper bg-paper p-4 shadow-paper sm:p-6">
-            <ScaleStaff v-if="staff" :staff="staff" :clef="part.clef" :part="part" :intervals="prefs.intervals.value" stacked />
+          <div class="mt-4 space-y-8 rounded-paper bg-paper p-4 shadow-paper sm:p-6">
+            <div v-if="chordStaff" class="space-y-2">
+              <h3 class="text-base/6 font-semibold text-zinc-950 dark:text-white">The chord</h3>
+              <ArpeggioStaff :staff="chordStaff" :clef="part.clef" :part="part" :intervals="prefs.intervals.value" stacked />
+            </div>
+            <div v-for="s in scaleStaves" :key="s.scale.source" class="space-y-2">
+              <ScaleStaff v-if="s.staff" :staff="s.staff" :clef="part.clef" :part="part" :intervals="prefs.intervals.value" stacked />
+              <p class="flex flex-wrap items-baseline gap-2 text-sm/6">
+                <UiBadge v-for="t in s.scale.tags" :key="t" :color="t === 'default' ? 'note' : 'zinc'">{{ TAG_LABELS[t] }}</UiBadge>
+                <UiTextLink v-if="s.scale.path && s.scale.pageTitle" :href="s.scale.path">{{ s.scale.pageTitle }} scale</UiTextLink>
+              </p>
+            </div>
           </div>
           <template #fallback><UiText>Loading the staff…</UiText></template>
         </ClientOnly>
@@ -40,6 +50,10 @@
 
       <section class="space-y-4" aria-labelledby="scales">
         <UiSubheading id="scales" class="scroll-mt-6">Scales</UiSubheading>
+        <UiText>
+          A sheet plays the default at Standard; Basic and Advanced reach for the scales marked for them.
+          <UiTextLink :href="decisionHref('scale.level')">How it decides</UiTextLink> says which, and why.
+        </UiText>
         <dl class="divide-y divide-zinc-950/5 dark:divide-white/5">
           <div v-for="s in page.scales" :key="s.source" class="flex flex-wrap items-baseline gap-x-4 gap-y-1 py-2.5">
             <dt class="w-56 text-sm/6 font-medium">
@@ -70,8 +84,8 @@
 </template>
 
 <script setup lang="ts">
-import { buildSheet, keyStart, parseKey, partFor, type Row } from '@chord-scale-maker/engine'
-import { type ChordScaleTag, chordHead, chordOnC, chordPage, CHORDS_PATH } from '~/utils/chordPage'
+import { buildArpeggioSheet, buildSheet, decisionHref, keyStart, parseKey, partFor, type Row } from '@chord-scale-maker/engine'
+import { type ChordScaleTag, chordHead, chordOnC, chordPage, CHORDS_PATH, chordScaleRows } from '~/utils/chordPage'
 import { seoMeta } from '~/utils/site'
 
 /** a chord quality's reference page (/chords/<slug>, #498): its notes, a staff for your instrument, the scales it takes, and the library tunes that write it */
@@ -96,14 +110,25 @@ const TAG_LABELS: Readonly<Record<ChordScaleTag, string>> = { default: 'Default'
 const notes = page.notes.split(' ').map((note, i) => ({ note, degree: page.formula.split(' ')[i] ?? '' }))
 const chord = chordOnC(page.quality)
 const defaultScale = page.scales.find((s) => s.tags.includes('default'))?.source ?? page.scales[0]?.source ?? ''
+const rows = chordScaleRows(page)
 
 const prefs = usePreferences()
 const part = computed(() => partFor(prefs.instrument.value))
 /** the written C for the part: the staff's "key" is the chord's own root */
 const keyStartNote = computed(() => keyStart(parseKey('C'), part.value))
-/** one staff: the chord’s default scale on C, spelled from its root, its chord tones lit */
-const staff = computed(() => {
+/** the chord itself, up its chord tones: labelled by its symbol, not the scale it's read from */
+const chordStaff = computed(() => {
   const row: Row = { section: '', bar: '', chord, scale: defaultScale }
-  return buildSheet([row], part.value, 'root', keyStartNote.value, 1, { preset: 'chordTones' })[0]?.pages[0]?.[0] ?? null
+  const s = buildArpeggioSheet([row], part.value, 1, 'seventh', 'up').pages[0]?.[0]
+  return s ? { ...s, scale: null } : null
 })
+/** a staff per scale, on C, spelled from its root, its chord tones lit (#523) */
+const scaleStaves = computed(() =>
+  page.scales.map((scale, i) => {
+    const row = rows[i]
+    const staff = row ? buildSheet([row], part.value, 'root', keyStartNote.value, 1, { preset: 'chordTones' })[0]?.pages[0]?.[0] : undefined
+    // the chord is drawn above them all: no symbol under each
+    return { scale, staff: staff ? { ...staff, chords: [] } : null }
+  }),
+)
 </script>
