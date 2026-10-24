@@ -282,13 +282,13 @@ export const staffNotesWidth = (vf: VexFlowModule, staff: StaffModel, clef: 'tre
  * Scales run is (drawRunStaff; no Saindon bracket, P2 D19), its aria-label naming the rhythm (rhythmCaption, rhythmAria).
  * Returns each head's centre as a fraction of the width.
  */
-export function drawArpeggioStaff(vf: VexFlowModule, el: HTMLElement, staff: ArpeggioStaffModel, clef: 'treble' | 'bass', rhythmCaption: string | null = null): number[] {
+export function drawArpeggioStaff(vf: VexFlowModule, el: HTMLElement, staff: ArpeggioStaffModel, clef: 'treble' | 'bass', width: number = STAFF_WIDTH, rhythmCaption: string | null = null): number[] {
   if (staff.run) {
     const signs = { clef: staff.showClefAndKey, keySig: staff.keySig, timeSig: staff.timeSig ?? `${staff.run.beats}/4`, last: staff.last }
-    return drawRunStaff(vf, el, staff.run, clef, STAFF_WIDTH, { pitches: staff.notes, accidentals: staff.accidentals, signs, label: (names) => names.join(' ') + rhythmAria(rhythmCaption) })
+    return drawRunStaff(vf, el, staff.run, clef, width, { pitches: staff.notes, accidentals: staff.accidentals, signs, label: (names) => names.join(' ') + rhythmAria(rhythmCaption) })
   }
-  const ctx = svgContext(vf, el, STAFF_WIDTH)
-  const stave = inkStave(vf, 0, STAVE_Y, STAFF_WIDTH - 1)
+  const ctx = svgContext(vf, el, width)
+  const stave = inkStave(vf, 0, STAVE_Y, width - 1)
   if (staff.showClefAndKey) stave.addClef(clef)
   if (staff.showClefAndKey && staff.keySig) stave.addKeySignature(staff.keySig)
   stave.setEndBarType(staff.last ? vf.BarlineType.END : vf.BarlineType.DOUBLE)
@@ -312,12 +312,12 @@ export function drawArpeggioStaff(vf: VexFlowModule, el: HTMLElement, staff: Arp
       (acc, g) => ({ at: acc.at + g, beams: g > 1 ? [...acc.beams, new vf.Beam(notes.slice(acc.at, acc.at + g), true)] : acc.beams }),
       { at: 0, beams: [] },
     ).beams
-    new vf.Formatter().joinVoices([voice]).format([voice], STAFF_WIDTH - stave.getNoteStartX() - 24)
+    new vf.Formatter().joinVoices([voice]).format([voice], width - stave.getNoteStartX() - 24)
     voice.draw(ctx, stave)
     beams.forEach((b) => b.setContext(ctx).draw())
   }
-  fitSvg(el, cropBand(notes.flatMap((n) => [...n.getYs(), n.getStemExtents().topY])), STAFF_WIDTH, staff.notes.map((n) => toVexKey(n).replace('/', '')).join(' '))
-  return notes.map((n) => headCentre(n, STAFF_WIDTH))
+  fitSvg(el, cropBand(notes.flatMap((n) => [...n.getYs(), n.getStemExtents().topY])), width, staff.notes.map((n) => toVexKey(n).replace('/', '')).join(' '))
+  return notes.map((n) => headCentre(n, width))
 }
 
 /** how much later notes start on a stave with these modifiers than on a bare one (drawing units), from a probe stave */

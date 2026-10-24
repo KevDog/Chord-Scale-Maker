@@ -1,6 +1,6 @@
 <template>
-  <div class="grid grid-cols-[8rem_1fr] items-center gap-3 break-inside-avoid print:grid-cols-[8.5rem_1fr]">
-    <div class="text-right leading-tight">
+  <div :class="stacked ? 'space-y-2' : 'grid grid-cols-[8rem_1fr] items-center gap-3 break-inside-avoid print:grid-cols-[8.5rem_1fr]'">
+    <div :class="['leading-tight', !stacked && 'text-right']">
       <div v-if="staff.scale" class="text-base font-semibold"><NoteName :note="staff.scale.root" /> {{ staff.scale.name }} <PhraseButton v-if="part && staff.notes.length && !staff.error" :id="staff.id" :label="playLabel" :phrase="() => arpeggioPhrase(staff.notes, staff.groups, !!staff.block, part!.trans)" /></div>
       <div class="text-sm text-zinc-500 dark:text-zinc-400 print:text-neutral-600">
         <template v-for="(tokens, i) in staff.chords" :key="i"><template v-if="i"><span class="sr-only">,</span><span aria-hidden="true"> · </span></template><ChordSymbol v-if="tokens" :tokens="tokens" /><span v-else>—</span></template>
@@ -48,7 +48,8 @@ import { choiceId, hexChoiceRows, pickFooter, pickHeader } from '~/utils/chordPi
 import type { ChoiceRow } from './ChordPickPopover.vue'
 
 /** intervals: label each note against the chord root (b9, #11…); part and pickable: Triad pairs' caption picks for every bar it covers (#436); rhythm: the sheet's, which a run is poured into, for its aria-label */
-const props = defineProps<{ staff: ArpeggioStaffModel; clef: 'treble' | 'bass'; intervals?: boolean; part?: Part; pickable?: boolean; rhythm?: RhythmId }>()
+/** stacked: as ScaleStaff's, its label above it and the staff drawn larger across the full width (a chord page's chord, #523) */
+const props = defineProps<{ staff: ArpeggioStaffModel; clef: 'treble' | 'bass'; intervals?: boolean; part?: Part; pickable?: boolean; rhythm?: RhythmId; stacked?: boolean }>()
 const emit = defineEmits<{ pick: [kind: PickKind, positions: readonly ChordAt[], value: number | readonly [number, number] | null] }>()
 
 const pair = computed(() => props.staff.pair ?? null)
@@ -74,6 +75,8 @@ function choose(id: string): void {
 const el = useTemplateRef<HTMLDivElement>('el')
 const drawError = ref<string | null>(null)
 const xs = ref<number[]>([])
+/** a stacked staff's drawing width, as ScaleStaff's */
+const STACKED_WIDTH = 440
 const rendering = useRendering()
 
 async function draw(): Promise<void> {
@@ -82,7 +85,7 @@ async function draw(): Promise<void> {
   try {
     const vf = await loadVexFlow()
     if (!el.value) return // still showing a previous draw error; keep it
-    xs.value = drawArpeggioStaff(vf, el.value, props.staff, props.clef, props.rhythm && props.rhythm !== 'off' ? `Rhythm: ${rhythmLabel(props.rhythm)}` : null)
+    xs.value = drawArpeggioStaff(vf, el.value, props.staff, props.clef, props.stacked ? STACKED_WIDTH : undefined, props.rhythm && props.rhythm !== 'off' ? `Rhythm: ${rhythmLabel(props.rhythm)}` : null)
     drawError.value = null
   } catch (e) {
     drawError.value = `Couldn't draw this staff (${e instanceof Error ? e.message : String(e)})`
