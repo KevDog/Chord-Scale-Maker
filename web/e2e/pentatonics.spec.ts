@@ -12,6 +12,7 @@ test('the Pentatonics row names each key area’s pentatonic, and the ladder cha
   const ladder = page.getByRole('dialog', { name: 'Cm7 Dorian · A1 bar 1, A1 bar 2, A1 bar 3, A1 bar 4' }) // headed by the chord; the ladder's title (A1 · G minor pentatonic ladder) under it
   await ladder.getByRole('button', { name: 'Fm', exact: true }).click() // rung 2, ♭ side, for A1 only
   await expect(labels(page).first()).toHaveText('Fm♪ 4')
+  await openPentatonicOptions(page) // the click on the label closed it
   await expect(page.getByRole('button', { name: 'Pentatonic path' })).toContainText('One rung')
 })
 
@@ -76,6 +77,7 @@ test('a pick changes its label’s run only, and the sheet’s choice restores i
   await expect(target).toHaveText(/♪ 5$/)
   const after = await texts()
   expect(after.filter((t, i) => t !== before[i])).toHaveLength(1)
+  await openPentatonicOptions(page)
   await expect(page.getByRole('button', { name: 'Pentatonic path' })).toContainText('Fifths')
   await target.click()
   await page.locator('[data-sheet-choice]').click()
@@ -216,6 +218,7 @@ test('a pick survives a change of step (#303)', async ({ page }) => {
   await page.getByRole('dialog', { name: / bar \d+$/ }).locator('li').last().locator('[data-pent]').click() // rung 6
   await expect(target).not.toHaveText(before ?? '')
   const picked = await target.textContent()
+  await openPentatonicOptions(page)
   await checkRadio(page, 'Pentatonic step', 'Key area')
   await checkRadio(page, 'Pentatonic step', 'Section')
   await expect(target).toHaveText(picked ?? '')

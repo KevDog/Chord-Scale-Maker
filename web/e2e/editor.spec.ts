@@ -453,6 +453,16 @@ test('choosing a Superimpose option leaves the Superimpose in its place (#387)',
 })
 
 
+test('the Pentatonic options, opened by choosing Pentatonic, close on a click outside (#579)', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await page.goto('/song/autumn-leaves')
+  await pickOption(page, 'Superimpose', /^Pentatonic/)
+  await expect(page.getByRole('dialog', { name: 'Pentatonic options' })).toBeVisible()
+  await page.getByRole('heading', { level: 1 }).click()
+  await expect(page.getByRole('dialog', { name: 'Pentatonic options' })).toHaveCount(0)
+})
+
+
 test('practicing, the rail scrolls away with the page: the notes are what matter', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 })
   await page.goto('/song/autumn-leaves')
