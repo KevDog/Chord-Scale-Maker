@@ -155,6 +155,7 @@
             :compact="compactRail"
             :sticky-rail="sheetEditing"
             :line-takes-rhythm="lineTakesRhythm"
+            :beats="clickChart.beats"
             @instrument-chosen="instrumentChosen"
           >
             <!-- Level: how sophisticated each chord's scale is (engine/src/levels.ts); a dropdown in the toolbar -->

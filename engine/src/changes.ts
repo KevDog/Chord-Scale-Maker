@@ -148,7 +148,7 @@ export type ChangesBar = Readonly<{
   chords: readonly ChangesChord[]
   /** the guide tone or arpeggio line's notes in place of the slashes; [] with the line off */
   voice: readonly GuideNote[]
-  /** the rhythm line's notes in place of the slashes (rhythm spec §8); [] with the rhythm off or a Line on */
+  /** the rhythm's notes over the bar with the Line off, which Hear rhythm taps; not drawn: the sheet shows its card (#573); [] with the rhythm off or a Line on */
   rhythm: readonly RhythmNote[]
   /** the plain slashes, drawn with no rhythm line and no Line: one a group of the Feel (Phase 4 spec D18), a quarter a beat in 4 */
   slashes: readonly FeelSlash[]
@@ -220,10 +220,11 @@ function areaLadder(name: string, part: Part): Readonly<{ ladder: readonly Penta
 
 /**
  * Changes lines on a printed page, one rule a line:
- * - no guide line: 8, or 7 with numerals, scales and pentatonics all shown;
- * - a guide tone or arpeggio line, or a rhythm line (rhythm spec §8): 5 with all three rows, 6 with any row, 7 with none.
+ * - no guide line: 8, or 7 with numerals, scales and pentatonics all shown; one fewer with a rhythm (`rhythm`), whose
+ *   card stands over the first line (#573);
+ * - a guide tone or arpeggio line: 5 with all three rows, 6 with any row, 7 with none.
  * A rhythm poured into a Line (rhythm-on-lines spec §9, `poured`) takes one line fewer: 4 with all three rows, 5 with any row, 6 with none.
- * So does a rhythm line that draws tuplets (`tuplets`, drawsTuplets; Task 3.2): their numbers stand over the beams.
+ * So does a Line whose rhythm draws tuplets (`tuplets`, drawsTuplets; Task 3.2): their numbers stand over the beams.
  * Notes, stems and the label row take more height. Measured over the library in every transposition at letter width,
  * with a page's tallest lines (an ending raised over the stems); the 5 and 7 were measured on Stardust (tuba, From
  * 7th), the documented worst case, and print.spec checks it. With Pentatonics plus Numerals or Scales, 8 and 6 hold
@@ -233,10 +234,10 @@ function areaLadder(name: string, part: Part): Readonly<{ ladder: readonly Penta
 export function changesLinesPerPage(line: ChangesLineChoice, rows: Readonly<{ numerals: boolean; scales: boolean; pentatonics?: boolean; hexatonics?: boolean; quartals?: boolean }>, rhythm = false, poured = false, tuplets = false): number {
   const overlay = !!(rows.pentatonics || rows.hexatonics || rows.quartals) // the hexatonic and quartal rows take the pentatonic row's place and height
   const all = overlay && rows.numerals && rows.scales
-  if (line === 'off' && !rhythm) return all ? 7 : 8
+  if (line === 'off') return (all ? 7 : 8) - (rhythm ? 1 : 0)
   const voiced = all ? 5 : 6 + (!rows.numerals && !rows.scales && !overlay ? 1 : 0)
-  // a poured rhythm's ties, tuplets and target marks stand taller (rhythm-on-lines spec §9), as a rhythm line's tuplets do
-  return (poured && line !== 'off') || (rhythm && tuplets) ? voiced - 1 : voiced
+  // a poured rhythm's ties, tuplets and target marks stand taller (rhythm-on-lines spec §9)
+  return poured || (rhythm && tuplets) ? voiced - 1 : voiced
 }
 
 /** whether the sheet's rhythm draws a tuplet (Task 3.2): a note with a ratio, on its rhythm line or poured into a Line */

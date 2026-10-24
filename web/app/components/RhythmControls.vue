@@ -10,6 +10,8 @@
       </UiListboxGroup>
       <UiListboxOption value="custom"><UiListboxLabel>{{ familyLabel('custom') }}</UiListboxLabel></UiListboxOption>
     </UiListbox>
+    <!-- the rhythm's card (#573): what it plays, at a glance, as it's chosen; off the rail, where the Scales staves draw it -->
+    <RhythmCard v-if="!popover && rhythm !== 'off'" :rhythm="rhythm" :beats="beats ?? 4" :width="480" class="w-full" />
     <!-- on the rail, a fixed slot for its button, there or not, so choosing a rhythm never rewraps the rail -->
     <component :is="popover ? 'div' : Passthrough" v-bind="popover ? { class: inline ? 'contents' : 'flex size-9 items-center justify-center' } : {}">
       <component :is="popover ? RailPopover : Passthrough" v-if="!popover || hasDetail" v-bind="popover ? { open: optionsOpen, 'onUpdate:open': setOptionsOpen, inline, label: 'Rhythm options' } : {}">
@@ -88,7 +90,7 @@ import RailPopover from './RailPopover.vue'
  * (In and Variation, Attacks and From, the text). describedby: the listbox's help; popover: the detail behind a
  * Rhythm options button (the rail), shown only for a rhythm with detail; inline: that popover stacked (the Controls dialog)
  */
-const props = defineProps<{ describedby?: string; popover?: boolean; inline?: boolean; paths?: boolean }>()
+const props = defineProps<{ describedby?: string; popover?: boolean; inline?: boolean; paths?: boolean; beats?: number }>()
 const rhythm = defineModel<RhythmId>({ default: 'off' })
 /** the chart's rhythm path (Phase 4 spec §3), set here with paths on (the Changes) */
 const path = defineModel<RhythmPath>('path', { default: () => RHYTHM_PATH_OFF })
