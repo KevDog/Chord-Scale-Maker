@@ -1385,6 +1385,16 @@ describe('the rhythm line and target beats (rhythm spec §8)', () => {
     expect(changesLinesPerPage('off', { numerals: true, scales: true }, true, false, true)).toBe(7) // the Line off: the card, not the tuplets
   })
 
+  it('gives the Line-off sheet a rhythm card a step of its path, none with a Line on (#575)', () => {
+    const doc = parseChart('key: C\n\nsection: A\n1 | Dm7\n2 | G7\n\nsection: B\n1 | CMaj7\n2 | A7\n').value
+    const groups = { groups: [3, 4], gears: null, step: { unit: 'section', bars: 4 } } as const
+    const cards = (line: ChangesLineChoice, rhythmPath?: typeof groups) => buildChanges(doc, CONCERT, 4, false, line, undefined, null, 'none', { rhythm: 'unit:8:3:accents', rhythmPath }).rhythmCards
+    expect(cards('off', groups).map((c) => [c.id, c.group])).toEqual([['unit:8:3:accents', 3], ['unit:8:4:accents', 4]])
+    expect(cards('off')).toEqual([{ id: 'unit:8:3:accents', group: null, pulse: null }])
+    expect(cards('up-root', groups)).toEqual([])
+    expect(buildChanges(doc, CONCERT).rhythmCards).toEqual([])
+  })
+
   it('tells a sheet whose rhythm draws tuplets, on its rhythm line or poured into a Line', () => {
     const doc = parseChart('key: C\n\nsection: A\n1 | Dm7\n2 | G7\n3 | CMaj7\n4 | A7\n').value
     const sheet = (rhythm: RhythmId, line: ChangesLineChoice = 'off') => buildChanges(doc, CONCERT, 4, false, line, undefined, null, 'none', { rhythm }).lines
