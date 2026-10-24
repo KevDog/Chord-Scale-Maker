@@ -113,7 +113,8 @@ const DEFAULT_BEATS = 4
 /**
  * bar widths that keep each chord's name clear of the next (a beat is a bar's width over its beats, each bar's own): bars that fit stay
  * even; a crowded bar takes what its names need and the others share the rest; a line that can't fit them all is
- * shared by need, and the names that still don't fit shrink. A slot past the line's last bar (null) gives up its room.
+ * shared by need, and the names that still don't fit shrink. A slot past the line's last bar (null) keeps its room,
+ * except on a line whose notes crowd (a room): its bars spread over the whole line.
  * rooms: each bar's notes' least share of the line (notesFit), which a bar takes as its names'; notes don't shrink,
  * so `notes` counts the leading bars whose names (shrunk as far as they go) or notes, the wider, fit the line (all of
  * them where no bar has a room), where the line splits (balancedSplit)
@@ -141,7 +142,7 @@ export function fitBars(barBeats: readonly number[], bars: readonly (readonly Na
   }
   const needs = needsAt(scale)
   const total = sum(needs)
-  const shares = total >= 1 ? needs.map((n) => n / total) : waterFill(needs)
+  const shares = total >= 1 ? needs.map((n) => n / total) : waterFill(needs, rooms.some((r) => r > 0) ? bars.map((b) => b !== null) : undefined)
   const scales = bars.map((chords, b) => {
     if (!chords) return []
     const beats = barBeats[b] ?? DEFAULT_BEATS
@@ -156,14 +157,15 @@ export function fitBars(barBeats: readonly number[], bars: readonly (readonly Na
   return { shares, scales, fits: Math.max(1, Math.min(present, sums.filter((n) => n * BREAK_SCALE <= 1 + 1e-9).length)), notes: Math.max(1, Math.min(present, notes)) }
 }
 
-/** each bar at least its need, the rest at one level, summing to 1 (the needs sum to less) */
-function waterFill(needs: readonly number[]): number[] {
+/** each bar at least its need, the rest at one level, summing to 1 (the needs sum to less); only the slots `within` share it (all by default) */
+function waterFill(needs: readonly number[], within?: readonly boolean[]): number[] {
+  const out = new Set(needs.flatMap((_, i) => (within && !within[i] ? [i] : [])))
   let fixed = new Set<number>()
   for (;;) {
     const left = 1 - [...fixed].reduce((a, i) => a + (needs[i] ?? 0), 0)
-    const level = left / (needs.length - fixed.size)
-    const over = needs.flatMap((n, i) => (!fixed.has(i) && n > level ? [i] : []))
-    if (!over.length) return needs.map((n, i) => (fixed.has(i) ? n : level))
+    const level = left / (needs.length - fixed.size - out.size)
+    const over = needs.flatMap((n, i) => (!fixed.has(i) && !out.has(i) && n > level ? [i] : []))
+    if (!over.length) return needs.map((n, i) => (out.has(i) ? 0 : fixed.has(i) ? n : level))
     fixed = new Set([...fixed, ...over])
   }
 }
