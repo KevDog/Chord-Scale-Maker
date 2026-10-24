@@ -678,8 +678,8 @@ test.describe('the rhythm with the Line off', () => {
   test.use({ interfaceLevel: 'intermediate' })
 
   test('8ths in 5 with accents: plain slashes, the caption names its cycle, and the card shows it, Saindon’s bracket on its first bar', async ({ page }) => {
+    await page.addInitScript(() => localStorage.setItem('csm-rhythm', 'unit:8:5:accents')) // off Intermediate's list (#577): in force, with the notice
     await page.goto('/song/f-jazz-blues')
-    await chooseRhythm(page, '8ths', { In: 'In 5', Variation: 'with accents' })
     await rhythmDrawn(page)
     await expect(page.locator('section header p').first()).toContainText('back on one every 5 bars')
     await expect.poll(() => lines(page).evaluateAll((svgs) => svgs.map((svg) => svg.querySelectorAll('.vf-stavenote').length / svg.querySelectorAll('.vf-stave').length))).toEqual([4, 4, 4]) // a quarter slash a beat
@@ -1177,7 +1177,7 @@ test.describe('Start, Timing and Restate', () => {
       await page.goto('/song/f-jazz-blues')
       await rhythmDrawn(page)
       await openPanel(page, 'Line options')
-      await expect(listbox(page, 'Rhythm')).toHaveText('Rhythm: 8ths')
+      await expect(listbox(page, 'Rhythm')).toHaveText('Rhythm: 8ths in 3, with accents') // Intermediate's list names the rhythm whole (#577)
       await expect(listbox(page, 'Start')).toHaveCount(0)
       await expect(listbox(page, 'Timing')).toHaveCount(0)
       await closePanel(page, 'Line options')

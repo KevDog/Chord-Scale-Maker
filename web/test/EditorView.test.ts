@@ -796,7 +796,7 @@ describe('EditorView overlay', () => {
     Object.assign(features, { rhythm: true })
     try {
       useInterface().level.value = 'essentials'
-      const stored = { 'csm-rhythm': 'unit:8:3:rests', 'csm-targets': 'on', 'csm-rhythm-start': 'pickup-2', 'csm-anticipate': '1', 'csm-guide-restate': 'on' }
+      const stored = { 'csm-rhythm': 'unit:8:3:accents', 'csm-targets': 'on', 'csm-rhythm-start': 'pickup-2', 'csm-anticipate': '1', 'csm-guide-restate': 'on' }
       for (const [k, v] of Object.entries(stored)) localStorage.setItem(k, v)
       const w = await mountSuspended(EditorView, { props: { initialText: TEXT }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } } })
       const notice = w.findComponent({ name: 'InterfaceNotice' })

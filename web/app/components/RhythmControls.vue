@@ -2,7 +2,15 @@
   <!-- popover: on the rail (the Scales and Arpeggios sheets' Rhythm group), the listbox with its detail behind Rhythm options, so the group is one control tall; stacked under it in the Controls dialog (inline) -->
   <!-- else (Line options): the listbox and its detail under it, in the parent's column -->
   <component :is="popover ? 'div' : Passthrough" v-bind="popover ? { class: inline ? 'flex flex-col gap-2' : 'flex items-center gap-1' } : {}">
-    <UiListbox v-model="rhythmFamily" :class="popover && !inline ? 'w-56' : 'w-full'" aria-label="Rhythm" :aria-describedby="describedby">
+    <!-- below Everything (#577): the ready-made rhythms alone, no detail; a rhythm off the list in force still reads as itself -->
+    <UiListbox v-if="!full" v-model="preset" :class="popover && !inline ? 'w-56' : 'w-full'" aria-label="Rhythm" :aria-describedby="describedby">
+      <template #selected="{ value }"><UiListboxLabel>Rhythm: {{ rhythmLabel(value) }}</UiListboxLabel></template>
+      <UiListboxOption value="off"><UiListboxLabel>Off</UiListboxLabel></UiListboxOption>
+      <UiListboxGroup v-for="g in presetGroups" :key="g.label" :label="g.label">
+        <UiListboxOption v-for="id in g.options" :key="id" :value="id"><UiListboxLabel>{{ rhythmLabel(id) }}</UiListboxLabel></UiListboxOption>
+      </UiListboxGroup>
+    </UiListbox>
+    <UiListbox v-else v-model="rhythmFamily" :class="popover && !inline ? 'w-56' : 'w-full'" aria-label="Rhythm" :aria-describedby="describedby">
       <template #selected="{ value }"><UiListboxLabel>Rhythm: {{ familyLabel(value) }}</UiListboxLabel></template>
       <UiListboxOption value="off"><UiListboxLabel>Off</UiListboxLabel></UiListboxOption>
       <UiListboxGroup v-for="g in rhythmFamilies" :key="g.label" :label="g.label">
@@ -14,7 +22,7 @@
     <RhythmCard v-if="!popover && rhythm !== 'off'" :rhythm="rhythm" :beats="beats ?? 4" :width="480" class="w-full" />
     <!-- on the rail, a fixed slot for its button, there or not, so choosing a rhythm never rewraps the rail -->
     <component :is="popover ? 'div' : Passthrough" v-bind="popover ? { class: inline ? 'contents' : 'flex size-9 items-center justify-center' } : {}">
-      <component :is="popover ? RailPopover : Passthrough" v-if="!popover || hasDetail" v-bind="popover ? { open: optionsOpen, 'onUpdate:open': setOptionsOpen, inline, label: 'Rhythm options' } : {}">
+      <component :is="popover ? RailPopover : Passthrough" v-if="full && (!popover || hasDetail)" v-bind="popover ? { open: optionsOpen, 'onUpdate:open': setOptionsOpen, inline, label: 'Rhythm options' } : {}">
         <component :is="popover ? 'div' : Passthrough" v-bind="popover ? { class: inline ? 'flex w-full flex-col gap-2' : 'flex w-64 flex-col gap-2' } : {}">
           <EaseReveal :show="parsedRhythm?.kind === 'unit'" inner-class="flex flex-col gap-2">
             <template v-if="parsedRhythm?.kind === 'unit'">
@@ -83,6 +91,7 @@ import type { FunctionalComponent } from 'vue'
 import { customRhythmId, RHYTHM_TEXT, useRhythmText } from '~/composables/useRhythmText'
 import { LIST_CHOICES, type ListChoice, RHYTHM_PATH_LISTS, useRhythmPathLists } from '~/composables/useRhythmPathLists'
 import { gearsTextError, groupsTextError, isGearsRhythm, rhythmTextError } from '~/utils/rhythmText'
+import { INTERMEDIATE_RHYTHMS } from '~/utils/interface'
 import RailPopover from './RailPopover.vue'
 
 /**
@@ -129,6 +138,19 @@ const familyLabel = (f: RhythmFamily): string => {
   return kind === 'unit' ? PULSE_LABELS[pulse] : `Runs of ${PULSE_LABELS[pulse].toLowerCase()}`
 }
 const parsedRhythm = computed(() => parseRhythmId(rhythm.value))
+/** the full library and its detail (Everything); below, INTERMEDIATE_RHYTHMS as they are (#577) */
+const full = computed(() => shows('rhythm-detail'))
+const presetGroups = (['unit', 'run', 'card'] as const).map((kind) => ({
+  label: ({ unit: 'Units', run: 'Runs', card: 'Cards' } as const)[kind],
+  options: INTERMEDIATE_RHYTHMS.filter((id) => id.startsWith(`${kind}:`)),
+}))
+const preset = computed<RhythmId>({
+  get: () => rhythm.value,
+  set: (id) => {
+    rhythmCustom.value = false
+    rhythm.value = id
+  },
+})
 /** Your rhythm…: chosen, and its text; the owner's (PreviewControls), so text that doesn't read survives the panel closing */
 const { custom: rhythmCustom, text: rhythmText } = inject(RHYTHM_TEXT, () => useRhythmText(rhythm, () => shows('rhythm'), () => shows('rhythm-gears')), true)
 const tupletsTyped = computed(() => gearsOn && shows('rhythm-gears')) // typed tuplet pulses: Everything only, as the listbox families (Phase 4 spec D22)
@@ -192,5 +214,5 @@ const stepChoice = computed<StepChoice>({
 })
 
 /** the rhythm has detail to set: a unit's In and Variation, a run's Attacks and From, your rhythm's text (a card has none) */
-const hasDetail = computed(() => rhythmFamily.value === 'custom' || parsedRhythm.value?.kind === 'unit' || parsedRhythm.value?.kind === 'run')
+const hasDetail = computed(() => full.value && (rhythmFamily.value === 'custom' || parsedRhythm.value?.kind === 'unit' || parsedRhythm.value?.kind === 'run'))
 </script>

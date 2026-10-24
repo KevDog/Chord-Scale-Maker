@@ -707,6 +707,7 @@ const RESETS: Readonly<Record<HiddenSetting, (inForce: Mode) => void>> = {
     if (isGearsRhythm(prefs.rhythm.value)) prefs.rhythm.value = 'off'
     rhythmPath.reset()
   },
+  'rhythm-detail': () => (prefs.rhythm.value = 'off'), // a rhythm off the Intermediate list (#577)
   feel: () => (prefs.feel.value = 4), // Phase 4 spec §7
   spell: () => (prefs.spell.value = 'key'),
   practice: (inForce) => practice.setSelection(inForce, null),

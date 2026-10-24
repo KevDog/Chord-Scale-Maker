@@ -782,6 +782,11 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **Preferences:** `csm-rhythm` (a RhythmId; anything else reads Off, and with the flag off a stored one stays stored) and
   `csm-targets`. Share links carry `rhythm` (not when Off) and `targets`; invalid values are dropped. Either on below
   Intermediate raises the hidden-settings notice (`rhythm`).
+- **Intermediate's list** (#577): below Everything the Rhythm listbox offers `INTERMEDIATE_RHYTHMS` (`utils/interface.ts`:
+  Quarters in 4, 8ths in 2, Triplets in 3, 16ths in 4, each with accents; 8ths in 3; 4 8ths from 1; the three cards),
+  each named whole (`rhythmLabel`), with no detail (In, Variation, Attacks, From, Your rhythm…: tier `rhythm-detail`,
+  Everything). Another rhythm in force still plays and reads as itself, and raises the notice (`rhythm-detail`; a
+  tuplet pulse is `rhythm-gears`' alone); Reset turns it Off.
 
 #### The rhythm on the Lines ([spec](superpowers/specs/2026-10-22-rhythm-on-lines-design.md))
 

@@ -441,8 +441,9 @@
                 In <strong class="font-semibold">⋯ More actions</strong>, it chooses how many controls show.
                 <strong class="font-semibold">Essentials</strong>: the sheet, instrument, transposing, printing, sharing and
                 editing chords, bars and sections. <strong class="font-semibold">Intermediate</strong> adds the scale level,
-                the analysis rows, lines, scale spelling, Practice, repeats and endings, and choosing a chord's scale.
-                <strong class="font-semibold">Everything</strong> adds pentatonics, chord picks, functions and key changes, and the
+                the analysis rows, lines, scale spelling, Practice, repeats and endings, choosing a chord's scale, and a short list of
+                ready-made rhythms. <strong class="font-semibold">Everything</strong> adds every rhythm and its options (grouping,
+                variation, runs, your own), pentatonics, chord picks, functions and key changes, and the
                 chart's source. A sheet set up with controls you can't see says so above it, with Show controls and Reset.
               </dd>
             </div>
