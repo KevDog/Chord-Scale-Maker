@@ -33,6 +33,25 @@ describe('UiListbox', () => {
     w.unmount()
   })
 
+  it('opens upward when the window has more room above the button than below (#509)', async () => {
+    const w = await mountSuspended(Picker, { attachTo: document.body })
+    const button = w.find('button')
+    const at = (top: number) => (button.element.getBoundingClientRect = () => ({ top, bottom: top + 36, left: 0, right: 100, width: 100, height: 36, x: 0, y: top, toJSON: () => ({}) }))
+    const listbox = () => w.find('[role=listbox]')
+    at(window.innerHeight - 60)
+    await button.trigger('click')
+    await nextTick()
+    expect(listbox().classes()).toContain('bottom-full')
+    expect(Number.parseFloat((listbox().element as HTMLElement).style.maxHeight)).toBeLessThanOrEqual(window.innerHeight - 60 - 8)
+    await button.trigger('click') // close
+    await nextTick()
+    at(40)
+    await button.trigger('click')
+    await nextTick()
+    expect(listbox().classes()).not.toContain('bottom-full')
+    w.unmount()
+  })
+
   it('selects an option by click', async () => {
     const w = await mountSuspended(Picker, { attachTo: document.body })
     await w.find('button').trigger('click')

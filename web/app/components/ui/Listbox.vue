@@ -12,6 +12,8 @@
       :data-disabled="dataFlag(isDisabled)"
       :class="BUTTON"
       as="button"
+      @click="place"
+      @keydown="place"
     >
       <!-- Headless UI React marks the button active while pressed or open -->
       <span :data-open="dataFlag(open)" class="contents" />
@@ -27,7 +29,7 @@
       </span>
     </HListboxButton>
     <transition leave-active-class="transition-opacity duration-100 ease-in" leave-to-class="opacity-0">
-      <HListboxOptions as="div" :class="OPTIONS">
+      <HListboxOptions as="div" :class="[OPTIONS, placement.above ? 'bottom-full mb-1' : 'top-full mt-1']" :style="{ maxHeight: `${placement.max}px` }">
         <slot />
       </HListboxOptions>
     </transition>
@@ -44,7 +46,7 @@ import { dataFlag, vInteractive } from '~/utils/interactive'
  * Catalyst Listbox on @headlessui/vue. Options are UiListboxOption children (optionally inside
  * UiListboxGroup); the button shows the #selected slot ({ value }). Inside a UiField the label
  * names the button, unless it has its own ariaLabel (a second control in the field). `labelledBy` (an element's id)
- * names it by that element and its value, as a field's label can't: aria-label hides the value (#425). Headless UI Vue has no anchor positioning, so the menu opens below.
+ * names it by that element and its value, as a field's label can't: aria-label hides the value (#425). Headless UI Vue has no anchor positioning: the menu opens below, or above when the window has more room there.
  */
 const props = defineProps<{ placeholder?: string; ariaLabel?: string; labelledBy?: string; invalid?: boolean; disabled?: boolean }>()
 /** the caller's attributes go on the wrapper, but its aria-describedby on the button, which it describes */
@@ -59,6 +61,17 @@ const field = inject(FIELD, undefined)
 const buttonId = useId()
 const isDisabled = computed(() => props.disabled || !!field?.disabled.value)
 
+// where the menu opens, measured as it opens: below, unless the window has more room above (a menu low on the page, #509)
+const MENU_MAX = 320
+const placement = ref<Readonly<{ above: boolean; max: number }>>({ above: false, max: MENU_MAX })
+function place(e: Event): void {
+  const r = (e.currentTarget as HTMLElement).getBoundingClientRect()
+  const below = window.innerHeight - r.bottom - 8
+  const above = r.top - 8
+  const up = below < 240 && above > below
+  placement.value = { above: up, max: Math.max(120, Math.min(MENU_MAX, up ? above : below)) }
+}
+
 const BUTTON = LISTBOX_BUTTON
 const SELECTED = LISTBOX_SELECTED
 /** ListboxOption's shared classes, for the selected value shown in the button */
@@ -68,8 +81,8 @@ const SELECTED_CONTENT = [
   '*:data-[slot=icon]:text-zinc-500 dark:*:data-[slot=icon]:text-zinc-400',
 ]
 const OPTIONS = [
-  // Positioning (Headless UI Vue has no anchor): below the button, at least its width
-  'absolute z-20 mt-1 max-h-80 min-w-full',
+  // Positioning (Headless UI Vue has no anchor): below or above the button (placement), at least its width
+  'absolute z-20 min-w-full',
   // Base styles
   'isolate w-max max-w-[calc(100vw-3rem)] scroll-py-1 rounded-xl p-1 select-none',
   // Invisible border that is only visible in `forced-colors` mode for accessibility purposes
