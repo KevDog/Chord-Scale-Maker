@@ -5,7 +5,7 @@ import { parseChart } from '../chart'
 import { defaultTempo } from '../click'
 import { grooveFor, seedOf, styleGroove } from '../grooves'
 import { scheduleDrums } from '../voice'
-import { type HarmonyBar, pianoNotes } from '../harmony'
+import { bassNotes, type HarmonyBar, pianoNotes } from '../harmony'
 import { CONCERT } from '../part'
 import { pcOf } from '../pitch'
 import { parseChord } from '../chord'
@@ -112,6 +112,69 @@ describe('the swing set: comping (decision groove.swing)', () => {
       for (const s of strikes) expect(hits.filter((h) => h.at === s).map((h) => h.midi)).toEqual(voicing)
       for (const h of hits) expect(h.at + h.beats).toBeLessThanOrEqual(4)
     }
+  })
+})
+
+describe('the ballad set (decision groove.ballad)', () => {
+  const b = bars()
+  const g = grooveFor('ballad', b, 1)
+
+  it('brushes: a sweep on each beat, a tap on 2 and 4, the hat’s foot with it', () => {
+    const bar0 = at(g.drums, 0)
+    expect(bar0.filter((h) => h.kind === 'sweep').map((h) => h.at)).toEqual([0, 1, 2, 3])
+    expect(bar0.filter((h) => h.kind === 'brush').map((h) => h.at)).toEqual([1, 3])
+    expect(bar0.filter((h) => h.kind === 'hat').map((h) => h.at)).toEqual([1, 3])
+    expect(g.drums.some((h) => h.kind === 'ride')).toBe(false)
+  })
+
+  it('in 3/4, the tap on 2 and 3', () => {
+    const w = grooveFor('ballad', bars(doc('1 | Dm7\n2 | G7\n', 'time: 3/4\n')), 1)
+    expect(at(w.drums, 0).filter((h) => h.kind === 'brush').map((h) => h.at)).toEqual([1, 2])
+  })
+
+  it('the piano holds each voicing; the bass plays in two', () => {
+    expect(g.piano).toEqual(pianoNotes(b))
+    expect(g.bass).toEqual(bassNotes(b, 'two'))
+  })
+})
+
+describe('the bossa set (decision groove.bossa)', () => {
+  const b = bars()
+  const g = grooveFor('bossa', b, 1)
+  const kinds = (bar: number, kind: string) => at(g.drums, bar).filter((h) => h.kind === kind).map((h) => h.at)
+
+  it('the cross-stick’s two-bar pattern: 1, the and of 2, 4; then 2 and the and of 3', () => {
+    expect(kinds(0, 'stick')).toEqual([0, 1.5, 3])
+    expect(kinds(1, 'stick')).toEqual([1, 2.5])
+    expect(kinds(2, 'stick')).toEqual([0, 1.5, 3])
+  })
+
+  it('the hat on every 8th, the kick on 1 and 3 with a pickup before each', () => {
+    expect(kinds(0, 'tip')).toEqual([0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5])
+    expect(kinds(0, 'kick')).toEqual([0, 1.5, 2, 3.5])
+  })
+
+  it('the bass: the root on 1 and its 5th on 3, each held a dotted quarter', () => {
+    const notes = at(g.bass, 0)
+    expect(notes.map((n) => [n.at, n.beats])).toEqual([
+      [0, 1.5],
+      [2, 1.5],
+    ])
+    expect(notes[0]!.midi % 12).toBe(2) // D
+    expect(notes[1]!.midi % 12).toBe(9) // A
+  })
+
+  it('the piano strikes its voicings off the beat too, never past its chord', () => {
+    const held = pianoNotes(b)
+    for (let bar = 0; bar < 4; bar++) {
+      const hits = at(g.piano, bar)
+      expect(hits.length).toBeGreaterThan(0)
+      for (const h of hits) {
+        expect(at(held, bar).map((n) => n.midi)).toContain(h.midi)
+        expect(h.at + h.beats).toBeLessThanOrEqual(4)
+      }
+    }
+    expect(g.piano.some((h) => h.at % 1 === 0.5)).toBe(true)
   })
 })
 

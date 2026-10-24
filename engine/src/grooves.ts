@@ -6,7 +6,7 @@
  */
 import styles from '../styles.json'
 import { defaultTempo } from './click'
-import { BASS, bassPc, chordOf, type HarmonyBar, scaleSemis, type Span, voicedSpans } from './harmony'
+import { BASS, bassNotes, bassPc, chordOf, type HarmonyBar, pianoNotes, scaleSemis, type Span, voicedSpans } from './harmony'
 import { mod } from './pitch'
 import type { VoiceNote } from './voice'
 
@@ -73,8 +73,29 @@ function swingDrums(bar: number, beats: number): DrumHit[] {
   return out.sort((x, y) => x.at - y.at)
 }
 
+/** the ballad set's brushes over a bar (decision groove.ballad): a sweep on each beat, a tap and the hat's foot on 2 and 4 (2 and 3 in 3/4) */
+function brushDrums(bar: number, beats: number): DrumHit[] {
+  const backbeat = (b: number) => (beats === 3 ? b > 0 : b % 2 === 1)
+  return Array.from({ length: beats }, (_, b) => [
+    { bar, at: b, kind: 'sweep' as const, velocity: b === 0 ? 0.7 : 0.55 },
+    ...(backbeat(b) ? [{ bar, at: b, kind: 'brush' as const, velocity: 0.6 }, { bar, at: b, kind: 'hat' as const, velocity: 0.5 }] : []),
+  ]).flat()
+}
+
+/** the bossa set's kit over a bar (decision groove.bossa): the cross-stick's two-bar pattern, the closed hat on each 8th, the kick on 1 and 3 with a pickup before each */
+function bossaDrums(bar: number, beats: number): DrumHit[] {
+  const stick = bar % 2 === 0 ? [0, 1.5, 3] : [1, 2.5]
+  const out: DrumHit[] = []
+  for (let e = 0; e < beats * 2; e++) out.push({ bar, at: e / 2, kind: 'tip', velocity: e % 2 ? 0.35 : 0.5 })
+  for (const at of stick) if (at < beats) out.push({ bar, at, kind: 'stick', velocity: 0.7 })
+  for (const at of [0, 1.5, 2, 3.5]) if (at < beats) out.push({ bar, at, kind: 'kick', velocity: at % 1 ? 0.45 : 0.65 })
+  return out.sort((x, y) => x.at - y.at)
+}
+
+type Rhythms = Readonly<Record<number, readonly (readonly (readonly [number, number])[])[]>>
+
 /** the comping rhythms (decision groove.swing): onsets and lengths in beats from a chord's start, by the beats it lasts */
-const COMPS: Readonly<Record<number, readonly (readonly (readonly [number, number])[])[]>> = {
+const COMPS: Rhythms = {
   4: [
     [[0, 1], [1.5, 0.5]], // the Charleston
     [[1.5, 0.5], [3, 0.75]],
@@ -89,11 +110,24 @@ const COMPS: Readonly<Record<number, readonly (readonly (readonly [number, numbe
   1: [[[0, 0.75]]],
 }
 
+/** the bossa's comping (decision groove.bossa): its syncopations, straight 8ths off the beat */
+const BOSSA_COMPS: Rhythms = {
+  4: [
+    [[0, 1], [1.5, 1], [3, 1]],
+    [[0.5, 1], [2, 1], [3.5, 0.5]],
+    [[0, 1.5], [2.5, 1]],
+    [[1.5, 1], [3, 1]],
+  ],
+  3: [[[0, 1], [1.5, 1]]],
+  2: [[[0, 1], [1.5, 0.5]], [[0.5, 1]]],
+  1: [[[0, 0.75]]],
+}
+
 /** the piano's comping: each chord's voicing struck in a rhythm drawn for it, held no further than its chord */
-function comp(spans: ReturnType<typeof voicedSpans>, rnd: () => number): VoiceNote[] {
+function comp(spans: ReturnType<typeof voicedSpans>, rnd: () => number, table: Rhythms = COMPS): VoiceNote[] {
   return spans.flatMap((s) => {
     if (!s.voicing) return []
-    const rhythms = COMPS[s.beats] ?? (s.beats > 4 ? COMPS[4]! : [[[0, Math.min(1, s.beats)] as const]])
+    const rhythms = table[s.beats] ?? (s.beats > 4 ? table[4]! : [[[0, Math.min(1, s.beats)] as const]])
     return pick(rnd, rhythms)
       .filter(([on]) => on < s.beats)
       .flatMap(([on, len]) => s.voicing!.map((midi) => ({ bar: s.bar, at: s.at + on, beats: Math.min(len, s.beats - on), midi })))
@@ -164,10 +198,25 @@ function walk(spans: readonly Span[], rnd: () => number): VoiceNote[] {
   return out
 }
 
+/** the bossa bass (decision groove.bossa): the root on a chord's first beat and its 5th two beats on, each a dotted quarter */
+function bossaBass(spans: readonly Span[]): VoiceNote[] {
+  let prev: number = BASS.centre
+  return spans.flatMap((s) => {
+    const pc = bassPc(s.text)
+    if (pc === null) return []
+    const root = nearest(pc, prev)
+    prev = root
+    const first = { bar: s.bar, at: s.at, beats: Math.min(1.5, s.beats), midi: root }
+    if (s.beats < 3) return [first]
+    return [first, { bar: s.bar, at: s.at + 2, beats: Math.min(1.5, s.beats - 2), midi: nearest(pc + 7, root) }]
+  })
+}
+
 /** a set's groove for the drawn bars, its choices from seed (seedOf the chart's title) */
 export function grooveFor(set: GrooveSet, bars: readonly HarmonyBar[], seed: number): Groove {
   const rnd = prng(seed)
   const voiced = voicedSpans(bars)
-  const drums = bars.flatMap((b, bar) => swingDrums(bar, b.beats))
-  return { drums, piano: comp(voiced, rnd), bass: walk(voiced, rnd) }
+  if (set === 'ballad') return { drums: bars.flatMap((b, bar) => brushDrums(bar, b.beats)), piano: pianoNotes(bars), bass: bassNotes(bars, 'two') }
+  if (set === 'bossa') return { drums: bars.flatMap((b, bar) => bossaDrums(bar, b.beats)), piano: comp(voiced, rnd, BOSSA_COMPS), bass: bossaBass(voiced) }
+  return { drums: bars.flatMap((b, bar) => swingDrums(bar, b.beats)), piano: comp(voiced, rnd), bass: walk(voiced, rnd) }
 }

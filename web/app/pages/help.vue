@@ -507,12 +507,17 @@
                 them, with Hear line or without it.
               </dd>
             </div>
-            <div v-if="grooveOn">
+            <div v-if="grooveOn.swing || grooveOn.ballad || grooveOn.bossa">
               <dt class="font-semibold text-zinc-950 dark:text-white">Groove and Drums</dt>
               <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
-                A chart in a swing style offers a <strong class="font-semibold">Swing groove</strong> under the click's ⋯: the
-                piano comps, the bass walks, and <strong class="font-semibold">Drums</strong> adds a ride and hi-hat
-                (<DecisionLink id="groove.swing">how</DecisionLink>). The style also sets how far the 8ths swing
+                A chart offers its style's groove under the click's ⋯, and <strong class="font-semibold">Drums</strong> with it.
+                <template v-if="grooveOn.swing">A swing style's <strong class="font-semibold">Swing groove</strong>: the piano comps, the bass walks, the drums play a ride and hi-hat
+                (<DecisionLink id="groove.swing">how</DecisionLink>).</template>
+                <template v-if="grooveOn.ballad">A ballad's <strong class="font-semibold">Ballad groove</strong>: a held piano, a bass in two, brushes
+                (<DecisionLink id="groove.ballad">how</DecisionLink>).</template>
+                <template v-if="grooveOn.bossa">A bossa or Latin style's <strong class="font-semibold">Bossa groove</strong>: a syncopated piano, a bossa bass, a cross-stick
+                (<DecisionLink id="groove.bossa">how</DecisionLink>).</template>
+                The style also sets how far the 8ths swing
                 (<DecisionLink id="groove.style">how</DecisionLink>). The drums are recorded too, loaded the first time.
               </dd>
             </div>
@@ -790,7 +795,7 @@ const backupOn = useFeature('backup')
 const metronomeOn = useFeature('metronome')
 const hearLineOn = useFeature('hearLine')
 const harmonyOn = hearLineOn && useFeature('harmony')
-const grooveOn = harmonyOn && useFeature('grooveSwing')
+const grooveOn = { swing: harmonyOn && useFeature('grooveSwing'), ballad: harmonyOn && useFeature('grooveBallad'), bossa: harmonyOn && useFeature('grooveBossa') }
 const rhythmOn = useFeature('rhythm')
 const rhythmSheetsOn = useFeature('rhythmSheets')
 const rhythmGearsOn = useFeature('rhythmGears')

@@ -29,9 +29,16 @@ chart in a style: drums, a comping piano and a walking bass, chosen by the chart
   (checkbox), and with it **Drums**. With the groove on, Piano comps and Bass walks in place of held chords and roots
   (Bass Off still silences it). Remembered in `csm-click`. Start waits for the kit as for the other sets.
 - **No playback marker exists**, so #509's "hide the marker" has nothing to hide; it is dropped.
+- **Ballad set** (decision `groove.ballad`, flag `grooveBallad`): the piano holds #508's voicings (`pianoNotes`); the
+  bass plays Two-feel (`bassNotes(…, 'two')`) whatever Bass says but Off; brushes: a sweep on each beat (synthesized,
+  0.45 s), a tap and the hat's foot on 2 and 4 (2 and 3 in 3/4).
+- **Bossa set** (decision `groove.bossa`, flag `grooveBossa`): the cross-stick's two-bar pattern (1, 2&, 4 | 2, 3&), the
+  closed hat on every 8th (on-beats louder), the kick on 1 and 3 with a pickup on 2& and 4& (the surdo's pulse); the
+  piano draws a syncopation per chord from its own table; the bass plays root on the chord's first beat and the 5th
+  above-or-below (nearest) two beats on, each a dotted quarter. Straight 8ths come from the click's feel: bossa styles
+  start straight (`defaultFeel`).
 
 ## Left for later
 
-- Ballad (brushes, two-feel, sustained piano) and Bossa (cross-stick pattern, bossa bass, syncopated comp) sets.
 - Mixer and practice tools (above).
 - Fills and variation at section ends; a jazz-waltz comping table of its own.
