@@ -23,7 +23,7 @@ import { abbreviateScale } from './scales'
 import { type QuartalNotesChoice, type QuartalStack, rankedStacks } from './quartal'
 import { type QuartalLine, quartalVoices } from './quartalLine'
 import { chunk, orNull } from './util'
-import { type Feel, type FeelSlash, feelSlashes, feelTargets, layRhythm, markTargets, phrasingCaption, type Pulse, rhythmCaption, type RhythmId, type RhythmNote, rhythmNotes, type RhythmPath, type RhythmPlan, type RhythmStart, rhythmStepMarks, rhythmSteps } from './rhythm'
+import { type Feel, type FeelSlash, feelSlashes, feelTargets, layRhythm, markTargets, phrasingCaption, type Pulse, rhythmCaption, type RhythmId, type RhythmNote, rhythmNotes, type RhythmPath, type RhythmPlan, type RhythmStart, type RhythmStepCard, rhythmStepCards, rhythmStepMarks, rhythmSteps } from './rhythm'
 
 /**
  * The Changes sheet (docs/plan-changes.md): the chart as a study lead sheet. Bars of slashes in the chart's metre
@@ -183,7 +183,8 @@ export type ChangesLine = Readonly<{ bars: readonly ChangesBar[]; sectionEnd: bo
 /** pentatonicCaption: the path a preset plays (#276), "Pentatonics: Fifths · every 4 bars"; null otherwise */
 /** beats: the song's metre (each bar has its own, ChangesBar.beats) */
 /** rhythmCaption: the rhythm line's label and cycle, "Rhythm: 8ths in 5 · back on one every 5 bars"; null with no rhythm drawn */
-export type ChangesSheet = Readonly<{ lines: readonly ChangesLine[]; beats: Beats; diagnostics: readonly string[]; pentatonicCaption: string | null; rhythmCaption: string | null }>
+/** rhythmCards: with the Line off and a rhythm, its card a step of its path (#574), else one; [] otherwise */
+export type ChangesSheet = Readonly<{ lines: readonly ChangesLine[]; beats: Beats; diagnostics: readonly string[]; pentatonicCaption: string | null; rhythmCaption: string | null; rhythmCards: readonly RhythmStepCard[] }>
 
 /** a run of rows in one section, as the chart plays them; a copy names the section it repeats */
 type Run = { section: string; part: FormPart; rows: number[]; copyOf: string | null; from: number; to: number; times: number; marker: string }
@@ -839,6 +840,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
   const notes = laid && line === 'off' ? rhythmNotes(laid, feel) : []
   const caption = laid ? rhythmCaption(rhythm, laid, rhythmPath, feel) : null
   const marks = laid && typeof steps !== 'string' ? rhythmStepMarks(rhythm, rhythmPath, steps, lengths.length) : []
+  const rhythmCards = line === 'off' && rhythm !== 'off' ? rhythmStepCards(rhythm, rhythmPath, typeof steps === 'string' ? [{ from: 0, id: steps }] : steps) : []
   const firstOf = counted.reduce<number[]>((acc, l) => [...acc, acc.at(-1)! + l.bars.length], [0]) // each line's first bar, counted over the sheet
   // lines, then their bars: the rhythm's notes are laid over the whole sheet, so each bar finds its own by its line's first bar plus its place in the line
   const rhythmLines = counted.map((l, n): ChangesLine => ({
@@ -851,5 +853,6 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
     diagnostics: voices ? [...diagnostics, ...voices.missing] : diagnostics,
     pentatonicCaption,
     rhythmCaption: caption && poured ? phrasingCaption(caption, start, anticipate) : caption,
+    rhythmCards,
   }
 }

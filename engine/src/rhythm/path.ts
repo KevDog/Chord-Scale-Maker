@@ -114,3 +114,21 @@ export function rhythmStepMarks(id: RhythmId, path: RhythmPath | undefined, step
   })
   return out
 }
+
+/** a step's rhythm card (#574): its id, and what the path changes there: its group under Groups, its pulse under Gears */
+export type RhythmStepCard = Readonly<{ id: RhythmId; group: number | null; pulse: Pulse | null }>
+
+/**
+ * The cards a sheet with the Line off shows for `id` under `path`, from the plan `steps` (`rhythmSteps`): one a step,
+ * in the order the form first plays it (a path that cycles shows each once). With no path acting, the rhythm's one
+ * card, unnamed.
+ */
+export function rhythmStepCards(id: RhythmId, path: RhythmPath | undefined, steps: RhythmSteps): readonly RhythmStepCard[] {
+  const on = acting(id, path)
+  if (!on) return [{ id, group: null, pulse: null }]
+  return [...new Set(steps.map((s) => s.id))].map((at) => {
+    const p = parseRhythmId(at)
+    const pulse = p?.kind === 'unit' ? p.pulse : p?.kind === 'custom' ? p.rhythm.pulse : null
+    return { id: at, group: on.groups && p?.kind === 'unit' ? p.group : null, pulse: on.gears ? pulse : null }
+  })
+}

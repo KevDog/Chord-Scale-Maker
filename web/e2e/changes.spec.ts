@@ -876,6 +876,10 @@ test.describe('the Groups path', () => {
     await expect(lines(page).nth(6)).toHaveAttribute('aria-label', /, from bar 25: in 6/)
     await expect(lines(page).nth(1)).not.toHaveAttribute('aria-label', /from bar/)
     await expect(page.locator('[data-rhythm-step]')).toHaveText(['③', '④', '⑤', '⑥'])
+    // over the first line, a card a step the form plays, named as its marks (#574)
+    const cards = page.locator('[data-slot="rhythm-steps"] [data-rhythm-card-step]')
+    await expect(cards).toHaveText(['③', '④', '⑤', '⑥'])
+    await expect(cards.locator('[data-slot="rhythm-card"] svg')).toHaveCount(4)
     await expect(page.getByText(/Couldn.t draw/)).toHaveCount(0)
   })
 

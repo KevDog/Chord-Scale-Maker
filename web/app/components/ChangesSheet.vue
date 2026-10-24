@@ -14,8 +14,16 @@
       </template>
       <template #default="{ page }">
         <div class="space-y-4 print:space-y-0">
-          <!-- with the Line off the sheet is a lead sheet, its rhythm a card over the first line (#573) -->
-          <RhythmCard v-if="rhythmCard && page.lines[0]?.index === 0" :rhythm="rhythmCard" :beats="built.beats" />
+          <!-- with the Line off the sheet is a lead sheet, its rhythm a card over the first line (#573); a path's, a card a step, named (#574) -->
+          <template v-if="built.rhythmCards.length && page.lines[0]?.index === 0">
+            <RhythmCard v-if="built.rhythmCards.length === 1 && !stepName(built.rhythmCards[0]!)" :rhythm="built.rhythmCards[0]!.id" :beats="built.beats" />
+            <ol v-else data-slot="rhythm-steps" class="grid grid-cols-2 gap-x-6 gap-y-2 sm:grid-cols-4 print:grid-cols-4">
+              <li v-for="c in built.rhythmCards" :key="c.id" :data-rhythm-card-step="stepName(c)">
+                <p class="text-sm/5 text-zinc-600 dark:text-zinc-400 print:text-black">{{ stepName(c) }}</p>
+                <RhythmCard :rhythm="c.id" :beats="built.beats" :width="400" />
+              </li>
+            </ol>
+          </template>
           <ChangesSystem
             v-for="l in page.lines"
             :key="l.index"
@@ -76,7 +84,7 @@ import { SHEET_PAGED } from '~/utils/sheetPaged'
 import { CLICK } from '~/composables/useClick'
 import { PlusIcon, Square2StackIcon } from '@heroicons/vue/16/solid'
 import type { SheetChordEdit, SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
-import { type Approach, barKey, type Feel, type RhythmId, type RhythmPath, type RhythmStart, breakLines, buildChanges, otherChords, changesLinesPerPage, drawsTuplets, type ChangesSet, type ChartDoc, type ChordAt, type ChordPreview, chunk, type GridPos, isArpeggioPattern, pageSubtitle, type OverlayPlan, type Part, type PentatonicPlan, type PickKind, type ScaleView, showHexatonics, showPentatonics, showQuartals, type ChangesLineChoice, playOrder, rhythmHits, voiceNotes } from '@chord-scale-maker/engine'
+import { type Approach, barKey, type Feel, type RhythmId, type RhythmPath, type RhythmStart, breakLines, buildChanges, otherChords, changesLinesPerPage, drawsTuplets, type ChangesSet, type ChartDoc, type ChordAt, type ChordPreview, chunk, type GridPos, isArpeggioPattern, pageSubtitle, type OverlayPlan, type Part, type PentatonicPlan, type PickKind, type ScaleView, showHexatonics, showPentatonics, showQuartals, type ChangesLineChoice, playOrder, PULSE_SHORT_LABELS, rhythmHits, type RhythmStepCard, voiceNotes } from '@chord-scale-maker/engine'
 
 /** the Changes sheet (docs/plan-changes.md): the chart as a study lead sheet, 4 bars a line (2 on phones), fewer where the chords' names don't fit */
 const { shows } = useInterface()
@@ -136,8 +144,8 @@ const line = computed((): ChangesLineChoice => props.line ?? 'off')
 const lineName = computed(() => (typeof line.value === 'object' ? ({ pentatonic: 'pentatonic', 'triad-pair': 'triad pair', quartal: 'quartal', cells: 'cells' } as const)[line.value.kind] : undefined))
 const arpeggio = computed(() => !!lineName.value || isArpeggioPattern(line.value))
 const built = computed(() => buildChanges(props.doc, props.part, barsPerLine.value, true, line.value, props.view, props.overlay ?? null, props.approach ?? 'none', { rhythm: props.rhythm ?? 'off', targets: props.targets ?? false, start: props.rhythmStart ?? 'beat', anticipate: props.anticipate ?? 0, restate: props.restate ?? false, rhythmPath: props.rhythmPath, feel: props.feel ?? 4 }))
-/** the rhythm to show on its card: the Line off, a rhythm on */
-const rhythmCard = computed((): RhythmId | null => (line.value === 'off' && props.rhythm && props.rhythm !== 'off' ? props.rhythm : null))
+/** a step card's name (#574): its group's numeral and its pulse, as the step marks write them; '' for a rhythm with no path */
+const stepName = (c: RhythmStepCard): string => [c.group === null ? '' : stepNumeral(c.group), c.pulse === null ? '' : PULSE_SHORT_LABELS[c.pulse]].filter(Boolean).join(' ')
 // Hear line (#507) and Hear rhythm (#521): the drawn Line and rhythm, for the click to sound, in the form's order (#559) (none on a page without a click)
 const click = inject(CLICK, null)
 if (click && useFeature('hearLine')) {
