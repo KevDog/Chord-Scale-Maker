@@ -878,7 +878,7 @@ test.describe('the Groups path', () => {
     await expect(page.locator('[data-rhythm-step]')).toHaveText(['③', '④', '⑤', '⑥'])
     // over the first line, a card a step the form plays, named as its marks (#575)
     const cards = page.locator('[data-slot="rhythm-steps"] [data-rhythm-card-step]')
-    await expect(cards).toHaveText(['③', '④', '⑤', '⑥'])
+    await expect(cards.locator('> p')).toHaveText(['③', '④', '⑤', '⑥']) // the name alone: a card's own text ("…") is its drawing's
     await expect(cards.locator('[data-slot="rhythm-card"] svg')).toHaveCount(4)
     await expect(page.getByText(/Couldn.t draw/)).toHaveCount(0)
   })

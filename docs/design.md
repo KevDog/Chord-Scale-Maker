@@ -767,7 +767,9 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   28 16ths overflow a quarter of the line). Where a line's notes overrun at VexFlow's spacing they are set close
   (`formatVoices` tight: the 12 units VexFlow leaves before a bar's first note, `Stave.padding`, shrink to 4, and the
   last glyph clears the barline by 6), and every bar takes its notes' need (`fitBars` rooms); a line whose notes fit
-  lays out as before; names shrink (to `BREAK_SCALE`) before notes give up room. Where a line's notes still can't all
+  lays out as before; names shrink (to `BREAK_SCALE`) before notes give up room. A crowded line's bars spread over
+  the whole line, the slots past its last bar giving up theirs (`waterFill` within its bars); a short line that isn't
+  crowded keeps the four-bar grid. Where a line's notes still can't all
   fit, that line alone splits, balanced (`balancedSplit`: the fewest even lines that each fit, measured as the lines
   they become; 4 → 2 2, else 1 1 1 1; 3 → 2 1, else 1 1 1; never 3 1): `ChangesSystem` emits `crowded` with the bars
   that start the new lines and `ChangesSheet` adds them to its `breaks`, as for names. Straight 16ths in 4/4 keep four
