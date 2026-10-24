@@ -1,5 +1,5 @@
 import type { InjectionKey, Ref } from 'vue'
-import { type BassStyle, type Beats, type ClickFeel, type DrumHit, type GrooveSet, scheduleDrums, styleGroove, type ClickForm, type ClickPattern, type ClickPlan, type ClickState, type Feel, type PhraseNote, type RhythmHit, type TimedClick, type VoiceNote, CLICK_PATTERNS, clampSwing, clampTempo, defaultFeel, defaultPattern, defaultTempo, formBar, scheduleClicks, scheduleRhythm, scheduleVoice, tapTempo, timePhrase } from '@chord-scale-maker/engine'
+import { DEFAULT_MIX, MIX_TRACKS, type Mix, type MixTrack, parseMix, trackGain, type BassStyle, type Beats, type ClickFeel, type DrumHit, type GrooveSet, scheduleDrums, styleGroove, type ClickForm, type ClickPattern, type ClickPlan, type ClickState, type Feel, type PhraseNote, type RhythmHit, type TimedClick, type VoiceNote, CLICK_PATTERNS, clampSwing, clampTempo, defaultFeel, defaultPattern, defaultTempo, formBar, scheduleClicks, scheduleRhythm, scheduleVoice, tapTempo, timePhrase } from '@chord-scale-maker/engine'
 import { type ClickAudio, type ClickSound, CLICK_SOUNDS, webAudio } from '~/utils/clickSounds'
 import { readStored, writeStored } from '~/utils/storage'
 
@@ -17,7 +17,7 @@ import { readStored, writeStored } from '~/utils/storage'
  * hearRhythm: Hear rhythm, its rhythm taps with it; piano, bass: Hear changes (#508), the chart's voicings and its bass;
  * groove: the style's pattern set (#509), the piano comping and the bass walking in place of the held changes; drums: its kit
  */
-export type ClickSettings = Readonly<{ hat: boolean; countIn: 0 | 1 | 2; sound: ClickSound; folded: boolean; hear: boolean; hearRhythm: boolean; piano: boolean; bass: ClickBass; groove: boolean; drums: boolean }>
+export type ClickSettings = Readonly<{ hat: boolean; countIn: 0 | 1 | 2; sound: ClickSound; folded: boolean; hear: boolean; hearRhythm: boolean; piano: boolean; bass: ClickBass; groove: boolean; drums: boolean; mix: Mix }>
 /** the style's groove to play (#509): its set, its tracks, and the drawn bars they loop over */
 export type ClickGroove = Readonly<{ set: GrooveSet; piano: readonly VoiceNote[]; bass: readonly VoiceNote[]; drums: readonly DrumHit[]; bars: number }>
 export type ClickBass = 'off' | BassStyle
@@ -53,7 +53,7 @@ const ready = (load: Promise<boolean>): Promise<unknown> => Promise.race([load, 
 export const LOOKAHEAD = { interval: 25, ahead: 0.1, hiddenAhead: 1.2 } as const
 
 const SETTINGS_KEY = 'csm-click'
-const DEFAULT_SETTINGS: ClickSettings = { hat: false, countIn: 0, sound: 'wood', folded: false, hear: false, hearRhythm: true, piano: false, bass: 'off', groove: false, drums: false }
+const DEFAULT_SETTINGS: ClickSettings = { hat: false, countIn: 0, sound: 'wood', folded: false, hear: false, hearRhythm: true, piano: false, bass: 'off', groove: false, drums: false, mix: DEFAULT_MIX }
 
 function parseSettings(raw: string | null): ClickSettings {
   try {
@@ -69,6 +69,7 @@ function parseSettings(raw: string | null): ClickSettings {
       bass: CLICK_BASSES.includes(v.bass as ClickBass) ? (v.bass as ClickBass) : DEFAULT_SETTINGS.bass,
       groove: typeof v.groove === 'boolean' ? v.groove : DEFAULT_SETTINGS.groove,
       drums: typeof v.drums === 'boolean' ? v.drums : DEFAULT_SETTINGS.drums,
+      mix: parseMix(v.mix),
     }
   } catch {
     return DEFAULT_SETTINGS
@@ -250,6 +251,13 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
     counting.value = sounding?.kind === 'count'
   }
 
+  // the mixer (#509): each track's gain on the audio, and a muted track books nothing
+  const heard = (t: MixTrack): boolean => trackGain(settings.value.mix, t) > 0
+  function mixInto(a: ClickAudio): void {
+    for (const t of MIX_TRACKS) a.level(t, trackGain(settings.value.mix, t))
+  }
+  watch(() => settings.value.mix, () => audio && mixInto(audio))
+
   function schedule(): void {
     if (!audio) return
     const now = audio.now()
@@ -257,16 +265,16 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
     const until = now + (hidden ? LOOKAHEAD.hiddenAhead : LOOKAHEAD.ahead)
     const from = Math.max(booked, now)
     const next = scheduleClicks(plan.value, state, from, until)
-    for (const e of next.events) if (e.kind !== 'tick') audio.play(e.kind, e.time, settings.value.sound)
-    if (settings.value.hear && line.value) for (const n of scheduleVoice(line.value.notes, line.value.bars, plan.value, state, from, until)) audio.note(n.midi, n.time, n.length)
+    if (heard('click')) for (const e of next.events) if (e.kind !== 'tick') audio.play(e.kind, e.time, settings.value.sound)
+    if (settings.value.hear && line.value && heard('line')) for (const n of scheduleVoice(line.value.notes, line.value.bars, plan.value, state, from, until)) audio.note(n.midi, n.time, n.length)
     const h = harmony.value
     const g = grooving() ? groove.value : null
     const piano = g ? { notes: g.piano, bars: g.bars } : h && { notes: h.piano, bars: h.bars }
     const bass = g ? { notes: g.bass, bars: g.bars } : h && { notes: settings.value.bass === 'two' ? h.two : h.roots, bars: h.bars }
-    if (piano && settings.value.piano) for (const n of scheduleVoice(piano.notes, piano.bars, plan.value, state, from, until)) audio.comp(n.midi, n.time, n.length)
-    if (bass && settings.value.bass !== 'off') for (const n of scheduleVoice(bass.notes, bass.bars, plan.value, state, from, until)) audio.bass(n.midi, n.time, n.length)
-    if (g && settings.value.drums) for (const d of scheduleDrums(g.drums, g.bars, plan.value, state, from, until)) audio.drum(d.kind, d.time, d.velocity)
-    if (settings.value.hearRhythm && rhythm.value) for (const h of scheduleRhythm(rhythm.value.hits, rhythm.value.bars, plan.value, state, from, until)) audio.hit(h.time, h.accent)
+    if (piano && settings.value.piano && heard('piano')) for (const n of scheduleVoice(piano.notes, piano.bars, plan.value, state, from, until)) audio.comp(n.midi, n.time, n.length)
+    if (bass && settings.value.bass !== 'off' && heard('bass')) for (const n of scheduleVoice(bass.notes, bass.bars, plan.value, state, from, until)) audio.bass(n.midi, n.time, n.length)
+    if (g && settings.value.drums && heard('drums')) for (const d of scheduleDrums(g.drums, g.bars, plan.value, state, from, until)) audio.drum(d.kind, d.time, d.velocity)
+    if (settings.value.hearRhythm && rhythm.value && heard('rhythm')) for (const h of scheduleRhythm(rhythm.value.hits, rhythm.value.bars, plan.value, state, from, until)) audio.hit(h.time, h.accent)
     state = next.state
     booked = Math.max(booked, until) // a shorter lookahead (the tab shown again) mustn't reopen what's booked
     const beats = next.events.filter((e) => e.kind !== 'hat' && e.kind !== 'sub') // a pattern's ticks light the beats it leaves silent
@@ -287,6 +295,7 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
       unavailable.value = true
       return
     }
+    mixInto(audio)
     running.value = true
     const mine = ++run
     try {
@@ -333,6 +342,7 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
       unavailable.value = true
       return
     }
+    mixInto(audio)
     const mine = phraseRun
     playing.value = id
     if (!running.value) {

@@ -38,7 +38,12 @@ chart in a style: drums, a comping piano and a walking bass, chosen by the chart
   above-or-below (nearest) two beats on, each a dotted quarter. Straight 8ths come from the click's feel: bossa styles
   start straight (`defaultFeel`).
 
+- **Mixer** (flag `mixer`, `engine/src/mix.ts`): tracks click, line, rhythm, piano, bass, drums, each a level (0–1, a
+  gain node per track) and a mute; a muted track books nothing. Presets set the rhythm section's mutes only, levels
+  kept: Band; Piano duo (bass, drums muted); Bass duo (piano, drums); No piano; No bass. A mix matching none shows
+  "Your own". The level rows list only the sounds playing. Stored in `csm-click` (`mix`).
+
 ## Left for later
 
-- Mixer and practice tools (above).
+- Practice tools (above).
 - Fills and variation at section ends; a jazz-waltz comping table of its own.

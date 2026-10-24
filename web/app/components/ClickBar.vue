@@ -65,6 +65,30 @@
           <UiCheckbox v-if="groove" v-model="drums">Drums</UiCheckbox>
         </template>
       </template>
+      <!-- the mixer (#509): a level and a mute for each sound that plays, and the duo presets -->
+      <div v-if="mixerOn" role="group" aria-label="Mix" class="space-y-2">
+        <div v-if="harmonyOn && click.hasHarmony.value" class="flex items-center gap-2">
+          <UiText>Mix</UiText>
+          <UiListbox v-model="preset" aria-label="Mix" class="min-w-36">
+            <template #selected="{ value }"><UiListboxLabel>{{ PRESET_LABELS[value as MixPreset | 'custom'] }}</UiListboxLabel></template>
+            <UiListboxOption v-for="p in MIX_PRESETS" :key="p" :value="p"><UiListboxLabel>{{ PRESET_LABELS[p] }}</UiListboxLabel></UiListboxOption>
+          </UiListbox>
+        </div>
+        <div v-for="t in mixTracks" :key="t" class="flex items-center gap-2">
+          <UiText class="w-14">{{ TRACK_LABELS[t] }}</UiText>
+          <input
+            type="range"
+            min="0"
+            max="100"
+            step="5"
+            :value="Math.round(click.settings.value.mix[t].level * 100)"
+            :aria-label="`${TRACK_LABELS[t]} level`"
+            class="w-28 accent-zinc-950 dark:accent-white"
+            @input="setTrack(t, { level: Number(($event.target as HTMLInputElement).value) / 100 })"
+          >
+          <UiCheckbox :model-value="click.settings.value.mix[t].mute" @update:model-value="setTrack(t, { mute: $event })">Mute<span class="sr-only"> {{ TRACK_LABELS[t] }}</span></UiCheckbox>
+        </div>
+      </div>
       <SegmentedControl v-model="sound" legend="Sound" :name="`click-sound-${home}`" :options="SOUNDS" />
     </RailPopover>
     <span data-testid="click-lights" aria-hidden="true" class="flex items-center gap-1.5">
@@ -98,7 +122,7 @@
 
 <script setup lang="ts">
 import { ChevronDownIcon, ChevronUpIcon, MinusIcon, PlayIcon, PlusIcon, StopIcon, XMarkIcon } from '@heroicons/vue/16/solid'
-import { CLICK_PATTERNS, type ClickFeel, type ClickPattern, clampTempo, type GrooveSet, patternFits } from '@chord-scale-maker/engine'
+import { CLICK_PATTERNS, type ClickFeel, type ClickPattern, clampTempo, type GrooveSet, MIX_PRESETS, type MixPreset, type MixTrack, patternFits, presetOf, type TrackMix, withPreset } from '@chord-scale-maker/engine'
 import { CLICK, type Click, type ClickBass, type ClickChart, type ClickSettings } from '~/composables/useClick'
 import type { ClickSound } from '~/utils/clickSounds'
 
@@ -185,6 +209,30 @@ const groove = setting('groove')
 const drums = setting('drums')
 const GROOVE_LABELS: Readonly<Record<GrooveSet, string>> = { swing: 'Swing', ballad: 'Ballad', bossa: 'Bossa' }
 const bass = setting('bass')
+const mix = setting('mix')
+const mixerOn = useFeature('mixer') && useFeature('hearLine')
+const TRACK_LABELS: Readonly<Record<MixTrack, string>> = { click: 'Click', line: 'Line', rhythm: 'Rhythm', piano: 'Piano', bass: 'Bass', drums: 'Drums' }
+const PRESET_LABELS: Readonly<Record<MixPreset | 'custom', string>> = { band: 'Band', 'piano-duo': 'Piano duo', 'bass-duo': 'Bass duo', 'no-piano': 'No piano', 'no-bass': 'No bass', custom: 'Your own' }
+const preset = computed({
+  get: (): MixPreset | 'custom' => presetOf(mix.value) ?? 'custom',
+  set: (p: MixPreset | 'custom') => p !== 'custom' && (mix.value = withPreset(mix.value, p)),
+})
+// the sounds that play: the click, then each part that's on
+const mixTracks = computed((): MixTrack[] => {
+  const s = click.settings.value
+  const harmony = harmonyOn && click.hasHarmony.value
+  return [
+    'click' as const,
+    ...(hearOn && click.hasLine.value && s.hear ? ['line' as const] : []),
+    ...(hearOn && click.hasRhythm.value && s.hearRhythm ? ['rhythm' as const] : []),
+    ...(harmony && s.piano ? ['piano' as const] : []),
+    ...(harmony && s.bass !== 'off' ? ['bass' as const] : []),
+    ...(harmony && click.grooveSet.value && s.groove && s.drums ? ['drums' as const] : []),
+  ]
+})
+function setTrack(t: MixTrack, change: Partial<TrackMix>): void {
+  mix.value = { ...mix.value, [t]: { ...mix.value[t], ...change } }
+}
 const harmonyOn = useFeature('harmony') && useFeature('hearLine')
 const swingPercent = computed({
   get: (): number => Math.round(click.swing.value * 100),
