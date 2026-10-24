@@ -30,6 +30,7 @@
     <Transition name="ease-fade">
       <div
         v-if="open"
+        ref="panel"
         role="dialog"
         :aria-label="label"
         :class="[
@@ -40,7 +41,9 @@
               ? 'bottom-full left-0 mb-2 max-sm:right-4 max-sm:left-4 max-sm:w-auto'
               : place === 'below'
                 ? 'top-full left-0 mt-2 max-sm:right-4 max-sm:left-4 max-sm:w-auto'
-                : 'top-0 left-full ml-2 max-sm:top-full max-sm:left-0 max-sm:mt-2 max-sm:ml-0',
+                : under
+                  ? 'top-full right-0 mt-2'
+                  : 'top-0 left-full ml-2 max-sm:top-full max-sm:left-0 max-sm:mt-2 max-sm:ml-0',
         ]"
       >
         <slot />
@@ -77,5 +80,27 @@ function outside(e: PointerEvent): void {
   if (root.value && !root.value.contains(e.target as Node)) open.value = false
 }
 watch(open, (o) => (o ? document.addEventListener('pointerdown', outside) : document.removeEventListener('pointerdown', outside)))
-onBeforeUnmount(() => document.removeEventListener('pointerdown', outside))
+
+/** beside its button, a panel that would pass the window's right edge opens under it, right-aligned (#579); checked as its content grows */
+const panel = ref<HTMLElement | null>(null)
+const under = ref(false)
+const EDGE = 8 // px kept clear of the window's edge
+function fitPanel(): void {
+  const b = button.value
+  const el = b instanceof HTMLElement ? b : b?.$el
+  if (!el || !panel.value) return
+  under.value = el.getBoundingClientRect().right + 8 + panel.value.offsetWidth > document.documentElement.clientWidth - EDGE
+}
+const sized = import.meta.client && 'ResizeObserver' in window ? new ResizeObserver(fitPanel) : null
+watch(panel, (el, was) => {
+  if (was) sized?.unobserve(was)
+  if (el) {
+    fitPanel()
+    sized?.observe(el)
+  } else under.value = false
+})
+onBeforeUnmount(() => {
+  document.removeEventListener('pointerdown', outside)
+  sized?.disconnect()
+})
 </script>

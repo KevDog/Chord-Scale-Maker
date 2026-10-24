@@ -674,6 +674,22 @@ test('a pasted chart in 7/4 draws a 7/4 time signature', async ({ page }) => {
 })
 
 // a rhythm with the Line off (#573): a lead sheet, the rhythm on a card over the first line; its controls show from Intermediate
+// a rail panel near the window's right edge opens under its button instead of past the edge (#579)
+test.describe('a rail panel at the window’s edge', () => {
+  test.use({ interfaceLevel: 'intermediate' }) // the Line group ends the rail's first row
+
+  test('Line options stays inside the window', async ({ page }) => {
+    await page.setViewportSize({ width: 1280, height: 900 })
+    await page.addInitScript(() => localStorage.setItem('csm-rhythm', 'unit:4:4:accents')) // its card in the panel
+    await page.goto('/song/autumn-leaves')
+    await openPanel(page, 'Line options')
+    const panel = page.getByRole('dialog', { name: 'Line options' })
+    await expect(panel).toBeVisible()
+    await expect.poll(async () => { const r = await panel.boundingBox(); return r ? Math.ceil(r.x + r.width) : Infinity }).toBeLessThanOrEqual(1280)
+    await expect.poll(async () => (await panel.boundingBox())?.x ?? -1).toBeGreaterThanOrEqual(0)
+  })
+})
+
 test.describe('the rhythm with the Line off', () => {
   test.use({ interfaceLevel: 'intermediate' })
 
