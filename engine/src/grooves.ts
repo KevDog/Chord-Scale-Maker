@@ -101,12 +101,22 @@ const COMPS: Rhythms = {
     [[1.5, 0.5], [3, 0.75]],
     [[1, 0.75], [3, 0.75]], // 2 and 4
     [[0, 1.5], [2.5, 0.5]],
+    [[0.5, 1]], // the and of 1, held
+    [[1.5, 1.5]], // the and of 2, held
+    [[0, 0.5], [1.5, 0.5], [3, 0.5]],
+    [[2.5, 1]],
+    [[1, 0.5], [2.5, 0.5]],
+    [[0, 2]],
+    [[0.5, 0.5], [2, 1]],
+    [[1.5, 0.5], [2.5, 0.5], [3.5, 0.5]],
   ],
   3: [
     [[1, 0.75], [2, 0.75]], // 2 and 3
     [[0, 1], [1.5, 0.5]],
+    [[0.5, 0.5], [2, 0.75]],
+    [[1.5, 1]],
   ],
-  2: [[[0, 1]], [[1, 0.75]], [[0.5, 0.5]]],
+  2: [[[0, 1]], [[1, 0.75]], [[0.5, 0.5]], [[0, 0.5], [1.5, 0.5]], [[1.5, 0.5]]],
   1: [[[0, 0.75]]],
 }
 
@@ -123,15 +133,52 @@ const BOSSA_COMPS: Rhythms = {
   1: [[[0, 0.75]]],
 }
 
-/** the piano's comping: each chord's voicing struck in a rhythm drawn for it, held no further than its chord */
-function comp(spans: ReturnType<typeof voicedSpans>, rnd: () => number, table: Rhythms = COMPS): VoiceNote[] {
-  return spans.flatMap((s) => {
-    if (!s.voicing) return []
+/** a strike's notes (decision groove.swing): the voicing at first, then now and then its lowest note an octave up, or its top three alone */
+function strike(voicing: readonly number[], k: number, rnd: () => number): readonly number[] {
+  if (k === 0) return voicing
+  const r = rnd()
+  if (r < 0.3 && voicing[0]! + 12 <= COMP_TOP) return [...voicing.slice(1), voicing[0]! + 12]
+  if (r < 0.5 && voicing.length > 3) return voicing.slice(1)
+  return voicing
+}
+/** the highest note comping reaches with a voicing moved up */
+const COMP_TOP = 84
+const onsets = (hits: readonly (readonly [number, number])[]): string => hits.map(([on]) => on).join(',')
+
+/**
+ * the piano's comping: each chord struck in a rhythm drawn for it, never the last chord's rhythm again, held no
+ * further than its chord. With vary (the swing set): the voicing moves between strikes, a chord a bar long is now and
+ * then left out, and about a chord in four is anticipated, struck on the and of the beat before it and held over
+ */
+function comp(spans: ReturnType<typeof voicedSpans>, rnd: () => number, table: Rhythms = COMPS, vary = false): VoiceNote[] {
+  const out: VoiceNote[] = []
+  let last = ''
+  let pushed = false // this chord already struck, early
+  spans.forEach((s, i) => {
+    const v = s.voicing
+    if (!v) {
+      pushed = false
+      return
+    }
+    if (vary && !pushed && s.beats >= 4 && rnd() < 0.08) {
+      last = ''
+      return
+    }
+    const next = spans[i + 1]
+    const push = vary && !!next?.voicing && next.bar === s.bar + 1 && next.at === 0 && s.beats >= 2 && rnd() < 0.25
     const rhythms = table[s.beats] ?? (s.beats > 4 ? table[4]! : [[[0, Math.min(1, s.beats)] as const]])
-    return pick(rnd, rhythms)
-      .filter(([on]) => on < s.beats)
-      .flatMap(([on, len]) => s.voicing!.map((midi) => ({ bar: s.bar, at: s.at + on, beats: Math.min(len, s.beats - on), midi })))
+    const fit = (r: (typeof rhythms)[number]) =>
+      r.filter(([on]) => on < s.beats && !(pushed && on === 0) && !(push && on >= s.beats - 1)).map(([on, len]) => [on, Math.min(len, s.beats - on)] as const)
+    const fresh = rhythms.map(fit).filter((h) => h.length && onsets(h) !== last)
+    const hits = fresh.length ? pick(rnd, fresh) : fit(rhythms[0]!)
+    last = onsets(hits)
+    hits.forEach(([on, len], k) => {
+      for (const midi of vary ? strike(v, k, rnd) : v) out.push({ bar: s.bar, at: s.at + on, beats: len, midi })
+    })
+    if (push) for (const midi of next!.voicing!) out.push({ bar: s.bar, at: s.at + s.beats - 0.5, beats: 1.5, midi })
+    pushed = push
   })
+  return out
 }
 
 /** the walking bass's range: E1 to G3 */
@@ -218,5 +265,5 @@ export function grooveFor(set: GrooveSet, bars: readonly HarmonyBar[], seed: num
   const voiced = voicedSpans(bars)
   if (set === 'ballad') return { drums: bars.flatMap((b, bar) => brushDrums(bar, b.beats)), piano: pianoNotes(bars), bass: bassNotes(bars, 'two') }
   if (set === 'bossa') return { drums: bars.flatMap((b, bar) => bossaDrums(bar, b.beats)), piano: comp(voiced, rnd, BOSSA_COMPS), bass: bossaBass(voiced) }
-  return { drums: bars.flatMap((b, bar) => swingDrums(bar, b.beats)), piano: comp(voiced, rnd), bass: walk(voiced, rnd) }
+  return { drums: bars.flatMap((b, bar) => swingDrums(bar, b.beats)), piano: comp(voiced, rnd, COMPS, true), bass: walk(voiced, rnd) }
 }

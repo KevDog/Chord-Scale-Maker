@@ -100,18 +100,49 @@ describe('the swing set: walking bass (decision groove.swing)', () => {
 })
 
 describe('the swing set: comping (decision groove.swing)', () => {
-  it('strikes each chord’s voicing in a comping rhythm, never past its chord', () => {
-    const b = bars()
-    const g = grooveFor('swing', b, 7)
-    const held = pianoNotes(b)
-    for (let bar = 0; bar < 4; bar++) {
-      const hits = at(g.piano, bar)
-      expect(hits.length).toBeGreaterThan(0)
-      const voicing = at(held, bar).map((n) => n.midi)
-      const strikes = [...new Set(hits.map((h) => h.at))]
-      for (const s of strikes) expect(hits.filter((h) => h.at === s).map((h) => h.midi)).toEqual(voicing)
-      for (const h of hits) expect(h.at + h.beats).toBeLessThanOrEqual(4)
+  // a 16-bar tune, a chord a bar: ii V I VI, four times
+  const long = bars(doc(Array.from({ length: 16 }, (_, k) => `${k + 1} | ${['Dm7', 'G7', 'CMaj7', 'A7'][k % 4]}`).join('\n') + '\n'))
+  const g = grooveFor('swing', long, seedOf('Autumn Leaves'))
+  const held = pianoNotes(long)
+  const pcs = (ms: readonly number[]) => new Set(ms.map((m) => m % 12))
+  const rhythmOf = (bar: number) => JSON.stringify([...new Set(at(g.piano, bar).map((n) => n.at))])
+
+  it('plays only its chord’s notes, in the piano’s range, never past the chord', () => {
+    for (let bar = 0; bar < 16; bar++) {
+      const chord = pcs(at(held, bar).map((n) => n.midi))
+      const next = pcs(at(held, (bar + 1) % 16).map((n) => n.midi))
+      for (const n of at(g.piano, bar)) {
+        const own = n.at + n.beats <= 4 && [...pcs([n.midi])].every((pc) => chord.has(pc))
+        const pushed = n.at >= 3 && n.at + n.beats > 3 && [...pcs([n.midi])].every((pc) => next.has(pc)) // an anticipation of the next chord
+        expect(own || pushed, `bar ${bar}: ${JSON.stringify(n)}`).toBe(true)
+        expect(n.midi).toBeGreaterThanOrEqual(48)
+        expect(n.midi).toBeLessThanOrEqual(84)
+      }
     }
+  })
+
+  it('varies its rhythm: many rhythms over the tune, never the same one two bars running', () => {
+    const rhythms = Array.from({ length: 16 }, (_, bar) => rhythmOf(bar))
+    expect(new Set(rhythms).size).toBeGreaterThanOrEqual(6)
+    for (let bar = 1; bar < 16; bar++) if (at(g.piano, bar).length && at(g.piano, bar - 1).length) expect(rhythms[bar], `bar ${bar}`).not.toBe(rhythms[bar - 1])
+  })
+
+  it('anticipates some chords: struck an 8th early, on the and of 4, held over the bar line', () => {
+    const pushes = g.piano.filter((n) => n.at === 3.5 && n.beats > 0.5)
+    expect(pushes.length).toBeGreaterThan(0)
+  })
+
+  it('moves its voicing between strikes: not every strike of a chord the same notes', () => {
+    const strikes = Array.from({ length: 16 }, (_, bar) => {
+      const by = new Map<number, number[]>()
+      for (const n of at(g.piano, bar)) by.set(n.at, [...(by.get(n.at) ?? []), n.midi])
+      return [...by.values()].map((v) => JSON.stringify(v.sort((a, b) => a - b)))
+    })
+    expect(strikes.some((ss) => new Set(ss).size > 1)).toBe(true)
+  })
+
+  it('the same comping every time for a chart', () => {
+    expect(grooveFor('swing', long, seedOf('Autumn Leaves')).piano).toEqual(g.piano)
   })
 })
 
