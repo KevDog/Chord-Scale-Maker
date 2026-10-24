@@ -311,3 +311,15 @@ test('the mixer: a duo preset mutes the others, a level sticks, remembered (#509
   await expect(settings.getByRole('slider', { name: 'Piano level' })).toHaveValue('40')
   await expect(settings.getByRole('checkbox', { name: 'Mute Piano' })).toBeChecked()
 })
+
+test('All keys: a chorus’s key shows while it plays; Ramp is offered beside it (#509)', async ({ page }) => {
+  await page.goto('/song/autumn-leaves')
+  await clickUntil(page, page.getByRole('button', { name: 'Click', exact: true }), clickBar(page))
+  const settings = page.getByRole('dialog', { name: 'Click settings' })
+  await clickBar(page).getByRole('button', { name: 'Click settings' }).click()
+  await settings.getByRole('group', { name: 'All keys' }).locator('label', { hasText: 'Up 4ths' }).click()
+  await expect(settings.getByRole('group', { name: 'Ramp' })).toBeVisible()
+  await page.keyboard.press('Escape')
+  await clickBar(page).getByRole('button', { name: 'Start' }).click()
+  await expect(clickBar(page).getByRole('status')).toHaveText('As written')
+})
