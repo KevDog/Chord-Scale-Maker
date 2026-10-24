@@ -118,7 +118,7 @@ describe('clickSounds', () => {
       const audio = webAudio()!
       expect(await audio.loadHarmony()).toBe(true)
       expect(asked.sort()).toEqual([...files(COMP_SET), ...files(BASS_SET)].sort())
-      expect(asked.every((u) => u.startsWith('/sounds/comp/') || u.startsWith('/sounds/bass/'))).toBe(true)
+      expect(asked.every((u) => u.startsWith('/sounds/comp/') || u.startsWith('/sounds/upright-bass/'))).toBe(true)
       const before = made.sources
       audio.comp(60, 0, 1)
       audio.bass(36, 0, 1)
