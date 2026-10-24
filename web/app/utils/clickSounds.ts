@@ -207,10 +207,10 @@ export const COMP_SET: SampleSet = {
   gain: 0.35,
 }
 
-/** Hear changes' bass (#539): VSCO 2 CE's Solo Contrabass, pizzicato, E1 to E3 */
+/** Hear changes' bass (#539): D. Smolken's 1958 Otto Rubner double bass on Spirocores, pizzicato, E♭1 to A3 (CC0) */
 export const BASS_SET: SampleSet = {
-  base: '/sounds/bass/',
-  layers: [{ upTo: 1, zones: [28, 30, 31, 34, 36, 38, 40, 42, 44, 45, 49, 52].map((midi) => ({ midi, file: `${midi}.wav` })) }],
+  base: '/sounds/upright-bass/',
+  layers: [{ upTo: 1, zones: [27, 31, 34, 38, 41, 45, 48, 52, 55, 57].map((midi) => ({ midi, file: `${midi}.wav` })) }],
   release: 0.08,
   voices: 2,
   gain: 0.9,

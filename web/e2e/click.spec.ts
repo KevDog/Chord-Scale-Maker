@@ -246,7 +246,7 @@ test('Piano and Bass play the changes with the click, from this site’s piano a
   await clickBar(page).getByRole('button', { name: 'Start' }).click()
   await expect(clickBar(page).locator('[data-testid=click-lights] i[data-on]')).toHaveCount(1) // running, with no error (the fixture fails on one)
   await expect.poll(() => asked.filter((p) => p.startsWith('/sounds/comp/')).length).toBe(10)
-  await expect.poll(() => asked.filter((p) => p.startsWith('/sounds/bass/')).length).toBe(12)
+  await expect.poll(() => asked.filter((p) => p.startsWith('/sounds/upright-bass/')).length).toBe(10)
   await page.reload()
   await clickUntil(page, page.getByRole('button', { name: 'Click', exact: true }), clickBar(page))
   await clickBar(page).getByRole('button', { name: 'Click settings' }).click()

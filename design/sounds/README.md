@@ -41,14 +41,16 @@ Licences: CC0 preferred; a CC-BY set is credited on the About page.
 - **Edits:** as `piano/`, cut to 4 s with a 0.8 s fade (a voicing is held to the next chord, and struck again each bar).
 - **Size:** 10 files, 1.8 MB.
 
-## bass: Hear changes' bass (#539, #508)
+## upright-bass: Hear changes' bass (#539, #508)
 
-- **Source:** VSCO 2 CE, `Strings/Solo Contrabass/Pizz/`, the first dynamic's first round-robin (`BKCtbss_Pizz_<note>_v1_rr1.wav`).
-  Licence: CC0 1.0. The set names its notes an octave low (`E0` is E1, MIDI 28; checked by a harmonic-product pitch
-  estimate: C1 → 65.4 Hz, A1 → 110 Hz). Taken: E0 F♯0 G0 A♯0 C1 D1 E1 F♯1 G♯1 A1 C♯2 E2, saved as `<midi>.wav` (28 … 52);
-  `G#2` and `B2` left out (above the bass's range, and `B2` didn't read as its name).
+- **Source:** D. Smolken's double bass (<https://github.com/sfzinstruments/dsmolken.double-bass>): a 1958 Otto Rubner
+  bass on Thomastik-Infeld Spirocore strings, CC0 1.0 (its `LICENSE`; the readme: "Royalty-free for all commercial and
+  non-commercial use"). `pizz/pizz_<note>_ma.wav`, the mezzo dynamic's first take, at the SFZ's key centres (SFZ
+  octaves: C1 is MIDI 24): E♭1 G1 B♭1 D2 F2 A2 C3 E3 G3 A3, saved as `<midi>.wav` (27 … 57). Pitch classes checked
+  by the harmonic-product estimate (E♭1 and E3 read an octave up, the estimator's octave error on a weak fundamental).
 - **Edits:** as `piano/` (mono 16-bit 24 kHz, onset trim, peak 0.9), cut to 2 s with a 0.4 s fade.
-- **Size:** 12 files, 1.0 MB.
+- **Size:** 10 files, 0.95 MB. A new folder, not `bass/`: the service worker keeps `/sounds/` cache-first across
+  builds, so a replaced file under an old name would stay stale. Replaces VSCO 2 CE's orchestral Solo Contrabass.
 
 ## drums: the pattern sets' kit (#540, #509)
 
