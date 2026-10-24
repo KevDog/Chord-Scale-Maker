@@ -104,8 +104,8 @@ describe('useClick', () => {
   it('keeps its settings in this browser', () => {
     localStorage.clear()
     const c = useClick(chart(), ref(undefined), { audio: fakeAudio })
-    c.settings.value = { hat: true, countIn: 2, sound: 'beep', folded: true, hear: true, hearRhythm: false, piano: false, bass: 'off' }
-    expect(useClick(chart(), ref(undefined), { audio: fakeAudio }).settings.value).toEqual({ hat: true, countIn: 2, sound: 'beep', folded: true, hear: true, hearRhythm: false, piano: false, bass: 'off' })
+    c.settings.value = { hat: true, countIn: 2, sound: 'beep', folded: true, hear: true, hearRhythm: false, piano: false, bass: 'off', groove: false, drums: false }
+    expect(useClick(chart(), ref(undefined), { audio: fakeAudio }).settings.value).toEqual({ hat: true, countIn: 2, sound: 'beep', folded: true, hear: true, hearRhythm: false, piano: false, bass: 'off', groove: false, drums: false })
   })
 
   it('back from a hidden tab, books no beat twice', async () => {
@@ -572,6 +572,73 @@ describe('useClick', () => {
       expect(c.hasHarmony.value).toBe(true)
       c.setHarmony(null)
       expect(c.hasHarmony.value).toBe(false)
+    })
+  })
+
+  describe('Groove (#509)', () => {
+    const harmony = { piano: [{ bar: 0, at: 0, beats: 4, midi: 60 }], roots: [{ bar: 0, at: 0, beats: 4, midi: 36 }], two: [], bars: 1 }
+    const groove = {
+      set: 'swing' as const,
+      piano: [{ bar: 0, at: 1.5, beats: 0.5, midi: 64 }],
+      bass: [0, 1, 2, 3].map((at) => ({ bar: 0, at, beats: 1, midi: 36 + at })),
+      drums: [
+        { bar: 0, at: 0, kind: 'ride' as const, velocity: 0.6 },
+        { bar: 0, at: 1, kind: 'hat' as const, velocity: 0.7 },
+      ],
+      bars: 1,
+    }
+    async function grooving(settings: Partial<{ groove: boolean; drums: boolean; piano: boolean; bass: 'off' | 'roots' | 'two' }>) {
+      const audio = fakeAudio()
+      const t = timers()
+      const c = useClick(ref({ beats: 4 as const, style: 'Ballad', metreChanges: false }), ref(undefined), { audio: () => audio, ...t })
+      c.feel.value = 'quarters'
+      c.settings.value = { ...c.settings.value, ...settings }
+      c.setHarmony(harmony)
+      c.setGroove(groove)
+      await c.start()
+      for (let at = 0; at < 3.5; at += 0.05) {
+        audio.clock.t = at
+        t.tick()
+      }
+      return { audio, c }
+    }
+
+    it('starts off, and is remembered in this browser', () => {
+      localStorage.removeItem('csm-click')
+      const c = useClick(chart(), ref(undefined), { audio: fakeAudio })
+      expect([c.settings.value.groove, c.settings.value.drums]).toEqual([false, false])
+    })
+
+    it('on: the piano comps and the bass walks, the set’s lines in place of the held changes', async () => {
+      const { audio } = await grooving({ groove: true, piano: true, bass: 'roots' })
+      expect(audio.comps.map((n) => n.midi)).toEqual([64])
+      expect(audio.basses.map((n) => n.midi)).toEqual([36, 37, 38, 39])
+      expect(audio.drums).toEqual([]) // Drums off
+    })
+
+    it('Drums plays the kit, with the groove on, and loads it at Start', async () => {
+      const { audio } = await grooving({ groove: true, drums: true })
+      expect(audio.drums.map((d) => d.kind)).toEqual(['ride', 'hat'])
+      expect(audio.drumLoads.n).toBe(1)
+      expect((await grooving({ groove: false, drums: true })).audio.drums).toEqual([])
+    })
+
+    it('off: the held changes, as before', async () => {
+      const { audio } = await grooving({ groove: false, piano: true })
+      expect(audio.comps.map((n) => n.midi)).toEqual([60])
+    })
+
+    it('the Swing dial starts where the style swings (styles.json): a shuffle harder, the rest at two thirds', () => {
+      localStorage.clear()
+      expect(useClick(ref({ beats: 4 as const, style: 'Shuffle', metreChanges: false }), ref('x'), { audio: fakeAudio }).swing.value).toBe(0.72)
+      expect(useClick(ref({ beats: 4 as const, style: 'Medium', metreChanges: false }), ref('y'), { audio: fakeAudio }).swing.value).toBe(0.67)
+    })
+
+    it('says which set there is to play', () => {
+      const c = useClick(chart(), ref(undefined), { audio: fakeAudio })
+      expect(c.grooveSet.value).toBe(null)
+      c.setGroove(groove)
+      expect(c.grooveSet.value).toBe('swing')
     })
   })
 })

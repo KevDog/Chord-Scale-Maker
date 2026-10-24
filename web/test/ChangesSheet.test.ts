@@ -251,6 +251,31 @@ describe('ChangesSheet and Hear changes (#508)', () => {
   })
 })
 
+describe('ChangesSheet and its groove (#509)', () => {
+  it('hands the click its style’s groove, only with that set’s flag on', async () => {
+    const features = useRuntimeConfig().public.features as Record<string, unknown>
+    const was = { ...features }
+    const mount = async (style: string) => {
+      const click = useClick(ref({ beats: 4 as const, style, metreChanges: false }), ref(undefined), { audio: () => null })
+      const styled = parseChart(`title: T\nkey: Bb\nstyle: ${style}\n\nsection: A\nbars: 4\n1 | Cm7\n2 | F7\n`).value
+      await mountSuspended(ChangesSheet, {
+        props: { doc: styled, title: 'T', subtitle: '', part: CONCERT, instrumentLabel: '', numerals: false, scales: false, line: 'off' },
+        global: { provide: { [CLICK as symbol]: click } },
+      })
+      return click
+    }
+    try {
+      Object.assign(features, { hearLine: true, harmony: true, grooveSwing: false })
+      expect((await mount('Medium swing')).grooveSet.value).toBe(null)
+      Object.assign(features, { grooveSwing: true })
+      expect((await mount('Medium swing')).grooveSet.value).toBe('swing')
+      expect((await mount('Ballad')).grooveSet.value).toBe(null) // its set not released
+    } finally {
+      Object.assign(features, was)
+    }
+  })
+})
+
 describe('ChangesSheet and its rhythm (#573)', () => {
   const withLine = (line: ChangesLineChoice) =>
     mountSuspended(ChangesSheet, {

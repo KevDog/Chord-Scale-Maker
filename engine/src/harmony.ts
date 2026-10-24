@@ -29,7 +29,7 @@ function degreeSemis(degree: string): number {
 }
 
 /** the chord's reading and its tones as semitones above its root; null for N.C. or a chord that can't be read */
-function chordOf(text: string) {
+export function chordOf(text: string) {
   if (isRest(text)) return null
   const r = readChord(text)
   const tones = r && CHORD_TONES[r.quality]
@@ -40,7 +40,7 @@ function chordOf(text: string) {
 }
 
 /** the scale's notes as semitones above the chord's root (pitch classes); empty when it can't be read */
-function scaleSemis(scale: string | null, root: number): ReadonlySet<number> {
+export function scaleSemis(scale: string | null, root: number): ReadonlySet<number> {
   if (!scale) return new Set()
   try {
     const s = parseScale(scale)
@@ -82,7 +82,7 @@ export function voicingForms(chord: string, scale: string | null): readonly (rea
 /** the piano's range (decision hear.harmony): its lowest note from C3 to C♯4, its top no higher than G5 */
 const PIANO = { lo: 48, hi: 61, top: 79, centre: 59 } as const
 /** the bass's range, E1 to C3, and where it centres */
-const BASS = { lo: 28, hi: 48, centre: 38 } as const
+export const BASS = { lo: 28, hi: 48, centre: 38 } as const
 
 /** pitch classes stacked upward from bottom */
 function stack(pcs: readonly number[], bottom: number): number[] {
@@ -95,8 +95,8 @@ function stack(pcs: readonly number[], bottom: number): number[] {
 }
 
 /** each chord's span: the bar it sounds in, from at for beats; a bar with no chord holds the last one again */
-type Span = Readonly<{ bar: number; at: number; beats: number; text: string; scale: string | null }>
-function spans(bars: readonly HarmonyBar[]): Span[] {
+export type Span = Readonly<{ bar: number; at: number; beats: number; text: string; scale: string | null }>
+export function spans(bars: readonly HarmonyBar[]): Span[] {
   const out: Span[] = []
   let last: Readonly<{ text: string; scale: string | null }> | null = null
   bars.forEach((b, bar) => {
@@ -117,12 +117,12 @@ const motion = (a: readonly number[], b: readonly number[]): number =>
   a.length === b.length ? a.reduce((s, m, i) => s + Math.abs(m - b[i]!), 0) : Math.abs(a.reduce((s, m) => s + m, 0) / a.length - b.reduce((s, m) => s + m, 0) / b.length) * a.length
 const mean = (a: readonly number[]): number => a.reduce((s, m) => s + m, 0) / a.length
 
-/** the piano's voicings, each chord struck at its start (and again each bar it's held through), held to the next */
-export function pianoNotes(bars: readonly HarmonyBar[]): VoiceNote[] {
+/** each chord's span and its voicing, voice-led from the one before (null for N.C. or a chord that can't be read) */
+export function voicedSpans(bars: readonly HarmonyBar[]): readonly (Span & Readonly<{ voicing: readonly number[] | null }>)[] {
   let prev: readonly number[] | null = null
-  return spans(bars).flatMap((s) => {
+  return spans(bars).map((s) => {
     const forms = voicingForms(s.text, s.scale)
-    if (!forms) return []
+    if (!forms) return { ...s, voicing: null }
     const options = forms.flatMap((pcs) =>
       Array.from({ length: PIANO.hi - PIANO.lo + 1 }, (_, i) => PIANO.lo + i)
         .filter((m) => mod(m, 12) === pcs[0])
@@ -132,12 +132,16 @@ export function pianoNotes(bars: readonly HarmonyBar[]): VoiceNote[] {
     const cost = (v: readonly number[]) => (prev ? motion(v, prev) : 0) + Math.abs(mean(v) - PIANO.centre) * (prev ? 0.25 : 1)
     const best = options.reduce((x, y) => (cost(y) < cost(x) ? y : x))
     prev = best
-    return best.map((midi) => ({ bar: s.bar, at: s.at, beats: s.beats, midi }))
+    return { ...s, voicing: best }
   })
 }
 
+/** the piano's voicings, each chord struck at its start (and again each bar it's held through), held to the next */
+export const pianoNotes = (bars: readonly HarmonyBar[]): VoiceNote[] =>
+  voicedSpans(bars).flatMap((s) => (s.voicing ?? []).map((midi) => ({ bar: s.bar, at: s.at, beats: s.beats, midi })))
+
 /** the bass note's pitch class: a slash chord's bass, else its root */
-function bassPc(text: string): number | null {
+export function bassPc(text: string): number | null {
   const c = chordOf(text)
   if (!c) return null
   const bass = parseChord(text).bass

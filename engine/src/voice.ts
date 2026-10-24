@@ -3,6 +3,7 @@
  * booked from the click's clock (click.ts) so the two never drift. Pure: the app plays them (web/app/composables/useClick.ts).
  */
 import { type ClickFeel, type ClickPlan, type ClickState, formBar, SWING } from './click'
+import type { DrumHit } from './grooves'
 import type { GuideNote } from './guideTones'
 import { CLEF_ROOT_LOW, type Transposition, TRANSPOSITIONS } from './instruments'
 import type { Part, Pitched } from './part'
@@ -163,6 +164,24 @@ export function scheduleRhythm(hits: readonly RhythmHit[], bars: number, plan: C
       if (h.bar !== bar || h.at >= beats) continue
       const time = start + swing(h.at, h.straight) * beat
       if (time >= from && time < until) out.push({ time, accent: h.accent })
+    }
+  return out
+}
+
+/** a drum hit booked: time, seconds on the audio clock */
+export type TimedDrum = Readonly<{ time: number; kind: DrumHit['kind']; velocity: number }>
+
+/** a groove's drum hits to book in [from, until) (#509), as scheduleVoice books the Line's notes */
+export function scheduleDrums(hits: readonly DrumHit[], bars: number, plan: ClickPlan, state: ClickState, from: number, until: number): TimedDrum[] {
+  if (!hits.length || bars <= 0) return []
+  const beat = 60 / plan.tempo
+  const swing = swingOf(plan)
+  const out: TimedDrum[] = []
+  for (const { start, bar, beats } of eachBar(bars, plan, state, until))
+    for (const h of hits) {
+      if (h.bar !== bar || h.at >= beats) continue
+      const time = start + swing(h.at) * beat
+      if (time >= from && time < until) out.push({ time, kind: h.kind, velocity: h.velocity })
     }
   return out
 }
