@@ -9,7 +9,7 @@ chart in a style: drums, a comping piano and a walking bass, chosen by the chart
   and mute per track, duo presets); practice tools (tempo ramp, all twelve keys). Each set ships behind its own flag:
   `grooveSwing`, `grooveBallad`, `grooveBossa`, off until the owner signs it off.
 - **Kit (#540):** VCSL one-shots, CC0 (`/sounds/drums/`, 384 KB): ride, a soft ride (velocity under 0.5), bell, hat foot,
-  hat tip, open hat, cross-stick, kick. Brushes (a sweep and a tap) are synthesized: no CC0 brush set was found.
+  hat tip, open hat, cross-stick, kick. Brushes: Karoryfer's Swirly Drums (CC0): a sweep is a 0.6 s swell from a snare stir, a tap a brushed hit; synthesized until loaded.
 - **styles.json** (`engine/styles.json`): each library style, lowercased, → its set, tempo (the click's `defaultTempo`)
   and swing. A style it doesn't list goes by its words: ballad → Ballad; Latin, bossa, samba → Bossa; else Swing.
   Swing 0.67; a shuffle 0.72; bossa, Latin, samba, even, straight, funk, rock 0.5. The Swing dial starts there
@@ -30,8 +30,8 @@ chart in a style: drums, a comping piano and a walking bass, chosen by the chart
   (Bass Off still silences it). Remembered in `csm-click`. Start waits for the kit as for the other sets.
 - **No playback marker exists**, so #509's "hide the marker" has nothing to hide; it is dropped.
 - **Ballad set** (decision `groove.ballad`, flag `grooveBallad`): the piano holds #508's voicings (`pianoNotes`); the
-  bass plays Two-feel (`bassNotes(…, 'two')`) whatever Bass says but Off; brushes: a sweep on each beat (synthesized,
-  0.45 s), a tap and the hat's foot on 2 and 4 (2 and 3 in 3/4).
+  bass plays Two-feel (`bassNotes(…, 'two')`) whatever Bass says but Off; brushes: a sweep on each beat (a swell
+  from the stir), a tap and the hat's foot on 2 and 4 (2 and 3 in 3/4).
 - **Bossa set** (decision `groove.bossa`, flag `grooveBossa`): the cross-stick's two-bar pattern (1, 2&, 4 | 2, 3&), the
   closed hat on every 8th (on-beats louder), the kick on 1 and 3 with a pickup on 2& and 4& (the surdo's pulse); the
   piano draws a syncopation per chord from its own table; the bass plays root on the chord's first beat and the 5th

@@ -143,7 +143,7 @@ describe('clickSounds', () => {
       expect(Object.keys(DRUM_KIT).sort()).toEqual([...DRUM_KINDS].sort())
     })
 
-    it('loaded, a recorded kind plays its sample; the brushes are synthesized', async () => {
+    it('loaded, every kind plays its sample, the brushes Swirly Drums’ stir and taps', async () => {
       const made = stubContext()
       const asked: string[] = []
       vi.stubGlobal('fetch', async (url: string) => {
@@ -159,7 +159,9 @@ describe('clickSounds', () => {
       expect(made.sources - before).toBe(2)
       audio.drum('sweep', 0, 0.5)
       audio.drum('brush', 0, 0.5)
-      expect(made.buffers).toBe(1) // the noise, made once, for both
+      expect(made.sources - before).toBe(4)
+      expect(made.buffers).toBe(0) // no noise synthesized
+      expect(files()).toEqual(expect.arrayContaining(['/sounds/drums/stir.wav', '/sounds/drums/brush.wav', '/sounds/drums/brush-soft.wav']))
     })
 
     it('not loaded, or failed, every kind still sounds, synthesized', async () => {

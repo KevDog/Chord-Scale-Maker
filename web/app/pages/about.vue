@@ -78,6 +78,8 @@ const CREDITS = [
   { name: 'Bravura', what: 'the music font, by Steinberg', license: 'SIL Open Font License', url: 'https://github.com/steinbergmedia/bravura' },
   { name: 'Jost', what: 'the heading font, by indestructible type*', license: 'SIL Open Font License', url: 'https://indestructibletype.com/Jost.html' },
   { name: 'VSCO 2 Community Edition', what: 'the piano, the bass and the click’s Stick you hear, its Upright Piano sampled by Simon Dalzell of Ivy Audio, from Versilian Studios', license: 'CC0', url: 'https://github.com/sgossner/VSCO-2-CE' },
+  { name: 'VCSL', what: 'the drum kit’s ride, hi-hat, cross-stick and kick, from Versilian Studios', license: 'CC0', url: 'https://github.com/sgossner/VCSL' },
+  { name: 'Swirly Drums', what: 'the brushes, by Karoryfer Samples', license: 'CC0', url: 'https://github.com/sfzinstruments/karoryfer.swirly-drums' },
   { name: 'Vue', what: 'the interface framework', license: 'MIT', url: 'https://vuejs.org/' },
   { name: 'Nuxt', what: 'the site framework', license: 'MIT', url: 'https://nuxt.com/' },
   { name: 'Headless UI', what: 'accessible components, by Tailwind Labs', license: 'MIT', url: 'https://headlessui.com/' },
