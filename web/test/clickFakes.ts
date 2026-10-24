@@ -3,7 +3,7 @@ import type { ClickAudio } from '~/utils/clickSounds'
 /** a booked note: stopped, once its stop is called */
 export type FakeNote = { midi: number; time: number; length: number; stopped: boolean }
 /** a click's audio with a clock the test sets, recording what it is asked to play */
-export type FakeAudio = ClickAudio & { clock: { t: number }; played: { kind: string; time: number }[]; notes: FakeNote[]; hits: { time: number; accent: boolean }[]; suspended: { n: number } }
+export type FakeAudio = ClickAudio & { clock: { t: number }; played: { kind: string; time: number }[]; notes: FakeNote[]; hits: { time: number; accent: boolean }[]; suspended: { n: number }; leadLoads: { n: number } }
 
 export function fakeAudio(): FakeAudio {
   const clock = { t: 0 }
@@ -11,12 +11,14 @@ export function fakeAudio(): FakeAudio {
   const notes: FakeNote[] = []
   const hits: { time: number; accent: boolean }[] = []
   const suspended = { n: 0 }
+  const leadLoads = { n: 0 }
   return {
     clock,
     played,
     notes,
     hits,
     suspended,
+    leadLoads,
     now: () => clock.t,
     play: (kind, time) => played.push({ kind, time }),
     note: (midi, time, length) => {
@@ -25,6 +27,10 @@ export function fakeAudio(): FakeAudio {
       return () => (n.stopped = true)
     },
     hit: (time, accent) => hits.push({ time, accent }),
+    loadLead: async () => {
+      leadLoads.n += 1
+      return true
+    },
     resume: async () => {},
     suspend: async () => {
       suspended.n += 1

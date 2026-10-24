@@ -8,6 +8,12 @@ export type ReleaseNote = Readonly<{ date: string; items: readonly ReleaseItem[]
 
 export const RELEASE_NOTES: readonly ReleaseNote[] = [
   {
+    date: '2026-10-24',
+    items: [
+      { text: 'Hear line and Play sound a recorded piano in place of the synthesized tone: sound files from this site, loaded the first time you play and then kept for offline use. Until they load, or if they can’t, the tone plays as before.', pr: 583 },
+    ],
+  },
+  {
     date: '2026-10-23',
     items: [
       { text: 'A Line poured into a rhythm beams each group with its stems all one way, so a beam no longer runs through its notes, and on a line that mixes busy and sparse bars (sextuplets beside quarter-note triplets) the busy bars get more of the line.', pr: 581 },
