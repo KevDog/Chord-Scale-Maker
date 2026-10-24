@@ -28,6 +28,7 @@ exports[`exports the same names 1`] = `
   "CLICK_TEMPO",
   "CONCERT",
   "DECISIONS",
+  "DRUM_KINDS",
   "FEELS",
   "FEEL_LABELS",
   "FUNCTION_ERRORS",

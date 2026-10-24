@@ -36,3 +36,15 @@ Licences: CC0 preferred; a CC-BY set is credited on the About page.
   `G#2` and `B2` left out (above the bass's range, and `B2` didn't read as its name).
 - **Edits:** as `piano/` (mono 16-bit 24 kHz, onset trim, peak 0.9), cut to 2 s with a 0.4 s fade.
 - **Size:** 12 files, 1.0 MB.
+
+## drums: the pattern sets' kit (#540, #509)
+
+- **Source:** VCSL (<https://github.com/sgossner/VCSL>), CC0 1.0: `Idiophones/Struck Idiophones/Suspended Cymbal 1/`
+  (the ride: `susCymb1_hit_stick_mp1`, `_pp1` as `ride-soft`, `susCymb1_hit_bell_mf1` as `bell`), `Hi-Hat Cymbal/`
+  (`HiHat_Close_rr1` the foot's chick as `hat`, `HiHat_HitC_v2_rr1` as `hat-tip`, `HiHat_HitO_rr1` as `hat-open`),
+  `Membranophones/Struck Membranophones/Snare Drum, Modern 2/Snare3M_Xstick_v2_rr1` (cross-stick, `stick`) and
+  `Bass Drum 1/BDrumNew_hit_v2_rr1` (`kick`, a soft concert bass drum hit standing in for a jazz kick).
+- **Not recorded:** VCSL has no brushes, so the sweep and the tap are synthesized (band-passed noise, `clickSounds.ts`).
+- **Edits:** mono 16-bit 24 kHz, onset trim, peak 0.9 (as `piano/`); ride 2 s, bell 1.5 s, open hat 0.8 s, kick 0.6 s,
+  the rest 0.3 s, each with a short fade. Levels per voice are `DRUM_KIT`'s gains.
+- **Size:** 8 files, 384 KB.
