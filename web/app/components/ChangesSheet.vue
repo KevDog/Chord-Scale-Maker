@@ -149,7 +149,7 @@ const stepName = (c: RhythmStepCard): string => [c.group === null ? '' : stepNum
 // Hear line (#507) and Hear rhythm (#521): the drawn Line and rhythm, for the click to sound, in the form's order (#559) (none on a page without a click)
 const click = inject(CLICK, null)
 const harmonyOn = useFeature('harmony')
-const grooveOn: Readonly<Record<GrooveSet, boolean>> = { swing: useFeature('grooveSwing'), ballad: false, bossa: false }
+const grooveOn: Readonly<Record<GrooveSet, boolean>> = { swing: useFeature('grooveSwing'), ballad: useFeature('grooveBallad'), bossa: useFeature('grooveBossa') }
 if (click && useFeature('hearLine')) {
   watchEffect(() => {
     const bars = built.value.lines.flatMap((l) => l.bars)
