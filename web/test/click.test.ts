@@ -1,3 +1,4 @@
+import { DEFAULT_MIX, type Mix } from '@chord-scale-maker/engine'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { nextTick, ref } from 'vue'
 import { LEAD_BOUND, useClick } from '~/composables/useClick'
@@ -104,8 +105,8 @@ describe('useClick', () => {
   it('keeps its settings in this browser', () => {
     localStorage.clear()
     const c = useClick(chart(), ref(undefined), { audio: fakeAudio })
-    c.settings.value = { hat: true, countIn: 2, sound: 'beep', folded: true, hear: true, hearRhythm: false, piano: false, bass: 'off', groove: false, drums: false }
-    expect(useClick(chart(), ref(undefined), { audio: fakeAudio }).settings.value).toEqual({ hat: true, countIn: 2, sound: 'beep', folded: true, hear: true, hearRhythm: false, piano: false, bass: 'off', groove: false, drums: false })
+    c.settings.value = { hat: true, countIn: 2, sound: 'beep', folded: true, hear: true, hearRhythm: false, piano: false, bass: 'off', groove: false, drums: false, mix: DEFAULT_MIX }
+    expect(useClick(chart(), ref(undefined), { audio: fakeAudio }).settings.value).toEqual({ hat: true, countIn: 2, sound: 'beep', folded: true, hear: true, hearRhythm: false, piano: false, bass: 'off', groove: false, drums: false, mix: DEFAULT_MIX })
   })
 
   it('back from a hidden tab, books no beat twice', async () => {
@@ -639,6 +640,57 @@ describe('useClick', () => {
       expect(c.grooveSet.value).toBe(null)
       c.setGroove(groove)
       expect(c.grooveSet.value).toBe('swing')
+    })
+  })
+
+  describe('the mixer (#509)', () => {
+    const groove = {
+      set: 'swing' as const,
+      piano: [{ bar: 0, at: 1.5, beats: 0.5, midi: 64 }],
+      bass: [{ bar: 0, at: 0, beats: 1, midi: 36 }],
+      drums: [{ bar: 0, at: 0, kind: 'ride' as const, velocity: 0.6 }],
+      bars: 1,
+    }
+    const harmony = { piano: [], roots: [], two: [], bars: 1 }
+    async function mixing(mix: Partial<Mix>) {
+      const audio = fakeAudio()
+      const t = timers()
+      const c = useClick(ref({ beats: 4 as const, style: 'Ballad', metreChanges: false }), ref(undefined), { audio: () => audio, ...t })
+      c.settings.value = { ...c.settings.value, groove: true, drums: true, piano: true, bass: 'roots', mix: { ...DEFAULT_MIX, ...mix } }
+      c.setHarmony(harmony)
+      c.setGroove(groove)
+      await c.start()
+      for (let at = 0; at < 3.5; at += 0.05) {
+        audio.clock.t = at
+        t.tick()
+      }
+      return { audio, c }
+    }
+
+    it('starts at the Band mix, and is remembered in this browser', () => {
+      localStorage.removeItem('csm-click')
+      const c = useClick(chart(), ref(undefined), { audio: fakeAudio })
+      expect(c.settings.value.mix).toEqual(DEFAULT_MIX)
+      c.settings.value = { ...c.settings.value, mix: { ...DEFAULT_MIX, bass: { level: 0.5, mute: true } } }
+      expect(useClick(chart(), ref(undefined), { audio: fakeAudio }).settings.value.mix.bass).toEqual({ level: 0.5, mute: true })
+    })
+
+    it('sets each track’s level at Start, and again as it’s moved', async () => {
+      const { audio, c } = await mixing({ piano: { level: 0.4, mute: false } })
+      expect(audio.levels.piano).toBe(0.4)
+      expect(audio.levels.click).toBe(1)
+      c.settings.value = { ...c.settings.value, mix: { ...c.settings.value.mix, drums: { level: 0.3, mute: false } } }
+      await nextTick()
+      expect(audio.levels.drums).toBe(0.3)
+    })
+
+    it('a muted track books nothing; the lights still run', async () => {
+      const { audio, c } = await mixing({ bass: { level: 1, mute: true }, drums: { level: 1, mute: true }, click: { level: 1, mute: true } })
+      expect(audio.basses).toEqual([])
+      expect(audio.drums).toEqual([])
+      expect(audio.played).toEqual([])
+      expect(audio.comps.length).toBeGreaterThan(0)
+      expect(c.beat.value).not.toBe(null)
     })
   })
 })

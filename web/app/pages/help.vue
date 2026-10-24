@@ -521,6 +521,15 @@
                 (<DecisionLink id="groove.style">how</DecisionLink>). The drums are recorded too, loaded the first time.
               </dd>
             </div>
+            <div v-if="mixerOn">
+              <dt class="font-semibold text-zinc-950 dark:text-white">Mix</dt>
+              <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
+                Under the click's ⋯, each sound playing (the click, the Line, the rhythm, the piano, the bass, the drums) has a
+                level and a <strong class="font-semibold">Mute</strong>. With Piano or Bass on, <strong class="font-semibold">Mix</strong>
+                sets the band at once: Band, everyone; Piano duo or Bass duo, you and the one; No piano or No bass, the band
+                without the part you play. A muted part keeps its level and settings for when it's back. Remembered in this browser.
+              </dd>
+            </div>
           </dl>
         </div>
       </section>
@@ -795,6 +804,7 @@ const backupOn = useFeature('backup')
 const metronomeOn = useFeature('metronome')
 const hearLineOn = useFeature('hearLine')
 const harmonyOn = hearLineOn && useFeature('harmony')
+const mixerOn = hearLineOn && useFeature('mixer')
 const grooveOn = { swing: harmonyOn && useFeature('grooveSwing'), ballad: harmonyOn && useFeature('grooveBallad'), bossa: harmonyOn && useFeature('grooveBossa') }
 const rhythmOn = useFeature('rhythm')
 const rhythmSheetsOn = useFeature('rhythmSheets')

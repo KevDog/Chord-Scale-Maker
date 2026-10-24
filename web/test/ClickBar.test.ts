@@ -236,6 +236,31 @@ describe('ClickBar', () => {
     }
   })
 
+  it('Mix (#509): a level and a mute for each sound that plays, and the duo presets', async () => {
+    const features = useRuntimeConfig().public.features as Record<string, unknown>
+    const was = { ...features }
+    const harmony = { piano: [{ bar: 0, at: 0, beats: 4, midi: 60 }], roots: [{ bar: 0, at: 0, beats: 4, midi: 36 }], two: [], bars: 1 }
+    try {
+      Object.assign(features, { hearLine: true, harmony: true, mixer: true })
+      const { w, click, button } = await mountBar()
+      click.setHarmony(harmony)
+      click.settings.value = { ...click.settings.value, piano: true, bass: 'off' }
+      await button('Click settings')!.trigger('click')
+      const levels = () => w.findAll('input[type=range]').map((i) => i.attributes('aria-label')).filter((l) => l?.endsWith(' level'))
+      expect(levels()).toEqual(['Click level', 'Piano level'])
+      const piano = w.find('input[aria-label="Piano level"]')
+      ;(piano.element as HTMLInputElement).value = '40'
+      await piano.trigger('input')
+      expect(click.settings.value.mix.piano).toEqual({ level: 0.4, mute: false })
+      expect(w.text()).toContain('Band')
+      click.settings.value = { ...click.settings.value, mix: { ...click.settings.value.mix, bass: { level: 1, mute: true }, drums: { level: 1, mute: true } } }
+      await nextTick()
+      expect(w.text()).toContain('Piano duo')
+    } finally {
+      Object.assign(features, was)
+    }
+  })
+
   it('Swing: a dial in the settings under Swing feel, in percent, with the flag on', async () => {
     const features = useRuntimeConfig().public.features as Record<string, unknown>
     const was = { ...features }

@@ -11,8 +11,8 @@ const myChartsLinks = (html: string) => html.match(/song\?new=1/g) ?? []
 describe('feature flags', () => {
   beforeEach(() => navigate.mockClear())
 
-  it('has its flags on but analyticsEvents (#149, off until Pro) chartSubmissions (#153, new) harmony (#508, new) and grooveSwing, grooveBallad, grooveBossa (#509, new): offline (#324), recordings, patterns, cells, approaches (#298), playerRange (#359), ireal (#261), versions (#411), phraseCells (#376), backup (#466), alternates (#215), metronome (#254); rhythmSheets (rhythm on the Scales and Arpeggios), rhythmGears (rhythm Phase 4), hearLine (#507)', () => {
-    expect(useRuntimeConfig().public.features).toEqual({ offline: true, analyticsEvents: false, recordings: true, patterns: true, cells: true, approaches: true, playerRange: true, ireal: true, chartSubmissions: false, versions: true, phraseCells: true, backup: true, alternates: true, metronome: true, rhythm: true, rhythmSheets: true, rhythmGears: true, hearLine: true, harmony: false, grooveSwing: false, grooveBallad: false, grooveBossa: false })
+  it('has its flags on but analyticsEvents (#149, off until Pro) chartSubmissions (#153, new) harmony (#508, new) and grooveSwing, grooveBallad, grooveBossa, mixer (#509, new): offline (#324), recordings, patterns, cells, approaches (#298), playerRange (#359), ireal (#261), versions (#411), phraseCells (#376), backup (#466), alternates (#215), metronome (#254); rhythmSheets (rhythm on the Scales and Arpeggios), rhythmGears (rhythm Phase 4), hearLine (#507)', () => {
+    expect(useRuntimeConfig().public.features).toEqual({ offline: true, analyticsEvents: false, recordings: true, patterns: true, cells: true, approaches: true, playerRange: true, ireal: true, chartSubmissions: false, versions: true, phraseCells: true, backup: true, alternates: true, metronome: true, rhythm: true, rhythmSheets: true, rhythmGears: true, hearLine: true, harmony: false, grooveSwing: false, grooveBallad: false, grooveBossa: false, mixer: false })
   })
 
   it('offers New chart in the library, not the header', async () => {
