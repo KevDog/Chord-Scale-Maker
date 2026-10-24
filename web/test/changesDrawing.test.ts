@@ -185,7 +185,8 @@ describe('fitBars', () => {
     expect(fitBars(FOUR, none, [0.4, 0.1, 0.1, 0.1]).shares.map((s) => +s.toFixed(6))).toEqual([0.4, 0.2, 0.2, 0.2])
     expect(fitBars(FOUR, none, [0.45, 0.45, 0.45, 0.45])).toMatchObject({ notes: 2, fits: 4 }) // the names still fit: no break of their own
     expect(fitBars(FOUR, none, [0.39, 0.39, 0.39, 0.39]).notes).toBe(2) // 1.17 of the line: names at 0.8 would keep 3
-    expect(fitBars(FOUR, [[], [], null, null], [0.45, 0.45]).shares.map((s) => +s.toFixed(6))).toEqual([0.45, 0.45, 0.05, 0.05]) // a broken line's bars take the room past its end
+    expect(fitBars(FOUR, [[], [], null, null], [0.45, 0.45]).shares.map((s) => +s.toFixed(6))).toEqual([0.5, 0.5, 0, 0]) // a crowded line's bars spread over the room past its end, not their need alone
+    expect(fitBars(FOUR, [[], [at(0, 0.6)], null, null], [0.3, 0.3]).shares.map((s) => +s.toFixed(6))).toEqual([0.4, 0.6, 0, 0]) // each bar at least its need, the rest at one level
     expect(fitBars(FOUR, [[at(0, 0.3)], [], [], []], [0.1, 0.1, 0.1, 0.1]).shares.map((s) => +s.toFixed(6))).toEqual(fitBars(FOUR, [[at(0, 0.3)], [], [], []]).shares.map((s) => +s.toFixed(6)))
   })
   // Task 3.2 final review: long names and 16ths each fit the line alone, but not together; a bar takes the wider of the two

@@ -7,6 +7,7 @@ import {
   RHYTHM_GEAR_PRESETS,
   RHYTHM_GROUP_PRESETS,
   RHYTHM_PATH_OFF,
+  rhythmStepCards,
   rhythmSteps,
   type RhythmPath,
   type RhythmSteps,
@@ -190,3 +191,27 @@ describe('layRhythm by steps (Phase 4 spec §3 "Laying", D14)', () => {
 })
 
 const range6 = [0, 1, 2, 3, 4, 5]
+
+describe('rhythmStepCards (#575)', () => {
+  it('one card a step, in the order the form first plays it, each named by what the path changes', () => {
+    const steps = rhythmSteps('unit:8:3:accents', path({ groups: [3, 4, 5] }), [0, 1, 2, 0, 1])
+    expect(rhythmStepCards('unit:8:3:accents', path({ groups: [3, 4, 5] }), steps)).toEqual([
+      { id: 'unit:8:3:accents', group: 3, pulse: null },
+      { id: 'unit:8:4:accents', group: 4, pulse: null },
+      { id: 'unit:8:5:accents', group: 5, pulse: null },
+    ])
+  })
+
+  it('names the pulse under Gears, and both with both', () => {
+    const p = path({ groups: [3, 4], gears: ['8', '16'] })
+    const cards = rhythmStepCards('unit:8:3:accents', p, rhythmSteps('unit:8:3:accents', p, [0, 1]))
+    expect(cards).toEqual([
+      { id: 'unit:8:3:accents', group: 3, pulse: '8' },
+      { id: 'unit:16:4:accents', group: 4, pulse: '16' },
+    ])
+  })
+
+  it('with no path acting, the rhythm’s one card, unnamed', () => {
+    expect(rhythmStepCards('card:upbeats', path({ groups: [3, 4] }), [{ from: 0, id: 'card:upbeats' }])).toEqual([{ id: 'card:upbeats', group: null, pulse: null }])
+  })
+})

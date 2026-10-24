@@ -293,7 +293,7 @@
                 grouping comes: at each section, at each change of key area, or every 2, 4 or 8 bars. A list shorter than the form starts over. Each
                 step starts fresh on its first bar's beat 1: a statement still running there is cut, with no tie, and a Line's pick-ups don't reach back
                 over it. An intro or an ending plays the first grouping. A circled number (③) over a step's first note shows its grouping, the caption
-                names the path, and the path is kept with the chart in this browser and goes in a share link. Your rhythm…, Runs and Cards keep theirs.
+                names the path, and with the Line off a card a step over the first line shows each grouping the form plays, named the same way, and the path is kept with the chart in this browser and goes in a share link. Your rhythm…, Runs and Cards keep theirs.
               </dd>
             </div>
             <div v-if="rhythmGearsOn">
