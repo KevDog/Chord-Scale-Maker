@@ -276,10 +276,8 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
       return
     }
     if (mine !== run) return // stopped, or started again, while resuming
-    if (settings.value.hear || hearsHarmony()) {
-      await Promise.all([settings.value.hear ? leadReady(audio) : null, hearsHarmony() ? ready(audio.loadHarmony()) : null])
-      if (mine !== run) return
-    }
+    await Promise.all([ready(audio.load(settings.value.sound)), settings.value.hear ? leadReady(audio) : null, hearsHarmony() ? ready(audio.loadHarmony()) : null])
+    if (mine !== run) return
     state = { barStart: audio.now(), bar: 0 }
     booked = audio.now()
     recent = []
@@ -347,6 +345,12 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
     () => settings.value.hear,
     (hear) => {
       if (hear && running.value && audio) void audio.loadLead()
+    },
+  )
+  watch(
+    () => settings.value.sound,
+    (sound) => {
+      if (running.value && audio) void audio.load(sound)
     },
   )
   watch(

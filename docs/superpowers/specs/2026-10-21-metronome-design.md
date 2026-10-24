@@ -199,3 +199,23 @@ one `useClick` instance in `EditorView`, so entering or leaving focus changes no
 - The per-chart storage key's exact form (built on `source.practiceKey`, as `usePractice` does).
 - How `ClickBar` lays out its two homes (one template with the prop, or two thin wrappers over shared parts).
 - How the `--click-h` padding is applied (body or the page's main element), matching how `--rail-h` is done.
+
+## Addendum: a sampled click (#536, epic #534)
+
+A third sound, **Stick**, recorded where Wood and Beep are synthesized: a stick's dry knock reads as a drummer, and
+cuts through a horn the way a triangle wave doesn't.
+
+- **Files:** three one-shots in `web/public/sounds/stick/` (`accent.wav`, `beat.wav`, `hat.wav`), mono 16-bit WAV
+  (no codec padding to shift the onset), trimmed to the attack, about 37 KB together. Provenance and edits in
+  `design/sounds/README.md`. The count-in and the subdivisions play the beat's one-shot, the subdivisions quieter; a
+  tick plays nothing, as before.
+- **Loading:** `ClickAudio.load(sound)` fetches a sound's files through the shared loader (`sampleLoader.ts`, #535):
+  Wood and Beep answer at once. Start awaits it with the lead's bound (`LEAD_BOUND`, 1 s), then starts regardless;
+  choosing Stick while the click runs loads it for the hits booked after. A failed file is asked for again on the next
+  load.
+- **Fallback:** any hit whose one-shot isn't loaded plays Wood's synthesis for that hit, so the click is never silent
+  and never late.
+- **Offline:** the set is small, so the service worker precaches it (`web/build/sw.ts`); the larger sampled sets are
+  cached on first play.
+- **Default:** Wood stays the default, under the existing `metronome` flag; making Stick the default waits for a check
+  on devices.

@@ -253,3 +253,19 @@ test('Piano and Bass play the changes with the click, from this site’s piano a
   await expect(settings.getByRole('checkbox', { name: 'Piano' })).toBeChecked()
   await expect(settings.getByRole('radio', { name: 'Two-feel' })).toBeChecked()
 })
+
+test('the click’s Stick sound plays this site’s recorded stick, loaded at Start (#536)', async ({ page }) => {
+  const asked: string[] = []
+  page.on('request', (r) => {
+    if (r.url().includes('/sounds/')) asked.push(new URL(r.url()).pathname)
+  })
+  await page.goto('/song/autumn-leaves')
+  await clickUntil(page, page.getByRole('button', { name: 'Click', exact: true }), clickBar(page))
+  const settings = page.getByRole('dialog', { name: 'Click settings' })
+  await clickBar(page).getByRole('button', { name: 'Click settings' }).click()
+  await settings.getByRole('group', { name: 'Sound' }).locator('label', { hasText: 'Stick' }).click()
+  await page.keyboard.press('Escape')
+  await clickBar(page).getByRole('button', { name: 'Start' }).click()
+  await expect(clickBar(page).locator('[data-testid=click-lights] i[data-on]')).toHaveCount(1)
+  await expect.poll(() => asked.filter((p) => p.startsWith('/sounds/stick/')).sort()).toEqual(['/sounds/stick/accent.wav', '/sounds/stick/beat.wav', '/sounds/stick/hat.wav'])
+})

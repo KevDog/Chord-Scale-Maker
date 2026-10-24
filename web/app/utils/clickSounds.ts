@@ -1,13 +1,15 @@
 import type { ClickKind } from '@chord-scale-maker/engine'
+import { loadSample } from '~/utils/sampleLoader'
 import { type SampleSet, type Sampler, loadSampler } from '~/utils/sampler'
 
 /**
- * The click's sounds (#254) and Hear rhythm's rim (#521), synthesized; Hear line's lead (#507) a sampled piano (#538),
+ * The click's sounds (#254), Wood and Beep synthesized, Stick recorded (#536) and Wood until its one-shots load; Hear
+ * rhythm's rim (#521), synthesized; Hear line's lead (#507) a sampled piano (#538),
  * synthesized until its samples load or if they fail. The samples are this site's own files, so no CSP change. With
  * sampler.ts the only files that build audio nodes; useClick books through a ClickAudio, which tests replace with a fake.
  */
-export type ClickSound = 'wood' | 'beep'
-export const CLICK_SOUNDS: readonly ClickSound[] = ['wood', 'beep']
+export type ClickSound = 'wood' | 'beep' | 'stick'
+export const CLICK_SOUNDS: readonly ClickSound[] = ['wood', 'beep', 'stick']
 
 export type ClickAudio = Readonly<{
   /** the audio clock, in seconds */
@@ -17,6 +19,8 @@ export type ClickAudio = Readonly<{
   note: (midi: number, time: number, length: number) => () => void
   /** Hear rhythm's rim: an attack of the rhythm at time, louder accented */
   hit: (time: number, accent: boolean) => void
+  /** a click sound's recordings, fetched once: true once they play (Wood and Beep have none), false if any couldn't load */
+  load: (sound: ClickSound) => Promise<boolean>
   /** the lead's samples, fetched once: true once they play, false if they couldn't load (the synthesized lead plays on) */
   loadLead: () => Promise<boolean>
   /** Hear changes' piano and bass (#508): a note at midi (concert pitch), from time for length seconds; call what it returns to stop it */
@@ -29,7 +33,7 @@ export type ClickAudio = Readonly<{
   close: () => Promise<void>
 }>
 
-const PITCH: Readonly<Record<ClickSound, Readonly<{ wave: OscillatorType; accent: number; beat: number }>>> = {
+const PITCH: Readonly<Record<Exclude<ClickSound, 'stick'>, Readonly<{ wave: OscillatorType; accent: number; beat: number }>>> = {
   wood: { wave: 'triangle', accent: 1800, beat: 1200 },
   beep: { wave: 'sine', accent: 1320, beat: 880 },
 }
@@ -50,7 +54,7 @@ function noiseFor(ctx: BaseAudioContext): AudioBuffer {
 }
 
 /** one click at `time` on the context's clock, into `out`; a tick (the lights' silent beat) none */
-export function playClick(ctx: AudioContext, out: AudioNode, kind: ClickKind, time: number, sound: ClickSound): void {
+export function playClick(ctx: AudioContext, out: AudioNode, kind: ClickKind, time: number, sound: Exclude<ClickSound, 'stick'>): void {
   if (kind === 'tick') return
   const env = ctx.createGain()
   env.connect(out)
@@ -75,6 +79,54 @@ export function playClick(ctx: AudioContext, out: AudioNode, kind: ClickKind, ti
   osc.connect(env)
   osc.start(time)
   osc.stop(time + DECAY + 0.02)
+}
+
+type Hit = Exclude<ClickKind, 'tick'>
+/**
+ * Stick (#536): VSCO 2 CE's percussion, one-shots for the accent, the beat and the hat (design/sounds/README.md); the
+ * count-in and the subdivisions play the beat's, the subdivisions quieter
+ */
+export const STICK_SET = {
+  base: '/sounds/stick/',
+  files: { accent: 'accent.wav', beat: 'beat.wav', hat: 'hat.wav' },
+  peak: { accent: 1, beat: 0.8, count: 0.8, sub: 0.35, hat: 0.5 } satisfies Record<Hit, number>,
+} as const
+const STICK_FILE: Readonly<Record<Hit, keyof typeof STICK_SET.files>> = { accent: 'accent', beat: 'beat', count: 'beat', sub: 'beat', hat: 'hat' }
+type StickBuffers = Partial<Record<keyof typeof STICK_SET.files, AudioBuffer>>
+
+/** Stick's one-shots for a context: each kept once it loads; a failed one is asked for again on the next load */
+function lazyStick(ctx: AudioContext) {
+  const buffers: StickBuffers = {}
+  let loading: Promise<boolean> | null = null
+  const load = async (): Promise<boolean> => {
+    const names = Object.keys(STICK_SET.files) as (keyof typeof STICK_SET.files)[]
+    const results = await Promise.all(names.map((n) => loadSample(ctx, STICK_SET.base + STICK_SET.files[n])))
+    results.forEach((r, i) => {
+      if (r.ok) buffers[names[i]!] = r.buffer
+    })
+    return results.every((r) => r.ok)
+  }
+  return {
+    buffers,
+    load: (): Promise<boolean> =>
+      (loading ??= load().then((ok) => {
+        if (!ok) loading = null
+        return ok
+      })),
+  }
+}
+
+/** a Stick hit: its one-shot, or Wood's where that hasn't loaded */
+export function playStick(ctx: AudioContext, out: AudioNode, buffers: StickBuffers, kind: ClickKind, time: number): void {
+  if (kind === 'tick') return
+  const buffer = buffers[STICK_FILE[kind]]
+  if (!buffer) return playClick(ctx, out, kind, time, 'wood')
+  const source = ctx.createBufferSource()
+  source.buffer = buffer
+  const gain = ctx.createGain()
+  gain.gain.value = STICK_SET.peak[kind]
+  source.connect(gain).connect(out)
+  source.start(time)
 }
 
 const RIM = { length: 0.025, centre: 1800, q: 8, accent: 0.7, beat: 0.45 } as const
@@ -185,9 +237,11 @@ export function webAudio(): ClickAudio | null {
     const lead = lazySampler(ctx, out, LEAD_SET)
     const comp = lazySampler(ctx, out, COMP_SET)
     const bass = lazySampler(ctx, out, BASS_SET)
+    const stick = lazyStick(ctx)
     return {
       now: () => ctx.currentTime,
-      play: (kind, time, sound) => playClick(ctx, out, kind, time, sound),
+      play: (kind, time, sound) => (sound === 'stick' ? playStick(ctx, out, stick.buffers, kind, time) : playClick(ctx, out, kind, time, sound)),
+      load: (sound) => (sound === 'stick' ? stick.load() : Promise.resolve(true)),
       note: (midi, time, length) => lead.get()?.note(midi, time, length) ?? playNote(ctx, out, midi, time, length),
       comp: (midi, time, length) => comp.get()?.note(midi, time, length) ?? playNote(ctx, out, midi, time, length, STAND_IN.comp),
       bass: (midi, time, length) => bass.get()?.note(midi, time, length) ?? playNote(ctx, out, midi, time, length, STAND_IN.bass),

@@ -141,6 +141,7 @@ const BASSES: readonly { value: ClickBass; label: string }[] = [
 const SOUNDS: readonly { value: ClickSound; label: string }[] = [
   { value: 'wood', label: 'Wood' },
   { value: 'beep', label: 'Beep' },
+  { value: 'stick', label: 'Stick' },
 ]
 
 const metreText = computed(() =>

@@ -60,6 +60,10 @@ describe('precacheUrls', () => {
     expect(precacheUrls(['sounds/piano/33.wav'])).toEqual([]) // the sampled sounds are cached on first play, not precached
   })
 
+  it('precaches the Stick click’s small set, so it plays offline from the start (#536)', () => {
+    expect(precacheUrls(['sounds/stick/beat.wav', 'sounds/comp/45.wav'])).toEqual(['/sounds/stick/beat.wav'])
+  })
+
   it('reads Windows paths too', () => {
     expect(precacheUrls(['library\\index.html', '_nuxt\\x.js'])).toEqual(['/_nuxt/x.js', '/library'])
   })

@@ -13,10 +13,13 @@ import { join } from 'node:path'
  *  not og-image.png, robots.txt or the sitemap */
 const PAGE_FILE = /^(?:200\.html|favicon\.\w+|icon-[\w-]+\.png|apple-touch-icon\.png|site\.webmanifest|theme-init\.js|analytics-before-send\.js)$/
 
+/** the sampled sounds small enough to precache (#535): the Stick click's one-shots; the larger sets cache on first play */
+const PRECACHED_SOUNDS = /^sounds\/stick\//
+
 /** the URL a built file is served at, if it is precached: app chunks, page shells and their payloads but no song's */
 function precacheUrl(file: string): string | undefined {
   const path = file.replace(/\\/g, '/')
-  if (path.startsWith('_nuxt/')) return `/${path}`
+  if (path.startsWith('_nuxt/') || PRECACHED_SOUNDS.test(path)) return `/${path}`
   if (PAGE_FILE.test(path)) return `/${path}`
   const page = /^(?:(.+)\/)?(index\.html|_payload\.json)$/.exec(path)
   if (!page || page[1]?.startsWith('song/')) return undefined

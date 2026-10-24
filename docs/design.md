@@ -932,7 +932,9 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   keeps time only: one metre (the chart's main one), no following the form.
 - **App:** `useClick` books those clicks on the AudioContext's clock from a 25 ms interval, 0.1 s ahead (1.2 s while the
   tab is hidden), and never books a time twice; a beat missed in the background is skipped, not burst. The sounds are
-  synthesized in `clickSounds.ts` (no samples, no CSP change). `ClickBar` is its controls, docked at the window's foot on
+  in `clickSounds.ts`: Wood and Beep synthesized; Stick (#536) three recorded one-shots from `/sounds/stick/` (this
+  site's own files, so no CSP change; precached for offline), loaded by `ClickAudio.load` before Start (bounded by
+  `LEAD_BOUND`), each hit playing Wood until its one-shot loads. `ClickBar` is its controls, docked at the window's foot on
   the song page (the body's `click-docked` class keeps the page's foot clear of it, not in print) or a row of focus
   mode's bar. The rail's Click shows it; Space starts and stops it outside a control.
 - **State:** `csm-click` holds the settings (count-in, hat, sound, and `folded`: the bar down to Start/Stop, the tempo and the lights); `csm-click:<key>` a chart's tempo and
