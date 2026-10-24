@@ -292,3 +292,19 @@ test('the click’s Stick sound plays this site’s recorded stick, loaded at St
   await expect(clickBar(page).locator('[data-testid=click-lights] i[data-on]')).toHaveCount(1)
   await expect.poll(() => asked.filter((p) => p.startsWith('/sounds/stick/')).sort()).toEqual(['/sounds/stick/accent.wav', '/sounds/stick/beat.wav', '/sounds/stick/hat.wav'])
 })
+
+for (const [slug, set] of [['angel-eyes', 'Ballad'], ['ana-maria', 'Bossa']] as const) {
+  test(`${slug} offers the ${set} groove, and plays it with Drums (#509)`, async ({ page }) => {
+    await page.goto(`/song/${slug}`)
+    await clickUntil(page, page.getByRole('button', { name: 'Click', exact: true }), clickBar(page))
+    const settings = page.getByRole('dialog', { name: 'Click settings' })
+    await clickBar(page).getByRole('button', { name: 'Click settings' }).click()
+    await settings.getByRole('checkbox', { name: 'Piano' }).click()
+    await expect(settings.getByRole('checkbox', { name: /groove$/ })).toHaveAccessibleName(`${set} groove`)
+    await settings.getByRole('checkbox', { name: `${set} groove` }).click()
+    await settings.getByRole('checkbox', { name: 'Drums' }).click()
+    await page.keyboard.press('Escape')
+    await clickBar(page).getByRole('button', { name: 'Start' }).click()
+    await expect(clickBar(page).locator('[data-testid=click-lights] i[data-on]')).toHaveCount(1)
+  })
+}

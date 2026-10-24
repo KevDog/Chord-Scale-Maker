@@ -759,7 +759,7 @@
           </UiText>
         </DecisionSection>
 
-        <DecisionSection v-if="grooveOn" id="groove.style">
+        <DecisionSection v-if="anyGrooveOn" id="groove.style">
           <UiText>
             A chart's style picks its <strong :class="EM">groove</strong>, the pattern set Piano and Bass play in once
             it's on: a ballad the Ballad set, a Latin, bossa or samba style the Bossa set, any other Swing. It picks how far the
@@ -771,7 +771,7 @@
           </UiText>
         </DecisionSection>
 
-        <DecisionSection v-if="grooveOn" id="groove.swing">
+        <DecisionSection v-if="grooveOn.swing" id="groove.swing">
           <UiText>
             With the <strong :class="EM">Swing groove</strong> on, the piano comps and the bass walks in place of the held
             chords and roots. The piano strikes each chord's voicing (the same voicings as Piano's) in a comping rhythm drawn
@@ -787,6 +787,32 @@
           </UiText>
           <UiText>
             <strong :class="EM">What you can change:</strong> the groove and Drums, the Swing dial, and the sheet's level.
+          </UiText>
+        </DecisionSection>
+
+        <DecisionSection v-if="grooveOn.ballad" id="groove.ballad">
+          <UiText>
+            With the <strong :class="EM">Ballad groove</strong> on, the piano holds each chord's voicing, as Piano does,
+            and the bass plays in two whatever Bass says (but Off): a chord held a whole bar plays its root on 1 and its 5th,
+            below, on 3. <strong :class="EM">Drums</strong> plays brushes: a sweep round the snare on each beat, a tap and
+            the hi-hat's foot on 2 and 4 (on 2 and 3 in 3/4).
+          </UiText>
+          <UiText>
+            <strong :class="EM">What you can change:</strong> the groove and Drums, and the sheet's level.
+          </UiText>
+        </DecisionSection>
+
+        <DecisionSection v-if="grooveOn.bossa" id="groove.bossa">
+          <UiText>
+            With the <strong :class="EM">Bossa groove</strong> on, the piano strikes each chord's voicing in a syncopation
+            drawn for it, on the beat and off it, never past the chord; the bass plays the chord's root on its first beat and
+            its 5th two beats on, each a dotted quarter. <strong :class="EM">Drums</strong> plays a cross-stick on the
+            bossa's two-bar pattern (1, the and of 2, and 4; then 2 and the and of 3) over a closed hi-hat on every 8th, and
+            a kick on 1 and 3 with a pickup on the 8th before each. The 8ths are straight: a bossa style's click starts
+            straight.
+          </UiText>
+          <UiText>
+            <strong :class="EM">What you can change:</strong> the groove and Drums, the click's feel, and the sheet's level.
           </UiText>
         </DecisionSection>
       </section>
@@ -809,7 +835,8 @@ const patternsOn = useFeature('patterns')
 const metronomeOn = useFeature('metronome')
 const hearLineOn = useFeature('hearLine')
 const harmonyOn = hearLineOn && useFeature('harmony')
-const grooveOn = harmonyOn && useFeature('grooveSwing')
+const grooveOn = { swing: harmonyOn && useFeature('grooveSwing'), ballad: harmonyOn && useFeature('grooveBallad'), bossa: harmonyOn && useFeature('grooveBossa') }
+const anyGrooveOn = grooveOn.swing || grooveOn.ballad || grooveOn.bossa
 
 /** the ranking examples, from the engine as the sheets rank them */
 const PENT_EXAMPLE = pentatonicChoices('Cmaj7', 'C Ionian', CONCERT).slice(0, 3)
