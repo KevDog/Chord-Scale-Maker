@@ -1,8 +1,10 @@
 import type { ClickKind } from '@chord-scale-maker/engine'
+import { type SampleSet, type Sampler, loadSampler } from '~/utils/sampler'
 
 /**
- * The click's sounds (#254), Hear line's lead (#507) and Hear rhythm's rim (#521), synthesized: no samples, so nothing to fetch and no CSP change. The only file that builds
- * audio nodes; useClick books through a ClickAudio, which tests replace with a fake.
+ * The click's sounds (#254) and Hear rhythm's rim (#521), synthesized; Hear line's lead (#507) a sampled piano (#538),
+ * synthesized until its samples load or if they fail. The samples are this site's own files, so no CSP change. With
+ * sampler.ts the only files that build audio nodes; useClick books through a ClickAudio, which tests replace with a fake.
  */
 export type ClickSound = 'wood' | 'beep'
 export const CLICK_SOUNDS: readonly ClickSound[] = ['wood', 'beep']
@@ -15,6 +17,8 @@ export type ClickAudio = Readonly<{
   note: (midi: number, time: number, length: number) => () => void
   /** Hear rhythm's rim: an attack of the rhythm at time, louder accented */
   hit: (time: number, accent: boolean) => void
+  /** the lead's samples, fetched once: true once they play, false if they couldn't load (the synthesized lead plays on) */
+  loadLead: () => Promise<boolean>
   resume: () => Promise<void>
   suspend: () => Promise<void>
   close: () => Promise<void>
@@ -119,6 +123,18 @@ export function playNote(ctx: AudioContext, out: AudioNode, midi: number, time: 
   }
 }
 
+/**
+ * Hear line's lead (#538): VSCO 2 CE's Upright Piano, its second dynamic, a sample every major third from A1 to F6
+ * (design/sounds/README.md); below and above, the outermost shifted
+ */
+export const LEAD_SET: SampleSet = {
+  base: '/sounds/piano/',
+  layers: [{ upTo: 1, zones: Array.from({ length: 15 }, (_, i) => 33 + 4 * i).map((midi) => ({ midi, file: `${midi}.wav` })) }],
+  release: 0.12,
+  voices: 8,
+  gain: 0.7,
+}
+
 /** the browser's audio, or null where there is none; create it only inside a user's gesture (autoplay rules) */
 export function webAudio(): ClickAudio | null {
   try {
@@ -126,11 +142,20 @@ export function webAudio(): ClickAudio | null {
     const out = ctx.createGain()
     out.gain.value = 0.8
     out.connect(ctx.destination)
+    let lead: Sampler | null = null
+    let loading: Promise<boolean> | null = null
+    const loadLead = (): Promise<boolean> =>
+      (loading ??= loadSampler(ctx, out, LEAD_SET).then((s) => {
+        lead = s
+        if (!s) loading = null // the next Play tries again
+        return !!s
+      }))
     return {
       now: () => ctx.currentTime,
       play: (kind, time, sound) => playClick(ctx, out, kind, time, sound),
-      note: (midi, time, length) => playNote(ctx, out, midi, time, length),
+      note: (midi, time, length) => (lead ? lead.note(midi, time, length) : playNote(ctx, out, midi, time, length)),
       hit: (time, accent) => playRim(ctx, out, time, accent),
+      loadLead,
       resume: () => ctx.resume(),
       suspend: () => ctx.suspend(),
       close: () => ctx.close(),

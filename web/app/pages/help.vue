@@ -493,6 +493,8 @@
                 arpeggio as drawn (<DecisionLink id="hear.play">how</DecisionLink>). On the Changes sheet, each pentatonic on a
                 label's ladder has one too: it plays that minor pentatonic up to its octave and back. With the click running it
                 comes in on the next bar. Press it again to stop.
+                Both play a recorded piano, a set of sound files on this site, loaded the first time you play and kept for
+                offline use; until it loads, or if it can't, a plain synthesized tone plays instead. Nothing is recorded or sent.
               </dd>
             </div>
           </dl>

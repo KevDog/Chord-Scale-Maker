@@ -31,6 +31,11 @@ export type ClickDeps = Readonly<{
 
 /** a Play with the click stopped starts this far ahead (s), so its first note isn't clipped */
 const PHRASE_LEAD = 0.05
+/** the longest a Play, or a Start with Hear line on, waits for the lead's samples (ms); past it the synthesized lead stands in */
+export const LEAD_BOUND = 1000
+
+/** the lead's samples (#538), or the bound, whichever comes first */
+const leadReady = (audio: ClickAudio): Promise<unknown> => Promise.race([audio.loadLead(), new Promise((r) => setTimeout(r, LEAD_BOUND))])
 
 /** how often the scheduler runs (ms) and how far ahead it books (s): further while the tab is hidden, as browsers slow its timers */
 export const LOOKAHEAD = { interval: 25, ahead: 0.1, hiddenAhead: 1.2 } as const
@@ -249,6 +254,10 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
       return
     }
     if (mine !== run) return // stopped, or started again, while resuming
+    if (settings.value.hear) {
+      await leadReady(audio)
+      if (mine !== run) return
+    }
     state = { barStart: audio.now(), bar: 0 }
     booked = audio.now()
     recent = []
@@ -293,6 +302,8 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
       }
       if (mine !== phraseRun) return
     }
+    await leadReady(audio)
+    if (mine !== phraseRun) return
     const now = audio.now()
     const bar = (formBar(plan.value, state.bar).beats * 60) / plan.value.tempo
     const next = state.barStart > now ? state.barStart : state.barStart + bar
@@ -308,6 +319,14 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
       if (!running.value) void audio?.suspend()
     }, (end - now) * 1000)
   }
+
+  // Hear line turned on with the click running: its lead's samples, for the notes booked once they're in
+  watch(
+    () => settings.value.hear,
+    (hear) => {
+      if (hear && running.value && audio) void audio.loadLead()
+    },
+  )
 
   function stop(): void {
     stopPhrase()

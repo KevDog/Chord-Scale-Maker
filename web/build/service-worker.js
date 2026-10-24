@@ -2,24 +2,26 @@
  * everything else from the network, cached as they arrive, the cache answering when offline. */
 /* global VERSION, PRECACHE */
 const CACHE = `csm-${VERSION}`
+/** the sampled sounds (/sounds/, #538): cached on first play and kept across builds, as a changed file gets a new name */
+const SOUNDS = 'csm-sounds'
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE).then((cache) => cache.addAll(PRECACHE)).then(() => self.skipWaiting()))
 })
 
 self.addEventListener('activate', (event) => {
-  const old = (key) => key.startsWith('csm-') && key !== CACHE
+  const old = (key) => key.startsWith('csm-') && key !== CACHE && key !== SOUNDS
   event.waitUntil(caches.keys().then((keys) => Promise.all(keys.filter(old).map((key) => caches.delete(key)))).then(() => self.clients.claim()))
 })
 
 /** a navigation can't take a redirected response ("/library" → "/library/"), so copy it into a fresh one */
 const unredirected = (response) => (response.redirected ? new Response(response.body, response) : response)
 
-async function cacheFirst(request) {
+async function cacheFirst(request, cache = CACHE) {
   const cached = await caches.match(request)
   if (cached) return cached
   const response = await fetch(request)
-  if (response.ok) (await caches.open(CACHE)).put(request, response.clone())
+  if (response.ok) (await caches.open(cache)).put(request, response.clone())
   return response
 }
 
@@ -53,5 +55,6 @@ self.addEventListener('fetch', (event) => {
   if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/_vercel/')) return
   // hashed chunks never change; builds/ (the app manifest) does, so it's fetched like a page
   const hashed = url.pathname.startsWith('/_nuxt/') && !url.pathname.startsWith('/_nuxt/builds/')
-  event.respondWith(hashed ? cacheFirst(request) : networkFirst(request, url))
+  if (url.pathname.startsWith('/sounds/')) event.respondWith(cacheFirst(request, SOUNDS))
+  else event.respondWith(hashed ? cacheFirst(request) : networkFirst(request, url))
 })

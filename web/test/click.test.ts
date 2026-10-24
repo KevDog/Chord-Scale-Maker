@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { nextTick, ref } from 'vue'
-import { useClick } from '~/composables/useClick'
+import { LEAD_BOUND, useClick } from '~/composables/useClick'
 import { fakeAudio, timers } from './clickFakes'
 
 const chart = () => ref({ beats: 4 as const, style: 'Medium up', metreChanges: false })
@@ -360,6 +360,28 @@ describe('useClick', () => {
       expect(audio.notes).toHaveLength(before)
     })
 
+    it('Start loads the lead’s samples first with Hear line on, and only then (#538)', async () => {
+      expect((await hearing(false)).audio.leadLoads.n).toBe(0)
+      const audio = fakeAudio()
+      let loaded: (ok: boolean) => void = () => {}
+      audio.loadLead = () => new Promise((r) => (loaded = r))
+      const c = useClick(chart(), ref(undefined), { audio: () => audio, ...timers() })
+      c.settings.value = { ...c.settings.value, hear: true }
+      const starting = c.start()
+      await Promise.resolve()
+      expect(audio.played).toHaveLength(0)
+      loaded(false) // a failed load: the synthesized lead, on time
+      await starting
+      expect(audio.played.length).toBeGreaterThan(0)
+    })
+
+    it('turning Hear line on while the click runs loads the lead', async () => {
+      const { audio, c } = await hearing(false)
+      c.settings.value = { ...c.settings.value, hear: true }
+      await nextTick()
+      expect(audio.leadLoads.n).toBe(1)
+    })
+
     it('says whether there is a Line to hear', () => {
       const c = useClick(chart(), ref(undefined), { audio: fakeAudio })
       expect(c.hasLine.value).toBe(false)
@@ -430,6 +452,50 @@ describe('useClick', () => {
       c.stop()
       expect(c.playing.value).toBe(null)
       expect(audio.notes.every((n) => n.stopped)).toBe(true)
+    })
+
+    it('waits for the lead’s samples before timing the phrase (#538)', async () => {
+      const audio = fakeAudio()
+      let loaded: (ok: boolean) => void = () => {}
+      audio.loadLead = () => new Promise((r) => (loaded = r))
+      const c = useClick(chart(), ref(undefined), { audio: () => audio, ...timers() })
+      audio.clock.t = 5
+      const playing = c.play('a', phrase)
+      await Promise.resolve()
+      expect(audio.notes).toHaveLength(0)
+      audio.clock.t = 5.4
+      loaded(true)
+      await playing
+      expect(audio.notes[0]!.time).toBeGreaterThan(5.4)
+    })
+
+    it('a lead that never loads holds the phrase back no more than its bound, then plays it synthesized', async () => {
+      vi.useFakeTimers()
+      try {
+        const audio = fakeAudio()
+        audio.loadLead = () => new Promise(() => {})
+        const c = useClick(chart(), ref(undefined), { audio: () => audio, ...timers() })
+        const playing = c.play('a', phrase)
+        await vi.advanceTimersByTimeAsync(LEAD_BOUND)
+        await playing
+        expect(audio.notes).toHaveLength(2)
+      } finally {
+        vi.useRealTimers()
+      }
+    })
+
+    it('a Stop while the lead loads plays nothing', async () => {
+      const audio = fakeAudio()
+      let loaded: (ok: boolean) => void = () => {}
+      audio.loadLead = () => new Promise((r) => (loaded = r))
+      const c = useClick(chart(), ref(undefined), { audio: () => audio, ...timers() })
+      const playing = c.play('a', phrase)
+      await Promise.resolve()
+      c.stopPhrase()
+      loaded(true)
+      await playing
+      expect(audio.notes).toHaveLength(0)
+      expect(c.playing.value).toBe(null)
     })
 
     it('is unavailable without WebAudio', async () => {

@@ -210,3 +210,23 @@ test('a Scales or Arpeggios staff’s Play sounds it, and Stop or another Play s
   await plays.first().click()
   await expect(page.getByRole('button', { name: /^Stop / })).toHaveCount(1) // with no error (the fixture fails on one)
 })
+
+test('a staff’s Play fetches the piano’s samples from this site, once (#538)', async ({ page }) => {
+  const asked: string[] = []
+  page.on('request', (r) => {
+    if (r.url().includes('/sounds/')) asked.push(new URL(r.url()).pathname)
+  })
+  await page.goto('/song/autumn-leaves')
+  await chooseSheet(page, 'Scales')
+  const plays = page.getByRole('button', { name: /^Play / })
+  await expect(async () => {
+    await plays.first().click({ timeout: 1000 }) // a click before hydration is lost
+    await expect(page.getByRole('button', { name: /^Stop / })).toHaveCount(1, { timeout: 1000 })
+  }).toPass({ timeout: 10_000 })
+  await expect.poll(() => asked.length).toBe(15)
+  expect(asked.every((p) => p.startsWith('/sounds/piano/'))).toBe(true)
+  await page.getByRole('button', { name: /^Stop / }).click()
+  await plays.nth(1).click()
+  await expect(page.getByRole('button', { name: /^Stop / })).toHaveCount(1)
+  expect(new Set(asked).size).toBe(asked.length) // decoded once for the page, not per Play
+})
