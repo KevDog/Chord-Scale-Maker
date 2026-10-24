@@ -2,7 +2,8 @@
  * everything else from the network, cached as they arrive, the cache answering when offline. */
 /* global VERSION, PRECACHE */
 const CACHE = `csm-${VERSION}`
-/** the sampled sounds (/sounds/, #538): cached on first play and kept across builds, as a changed file gets a new name */
+/** the sampled sounds (/sounds/, #538): cached on first play and kept across builds, as a changed file gets a new name;
+ * a small set (the Stick click's) is in PRECACHE too, and caches.match finds it there */
 const SOUNDS = 'csm-sounds'
 
 self.addEventListener('install', (event) => {

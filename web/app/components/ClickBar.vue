@@ -189,6 +189,7 @@ const SHIFTS = ['A tritone away', 'Down a 4th', 'Down a major 3rd', 'Down a mino
 const SOUNDS: readonly { value: ClickSound; label: string }[] = [
   { value: 'wood', label: 'Wood' },
   { value: 'beep', label: 'Beep' },
+  { value: 'stick', label: 'Stick' },
 ]
 
 const metreText = computed(() =>

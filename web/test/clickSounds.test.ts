@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { DRUM_KINDS } from '@chord-scale-maker/engine'
-import { BASS_SET, COMP_SET, DRUM_KIT, LEAD_SET, webAudio } from '~/utils/clickSounds'
+import { BASS_SET, CLICK_SOUNDS, COMP_SET, DRUM_KIT, LEAD_SET, STICK_SET, webAudio } from '~/utils/clickSounds'
 
 /** just enough of an AudioContext to build the click's nodes, counting the buffers it makes */
 function stubContext() {
@@ -169,6 +169,65 @@ describe('clickSounds', () => {
       expect(await audio.loadDrums()).toBe(false)
       for (const k of DRUM_KINDS) audio.drum(k, 0, 0.5)
       expect(made.sources + made.oscillators).toBeGreaterThanOrEqual(DRUM_KINDS.length)
+    })
+  })
+
+  describe('the Stick click (#536)', () => {
+    const files = () => Object.values(STICK_SET.files).map((f) => `${STICK_SET.base}${f}`)
+
+    it('is a click sound, its one-shots same-origin under /sounds/stick/', () => {
+      expect(CLICK_SOUNDS).toContain('stick')
+      expect(files().every((f) => f.startsWith('/sounds/stick/'))).toBe(true)
+    })
+
+    it('loaded, every hit plays its one-shot, not an oscillator', async () => {
+      const made = stubContext()
+      const asked: string[] = []
+      vi.stubGlobal('fetch', async (url: string) => {
+        asked.push(url)
+        return new Response('x')
+      })
+      const audio = webAudio()!
+      expect(await audio.load('stick')).toBe(true)
+      expect(await audio.load('stick')).toBe(true)
+      expect(asked.sort()).toEqual([...new Set(files())].sort())
+      const before = made.sources
+      for (const kind of ['accent', 'beat', 'count', 'sub', 'hat'] as const) audio.play(kind, 0, 'stick')
+      audio.play('tick', 0, 'stick')
+      expect([made.sources - before, made.oscillators]).toEqual([5, 0])
+    })
+
+    it('not loaded, or failed, a hit plays Wood', async () => {
+      const made = stubContext()
+      vi.stubGlobal('fetch', async () => new Response(null, { status: 404 }))
+      const audio = webAudio()!
+      audio.play('beat', 0, 'stick')
+      expect(made.oscillators).toBe(1)
+      expect(await audio.load('stick')).toBe(false)
+      audio.play('accent', 0, 'stick')
+      expect(made.oscillators).toBe(2)
+    })
+
+    it('a hit whose one-shot alone failed plays Wood; the others play theirs', async () => {
+      const made = stubContext()
+      vi.stubGlobal('fetch', async (url: string) => (url.endsWith(STICK_SET.files.hat) ? new Response(null, { status: 404 }) : new Response('x')))
+      const audio = webAudio()!
+      expect(await audio.load('stick')).toBe(false)
+      const before = made.sources
+      audio.play('beat', 0, 'stick')
+      expect([made.sources - before, made.oscillators]).toEqual([1, 0])
+      audio.play('hat', 0, 'stick')
+      expect(made.buffers).toBe(1) // Wood's hat: synthesized noise
+    })
+
+    it('Wood and Beep load nothing', async () => {
+      stubContext()
+      const fetcher = vi.fn()
+      vi.stubGlobal('fetch', fetcher)
+      const audio = webAudio()!
+      expect(await audio.load('wood')).toBe(true)
+      expect(await audio.load('beep')).toBe(true)
+      expect(fetcher).not.toHaveBeenCalled()
     })
   })
 })

@@ -2,10 +2,23 @@
 
 Every recorded sound the app plays lives in `web/public/sounds/<set>/`, is served from this site's own origin, and is
 listed here with its source, licence and the edits made. Raw sources go in the git-ignored `design/sources/<set>/`
-(re-fetch them with the commands below). A set's files are cached by the service worker on first play and kept across
+(re-fetch them with the commands below). A set's files are cached by the service worker on first play (a small set, precached) and kept across
 builds (`csm-sounds`), so **a changed file gets a new name** (or the set a new folder), never new bytes under an old one.
 
 Licences: CC0 preferred; a CC-BY set is credited on the About page.
+
+## stick: the click's Stick sound (#536)
+
+- **Source:** VSCO 2 CE, `Percussion/` (<https://github.com/sgossner/VSCO-2-CE>). Licence: CC0 1.0, credited on the
+  About page with the rest of VSCO 2 CE. The set has no drum kit (no hi-hat or cross-stick), so the stick is its claves
+  and the hat its tambourine shake.
+- **Files:** `accent.wav` ← `Claves1_Hit_v3_rr1_Sum.wav` (loudest dynamic), `beat.wav` ← `Claves1_Hit_v1_rr1_Sum.wav`
+  (softest), `hat.wav` ← `Tamb1-Shake_v1_rr1_Sum.wav`.
+- **Edits:** `afconvert -f WAVE -d LEI16@32000 -c 1` (mono 16-bit 32 kHz: the clicks' brightness is above 12 kHz),
+  trimmed to the onset (the first sample over 1% of the peak), cut to 0.25 s (accent), 0.2 s (beat) and 0.12 s (hat)
+  with a linear fade over the last 0.08, 0.07 and 0.06 s, and peak-normalized to 0.9.
+- **Size:** 3 files, 37 KB. Precached by the service worker (`web/build/sw.ts`), unlike the larger sets.
+- **Fetch:** `https://raw.githubusercontent.com/sgossner/VSCO-2-CE/master/Percussion/<file>`.
 
 ## piano: Hear line and Play's lead (#538)
 

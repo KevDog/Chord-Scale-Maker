@@ -376,6 +376,36 @@ describe('useClick', () => {
       expect(audio.played.length).toBeGreaterThan(0)
     })
 
+    it('Start loads the click’s sound first, a bounded wait (#536)', async () => {
+      vi.useFakeTimers()
+      try {
+        const audio = fakeAudio()
+        audio.load = (sound) => {
+          audio.soundLoads.push(sound)
+          return new Promise(() => {}) // never settles
+        }
+        const c = useClick(chart(), ref(undefined), { audio: () => audio, ...timers() })
+        c.settings.value = { ...c.settings.value, sound: 'stick' }
+        await nextTick()
+        const starting = c.start()
+        await vi.advanceTimersByTimeAsync(0)
+        expect(audio.soundLoads).toEqual(['stick'])
+        expect(audio.played).toHaveLength(0)
+        await vi.advanceTimersByTimeAsync(LEAD_BOUND)
+        await starting
+        expect(audio.played.length).toBeGreaterThan(0)
+      } finally {
+        vi.useRealTimers()
+      }
+    })
+
+    it('choosing a sound while the click runs loads it', async () => {
+      const { audio, c } = await hearing(false)
+      c.settings.value = { ...c.settings.value, sound: 'stick' }
+      await nextTick()
+      expect(audio.soundLoads.at(-1)).toBe('stick')
+    })
+
     it('turning Hear line on while the click runs loads the lead', async () => {
       const { audio, c } = await hearing(false)
       c.settings.value = { ...c.settings.value, hear: true }
