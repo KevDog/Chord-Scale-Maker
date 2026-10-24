@@ -79,7 +79,8 @@ function close(): void {
 function outside(e: PointerEvent): void {
   if (root.value && !root.value.contains(e.target as Node)) open.value = false
 }
-watch(open, (o) => (o ? document.addEventListener('pointerdown', outside) : document.removeEventListener('pointerdown', outside)))
+// immediate: a panel can mount already open (the Pentatonic options, opened as Superimpose turns to Pentatonic)
+watch(open, (o) => import.meta.client && (o ? document.addEventListener('pointerdown', outside) : document.removeEventListener('pointerdown', outside)), { immediate: true })
 
 /** beside its button, a panel that would pass the window's right edge opens under it, right-aligned (#579); checked as its content grows */
 const panel = ref<HTMLElement | null>(null)
