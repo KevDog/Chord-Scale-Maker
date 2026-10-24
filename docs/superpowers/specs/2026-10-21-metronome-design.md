@@ -20,8 +20,8 @@ screen, a cursor on the sheet, looping a section) is phase 2, in #254's thread.
 2. **Reachable mid-practice.** The bar is docked to the bottom of the window and stays while the sheet scrolls. What a
    player touches between choruses is on it: start/stop, tempo, feel, beat lights. Space starts and stops.
 3. **Jazz-aware without being clever.** Swing feel (the ride's skip note), an optional hat on 2 & 4, a count-in.
-4. **Within the site's rules.** WebAudio synthesis only: no samples, no third-party origins, no CSP change; works
-   offline; nothing leaves the browser.
+4. **Within the site's rules.** WebAudio, with sounds synthesized or sampled from files on this site's own origin (the
+   sampled sound: Addendum, below): no third-party origins, no CSP change; works offline; nothing leaves the browser.
 
 ## Non-goals (phase 2 or never)
 
@@ -36,7 +36,8 @@ screen, a cursor on the sheet, looping a section) is phase 2, in #254's thread.
 
 - A click that drifts or stutters: scheduling on `setTimeout` alone, or a scheduler that stops when the tab is in the
   background. The schedule runs on the AudioContext clock with a lookahead.
-- Audio samples in the bundle or fetched from anywhere: synthesis only.
+- Audio samples in the JavaScript bundle or fetched from another origin. Samples are same-origin files, loaded only
+  when their sound is used (Addendum, below).
 - A control that hides the music: the bar is one row tall on a laptop, never covers the staff it sits under (the page
   gets bottom padding while the bar is shown), and prints as nothing.
 - Sound before a gesture (autoplay policies), or sound that continues after leaving the song page.
@@ -94,10 +95,10 @@ The tempo is a starting point: the player sets the tempo they want and the chart
 - Lookahead scheduling (Chris Wilson's two clocks): a `setInterval` every 25 ms calls `scheduleClicks` for the window
   `[now, now + 0.1 s)` and books each click as an oscillator with an envelope at its exact `time`. A background tab
   slows the interval to ~1 s; the lookahead grows to 1.2 s while `document.hidden`, so the click never gaps.
-- Sounds, all synthesized: two sets, **Wood** (short triangle-wave tick with a fast exponential decay: accent 1800 Hz,
+- Sounds, synthesized: two sets, **Wood** (short triangle-wave tick with a fast exponential decay: accent 1800 Hz,
   beat 1200 Hz, sub 1200 Hz at a third the gain) and **Beep** (sine: accent 1320 Hz, beat 880 Hz). `hat` is a 30 ms
   burst of white noise through a high-pass filter in both. `count` sounds like `beat`. Output through one `GainNode`
-  so a volume control can come later.
+  so a volume control can come later. A third, sampled set, **Stick**, is in the Addendum.
 - Beat lights: a `requestAnimationFrame` loop compares the booked click times with `currentTime` and lights the beat
   that is sounding (and the count-in). Lights are decorative (`aria-hidden`); the Start button's `aria-pressed` is the
   accessible state.
@@ -180,7 +181,8 @@ one `useClick` instance in `EditorView`, so entering or leaving focus changes no
 - Placement A, the docked bottom bar (owner, from the mockups), over a floating pill (B) and a rail popover (C).
 - In focus mode the click joins the focus bar at the top (owner, from the second mockups), over a bottom dock there.
 - Plain timekeeping in phase 1; following the form later (owner).
-- Synthesis only, no samples (site rules).
+- Synthesis only, no samples (site rules), for the first release. Superseded 2026-10-22 by the Addendum: same-origin
+  samples are within the site rules (the playback roadmap's position), and a recorded click is the owner's request.
 - The main metre only; metre changes wait for form-following (ours: without knowing the bar, a change can't be placed).
 - Tempo and feel per chart (chart → style, no browser-wide feel); the rarer settings per browser; neither per-chart
   key in backups for now (ours, after the builder check).
@@ -199,3 +201,110 @@ one `useClick` instance in `EditorView`, so entering or leaving focus changes no
 - The per-chart storage key's exact form (built on `source.practiceKey`, as `usePractice` does).
 - How `ClickBar` lays out its two homes (one template with the prop, or two thin wrappers over shared parts).
 - How the `--click-h` padding is applied (body or the page's main element), matching how `--rail-h` is done.
+
+## Addendum (2026-10-22): a sampled click (#536)
+
+The owner asked for recorded sounds in place of the oscillator. This addendum adds a third sound, **Stick**, made from
+samples; Wood and Beep stay as they are, and Wood is the fallback whenever a sample is missing. It is the first
+user of the sampled-sounds groundwork (#535, epic #534), and it settles loading, caching and provenance for the
+later playback sets.
+
+### Intent
+
+A click that sounds like a player, not a test tone: a stick on a rim for the beats and a real hi-hat foot for 2 & 4,
+with no change to timing, controls or the site's rules.
+
+### What changes
+
+**Sounds.** `ClickSound` becomes `'stick' | 'wood' | 'beep'` and `CLICK_SOUNDS` lists Stick first. Stick maps the
+existing `ClickKind`s onto three recordings:
+
+| `ClickKind` | Stick plays | gain |
+|---|---|---|
+| `accent` | `stick-accent.wav` (a harder rim click, or a different spot on the rim) | 1 |
+| `beat`, `count` | `stick-beat.wav` | 0.8 |
+| `sub` | `stick-beat.wav` | 0.3 |
+| `hat` | `hat.wav` (hi-hat foot chick) | 0.4 |
+
+Wood and Beep keep the synthesized hat; only Stick uses `hat.wav`.
+
+**Files.** `web/public/sounds/click/stick-accent.wav`, `stick-beat.wav`, `hat.wav`: 16-bit mono PCM at 44.1 or
+48 kHz, each trimmed so the transient is the first sample, at most 150 ms with a short fade to silence, normalized to
+match Wood's loudness; about 50 KB together. **WAV, not MP3 or AAC:** both compressed formats prepend encoder delay
+(tens of milliseconds, varying by encoder and decoder), which would put the sampled click late against the beat
+lights; at this size compression buys nothing.
+
+**Loading** (`web/app/utils/clickSounds.ts`, still the only file that builds audio nodes):
+
+- `ClickAudio` gains `load(sound: ClickSound): Promise<boolean>`. For Wood and Beep it resolves `true` at once. For
+  Stick it fetches the three files (`fetch` + `decodeAudioData`), caches the decoded buffers per context (a `WeakMap`,
+  as the hat's noise is cached today), shares one in-flight request between callers, and resolves `false` on any
+  failure.
+- `play(kind, time, sound)` plays an `AudioBufferSourceNode` from the cached buffer through a per-hit `GainNode` into
+  the existing output gain. When Stick's buffers are not (yet) decoded, that hit plays the Wood synthesis instead, so
+  a click is never silent.
+- `useClick.start()` awaits `audio.load(settings.sound)` after `resume()`, bounded to 1 s and under the same `run`
+  token as the resume (a Stop or second Start while loading wins). A slow or failed load starts on time, with Wood
+  standing in for Stick until the buffers arrive.
+- Picking Stick in the ⋯ popover while the click is shown calls `load` at once, so the switch is heard at the next
+  booked hit.
+- A failed load sets `sampleFailed`; the ⋯ popover shows "Stick couldn't load; playing Wood" beside the Sound
+  control. The bar itself shows nothing (the click still plays, so there is nothing to alarm about).
+
+**Site rules.** The files are same-origin, fetched as data: `connect-src 'self'` already allows them, and
+`decodeAudioData` needs no `media-src`. No CSP or header change. Nothing is fetched unless Stick is the chosen sound.
+
+**Offline.** The three files are small enough to precache: `web/build/sw.ts`'s `PAGE_FILE` gains
+`sounds/click/*.wav`, so the worker's version hashes them and the click works offline with Stick as it does with
+Wood.
+
+**Provenance.** `design/sounds/README.md` (new, committed) records each file's source, licence, and the edits made
+(trim, fade, normalize, resample). Raw sources go in the git-ignored `design/sources/`. CC0 is required for the click
+(candidates: VCSL's percussion, or a recording made for the project), so no attribution is needed; if a CC-BY take is
+chosen instead, it is credited on the About page.
+
+**Default.** The stored default stays **Wood** in the first PR. After the device check (below) a follow-up PR makes
+Stick the default for browsers with no stored `csm-click` sound; a stored choice is never changed.
+
+### Tests
+
+- `web/test/clickSounds.test.ts`, with a fake context: Stick's `play` books a buffer source at `time` with the table's
+  gain; with no buffers it books the Wood oscillator; `load` fetches each file once across concurrent callers and
+  resolves `false` (not throwing) on a failed fetch or decode.
+- `useClick` (fake `ClickAudio`): Start awaits `load` before booking; a load that never settles starts after the bound;
+  Stop during the load leaves nothing booked; a failed load sets `sampleFailed` and the click still books; switching
+  sound while running calls `load`.
+- `web/build/sw.test.ts`: the click's WAV files are in the precache list; no other `sounds/` file is.
+- e2e (flag-on build): choosing Stick and pressing Start requests the three files once, same-origin; the lights move
+  as with Wood. a11y: the ⋯ popover with the failure note.
+
+### Docs
+
+- Help, the **Click** paragraph: the three sounds, and that Stick is a recording served by this site (nothing is
+  recorded or sent).
+- `design/sounds/README.md` as above. No `DECISIONS` row: the sound is the player's choice, not a heuristic.
+- Release notes item: "A recorded click sound, Stick".
+
+### Build order
+
+1. **Stick, not default**: the files and their README, `load`, the buffer path and its fallback, `sampleFailed` in
+   the popover, the precache entry, Help, tests. Ships under the existing `metronome` flag (already on); no new flag,
+   since nothing changes for a player who doesn't pick Stick.
+2. **Device check**, as for the click's first release: iOS Safari (decode, the silent switch, screen lock), Android
+   Chrome, desktop Safari, Chrome and Firefox; Stick against Wood for latency by ear and against the lights; offline.
+3. **Stick the default**, with any fixes the check found.
+
+### Decided
+
+- A third sound, not a replacement: Wood and Beep stay, Wood is the fallback (ours; the synthesis costs nothing to keep
+  and covers a failed load).
+- WAV for the click's one-shots; compressed formats only for the larger playback sets, with their encoder delay
+  accounted for there (ours, from the timing requirement).
+- Precached, not cached on first use (ours: 50 KB, and the click is promised offline).
+- Stick becomes the default only after the device check, and never over a stored choice.
+
+### Left to the builder
+
+- The recordings themselves, within the table and the size and licence limits.
+- The exact load bound (about 1 s) and the popover note's wording.
+- Whether the decoded buffers live with the noise cache or in the shared loader from #535, if that lands first.
