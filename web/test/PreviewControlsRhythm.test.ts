@@ -14,7 +14,7 @@ describe('the Rhythm controls (rhythm spec §9)', () => {
   })
 
   it('reads Off again after a reset from the hidden-settings notice, with Your rhythm… holding text that doesn’t read', async () => {
-    useInterface().level.value = 'intermediate'
+    useInterface().level.value = 'everything'
     const w = await mount()
     await openPanel(w, 'Line options')
     await w.find('[aria-label="Rhythm"]').trigger('click')
@@ -25,7 +25,7 @@ describe('the Rhythm controls (rhythm spec §9)', () => {
     useInterface().level.value = 'essentials' // the notice offers the reset where these controls hide
     await nextTick()
     await w.setProps({ rhythm: 'off' }) // the reset: Off, as it already was
-    useInterface().level.value = 'intermediate'
+    useInterface().level.value = 'everything'
     await nextTick()
     await openPanel(w, 'Line options')
     expect(w.find('[aria-label="Rhythm"]').text()).toContain('Rhythm: Off')
@@ -57,7 +57,7 @@ describe('the Rhythm controls (rhythm spec §9)', () => {
     expect(await units()).toEqual(expect.arrayContaining(['Triplets', ...tuplets]))
     useInterface().level.value = 'intermediate'
     const fewer = await units()
-    expect(fewer).toContain('Triplets')
+    expect(fewer).toContain('Triplets in 3, with accents')
     expect(fewer.filter((o) => tuplets.includes(o))).toEqual([])
   })
 
@@ -75,9 +75,25 @@ describe('the Rhythm controls (rhythm spec §9)', () => {
     const at = await typed('everything')
     expect(at.find('#rhythm-error').exists()).toBe(false)
     expect(at.emitted('update:rhythm')?.at(-1)).toEqual(['custom:8q:x_x__'])
-    const below = await typed('intermediate')
-    expect(below.find('#rhythm-error').text()).toContain('Use x, ., _ and > after')
-    expect((below.emitted('update:rhythm') ?? []).flat()).not.toContain('custom:8q:x_x__')
+  })
+
+  it('below Everything, lists the ready-made rhythms alone, with no detail (#577)', async () => {
+    useInterface().level.value = 'intermediate'
+    const w = await mountSuspended(PreviewControls, { props: { sheet: 'changes', instrument: 'piano', spell: 'key', intervals: true, keyStart: 'C', lineMode: 'off', rhythm: 'unit:8:3:accents' } })
+    await openPanel(w, 'Line options')
+    expect(w.find('[aria-label="In"]').exists()).toBe(false)
+    expect(w.find('[aria-label="Variation"]').exists()).toBe(false)
+    await w.find('[aria-label="Rhythm"]').trigger('click')
+    expect(w.findAll('[role=option]').map((o) => o.text())).toEqual(['Off', 'Quarters in 4, with accents', '8ths in 2, with accents', 'Triplets in 3, with accents', '16ths in 4, with accents', '8ths in 3, with accents', '4 8ths from 1', 'Downbeats', 'Upbeats', 'Half notes'])
+    await w.findAll('[role=option]').find((o) => o.text() === 'Upbeats')!.trigger('click')
+    expect(w.emitted('update:rhythm')?.at(-1)).toEqual(['card:upbeats'])
+  })
+
+  it('below Everything, a rhythm off the list in force reads as itself (#577)', async () => {
+    useInterface().level.value = 'intermediate'
+    const w = await mountSuspended(PreviewControls, { props: { sheet: 'changes', instrument: 'piano', spell: 'key', intervals: true, keyStart: 'C', lineMode: 'off', rhythm: 'unit:8:5:rests' } })
+    await openPanel(w, 'Line options')
+    expect(w.find('[aria-label="Rhythm"]').text()).toContain('Rhythm: 8ths in 5, with rests')
   })
 
   describe('the Groups and Step (Phase 4 spec §7)', () => {

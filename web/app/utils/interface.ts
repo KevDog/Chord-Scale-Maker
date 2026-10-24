@@ -26,6 +26,7 @@ export const CONTROL_TIERS = {
   'notes-per-bar': 'intermediate', // the Scales sheet's Notes per bar (rhythm-scales-arpeggios spec D16): Bergonzi's first exercise
   'rhythm-phrasing': 'everything', // the rhythm's Start and timing (rhythm spec §10)
   'rhythm-gears': 'everything', // the Rhythm listbox's tuplet pulse families (Phase 4 spec D22)
+  'rhythm-detail': 'everything', // the Rhythm's full library and its detail: In, Variation, Attacks, From, Your rhythm… (#577); below, INTERMEDIATE_RHYTHMS
   feel: 'everything', // the Changes sheet's Feel: in 4, 2 or 1 (Phase 4 spec D22)
   'scale-choice': 'intermediate', // a chord's scale: the scale label picker, ChordChoices' Scale section
   'form-editing': 'intermediate', // Repeat a section, Write out, endings, segno, coda, Jump, New section here, Paste bars
@@ -41,12 +42,15 @@ export const CONTROL_TIERS = {
 } as const satisfies Readonly<Record<string, Exclude<InterfaceLevel, 'essentials'>>>
 export type ControlId = keyof typeof CONTROL_TIERS
 
+/** the Rhythm listbox below Everything (#577): each pulse with an accent on the beat, 8ths in 3, a run of 8ths, the cards; no detail */
+export const INTERMEDIATE_RHYTHMS: readonly RhythmId[] = ['unit:4:4:accents', 'unit:8:2:accents', 'unit:8t:3:accents', 'unit:16:4:accents', 'unit:8:3:accents', 'run:8:4:0', 'card:downbeats', 'card:upbeats', 'card:halves']
+
 const rank = (l: InterfaceLevel): number => INTERFACE_LEVELS.indexOf(l)
 export const shows = (level: InterfaceLevel, id: ControlId): boolean => rank(level) >= rank(CONTROL_TIERS[id])
 
 /** the sheet's settings a control governs: what decides the notice */
 export type ViewSettings = Readonly<{ sheet: SheetKind; scaleLevel: ScaleLevel; numerals: boolean; scaleNames: boolean; lineMode: LineMode; spell: Spell; practice: PracticeSelection | null; overlay: Overlay; picks: boolean; approach: Approach; rhythm: RhythmId; targets: boolean; rhythmStart: RhythmStart; anticipate: number; rhythmLine: boolean; notesPerBar: NotesPerBar; rhythmPath: RhythmPath; feel: Feel }> // picks: live chord picks of the kind the sheet shows (#303)
-export type HiddenSetting = 'scale-level' | 'numerals' | 'scale-names' | 'line' | 'spell' | 'practice' | 'pentatonics' | 'chord-picks' | 'patterns' | 'approaches' | 'rhythm' | 'rhythm-phrasing' | 'rhythm-gears' | 'feel' | 'notes-per-bar'
+export type HiddenSetting = 'scale-level' | 'numerals' | 'scale-names' | 'line' | 'spell' | 'practice' | 'pentatonics' | 'chord-picks' | 'patterns' | 'approaches' | 'rhythm' | 'rhythm-phrasing' | 'rhythm-gears' | 'rhythm-detail' | 'feel' | 'notes-per-bar'
 
 /** each setting away from its default on this sheet, and the level its control needs */
 function setAway(v: ViewSettings): readonly (readonly [HiddenSetting, InterfaceLevel])[] {
@@ -67,6 +71,7 @@ function setAway(v: ViewSettings): readonly (readonly [HiddenSetting, InterfaceL
     ...(changes && v.rhythm !== 'off' && v.rhythmLine && (v.rhythmStart !== 'beat' || v.anticipate !== 0) ? [['rhythm-phrasing', 'everything'] as const] : []), // rhythmLine: the Line takes the rhythm (spec C3)
     // at a tuplet pulse (Phase 4 spec D22; Off with the rhythmGears flag off), or on the Changes with a path that acts on the rhythm (§7; off with the flag off)
     ...(rhythmDrawn && (isGearsRhythm(v.rhythm) || (changes && rhythmPathCaption(v.rhythm, v.rhythmPath) !== null)) ? [['rhythm-gears', 'everything'] as const] : []),
+    ...(rhythmDrawn && !isGearsRhythm(v.rhythm) && !INTERMEDIATE_RHYTHMS.includes(v.rhythm) ? [['rhythm-detail', 'everything'] as const] : []), // a tuplet pulse is rhythm-gears' alone
     ...(changes && v.feel !== 4 ? [['feel', 'everything'] as const] : []), // with or without a rhythm: it groups the plain slashes and the target beats too (Phase 4 spec §7; 4 with the rhythmGears flag off)
     ...(scales && v.notesPerBar !== 'whole' ? [['notes-per-bar', 'intermediate'] as const] : []), // Whole notes with the rhythmSheets flag off
     ...(v.sheet === 'patterns' ? [['patterns', 'intermediate'] as const] : []),

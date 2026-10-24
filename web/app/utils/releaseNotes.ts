@@ -11,6 +11,7 @@ export const RELEASE_NOTES: readonly ReleaseNote[] = [
     date: '2026-10-23',
     items: [
       { text: 'A control’s options panel at the end of the bar of controls now opens under its button when there’s no room beside it, instead of running off the window’s edge.', pr: 580 },
+      { text: 'At Intermediate, the Rhythm is a short list of ready-made rhythms (quarters, 8ths, triplets and 16ths with an accent on the beat, 8ths in 3, a run of 8ths, and the cards), with no options to set. Everything keeps every rhythm and its options.', pr: 578 },
       { text: 'A Changes line whose notes are too many for four bars, split two bars a line, now spreads its bars across the whole line instead of crowding them into half of it.', pr: 576 },
       { text: 'With the Line off and a Groups or Gears path, the card over the Changes sheet shows every step: a small card for each grouping or pulse the form plays, in order, each named as its mark on the sheet (③, 8ths).', pr: 575 },
       { text: 'With the Line off, a rhythm no longer turns the Changes sheet into a rhythm part: the sheet stays a lead sheet, four slashes a bar, and the rhythm shows once, on a card over the first line, to play over the changes. Line options shows the same card under the Rhythm as you choose it. With a Line on, the Line still plays in the rhythm.', pr: 573 },
