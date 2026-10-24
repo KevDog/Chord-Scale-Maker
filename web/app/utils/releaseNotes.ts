@@ -10,6 +10,7 @@ export const RELEASE_NOTES: readonly ReleaseNote[] = [
   {
     date: '2026-10-24',
     items: [
+      { text: 'Hear line and Play sound a grand piano now, the Salamander Grand (a Yamaha C5), sampled every minor third for a truer tone across the range; the sound files load again the first time you play.', pr: 594 },
       { text: 'The click has a third sound, Stick: a recorded stick in place of a synthesized tick, kept for offline use. Choose it under the click’s ⋯. Until it loads, or if it can’t, the click plays Wood.', pr: 587 },
       { text: 'A shuffle’s Swing dial now starts at 72%, a little further than the two thirds other swing styles start at; moving it still sticks.', pr: 588 },
       { text: 'Hear line and Play sound a recorded piano in place of the synthesized tone: sound files from this site, loaded the first time you play and then kept for offline use. Until they load, or if they can’t, the tone plays as before.', pr: 584 },

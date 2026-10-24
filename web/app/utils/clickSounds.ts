@@ -187,21 +187,21 @@ export function playNote(ctx: AudioContext, out: AudioNode, midi: number, time: 
 }
 
 /**
- * Hear line's lead (#538): VSCO 2 CE's Upright Piano, its second dynamic, a sample every major third from A1 to F6
- * (design/sounds/README.md); below and above, the outermost shifted
+ * Hear line's lead (#538): Alexander Holm's Salamander Grand Piano (a Yamaha C5, CC BY 3.0), its tenth of sixteen
+ * velocity layers, a sample every minor third from A1 to F♯6 (design/sounds/README.md); below and above, the outermost shifted
  */
 export const LEAD_SET: SampleSet = {
-  base: '/sounds/piano/',
-  layers: [{ upTo: 1, zones: Array.from({ length: 15 }, (_, i) => 33 + 4 * i).map((midi) => ({ midi, file: `${midi}.wav` })) }],
+  base: '/sounds/grand/',
+  layers: [{ upTo: 1, zones: Array.from({ length: 20 }, (_, i) => 33 + 3 * i).map((midi) => ({ midi, file: `${midi}.wav` })) }],
   release: 0.12,
   voices: 8,
   gain: 0.7,
 }
 
-/** Hear changes' piano (#539): the same Upright Piano, its softest dynamic, A2 to A5 every major third, longer for held chords */
+/** Hear changes' piano (#539): the same Salamander Grand, its sixth velocity layer, A2 to A5 every minor third, longer for held chords */
 export const COMP_SET: SampleSet = {
-  base: '/sounds/comp/',
-  layers: [{ upTo: 1, zones: Array.from({ length: 10 }, (_, i) => 45 + 4 * i).map((midi) => ({ midi, file: `${midi}.wav` })) }],
+  base: '/sounds/grand-comp/',
+  layers: [{ upTo: 1, zones: Array.from({ length: 13 }, (_, i) => 45 + 3 * i).map((midi) => ({ midi, file: `${midi}.wav` })) }],
   release: 0.2,
   voices: 12,
   gain: 0.35,

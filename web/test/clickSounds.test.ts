@@ -74,7 +74,7 @@ describe('clickSounds', () => {
     const files = () => [...new Set(LEAD_SET.layers.flatMap((l) => l.zones.map((z) => `${LEAD_SET.base}${z.file}`)))]
 
     it('are the piano set, same-origin, under /sounds/', () => {
-      expect(files().every((f) => f.startsWith('/sounds/piano/'))).toBe(true)
+      expect(files().every((f) => f.startsWith('/sounds/grand/'))).toBe(true)
     })
 
     it('loaded, a note plays a sample, not the oscillators', async () => {
@@ -118,7 +118,7 @@ describe('clickSounds', () => {
       const audio = webAudio()!
       expect(await audio.loadHarmony()).toBe(true)
       expect(asked.sort()).toEqual([...files(COMP_SET), ...files(BASS_SET)].sort())
-      expect(asked.every((u) => u.startsWith('/sounds/comp/') || u.startsWith('/sounds/upright-bass/'))).toBe(true)
+      expect(asked.every((u) => u.startsWith('/sounds/grand-comp/') || u.startsWith('/sounds/upright-bass/'))).toBe(true)
       const before = made.sources
       audio.comp(60, 0, 1)
       audio.bass(36, 0, 1)

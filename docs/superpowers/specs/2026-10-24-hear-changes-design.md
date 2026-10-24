@@ -9,7 +9,7 @@ level and a transposition.
 - **Samples, not synthesis** (#508's open decision, #539): VSCO 2 CE, CC0. Piano: the Upright Piano used for the lead
   (#538), its softest dynamic, A2–A5 every major third, 4 s (`/sounds/comp/`, 1.8 MB). Bass: Solo Contrabass pizzicato,
   E1–E3 (`/sounds/bass/`, 1.0 MB). The synthesized tone stands in until a set loads or if it fails. Provenance:
-  `design/sounds/README.md`. The orchestral pizzicato was replaced by D. Smolken's jazz upright (CC0, `/sounds/upright-bass/`).
+  `design/sounds/README.md`. The orchestral pizzicato was replaced by D. Smolken's jazz upright (CC0, `/sounds/upright-bass/`). The piano (lead and comping) was replaced by the Salamander Grand (CC BY 3.0, `/sounds/grand/`, `/sounds/grand-comp/`, every minor third).
 - **Rootless voicings** (Levine, *The Jazz Piano Book*, ch. 4), pure in `engine/src/harmony.ts`:
   - four notes, form A from the 3rd (3 x 7 y) or form B from the 7th (7 y 3 x);
   - dominant 3 13 7 9; sus 4 5 7 9; major 7th 3 5 7 9 (♯11 for the 5 where the scale has it); minor 7th ♭3 5 ♭7 9 (11
