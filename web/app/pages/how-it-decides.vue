@@ -758,6 +758,37 @@
             Bass: Off, Roots or Two-feel.
           </UiText>
         </DecisionSection>
+
+        <DecisionSection v-if="grooveOn" id="groove.style">
+          <UiText>
+            A chart's style picks its <strong :class="EM">groove</strong>, the pattern set Piano and Bass play in once
+            it's on: a ballad the Ballad set, a Latin, bossa or samba style the Bossa set, any other Swing. It picks how far the
+            8ths swing too, the Swing dial's start: two thirds of the beat, 72% for a shuffle, and straight for bossa, Latin,
+            even 8ths, funk and rock.
+          </UiText>
+          <UiText>
+            <strong :class="EM">What you can change:</strong> the chart's style, and the Swing dial.
+          </UiText>
+        </DecisionSection>
+
+        <DecisionSection v-if="grooveOn" id="groove.swing">
+          <UiText>
+            With the <strong :class="EM">Swing groove</strong> on, the piano comps and the bass walks in place of the held
+            chords and roots. The piano strikes each chord's voicing (the same voicings as Piano's) in a comping rhythm drawn
+            for it, the Charleston among them, never past the chord. The bass walks in quarters from E1 to G3: the chord's root
+            (a slash chord's bass) on its first beat, its last a half step from the next chord's root, two times in three, or
+            that root's 5th, and the beats between stepping through the chord's scale toward it, its chord tones likelier. A
+            3/4 bar plays the root for two beats and a lead-in on 3.
+          </UiText>
+          <UiText>
+            <strong :class="EM">Drums</strong> plays a ride cymbal's ding, ding-a (the skip note after 2 and 4, after 2 in
+            3/4), 2 and 4 leaning, with the hi-hat's foot on 2 and 4 (on 2 and 3 in 3/4); the skip note swings as the dial
+            says. The choices are drawn from the chart's title, so a chart plays the same groove every time.
+          </UiText>
+          <UiText>
+            <strong :class="EM">What you can change:</strong> the groove and Drums, the Swing dial, and the sheet's level.
+          </UiText>
+        </DecisionSection>
       </section>
     </article>
     <PageIndex :sections="SECTIONS" column :current="current" />
@@ -778,6 +809,7 @@ const patternsOn = useFeature('patterns')
 const metronomeOn = useFeature('metronome')
 const hearLineOn = useFeature('hearLine')
 const harmonyOn = hearLineOn && useFeature('harmony')
+const grooveOn = harmonyOn && useFeature('grooveSwing')
 
 /** the ranking examples, from the engine as the sheets rank them */
 const PENT_EXAMPLE = pentatonicChoices('Cmaj7', 'C Ionian', CONCERT).slice(0, 3)

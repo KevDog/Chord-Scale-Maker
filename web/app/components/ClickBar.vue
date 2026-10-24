@@ -59,6 +59,11 @@
       <template v-if="harmonyOn && click.hasHarmony.value">
         <UiCheckbox v-model="piano">Piano</UiCheckbox>
         <SegmentedControl v-model="bass" legend="Bass" :name="`click-bass-${home}`" :options="BASSES" />
+        <!-- the style's pattern set (#509): the piano comps, the bass walks, and Drums plays its kit -->
+        <template v-if="click.grooveSet.value">
+          <UiCheckbox v-model="groove">{{ GROOVE_LABELS[click.grooveSet.value] }} groove</UiCheckbox>
+          <UiCheckbox v-if="groove" v-model="drums">Drums</UiCheckbox>
+        </template>
       </template>
       <SegmentedControl v-model="sound" legend="Sound" :name="`click-sound-${home}`" :options="SOUNDS" />
     </RailPopover>
@@ -93,7 +98,7 @@
 
 <script setup lang="ts">
 import { ChevronDownIcon, ChevronUpIcon, MinusIcon, PlayIcon, PlusIcon, StopIcon, XMarkIcon } from '@heroicons/vue/16/solid'
-import { CLICK_PATTERNS, type ClickFeel, type ClickPattern, clampTempo, patternFits } from '@chord-scale-maker/engine'
+import { CLICK_PATTERNS, type ClickFeel, type ClickPattern, clampTempo, type GrooveSet, patternFits } from '@chord-scale-maker/engine'
 import { CLICK, type Click, type ClickBass, type ClickChart, type ClickSettings } from '~/composables/useClick'
 import type { ClickSound } from '~/utils/clickSounds'
 
@@ -177,6 +182,9 @@ const hat = setting('hat')
 const hear = setting('hear')
 const hearRhythm = setting('hearRhythm')
 const piano = setting('piano')
+const groove = setting('groove')
+const drums = setting('drums')
+const GROOVE_LABELS: Readonly<Record<GrooveSet, string>> = { swing: 'Swing', ballad: 'Ballad', bossa: 'Bossa' }
 const bass = setting('bass')
 const harmonyOn = useFeature('harmony') && useFeature('hearLine')
 const swingPercent = computed({

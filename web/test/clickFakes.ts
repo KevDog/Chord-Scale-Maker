@@ -3,7 +3,7 @@ import type { ClickAudio } from '~/utils/clickSounds'
 /** a booked note: stopped, once its stop is called */
 export type FakeNote = { midi: number; time: number; length: number; stopped: boolean }
 /** a click's audio with a clock the test sets, recording what it is asked to play */
-export type FakeAudio = ClickAudio & { clock: { t: number }; played: { kind: string; time: number }[]; notes: FakeNote[]; hits: { time: number; accent: boolean }[]; suspended: { n: number }; leadLoads: { n: number }; harmonyLoads: { n: number }; soundLoads: string[]; comps: FakeNote[]; basses: FakeNote[] }
+export type FakeAudio = ClickAudio & { clock: { t: number }; played: { kind: string; time: number }[]; notes: FakeNote[]; hits: { time: number; accent: boolean }[]; suspended: { n: number }; leadLoads: { n: number }; harmonyLoads: { n: number }; soundLoads: string[]; comps: FakeNote[]; basses: FakeNote[]; drums: { kind: string; time: number; velocity: number }[]; drumLoads: { n: number } }
 
 export function fakeAudio(): FakeAudio {
   const clock = { t: 0 }
@@ -16,6 +16,8 @@ export function fakeAudio(): FakeAudio {
   const soundLoads: string[] = []
   const comps: FakeNote[] = []
   const basses: FakeNote[] = []
+  const drums: { kind: string; time: number; velocity: number }[] = []
+  const drumLoads = { n: 0 }
   const book = (into: FakeNote[]) => (midi: number, time: number, length: number) => {
     const n = { midi, time, length, stopped: false }
     into.push(n)
@@ -32,6 +34,8 @@ export function fakeAudio(): FakeAudio {
     soundLoads,
     comps,
     basses,
+    drums,
+    drumLoads,
     now: () => clock.t,
     play: (kind, time) => played.push({ kind, time }),
     note: (midi, time, length) => {
@@ -46,6 +50,11 @@ export function fakeAudio(): FakeAudio {
     },
     comp: book(comps),
     bass: book(basses),
+    drum: (kind, time, velocity) => drums.push({ kind, time, velocity }),
+    loadDrums: async () => {
+      drumLoads.n += 1
+      return true
+    },
     loadHarmony: async () => {
       harmonyLoads.n += 1
       return true

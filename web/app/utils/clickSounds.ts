@@ -1,4 +1,4 @@
-import type { ClickKind } from '@chord-scale-maker/engine'
+import type { ClickKind, DrumKind } from '@chord-scale-maker/engine'
 import { loadSample } from '~/utils/sampleLoader'
 import { type SampleSet, type Sampler, loadSampler } from '~/utils/sampler'
 
@@ -28,6 +28,10 @@ export type ClickAudio = Readonly<{
   bass: (midi: number, time: number, length: number) => () => void
   /** the piano's and the bass's samples, as loadLead loads the lead's */
   loadHarmony: () => Promise<boolean>
+  /** a pattern set's drum (#540) at time, its velocity 0 to 1 */
+  drum: (kind: DrumKind, time: number, velocity: number) => void
+  /** the kit's samples, as loadLead loads the lead's (the brushes need none) */
+  loadDrums: () => Promise<boolean>
   resume: () => Promise<void>
   suspend: () => Promise<void>
   close: () => Promise<void>
@@ -212,6 +216,72 @@ export const BASS_SET: SampleSet = {
 /** the synthesized stand-ins' peaks: four piano notes at once, and a bass under them */
 const STAND_IN = { comp: 0.08, bass: 0.3 } as const
 
+/**
+ * the kit (#540): VCSL's recordings (CC0; design/sounds/README.md), a soft ride below half velocity; the brushes
+ * synthesized from the hat's noise (VCSL has no brushes). gain: at full velocity
+ */
+export const DRUM_KIT: Readonly<Record<DrumKind, Readonly<{ file: string | null; soft?: string; gain: number }>>> = {
+  ride: { file: 'ride.wav', soft: 'ride-soft.wav', gain: 0.45 },
+  bell: { file: 'bell.wav', gain: 0.35 },
+  hat: { file: 'hat.wav', gain: 0.4 },
+  tip: { file: 'hat-tip.wav', gain: 0.3 },
+  open: { file: 'hat-open.wav', gain: 0.3 },
+  stick: { file: 'stick.wav', gain: 0.45 },
+  kick: { file: 'kick.wav', gain: 0.5 },
+  sweep: { file: null, gain: 0.12 },
+  brush: { file: null, gain: 0.3 },
+}
+const DRUM_FILES = [...new Set(Object.values(DRUM_KIT).flatMap((d) => [d.file, d.soft].filter((f): f is string => !!f)))]
+
+/** a brush (#540): the hat's noise through a band-pass, swept (a long swell and fade) or tapped (a short burst) */
+function playBrush(ctx: AudioContext, out: AudioNode, time: number, peak: number, swept: boolean): void {
+  const noise = ctx.createBufferSource()
+  noise.buffer = noiseFor(ctx)
+  noise.loop = true
+  const filter = ctx.createBiquadFilter()
+  filter.type = 'bandpass'
+  filter.frequency.value = swept ? 2500 : 3500
+  filter.Q.value = swept ? 0.7 : 1.2
+  const env = ctx.createGain()
+  const length = swept ? 0.45 : 0.08
+  env.gain.setValueAtTime(0.0001, time)
+  env.gain.exponentialRampToValueAtTime(peak, time + (swept ? 0.2 : 0.004))
+  env.gain.exponentialRampToValueAtTime(0.0001, time + length)
+  noise.connect(filter).connect(env).connect(out)
+  noise.start(time)
+  noise.stop(time + length + 0.02)
+}
+
+/** a kit voice synthesized, while its sample loads or if it fails: a cymbal or hat as the hat's noise, a stick as the rim, a kick a falling sine */
+function playDrumStandIn(ctx: AudioContext, out: AudioNode, kind: DrumKind, time: number, peak: number): void {
+  if (kind === 'stick') return playRim(ctx, out, time, peak > 0.3)
+  if (kind === 'kick') {
+    const osc = ctx.createOscillator()
+    const env = ctx.createGain()
+    osc.frequency.setValueAtTime(110, time)
+    osc.frequency.exponentialRampToValueAtTime(45, time + 0.12)
+    env.gain.setValueAtTime(peak, time)
+    env.gain.exponentialRampToValueAtTime(0.001, time + 0.25)
+    osc.connect(env).connect(out)
+    osc.start(time)
+    osc.stop(time + 0.3)
+    return
+  }
+  const noise = ctx.createBufferSource()
+  noise.buffer = noiseFor(ctx)
+  noise.loop = true
+  const filter = ctx.createBiquadFilter()
+  filter.type = 'highpass'
+  filter.frequency.value = kind === 'hat' ? HAT.cutoff : 8000
+  const env = ctx.createGain()
+  const length = kind === 'ride' || kind === 'bell' || kind === 'open' ? 0.4 : HAT.length
+  env.gain.setValueAtTime(peak, time)
+  env.gain.exponentialRampToValueAtTime(0.001, time + length)
+  noise.connect(filter).connect(env).connect(out)
+  noise.start(time)
+  noise.stop(time + length + 0.02)
+}
+
 /** a set's sampler, loaded once a context; a failure is forgotten, so the next play tries again */
 function lazySampler(ctx: AudioContext, out: AudioNode, set: SampleSet) {
   let sampler: Sampler | null = null
@@ -238,6 +308,28 @@ export function webAudio(): ClickAudio | null {
     const comp = lazySampler(ctx, out, COMP_SET)
     const bass = lazySampler(ctx, out, BASS_SET)
     const stick = lazyStick(ctx)
+    const kit = new Map<string, AudioBuffer>()
+    let kitLoading: Promise<boolean> | null = null
+    const loadDrums = (): Promise<boolean> =>
+      (kitLoading ??= Promise.all(DRUM_FILES.map((f) => loadSample(ctx, `/sounds/drums/${f}`))).then((rs) => {
+        rs.forEach((r, i) => r.ok && kit.set(DRUM_FILES[i]!, r.buffer))
+        const ok = rs.every((r) => r.ok)
+        if (!ok) kitLoading = null // the next Start tries again
+        return ok
+      }))
+    function drum(kind: DrumKind, time: number, velocity: number): void {
+      const d = DRUM_KIT[kind]
+      const peak = d.gain * Math.min(1, Math.max(0, velocity))
+      if (kind === 'sweep' || kind === 'brush') return playBrush(ctx, out, time, peak, kind === 'sweep')
+      const buffer = kit.get(d.soft && velocity < 0.5 ? d.soft : (d.file ?? ''))
+      if (!buffer) return playDrumStandIn(ctx, out, kind, time, peak)
+      const source = ctx.createBufferSource()
+      source.buffer = buffer
+      const env = ctx.createGain()
+      env.gain.value = peak
+      source.connect(env).connect(out)
+      source.start(time)
+    }
     return {
       now: () => ctx.currentTime,
       play: (kind, time, sound) => (sound === 'stick' ? playStick(ctx, out, stick.buffers, kind, time) : playClick(ctx, out, kind, time, sound)),
@@ -247,6 +339,8 @@ export function webAudio(): ClickAudio | null {
       bass: (midi, time, length) => bass.get()?.note(midi, time, length) ?? playNote(ctx, out, midi, time, length, STAND_IN.bass),
       hit: (time, accent) => playRim(ctx, out, time, accent),
       loadLead: lead.load,
+      drum,
+      loadDrums,
       loadHarmony: async () => (await Promise.all([comp.load(), bass.load()])).every(Boolean),
       resume: () => ctx.resume(),
       suspend: () => ctx.suspend(),

@@ -1,0 +1,252 @@
+{
+  "ballad": {
+    "set": "ballad",
+    "tempo": 66,
+    "swing": 0.67
+  },
+  "blues": {
+    "set": "swing",
+    "tempo": 132,
+    "swing": 0.67
+  },
+  "blues shuffle": {
+    "set": "swing",
+    "tempo": 132,
+    "swing": 0.72
+  },
+  "bossa nova": {
+    "set": "bossa",
+    "tempo": 132,
+    "swing": 0.5
+  },
+  "bright jazz waltz": {
+    "set": "swing",
+    "tempo": 150,
+    "swing": 0.67
+  },
+  "bright samba": {
+    "set": "bossa",
+    "tempo": 132,
+    "swing": 0.5
+  },
+  "bright shuffle blues": {
+    "set": "swing",
+    "tempo": 132,
+    "swing": 0.72
+  },
+  "christmas": {
+    "set": "swing",
+    "tempo": 120,
+    "swing": 0.67
+  },
+  "country blues": {
+    "set": "swing",
+    "tempo": 132,
+    "swing": 0.67
+  },
+  "electric blues": {
+    "set": "swing",
+    "tempo": 132,
+    "swing": 0.67
+  },
+  "even 8th's": {
+    "set": "swing",
+    "tempo": 132,
+    "swing": 0.5
+  },
+  "even 8ths": {
+    "set": "swing",
+    "tempo": 132,
+    "swing": 0.5
+  },
+  "fast blues": {
+    "set": "swing",
+    "tempo": 220,
+    "swing": 0.67
+  },
+  "funk": {
+    "set": "swing",
+    "tempo": 132,
+    "swing": 0.5
+  },
+  "gospel ballad": {
+    "set": "ballad",
+    "tempo": 66,
+    "swing": 0.67
+  },
+  "jazz waltz": {
+    "set": "swing",
+    "tempo": 150,
+    "swing": 0.67
+  },
+  "latin": {
+    "set": "bossa",
+    "tempo": 132,
+    "swing": 0.5
+  },
+  "medium": {
+    "set": "swing",
+    "tempo": 132,
+    "swing": 0.67
+  },
+  "medium ballad": {
+    "set": "ballad",
+    "tempo": 84,
+    "swing": 0.67
+  },
+  "medium blues": {
+    "set": "swing",
+    "tempo": 132,
+    "swing": 0.67
+  },
+  "medium funk": {
+    "set": "swing",
+    "tempo": 132,
+    "swing": 0.5
+  },
+  "medium funk ballad": {
+    "set": "ballad",
+    "tempo": 84,
+    "swing": 0.5
+  },
+  "medium gospel rock": {
+    "set": "swing",
+    "tempo": 132,
+    "swing": 0.5
+  },
+  "medium jazz waltz": {
+    "set": "swing",
+    "tempo": 150,
+    "swing": 0.67
+  },
+  "medium latin": {
+    "set": "bossa",
+    "tempo": 132,
+    "swing": 0.5
+  },
+  "medium latin rock": {
+    "set": "bossa",
+    "tempo": 132,
+    "swing": 0.5
+  },
+  "medium samba": {
+    "set": "bossa",
+    "tempo": 132,
+    "swing": 0.5
+  },
+  "medium shuffle": {
+    "set": "swing",
+    "tempo": 132,
+    "swing": 0.72
+  },
+  "medium slow": {
+    "set": "swing",
+    "tempo": 72,
+    "swing": 0.67
+  },
+  "medium slow funky rock": {
+    "set": "swing",
+    "tempo": 72,
+    "swing": 0.5
+  },
+  "medium slow latin funk": {
+    "set": "bossa",
+    "tempo": 72,
+    "swing": 0.5
+  },
+  "medium slow, straight eighths": {
+    "set": "swing",
+    "tempo": 72,
+    "swing": 0.5
+  },
+  "medium straight eighths": {
+    "set": "swing",
+    "tempo": 132,
+    "swing": 0.5
+  },
+  "medium swing": {
+    "set": "swing",
+    "tempo": 132,
+    "swing": 0.67
+  },
+  "medium up": {
+    "set": "swing",
+    "tempo": 160,
+    "swing": 0.67
+  },
+  "medium up latin": {
+    "set": "bossa",
+    "tempo": 160,
+    "swing": 0.5
+  },
+  "medium up straight eighths": {
+    "set": "swing",
+    "tempo": 160,
+    "swing": 0.5
+  },
+  "medium up swing": {
+    "set": "swing",
+    "tempo": 160,
+    "swing": 0.67
+  },
+  "mixed": {
+    "set": "swing",
+    "tempo": 120,
+    "swing": 0.67
+  },
+  "rock blues": {
+    "set": "swing",
+    "tempo": 132,
+    "swing": 0.5
+  },
+  "shuffle": {
+    "set": "swing",
+    "tempo": 120,
+    "swing": 0.72
+  },
+  "shuffle blues": {
+    "set": "swing",
+    "tempo": 132,
+    "swing": 0.72
+  },
+  "slow blues": {
+    "set": "swing",
+    "tempo": 72,
+    "swing": 0.67
+  },
+  "slow bossa nova": {
+    "set": "bossa",
+    "tempo": 72,
+    "swing": 0.5
+  },
+  "slow shuffle": {
+    "set": "swing",
+    "tempo": 72,
+    "swing": 0.72
+  },
+  "slow swing": {
+    "set": "swing",
+    "tempo": 72,
+    "swing": 0.67
+  },
+  "study": {
+    "set": "swing",
+    "tempo": 120,
+    "swing": 0.67
+  },
+  "up": {
+    "set": "swing",
+    "tempo": 220,
+    "swing": 0.67
+  },
+  "up samba": {
+    "set": "bossa",
+    "tempo": 220,
+    "swing": 0.5
+  },
+  "waltz": {
+    "set": "swing",
+    "tempo": 150,
+    "swing": 0.67
+  }
+}

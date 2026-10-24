@@ -214,6 +214,28 @@ describe('ClickBar', () => {
     }
   })
 
+  it('Groove (#509): the style’s set in the settings when there is one, and Drums once it’s on', async () => {
+    const features = useRuntimeConfig().public.features as Record<string, unknown>
+    const was = { ...features }
+    const harmony = { piano: [{ bar: 0, at: 0, beats: 4, midi: 60 }], roots: [{ bar: 0, at: 0, beats: 4, midi: 36 }], two: [], bars: 1 }
+    try {
+      Object.assign(features, { hearLine: true, harmony: true })
+      const { w, click, button } = await mountBar()
+      click.setHarmony(harmony)
+      await button('Click settings')!.trigger('click')
+      expect(w.text()).not.toContain('Swing groove') // no groove
+      click.setGroove({ set: 'swing', piano: [], bass: [], drums: [], bars: 1 })
+      await nextTick()
+      expect(w.text()).toContain('Swing groove')
+      expect(w.text()).not.toContain('Drums')
+      click.settings.value = { ...click.settings.value, groove: true }
+      await nextTick()
+      expect(w.text()).toContain('Drums')
+    } finally {
+      Object.assign(features, was)
+    }
+  })
+
   it('Swing: a dial in the settings under Swing feel, in percent, with the flag on', async () => {
     const features = useRuntimeConfig().public.features as Record<string, unknown>
     const was = { ...features }

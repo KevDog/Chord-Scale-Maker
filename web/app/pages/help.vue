@@ -507,6 +507,15 @@
                 them, with Hear line or without it.
               </dd>
             </div>
+            <div v-if="grooveOn">
+              <dt class="font-semibold text-zinc-950 dark:text-white">Groove and Drums</dt>
+              <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
+                A chart in a swing style offers a <strong class="font-semibold">Swing groove</strong> under the click's ⋯: the
+                piano comps, the bass walks, and <strong class="font-semibold">Drums</strong> adds a ride and hi-hat
+                (<DecisionLink id="groove.swing">how</DecisionLink>). The style also sets how far the 8ths swing
+                (<DecisionLink id="groove.style">how</DecisionLink>). The drums are recorded too, loaded the first time.
+              </dd>
+            </div>
           </dl>
         </div>
       </section>
@@ -781,6 +790,7 @@ const backupOn = useFeature('backup')
 const metronomeOn = useFeature('metronome')
 const hearLineOn = useFeature('hearLine')
 const harmonyOn = hearLineOn && useFeature('harmony')
+const grooveOn = harmonyOn && useFeature('grooveSwing')
 const rhythmOn = useFeature('rhythm')
 const rhythmSheetsOn = useFeature('rhythmSheets')
 const rhythmGearsOn = useFeature('rhythmGears')

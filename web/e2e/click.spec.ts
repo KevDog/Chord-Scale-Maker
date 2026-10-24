@@ -254,6 +254,29 @@ test('Piano and Bass play the changes with the click, from this site’s piano a
   await expect(settings.getByRole('radio', { name: 'Two-feel' })).toBeChecked()
 })
 
+test('a swing chart’s Swing groove and its Drums play this site’s kit with the click, remembered (#509, #540)', async ({ page }) => {
+  const asked: string[] = []
+  page.on('request', (r) => {
+    if (r.url().includes('/sounds/drums/')) asked.push(new URL(r.url()).pathname)
+  })
+  await page.goto('/song/autumn-leaves')
+  await clickUntil(page, page.getByRole('button', { name: 'Click', exact: true }), clickBar(page))
+  const settings = page.getByRole('dialog', { name: 'Click settings' })
+  await clickBar(page).getByRole('button', { name: 'Click settings' }).click()
+  await settings.getByRole('checkbox', { name: 'Piano' }).click()
+  await settings.getByRole('checkbox', { name: 'Swing groove' }).click()
+  await settings.getByRole('checkbox', { name: 'Drums' }).click()
+  await page.keyboard.press('Escape')
+  await clickBar(page).getByRole('button', { name: 'Start' }).click()
+  await expect(clickBar(page).locator('[data-testid=click-lights] i[data-on]')).toHaveCount(1)
+  await expect.poll(() => new Set(asked).size).toBe(8)
+  await page.reload()
+  await clickUntil(page, page.getByRole('button', { name: 'Click', exact: true }), clickBar(page))
+  await clickBar(page).getByRole('button', { name: 'Click settings' }).click()
+  await expect(settings.getByRole('checkbox', { name: 'Swing groove' })).toBeChecked()
+  await expect(settings.getByRole('checkbox', { name: 'Drums' })).toBeChecked()
+})
+
 test('the click’s Stick sound plays this site’s recorded stick, loaded at Start (#536)', async ({ page }) => {
   const asked: string[] = []
   page.on('request', (r) => {

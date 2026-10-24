@@ -115,6 +115,7 @@ export default defineNuxtConfig({
         alternates: true, // alternate changes on a chart (#215; docs/superpowers/specs/2026-10-21-alternate-changes-design.md)
         metronome: true, // the click on the song page (#254; docs/superpowers/specs/2026-10-21-metronome-design.md)
         hearLine: true, // Hear line: the Changes sheet's Line sounds with the click (#507; docs/superpowers/specs/2026-10-23-hear-line-design.md)
+        grooveSwing: false, // the swing pattern set: drums, comping and a walking bass (#509; docs/superpowers/specs/2026-10-24-pattern-sets-design.md)
         harmony: false, // Hear changes: a piano's voicings and a bass under the click (#508; docs/superpowers/specs/2026-10-24-hear-changes-design.md)
         ireal: true, // iReal Pro import: Library's Open chart… and Import iReal link…, Paste bars (#261; docs/superpowers/specs/2026-10-17-ireal-import-design.md)
       },

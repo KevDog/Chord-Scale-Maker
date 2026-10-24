@@ -1,5 +1,6 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { BASS_SET, CLICK_SOUNDS, COMP_SET, LEAD_SET, STICK_SET, webAudio } from '~/utils/clickSounds'
+import { DRUM_KINDS } from '@chord-scale-maker/engine'
+import { BASS_SET, CLICK_SOUNDS, COMP_SET, DRUM_KIT, LEAD_SET, STICK_SET, webAudio } from '~/utils/clickSounds'
 
 /** just enough of an AudioContext to build the click's nodes, counting the buffers it makes */
 function stubContext() {
@@ -132,6 +133,42 @@ describe('clickSounds', () => {
       audio.comp(60, 0, 1)
       audio.bass(36, 0, 1)
       expect(made.oscillators).toBe(4)
+    })
+  })
+
+  describe('the drum kit (#540)', () => {
+    const files = () => [...new Set(Object.values(DRUM_KIT).flatMap((d) => [d.file, d.soft].filter(Boolean).map((f) => `/sounds/drums/${f}`)))]
+
+    it('every kind the pattern sets play has a sound', () => {
+      expect(Object.keys(DRUM_KIT).sort()).toEqual([...DRUM_KINDS].sort())
+    })
+
+    it('loaded, a recorded kind plays its sample; the brushes are synthesized', async () => {
+      const made = stubContext()
+      const asked: string[] = []
+      vi.stubGlobal('fetch', async (url: string) => {
+        asked.push(url)
+        return new Response('x')
+      })
+      const audio = webAudio()!
+      expect(await audio.loadDrums()).toBe(true)
+      expect(asked.sort()).toEqual(files().sort())
+      const before = made.sources
+      audio.drum('ride', 0, 0.8)
+      audio.drum('kick', 0, 0.5)
+      expect(made.sources - before).toBe(2)
+      audio.drum('sweep', 0, 0.5)
+      audio.drum('brush', 0, 0.5)
+      expect(made.buffers).toBe(1) // the noise, made once, for both
+    })
+
+    it('not loaded, or failed, every kind still sounds, synthesized', async () => {
+      const made = stubContext()
+      vi.stubGlobal('fetch', async () => new Response(null, { status: 404 }))
+      const audio = webAudio()!
+      expect(await audio.loadDrums()).toBe(false)
+      for (const k of DRUM_KINDS) audio.drum(k, 0, 0.5)
+      expect(made.sources + made.oscillators).toBeGreaterThanOrEqual(DRUM_KINDS.length)
     })
   })
 
