@@ -618,7 +618,7 @@ describe('useClick', () => {
       ],
       bars: 1,
     }
-    async function grooving(settings: Partial<{ groove: boolean; drums: boolean; piano: boolean; bass: 'off' | 'roots' | 'two' }>) {
+    async function grooving(settings: Partial<{ groove: boolean; drums: boolean; piano: boolean; bass: 'off' | 'roots' | 'two'; countIn: 0 | 1 | 2 }>) {
       const audio = fakeAudio()
       const t = timers()
       const c = useClick(ref({ beats: 4 as const, style: 'Ballad', metreChanges: false }), ref(undefined), { audio: () => audio, ...t })
@@ -645,6 +645,17 @@ describe('useClick', () => {
       expect(audio.comps.map((n) => n.midi)).toEqual([64])
       expect(audio.basses.map((n) => n.midi)).toEqual([36, 37, 38, 39])
       expect(audio.drums).toEqual([]) // Drums off
+    })
+
+    it('Drums keeps time in place of the click: the click is silent, its count-in still counts, the lights run', async () => {
+      const { audio, c } = await grooving({ groove: true, drums: true })
+      expect(audio.played).toEqual([])
+      expect(c.beat.value).not.toBe(null)
+      const counted = await grooving({ groove: true, drums: true, countIn: 1 })
+      expect(counted.audio.played.length).toBeGreaterThan(0)
+      expect(counted.audio.played.every((p) => p.kind === 'count' || p.kind === 'accent')).toBe(true)
+      expect(counted.audio.played.every((p) => p.time < 4 * (60 / 66))).toBe(true) // the count-in bar only
+      expect((await grooving({ groove: true, drums: false })).audio.played.length).toBeGreaterThan(0)
     })
 
     it('Drums plays the kit, with the groove on, and loads it at Start', async () => {

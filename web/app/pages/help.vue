@@ -517,6 +517,7 @@
                 (<DecisionLink id="groove.ballad">how</DecisionLink>).</template>
                 <template v-if="grooveOn.bossa">A bossa or Latin style's <strong class="font-semibold">Bossa groove</strong>: a syncopated piano, a bossa bass, a cross-stick
                 (<DecisionLink id="groove.bossa">how</DecisionLink>).</template>
+                With Drums on, the click goes quiet after its count-in: the drummer keeps time.
                 The style also sets how far the 8ths swing
                 (<DecisionLink id="groove.style">how</DecisionLink>). The drums are recorded too, loaded the first time.
               </dd>
