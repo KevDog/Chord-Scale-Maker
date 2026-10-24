@@ -10,6 +10,7 @@ export const RELEASE_NOTES: readonly ReleaseNote[] = [
   {
     date: '2026-10-24',
     items: [
+      { text: 'A shuffle’s Swing dial now starts at 72%, a little further than the two thirds other swing styles start at; moving it still sticks.', pr: 0 },
       { text: 'Hear line and Play sound a recorded piano in place of the synthesized tone: sound files from this site, loaded the first time you play and then kept for offline use. Until they load, or if they can’t, the tone plays as before.', pr: 584 },
       { text: 'A chord page draws the chord, then every scale it takes with the chord tones lit, all written for your instrument, each marked Default, Basic or Advanced and linked to its scale’s page. How it decides says which scale each level reaches for.', pr: 583 },
     ],

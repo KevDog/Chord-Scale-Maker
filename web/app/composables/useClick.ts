@@ -1,5 +1,5 @@
 import type { InjectionKey, Ref } from 'vue'
-import { type BassStyle, type Beats, type ClickFeel, type ClickForm, type ClickPattern, type ClickPlan, type ClickState, type Feel, type PhraseNote, type RhythmHit, type TimedClick, type VoiceNote, CLICK_PATTERNS, clampSwing, clampTempo, defaultFeel, defaultPattern, defaultTempo, formBar, SWING, scheduleClicks, scheduleRhythm, scheduleVoice, tapTempo, timePhrase } from '@chord-scale-maker/engine'
+import { type BassStyle, type Beats, type ClickFeel, type DrumHit, type GrooveSet, scheduleDrums, styleGroove, type ClickForm, type ClickPattern, type ClickPlan, type ClickState, type Feel, type PhraseNote, type RhythmHit, type TimedClick, type VoiceNote, CLICK_PATTERNS, clampSwing, clampTempo, defaultFeel, defaultPattern, defaultTempo, formBar, scheduleClicks, scheduleRhythm, scheduleVoice, tapTempo, timePhrase } from '@chord-scale-maker/engine'
 import { type ClickAudio, type ClickSound, CLICK_SOUNDS, webAudio } from '~/utils/clickSounds'
 import { readStored, writeStored } from '~/utils/storage'
 
@@ -14,9 +14,12 @@ import { readStored, writeStored } from '~/utils/storage'
  */
 /**
  * folded: the bar shows only Start/Stop, the tempo and the lights; hear: Hear line, the Line sounds with the click;
- * hearRhythm: Hear rhythm, its rhythm taps with it; piano, bass: Hear changes (#508), the chart's voicings and its bass
+ * hearRhythm: Hear rhythm, its rhythm taps with it; piano, bass: Hear changes (#508), the chart's voicings and its bass;
+ * groove: the style's pattern set (#509), the piano comping and the bass walking in place of the held changes; drums: its kit
  */
-export type ClickSettings = Readonly<{ hat: boolean; countIn: 0 | 1 | 2; sound: ClickSound; folded: boolean; hear: boolean; hearRhythm: boolean; piano: boolean; bass: ClickBass }>
+export type ClickSettings = Readonly<{ hat: boolean; countIn: 0 | 1 | 2; sound: ClickSound; folded: boolean; hear: boolean; hearRhythm: boolean; piano: boolean; bass: ClickBass; groove: boolean; drums: boolean }>
+/** the style's groove to play (#509): its set, its tracks, and the drawn bars they loop over */
+export type ClickGroove = Readonly<{ set: GrooveSet; piano: readonly VoiceNote[]; bass: readonly VoiceNote[]; drums: readonly DrumHit[]; bars: number }>
 export type ClickBass = 'off' | BassStyle
 export const CLICK_BASSES: readonly ClickBass[] = ['off', 'roots', 'two']
 /** the changes to hear (#508): the piano's voicings, the bass in roots and in two, and the drawn bars they loop over */
@@ -50,7 +53,7 @@ const ready = (load: Promise<boolean>): Promise<unknown> => Promise.race([load, 
 export const LOOKAHEAD = { interval: 25, ahead: 0.1, hiddenAhead: 1.2 } as const
 
 const SETTINGS_KEY = 'csm-click'
-const DEFAULT_SETTINGS: ClickSettings = { hat: false, countIn: 0, sound: 'wood', folded: false, hear: false, hearRhythm: true, piano: false, bass: 'off' }
+const DEFAULT_SETTINGS: ClickSettings = { hat: false, countIn: 0, sound: 'wood', folded: false, hear: false, hearRhythm: true, piano: false, bass: 'off', groove: false, drums: false }
 
 function parseSettings(raw: string | null): ClickSettings {
   try {
@@ -64,6 +67,8 @@ function parseSettings(raw: string | null): ClickSettings {
       hearRhythm: typeof v.hearRhythm === 'boolean' ? v.hearRhythm : DEFAULT_SETTINGS.hearRhythm,
       piano: typeof v.piano === 'boolean' ? v.piano : DEFAULT_SETTINGS.piano,
       bass: CLICK_BASSES.includes(v.bass as ClickBass) ? (v.bass as ClickBass) : DEFAULT_SETTINGS.bass,
+      groove: typeof v.groove === 'boolean' ? v.groove : DEFAULT_SETTINGS.groove,
+      drums: typeof v.drums === 'boolean' ? v.drums : DEFAULT_SETTINGS.drums,
     }
   } catch {
     return DEFAULT_SETTINGS
@@ -109,7 +114,7 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
   const feel = ref<ClickFeel>(stored.feel ?? defaultFeel(chart.value.style))
   const rhythmFeel = (): Feel => chart.value.rhythmFeel ?? 4
   const pattern = ref<ClickPattern>(stored.pattern ?? defaultPattern(rhythmFeel()))
-  const swing = ref(stored.swing ?? SWING.fallback)
+  const swing = ref(stored.swing ?? styleGroove(chart.value.style).swing) // the style's (styles.json, #509) until moved
   // only what the player sets is stored: a tempo and feel still the style's follow the style as it's edited, and a
   // Click on still the Feel's follows the Feel
   let chosen = stored.tempo !== undefined || stored.feel !== undefined
@@ -132,13 +137,16 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
         tempo.value = s.tempo ?? defaultTempo(style)
         feel.value = s.feel ?? defaultFeel(style)
         pattern.value = s.pattern ?? defaultPattern(rhythmFeel())
-        swing.value = s.swing ?? SWING.fallback
+        swing.value = s.swing ?? styleGroove(style).swing
       })
-    } else if (!chosen)
-      follow(() => {
-        tempo.value = defaultTempo(style)
-        feel.value = defaultFeel(style)
-      })
+    } else {
+      if (!chosen)
+        follow(() => {
+          tempo.value = defaultTempo(style)
+          feel.value = defaultFeel(style)
+        })
+      if (!swingChosen) follow(() => (swing.value = styleGroove(style).swing))
+    }
   })
   watch(rhythmFeel, (f) => {
     if (!patternChosen) follow(() => (pattern.value = defaultPattern(f)))
@@ -216,6 +224,16 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
     harmony.value = h
   }
   const hearsHarmony = (): boolean => settings.value.piano || settings.value.bass !== 'off'
+  const groove = shallowRef<ClickGroove | null>(null)
+  /** the style's set, or null with none to play (another sheet, or its set not yet released) */
+  const grooveSet = computed(() => groove.value?.set ?? null)
+  /** the Changes sheet's groove, or null */
+  const setGroove = (g: ClickGroove | null): void => {
+    groove.value = g
+  }
+  /** the groove plays: on, with one to play */
+  const grooving = (): boolean => settings.value.groove && !!groove.value
+  const hearsDrums = (): boolean => grooving() && settings.value.drums
 
   let audio: ClickAudio | null = null
   let timer: number | null = null
@@ -242,8 +260,12 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
     for (const e of next.events) if (e.kind !== 'tick') audio.play(e.kind, e.time, settings.value.sound)
     if (settings.value.hear && line.value) for (const n of scheduleVoice(line.value.notes, line.value.bars, plan.value, state, from, until)) audio.note(n.midi, n.time, n.length)
     const h = harmony.value
-    if (h && settings.value.piano) for (const n of scheduleVoice(h.piano, h.bars, plan.value, state, from, until)) audio.comp(n.midi, n.time, n.length)
-    if (h && settings.value.bass !== 'off') for (const n of scheduleVoice(settings.value.bass === 'two' ? h.two : h.roots, h.bars, plan.value, state, from, until)) audio.bass(n.midi, n.time, n.length)
+    const g = grooving() ? groove.value : null
+    const piano = g ? { notes: g.piano, bars: g.bars } : h && { notes: h.piano, bars: h.bars }
+    const bass = g ? { notes: g.bass, bars: g.bars } : h && { notes: settings.value.bass === 'two' ? h.two : h.roots, bars: h.bars }
+    if (piano && settings.value.piano) for (const n of scheduleVoice(piano.notes, piano.bars, plan.value, state, from, until)) audio.comp(n.midi, n.time, n.length)
+    if (bass && settings.value.bass !== 'off') for (const n of scheduleVoice(bass.notes, bass.bars, plan.value, state, from, until)) audio.bass(n.midi, n.time, n.length)
+    if (g && settings.value.drums) for (const d of scheduleDrums(g.drums, g.bars, plan.value, state, from, until)) audio.drum(d.kind, d.time, d.velocity)
     if (settings.value.hearRhythm && rhythm.value) for (const h of scheduleRhythm(rhythm.value.hits, rhythm.value.bars, plan.value, state, from, until)) audio.hit(h.time, h.accent)
     state = next.state
     booked = Math.max(booked, until) // a shorter lookahead (the tab shown again) mustn't reopen what's booked
@@ -276,8 +298,8 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
       return
     }
     if (mine !== run) return // stopped, or started again, while resuming
-    if (settings.value.hear || hearsHarmony()) {
-      await Promise.all([settings.value.hear ? leadReady(audio) : null, hearsHarmony() ? ready(audio.loadHarmony()) : null])
+    if (settings.value.hear || hearsHarmony() || hearsDrums()) {
+      await Promise.all([settings.value.hear ? leadReady(audio) : null, hearsHarmony() ? ready(audio.loadHarmony()) : null, hearsDrums() ? ready(audio.loadDrums()) : null])
       if (mine !== run) return
     }
     state = { barStart: audio.now(), bar: 0 }
@@ -350,6 +372,13 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
     },
   )
   watch(
+    hearsDrums,
+    (on) => {
+      if (on && running.value && audio) void audio.loadDrums()
+    },
+    { flush: 'sync' },
+  )
+  watch(
     hearsHarmony,
     (on) => {
       if (on && running.value && audio) void audio.loadHarmony()
@@ -395,7 +424,7 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
     audio = null
   }
 
-  return { shown, running, unavailable, tempo, feel, pattern, swing, settings, beat, counting, hasLine, setLine, hasRhythm, setRhythm, hasHarmony, setHarmony, hasForm, setForm, playing, play, stopPhrase, start, stop, toggle, tap, show, hide, dispose }
+  return { shown, running, unavailable, tempo, feel, pattern, swing, settings, beat, counting, hasLine, setLine, hasRhythm, setRhythm, hasHarmony, setHarmony, grooveSet, setGroove, hasForm, setForm, playing, play, stopPhrase, start, stop, toggle, tap, show, hide, dispose }
 }
 
 export type Click = ReturnType<typeof useClick>
