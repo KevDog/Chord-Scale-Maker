@@ -10,6 +10,7 @@ export const RELEASE_NOTES: readonly ReleaseNote[] = [
   {
     date: '2026-10-23',
     items: [
+      { text: 'A Line poured into a rhythm beams each group with its stems all one way, so a beam no longer runs through its notes, and on a line that mixes busy and sparse bars (sextuplets beside quarter-note triplets) the busy bars get more of the line.', pr: 581 },
       { text: 'At Intermediate, the Rhythm is a short list of ready-made rhythms (quarters, 8ths, triplets and 16ths with an accent on the beat, 8ths in 3, a run of 8ths, and the cards), with no options to set. Everything keeps every rhythm and its options.', pr: 578 },
       { text: 'A Changes line whose notes are too many for four bars, split two bars a line, now spreads its bars across the whole line instead of crowding them into half of it.', pr: 576 },
       { text: 'With the Line off and a Groups or Gears path, the card over the Changes sheet shows every step: a small card for each grouping or pulse the form plays, in order, each named as its mark on the sheet (③, 8ths).', pr: 575 },

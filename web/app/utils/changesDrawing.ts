@@ -142,7 +142,8 @@ export function fitBars(barBeats: readonly number[], bars: readonly (readonly Na
   }
   const needs = needsAt(scale)
   const total = sum(needs)
-  const shares = total >= 1 ? needs.map((n) => n / total) : waterFill(needs, rooms.some((r) => r > 0) ? bars.map((b) => b !== null) : undefined)
+  const crowded = rooms.some((r) => r > 0)
+  const shares = total >= 1 ? needs.map((n) => n / total) : waterFill(needs, crowded ? bars.map((b) => b !== null) : undefined, crowded ? rooms.map(Math.sqrt) : undefined)
   const scales = bars.map((chords, b) => {
     if (!chords) return []
     const beats = barBeats[b] ?? DEFAULT_BEATS
@@ -157,15 +158,20 @@ export function fitBars(barBeats: readonly number[], bars: readonly (readonly Na
   return { shares, scales, fits: Math.max(1, Math.min(present, sums.filter((n) => n * BREAK_SCALE <= 1 + 1e-9).length)), notes: Math.max(1, Math.min(present, notes)) }
 }
 
-/** each bar at least its need, the rest at one level, summing to 1 (the needs sum to less); only the slots `within` share it (all by default) */
-function waterFill(needs: readonly number[], within?: readonly boolean[]): number[] {
+/**
+ * each bar at least its need, the rest at one level, summing to 1 (the needs sum to less); only the slots `within` share
+ * it (all by default), each by its weight (its notes' room on a crowded line, so dense bars widen with the sparse; 1 by default)
+ */
+function waterFill(needs: readonly number[], within?: readonly boolean[], weights?: readonly number[]): number[] {
   const out = new Set(needs.flatMap((_, i) => (within && !within[i] ? [i] : [])))
+  const weight = (i: number): number => (weights ? (weights[i] ?? 0) : 1)
   let fixed = new Set<number>()
   for (;;) {
     const left = 1 - [...fixed].reduce((a, i) => a + (needs[i] ?? 0), 0)
-    const level = left / (needs.length - fixed.size - out.size)
-    const over = needs.flatMap((n, i) => (!fixed.has(i) && !out.has(i) && n > level ? [i] : []))
-    if (!over.length) return needs.map((n, i) => (out.has(i) ? 0 : fixed.has(i) ? n : level))
+    const free = needs.flatMap((_, i) => (fixed.has(i) || out.has(i) ? [] : [i]))
+    const level = left / (free.reduce((a, i) => a + weight(i), 0) || 1)
+    const over = free.filter((i) => (needs[i] ?? 0) > level * weight(i))
+    if (!over.length) return needs.map((n, i) => (out.has(i) ? 0 : fixed.has(i) ? n : level * weight(i)))
     fixed = new Set([...fixed, ...over])
   }
 }
@@ -512,6 +518,11 @@ export function beamRuns(notes: readonly GuideNote[]): number[][] {
   ).filter((g) => g.length > 1)
 }
 
+/** a poured bar's beams (beamRuns) over its notes, each beam's stems turned one way by its notes together (autoStem) */
+export function pouredBeams(vf: VexFlowModule, notes: readonly GuideNote[], ticks: readonly Tick[]): Beam[] {
+  return beamRuns(notes).map((run) => new vf.Beam(run.flatMap((i) => (ticks[i] ? [ticks[i]] : [])), true))
+}
+
 /**
  * a guide line bar's notes on its stave (its first voice: slashes for a bar without guide tones), their tuplets and
  * beams (a poured bar's by its marks, an arpeggio line's by the beat), and a ghost a beat: where each beat falls
@@ -529,7 +540,7 @@ function guideVoices(vf: VexFlowModule, bar: ChangesBar, first: boolean, stave: 
     return voiceOf(vf, bar.beats, ticks)
   })
   const beams = poured
-    ? beamRuns(model).map((run) => new vf.Beam(run.flatMap((i) => (ticks[i] ? [ticks[i]] : []))))
+    ? pouredBeams(vf, model, ticks)
     : arpeggio
       ? vf.Beam.generateBeams(ticks, { groups: [new vf.Fraction(1, 4)] })
       : []
