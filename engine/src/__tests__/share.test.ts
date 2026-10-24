@@ -164,8 +164,8 @@ describe('share links', () => {
     expect(shareViewFrom({ sheet: 'changes', rhythm: 'bogus', targets: 'yes' })).toEqual({ sheet: 'changes' })
   })
 
-  it('keeps Land on targets, only as on', () => {
-    expect(shareViewFrom({ targets: true, land: true })).toEqual({ targets: true, land: true })
+  it('keeps Chord tones on strong beats, only as on', () => {
+    expect(shareViewFrom({ land: true })).toEqual({ land: true })
     expect(shareViewFrom({ sheet: 'changes', land: false })).toEqual({ sheet: 'changes' })
     expect(shareViewFrom({ sheet: 'changes', land: 'yes' })).toEqual({ sheet: 'changes' })
   })

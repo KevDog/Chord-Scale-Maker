@@ -695,7 +695,6 @@ const RESETS: Readonly<Record<HiddenSetting, (inForce: Mode) => void>> = {
   rhythm: () => {
     prefs.rhythm.value = 'off'
     prefs.targets.value = false
-    prefs.land.value = false
     prefs.rhythmStart.value = 'beat'
     prefs.anticipate.value = 0
     prefs.restate.value = false
@@ -1001,7 +1000,7 @@ async function shareUrl(): Promise<string> {
     ...(sheet.value === 'changes' && prefs.rhythm.value !== 'off' && prefs.anticipate.value !== 0 ? { anticipate: prefs.anticipate.value } : {}), // absent: on time
     ...(sheet.value === 'changes' && prefs.rhythm.value !== 'off' && prefs.restate.value ? { restate: true as const } : {}), // absent: off
     ...(sheet.value === 'changes' && prefs.targets.value ? { targets: true } : {}), // target beats; absent: off
-    ...(sheet.value === 'changes' && prefs.targets.value && prefs.land.value ? { land: true as const } : {}), // Land on targets; absent: off
+    ...(sheet.value === 'changes' && prefs.lineMode.value !== 'off' && prefs.land.value ? { land: true as const } : {}), // chord tones on strong beats (#596); absent: off
     ...(sheet.value === 'changes' && prefs.feel.value !== 4 ? { feel: prefs.feel.value } : {}), // Phase 4 spec §7; absent: in 4
     ...(sheet.value === 'changes' && rhythmPathActs.value ? { rhythmPath: shareRhythmPath(rhythmPath.path.value) } : {}), // Phase 4 spec §7; absent: no path
     ...(sheet.value === 'patterns' ? { pattern: prefs.pattern.value, patternNotes: prefs.patternNotes.value, patternDir: prefs.patternDir.value } : {}),

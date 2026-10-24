@@ -757,8 +757,8 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   that isn't a whole number of a pulse's groups at its fallback (quarters for `4t` and `4q`, 8ths for `8q`; `DECISIONS`
   `rhythm.tuplet-fallback`), so no tuplet crosses a barline. `RhythmNote.ratio` gives `vf.Tuplet` its 3:2, 5:4, 6:4 or 7:4.
 - **buildChanges:** options `rhythm` and `targets`; `ChangesBar.rhythm` and `.targets`, `ChangesSheet.rhythmCaption`.
-- **Land on targets** (option `land`, with `targets`; flag `landTargets`, toggle beside Target beats when a Line is on,
-  `csm-land-targets`, share `land`): after a Line's voices are built, `targetLandings` moves each drawn bar's targets with
+- **Chord tones on strong beats** (#596; option `land`, independent of `targets`; flag `landTargets`, a toggle in Line
+  options for any Line, `csm-land-targets`, share `land`): after a Line's voices are built, `targetLandings` moves each drawn bar's targets with
   the Timing (a target on a chord change by `anticipate`, as the pour's boundaries; the first chord and a 2nd ending's
   stay) and `landTargets` makes each a struck chord tone of the chord the Line plays there (its changes moved the same
   way): a struck note off the chord moves to the nearest tone in the range (a tie: the lower); without a poured rhythm a

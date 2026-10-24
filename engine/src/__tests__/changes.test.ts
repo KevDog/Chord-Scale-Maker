@@ -1354,8 +1354,11 @@ describe('the rhythm line and target beats (rhythm spec §8)', () => {
       expect(bars(m).map((b) => b.voice.map((x) => x.target ?? null))).toEqual([['tone', null, 'tone', null], [null, null, 'tone', null]])
     })
 
-    it('is inert without Target beats', () => {
-      expect(buildChanges(minor, CONCERT, 4, false, 'seventh', undefined, null, 'below-above', { land: true })).toEqual(buildChanges(minor, CONCERT, 4, false, 'seventh', undefined, null, 'below-above'))
+    it('lands without Target beats too, marking nothing', () => {
+      const plain = buildChanges(minor, CONCERT, 4, false, 'seventh', undefined, null, 'below-above', { land: true })
+      const marked = buildChanges(minor, CONCERT, 4, false, 'seventh', undefined, null, 'below-above', { land: true, targets: true })
+      expect(bars(plain).map(letters)).toEqual(bars(marked).map(letters))
+      expect(bars(plain).every((b) => b.voice.every((n) => n.target === undefined))).toBe(true)
     })
   })
 

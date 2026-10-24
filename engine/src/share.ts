@@ -72,7 +72,7 @@ export type ShareView = Readonly<{
   /** the Changes sheet's rhythm line and its target beats (rhythm spec §9); absent: off */
   rhythm?: RhythmId
   targets?: boolean
-  /** with the target beats, the Line lands a chord tone on each; absent: off */
+  /** the Line's chord tones on strong beats (#596); absent: off */
   land?: true
   /** where the rhythm starts, its timing and Restate (rhythm spec §10); absent: on the beat, on time, off */
   rhythmStart?: RhythmStart

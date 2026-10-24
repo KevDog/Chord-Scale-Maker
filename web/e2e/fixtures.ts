@@ -468,6 +468,20 @@ export const chooseStart = (page: Page, label: string): Promise<void> => chooseI
 export const chooseTiming = (page: Page, label: string): Promise<void> => chooseInLineOptions(page, 'Timing', label, label)
 
 /** with Guide Tones and a rhythm, turn Restate on (rhythm-on-lines spec §5), retried until it reads pressed; the panel is closed after */
+/** Line options' Chord tones on strong beats on (#596, flag `landTargets`), retried until the page has hydrated */
+export async function strongBeatsOn(page: Page): Promise<void> {
+  await inControls(page, async () => {
+    const panel = await panelButton(page, 'Line options').isVisible() // in the Controls dialog it's inline
+    if (panel) await openPanel(page, 'Line options')
+    const toggle = page.getByRole('button', { name: 'Chord tones on strong beats', exact: true })
+    await expect(async () => {
+      if ((await toggle.getAttribute('aria-pressed')) !== 'true') await toggle.click({ timeout: 1000 })
+      await expect(toggle).toHaveAttribute('aria-pressed', 'true', { timeout: 1000 })
+    }).toPass({ timeout: 10_000 })
+    if (panel) await closePanel(page, 'Line options')
+  })
+}
+
 export async function restateOn(page: Page): Promise<void> {
   await inControls(page, async () => {
     const panel = await panelButton(page, 'Line options').isVisible() // in the Controls dialog it's inline

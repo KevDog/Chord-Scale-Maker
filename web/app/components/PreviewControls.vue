@@ -69,8 +69,6 @@
                   </EaseReveal>
                   <!-- target beats (rhythm spec §9): a dot over each bar's strong beats, on the slashes or any line -->
                   <ToggleButton v-if="rhythmOn && shows('rhythm')" v-model="targets" class="whitespace-nowrap" title="A dot over each bar's strong beats: 1 and 3 in 4/4 (after Galper)">Target beats</ToggleButton>
-                  <!-- with the dots and a Line: the Line strikes a chord tone on each -->
-                  <ToggleButton v-if="landOn && rhythmOn && shows('rhythm') && targets && lineMode !== 'off'" v-model="land" class="whitespace-nowrap" title="The Line plays a chord tone on every target beat, moving with Anticipate and Resolve late (after Galper)">Land on targets</ToggleButton>
                   <!-- the row under the chords: Off, each key area's or chord's minor pentatonic, or each chord's hexatonic pair; the Pentatonic options open to its right, over the sheet, so the rail keeps its two rows (#293), stacked under it in the Controls dialog -->
                   <!-- in the rail, a fixed width that holds the options' chevron whether or not it shows, so choosing an option never rewraps the rail (#387) -->
                   <EaseReveal :show="overlayShown" :inner-class="compact ? 'flex flex-col items-start gap-2' : 'flex w-66 items-start gap-1'">
@@ -182,6 +180,8 @@
                               <UiListboxOption v-for="a in APPROACHES" :key="a" :value="a"><UiListboxLabel>{{ APPROACH_LABELS[a] }}</UiListboxLabel></UiListboxOption>
                             </UiListbox>
                           </EaseReveal>
+                          <!-- any Line: a chord tone on each strong beat (#596) -->
+                          <ToggleButton v-if="landOn && lineMode !== 'off'" v-model="land" class="self-start" title="Play a chord tone on each bar's strong beats (1 and 3 in 4/4), moving with Anticipate and Resolve late (after Galper)">Chord tones on strong beats</ToggleButton>
                           <!-- the Cells line's Order, and for a system its Phrase (#376) -->
                           <EaseReveal :show="phraseOn && shows('cells') && lineMode === 'cells' && overlay === 'off'" inner-class="flex flex-col items-start gap-2">
                             <UiListbox v-model="cellsOrder" class="w-full" aria-label="Order" title="Play every cell as written, reversed, rotated or with its pairs swapped">
@@ -460,8 +460,8 @@
     // the Cells line shares the 7th Chords slot (#298): the radio reads 7th Chords while a cell is chosen, and picking
     // a cell sets the mode and the cell, a pattern the mode and the pattern; leaving the slot for another mode and coming back restores 7th Chords
     const inSlot = computed(() => lineMode.value === 'arpeggio' || lineMode.value === 'cells')
-    /** the line has detail to set (Line options): the guide tone line, a slot's pattern or direction, an Approach; or the rhythm, whatever the line */
-    const lineHasOptions = computed(() => lineMode.value === 'guide' || inSlot.value || (approachesOn && shows('approaches') && approachApplies(lineMode.value, overlay.value)) || (rhythmOn && shows('rhythm')))
+    /** the line has detail to set (Line options): the guide tone line, chord tones on strong beats, a slot's pattern or direction, an Approach; or the rhythm, whatever the line */
+    const lineHasOptions = computed(() => lineMode.value === 'guide' || (landOn && lineMode.value !== 'off') || inSlot.value || (approachesOn && shows('approaches') && approachApplies(lineMode.value, overlay.value)) || (rhythmOn && shows('rhythm')))
     const lineRadio = computed<LineMode>({
       get: () => (lineMode.value === 'cells' ? 'arpeggio' : lineMode.value),
       set: (v) => { if (!(v === 'arpeggio' && inSlot.value)) lineMode.value = v },

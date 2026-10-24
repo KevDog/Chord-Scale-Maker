@@ -78,9 +78,9 @@ export function usePreferences() {
   // the Changes sheet's Feel (Phase 4 spec §7): in 4 until chosen, global like the rhythm; with the rhythmGears flag off a stored one reads as 4 but stays stored
   const feel = storedRef<Feel>('csm-feel', (s) => (gearsOn && (s === '4' || s === '2' || s === '1') ? (Number(s) as Feel) : undefined), 4, String)
   const targets = storedRef<boolean>('csm-targets', (s) => (rhythmOn && (s === 'on' || s === 'off') ? s === 'on' : undefined), false, (v) => (v ? 'on' : 'off'))
-  // Land on targets: off until chosen, and with the landTargets flag off (stored still)
+  // the Line's Chord tones on strong beats (#596): off until chosen, and with the landTargets flag off (stored still)
   const landOn = useFeature('landTargets')
-  const land = storedRef<boolean>('csm-land-targets', (s) => (rhythmOn && landOn && (s === 'on' || s === 'off') ? s === 'on' : undefined), false, (v) => (v ? 'on' : 'off'))
+  const land = storedRef<boolean>('csm-land-targets', (s) => (landOn && (s === 'on' || s === 'off') ? s === 'on' : undefined), false, (v) => (v ? 'on' : 'off'))
   // where the rhythm starts, its timing and Restate (rhythm spec §10): on the beat, on time and off until chosen
   const rhythmStart = storedRef<RhythmStart>('csm-rhythm-start', (s) => (isRhythmStart(s) && rhythmOn ? s : undefined), 'beat')
   const anticipate = storedRef<number>('csm-anticipate', (s) => (rhythmOn && isAnticipate(Number(s)) ? Number(s) : undefined), 0, String)
@@ -160,7 +160,7 @@ export function linkPreferences(view: ShareView) {
     rhythm: ref<RhythmId>(useFeature('rhythm') && (useFeature('rhythmGears') || !isGearsRhythm(view.rhythm ?? 'off')) ? (view.rhythm ?? 'off') : 'off'), // a link shows what it was sent with: off without (or at a tuplet pulse, the rhythmGears flag off)
     feel: ref<Feel>(useFeature('rhythmGears') ? (view.feel ?? 4) : 4), // a link shows what it was sent with: in 4 without (Phase 4 spec §7, D8)
     targets: ref<boolean>(useFeature('rhythm') ? (view.targets ?? false) : false),
-    land: ref<boolean>(useFeature('rhythm') && useFeature('landTargets') ? (view.land ?? false) : false),
+    land: ref<boolean>(useFeature('landTargets') ? (view.land ?? false) : false),
     rhythmStart: ref<RhythmStart>(useFeature('rhythm') ? (view.rhythmStart ?? 'beat') : 'beat'),
     anticipate: ref<number>(useFeature('rhythm') ? (view.anticipate ?? 0) : 0),
     restate: ref<boolean>(useFeature('rhythm') ? (view.restate ?? false) : false),
