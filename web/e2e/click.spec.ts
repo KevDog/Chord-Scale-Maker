@@ -230,3 +230,26 @@ test('a staff’s Play fetches the piano’s samples from this site, once (#538)
   await expect(page.getByRole('button', { name: /^Stop / })).toHaveCount(1)
   expect(new Set(asked).size).toBe(asked.length) // decoded once for the page, not per Play
 })
+
+test('Piano and Bass play the changes with the click, from this site’s piano and bass, remembered (#508)', async ({ page }) => {
+  const asked: string[] = []
+  page.on('request', (r) => {
+    if (r.url().includes('/sounds/')) asked.push(new URL(r.url()).pathname)
+  })
+  await page.goto('/song/autumn-leaves')
+  await clickUntil(page, page.getByRole('button', { name: 'Click', exact: true }), clickBar(page))
+  const settings = page.getByRole('dialog', { name: 'Click settings' })
+  await clickBar(page).getByRole('button', { name: 'Click settings' }).click()
+  await settings.getByRole('checkbox', { name: 'Piano' }).click()
+  await settings.getByRole('group', { name: 'Bass' }).locator('label', { hasText: 'Two-feel' }).click() // the radio itself is visually hidden
+  await page.keyboard.press('Escape')
+  await clickBar(page).getByRole('button', { name: 'Start' }).click()
+  await expect(clickBar(page).locator('[data-testid=click-lights] i[data-on]')).toHaveCount(1) // running, with no error (the fixture fails on one)
+  await expect.poll(() => asked.filter((p) => p.startsWith('/sounds/comp/')).length).toBe(10)
+  await expect.poll(() => asked.filter((p) => p.startsWith('/sounds/bass/')).length).toBe(12)
+  await page.reload()
+  await clickUntil(page, page.getByRole('button', { name: 'Click', exact: true }), clickBar(page))
+  await clickBar(page).getByRole('button', { name: 'Click settings' }).click()
+  await expect(settings.getByRole('checkbox', { name: 'Piano' })).toBeChecked()
+  await expect(settings.getByRole('radio', { name: 'Two-feel' })).toBeChecked()
+})

@@ -189,6 +189,31 @@ describe('ClickBar', () => {
     }
   })
 
+  it('Hear changes (#508): Piano and Bass in the settings, with the flag on and changes to hear', async () => {
+    const features = useRuntimeConfig().public.features as Record<string, unknown>
+    const was = { ...features }
+    const harmony = { piano: [{ bar: 0, at: 0, beats: 4, midi: 60 }], roots: [{ bar: 0, at: 0, beats: 4, midi: 36 }], two: [], bars: 1 }
+    try {
+      Object.assign(features, { hearLine: true, harmony: false })
+      const off = await mountBar()
+      off.click.setHarmony(harmony)
+      await off.button('Click settings')!.trigger('click')
+      expect(off.w.text()).not.toContain('Piano') // the flag off
+      Object.assign(features, { harmony: true })
+      const { w, click, button } = await mountBar()
+      await button('Click settings')!.trigger('click')
+      expect(w.text()).not.toContain('Piano') // no changes
+      click.setHarmony(harmony)
+      await nextTick()
+      expect(w.text()).toContain('Piano')
+      const two = w.findAll('input[type=radio]').find((r) => r.attributes('value') === 'two')!
+      await two.setValue(true)
+      expect(click.settings.value.bass).toBe('two')
+    } finally {
+      Object.assign(features, was)
+    }
+  })
+
   it('Swing: a dial in the settings under Swing feel, in percent, with the flag on', async () => {
     const features = useRuntimeConfig().public.features as Record<string, unknown>
     const was = { ...features }

@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { LEAD_SET, webAudio } from '~/utils/clickSounds'
+import { BASS_SET, COMP_SET, LEAD_SET, webAudio } from '~/utils/clickSounds'
 
 /** just enough of an AudioContext to build the click's nodes, counting the buffers it makes */
 function stubContext() {
@@ -100,6 +100,37 @@ describe('clickSounds', () => {
       expect(made.oscillators).toBe(2)
       expect(await audio.loadLead()).toBe(false)
       audio.note(65, 0, 1)
+      expect(made.oscillators).toBe(4)
+    })
+  })
+
+  describe('the changes’ piano and bass (#508, #539)', () => {
+    const files = (set: typeof COMP_SET) => set.layers.flatMap((l) => l.zones.map((z) => `${set.base}${z.file}`))
+
+    it('loaded, the piano and the bass play samples', async () => {
+      const made = stubContext()
+      const asked: string[] = []
+      vi.stubGlobal('fetch', async (url: string) => {
+        asked.push(url)
+        return new Response('x')
+      })
+      const audio = webAudio()!
+      expect(await audio.loadHarmony()).toBe(true)
+      expect(asked.sort()).toEqual([...files(COMP_SET), ...files(BASS_SET)].sort())
+      expect(asked.every((u) => u.startsWith('/sounds/comp/') || u.startsWith('/sounds/bass/'))).toBe(true)
+      const before = made.sources
+      audio.comp(60, 0, 1)
+      audio.bass(36, 0, 1)
+      expect([made.sources - before, made.oscillators]).toEqual([2, 0])
+    })
+
+    it('not loaded, or failed, they’re synthesized', async () => {
+      const made = stubContext()
+      vi.stubGlobal('fetch', async () => new Response(null, { status: 404 }))
+      const audio = webAudio()!
+      expect(await audio.loadHarmony()).toBe(false)
+      audio.comp(60, 0, 1)
+      audio.bass(36, 0, 1)
       expect(made.oscillators).toBe(4)
     })
   })

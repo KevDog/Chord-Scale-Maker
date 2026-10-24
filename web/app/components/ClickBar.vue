@@ -55,6 +55,11 @@
       <UiCheckbox v-if="chart.beats === 4" v-model="hat">Hat on 2 &amp; 4</UiCheckbox>
       <!-- Hear rhythm (#521): the sheet's rhythm taps on a rim with the click -->
       <UiCheckbox v-if="hearOn && click.hasRhythm.value" v-model="hearRhythm">Hear rhythm</UiCheckbox>
+      <!-- Hear changes (#508): a piano's voicings and a bass under the click -->
+      <template v-if="harmonyOn && click.hasHarmony.value">
+        <UiCheckbox v-model="piano">Piano</UiCheckbox>
+        <SegmentedControl v-model="bass" legend="Bass" :name="`click-bass-${home}`" :options="BASSES" />
+      </template>
       <SegmentedControl v-model="sound" legend="Sound" :name="`click-sound-${home}`" :options="SOUNDS" />
     </RailPopover>
     <span data-testid="click-lights" aria-hidden="true" class="flex items-center gap-1.5">
@@ -89,7 +94,7 @@
 <script setup lang="ts">
 import { ChevronDownIcon, ChevronUpIcon, MinusIcon, PlayIcon, PlusIcon, StopIcon, XMarkIcon } from '@heroicons/vue/16/solid'
 import { CLICK_PATTERNS, type ClickFeel, type ClickPattern, clampTempo, patternFits } from '@chord-scale-maker/engine'
-import { CLICK, type Click, type ClickChart, type ClickSettings } from '~/composables/useClick'
+import { CLICK, type Click, type ClickBass, type ClickChart, type ClickSettings } from '~/composables/useClick'
 import type { ClickSound } from '~/utils/clickSounds'
 
 /**
@@ -128,6 +133,11 @@ const pattern = computed({
   get: (): ClickPattern => (patternFits(click.pattern.value, props.chart.beats) ? click.pattern.value : 'all'),
   set: (p: ClickPattern) => (click.pattern.value = p),
 })
+const BASSES: readonly { value: ClickBass; label: string }[] = [
+  { value: 'off', label: 'Off' },
+  { value: 'roots', label: 'Roots' },
+  { value: 'two', label: 'Two-feel' },
+]
 const SOUNDS: readonly { value: ClickSound; label: string }[] = [
   { value: 'wood', label: 'Wood' },
   { value: 'beep', label: 'Beep' },
@@ -165,6 +175,9 @@ function setting<K extends keyof ClickSettings>(key: K) {
 const hat = setting('hat')
 const hear = setting('hear')
 const hearRhythm = setting('hearRhythm')
+const piano = setting('piano')
+const bass = setting('bass')
+const harmonyOn = useFeature('harmony') && useFeature('hearLine')
 const swingPercent = computed({
   get: (): number => Math.round(click.swing.value * 100),
   set: (p: number) => (click.swing.value = p / 100),

@@ -109,6 +109,8 @@ export type ChangesChord = Readonly<{
   numeral: string
   /** its scale, written for the part ("D Phrygian Dominant"); null when it has none */
   scale: string | null
+  /** the scale the sheet plays it with, concert, at the sheet's level (its quality's default where the analysis doesn't reach it); what Hear changes voices (#508) */
+  concertScale: string | null
   /** why the analysis gave it its scale ('' when it doesn't reach it) */
   reason: string
   /** the rule id behind its scale ("m4", "D1+D4"); '' when the analysis doesn't reach it */
@@ -763,6 +765,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
             tokens: chordTokensOrNull(part, row.chord, scale),
             numeral: a?.numeral && a.numeral !== '?' ? a.numeral : '',
             scale: sheetScale(part, scale),
+            concertScale: scale ?? qualityScale(row),
             reason: a?.reason ?? '',
             rule: a?.rule && a.rule !== '?' ? a.rule : '',
             fallback: !!a?.fallback && !a?.stated,

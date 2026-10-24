@@ -77,7 +77,7 @@ const CREDITS = [
   { name: 'VexFlow', what: 'music notation', license: 'MIT', url: 'https://www.vexflow.com/' },
   { name: 'Bravura', what: 'the music font, by Steinberg', license: 'SIL Open Font License', url: 'https://github.com/steinbergmedia/bravura' },
   { name: 'Jost', what: 'the heading font, by indestructible type*', license: 'SIL Open Font License', url: 'https://indestructibletype.com/Jost.html' },
-  { name: 'VSCO 2 Community Edition', what: 'the piano heard by Hear line and Play, its Upright Piano sampled by Simon Dalzell of Ivy Audio, from Versilian Studios', license: 'CC0', url: 'https://github.com/sgossner/VSCO-2-CE' },
+  { name: 'VSCO 2 Community Edition', what: 'the piano and the bass you hear, its Upright Piano sampled by Simon Dalzell of Ivy Audio, from Versilian Studios', license: 'CC0', url: 'https://github.com/sgossner/VSCO-2-CE' },
   { name: 'Vue', what: 'the interface framework', license: 'MIT', url: 'https://vuejs.org/' },
   { name: 'Nuxt', what: 'the site framework', license: 'MIT', url: 'https://nuxt.com/' },
   { name: 'Headless UI', what: 'accessible components, by Tailwind Labs', license: 'MIT', url: 'https://headlessui.com/' },

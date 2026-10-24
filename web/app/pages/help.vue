@@ -497,6 +497,16 @@
                 offline use; until it loads, or if it can't, a plain synthesized tone plays instead. Nothing is recorded or sent.
               </dd>
             </div>
+            <div v-if="harmonyOn">
+              <dt class="font-semibold text-zinc-950 dark:text-white">Piano and Bass</dt>
+              <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
+                With the Changes sheet, <strong class="font-semibold">Piano</strong> and <strong class="font-semibold">Bass</strong>
+                (under the click's ⋯) play the chart's changes with the click: a piano's voicings, the tensions as the sheet's
+                scales have them at its level, and a bass on the roots, or roots and 5ths in two
+                (<DecisionLink id="hear.harmony">how</DecisionLink>). A transposed chart plays in its new key. Practice over
+                them, with Hear line or without it.
+              </dd>
+            </div>
           </dl>
         </div>
       </section>
@@ -770,6 +780,7 @@ const ireal = useFeature('ireal')
 const backupOn = useFeature('backup')
 const metronomeOn = useFeature('metronome')
 const hearLineOn = useFeature('hearLine')
+const harmonyOn = hearLineOn && useFeature('harmony')
 const rhythmOn = useFeature('rhythm')
 const rhythmSheetsOn = useFeature('rhythmSheets')
 const rhythmGearsOn = useFeature('rhythmGears')
