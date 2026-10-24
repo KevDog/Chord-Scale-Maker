@@ -38,7 +38,18 @@ chart in a style: drums, a comping piano and a walking bass, chosen by the chart
   above-or-below (nearest) two beats on, each a dotted quarter. Straight 8ths come from the click's feel: bossa styles
   start straight (`defaultFeel`).
 
+- **Mixer** (flag `mixer`, `engine/src/mix.ts`): tracks click, line, rhythm, piano, bass, drums, each a level (0–1, a
+  gain node per track) and a mute; a muted track books nothing. Presets set the rhythm section's mutes only, levels
+  kept: Band; Piano duo (bass, drums muted); Bass duo (piano, drums); No piano; No bass. A mix matching none shows
+  "Your own". The level rows list only the sounds playing. Stored in `csm-click` (`mix`).
+
+- **Practice tools** (flag `practiceTools`, `engine/src/drill.ts`), with a form (the Changes sheet): a chorus is a time
+  through the form (`chorusOf`; the count-in is chorus 0). **All keys** (`ClickPlan.keys`): each chorus moves the
+  pitched tracks (Line, piano, bass) up a 4th or a half step, folded to −6…+5 semitones of the written key
+  (`chorusShift`, applied in `scheduleVoice`); drums, click and rim stay; the sheet isn't redrawn. The bar shows the
+  sounding chorus's interval ("Up a 4th"). **Ramp**: +2, +4 or +8 bpm a chorus (`rampTempo`), set before the chorus's
+  first bar is booked; Stop restores the start tempo, and the ramped tempo is never stored as the player's.
+
 ## Left for later
 
-- Mixer and practice tools (above).
 - Fills and variation at section ends; a jazz-waltz comping table of its own.

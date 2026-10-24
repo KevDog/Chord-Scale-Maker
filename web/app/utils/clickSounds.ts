@@ -1,4 +1,4 @@
-import type { ClickKind, DrumKind } from '@chord-scale-maker/engine'
+import { type ClickKind, type DrumKind, MIX_TRACKS, type MixTrack } from '@chord-scale-maker/engine'
 import { loadSample } from '~/utils/sampleLoader'
 import { type SampleSet, type Sampler, loadSampler } from '~/utils/sampler'
 
@@ -32,6 +32,8 @@ export type ClickAudio = Readonly<{
   drum: (kind: DrumKind, time: number, velocity: number) => void
   /** the kit's samples, as loadLead loads the lead's (the brushes need none) */
   loadDrums: () => Promise<boolean>
+  /** the mixer (#509): a track's gain, 0 to 1 */
+  level: (track: MixTrack, gain: number) => void
   resume: () => Promise<void>
   suspend: () => Promise<void>
   close: () => Promise<void>
@@ -304,9 +306,17 @@ export function webAudio(): ClickAudio | null {
     const out = ctx.createGain()
     out.gain.value = 0.8
     out.connect(ctx.destination)
-    const lead = lazySampler(ctx, out, LEAD_SET)
-    const comp = lazySampler(ctx, out, COMP_SET)
-    const bass = lazySampler(ctx, out, BASS_SET)
+    // a gain a track, the mixer's (#509)
+    const track = Object.fromEntries(
+      MIX_TRACKS.map((t) => {
+        const g = ctx.createGain()
+        g.connect(out)
+        return [t, g]
+      }),
+    ) as Record<MixTrack, GainNode>
+    const lead = lazySampler(ctx, track.line, LEAD_SET)
+    const comp = lazySampler(ctx, track.piano, COMP_SET)
+    const bass = lazySampler(ctx, track.bass, BASS_SET)
     const stick = lazyStick(ctx)
     const kit = new Map<string, AudioBuffer>()
     let kitLoading: Promise<boolean> | null = null
@@ -320,27 +330,28 @@ export function webAudio(): ClickAudio | null {
     function drum(kind: DrumKind, time: number, velocity: number): void {
       const d = DRUM_KIT[kind]
       const peak = d.gain * Math.min(1, Math.max(0, velocity))
-      if (kind === 'sweep' || kind === 'brush') return playBrush(ctx, out, time, peak, kind === 'sweep')
+      if (kind === 'sweep' || kind === 'brush') return playBrush(ctx, track.drums, time, peak, kind === 'sweep')
       const buffer = kit.get(d.soft && velocity < 0.5 ? d.soft : (d.file ?? ''))
-      if (!buffer) return playDrumStandIn(ctx, out, kind, time, peak)
+      if (!buffer) return playDrumStandIn(ctx, track.drums, kind, time, peak)
       const source = ctx.createBufferSource()
       source.buffer = buffer
       const env = ctx.createGain()
       env.gain.value = peak
-      source.connect(env).connect(out)
+      source.connect(env).connect(track.drums)
       source.start(time)
     }
     return {
       now: () => ctx.currentTime,
-      play: (kind, time, sound) => (sound === 'stick' ? playStick(ctx, out, stick.buffers, kind, time) : playClick(ctx, out, kind, time, sound)),
+      play: (kind, time, sound) => (sound === 'stick' ? playStick(ctx, track.click, stick.buffers, kind, time) : playClick(ctx, track.click, kind, time, sound)),
       load: (sound) => (sound === 'stick' ? stick.load() : Promise.resolve(true)),
-      note: (midi, time, length) => lead.get()?.note(midi, time, length) ?? playNote(ctx, out, midi, time, length),
-      comp: (midi, time, length) => comp.get()?.note(midi, time, length) ?? playNote(ctx, out, midi, time, length, STAND_IN.comp),
-      bass: (midi, time, length) => bass.get()?.note(midi, time, length) ?? playNote(ctx, out, midi, time, length, STAND_IN.bass),
-      hit: (time, accent) => playRim(ctx, out, time, accent),
+      note: (midi, time, length) => lead.get()?.note(midi, time, length) ?? playNote(ctx, track.line, midi, time, length),
+      comp: (midi, time, length) => comp.get()?.note(midi, time, length) ?? playNote(ctx, track.piano, midi, time, length, STAND_IN.comp),
+      bass: (midi, time, length) => bass.get()?.note(midi, time, length) ?? playNote(ctx, track.bass, midi, time, length, STAND_IN.bass),
+      hit: (time, accent) => playRim(ctx, track.rhythm, time, accent),
       loadLead: lead.load,
       drum,
       loadDrums,
+      level: (t, gain) => track[t].gain.setTargetAtTime(gain, ctx.currentTime, 0.02),
       loadHarmony: async () => (await Promise.all([comp.load(), bass.load()])).every(Boolean),
       resume: () => ctx.resume(),
       suspend: () => ctx.suspend(),

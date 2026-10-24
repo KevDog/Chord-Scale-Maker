@@ -3,6 +3,7 @@
  * booked from the click's clock (click.ts) so the two never drift. Pure: the app plays them (web/app/composables/useClick.ts).
  */
 import { type ClickFeel, type ClickPlan, type ClickState, formBar, SWING } from './click'
+import { chorusOf, chorusShift } from './drill'
 import type { DrumHit } from './grooves'
 import type { GuideNote } from './guideTones'
 import { CLEF_ROOT_LOW, type Transposition, TRANSPOSITIONS } from './instruments'
@@ -97,10 +98,10 @@ export function timePhrase(phrase: readonly PhraseNote[], tempo: number, feel: C
 }
 
 /** each bar the click plays in [barStart, until) past the count-in: its start (s), the drawn bar it plays (the plan's form, else bar n mod bars: the form loops) and its beats */
-function* eachBar(bars: number, plan: ClickPlan, state: ClickState, until: number): Generator<Readonly<{ start: number; bar: number; beats: number }>> {
+function* eachBar(bars: number, plan: ClickPlan, state: ClickState, until: number): Generator<Readonly<{ start: number; bar: number; beats: number; n: number }>> {
   for (let start = state.barStart, n = state.bar; start < until; n += 1) {
     const { drawn, beats } = formBar(plan, n)
-    if (n >= plan.countIn) yield { start, bar: drawn ?? (n - plan.countIn) % bars, beats }
+    if (n >= plan.countIn) yield { start, bar: drawn ?? (n - plan.countIn) % bars, beats, n }
     start += (beats * 60) / plan.tempo
   }
 }
@@ -121,12 +122,14 @@ export function scheduleVoice(notes: readonly VoiceNote[], bars: number, plan: C
   const beat = 60 / plan.tempo
   const swing = swingOf(plan)
   const out: TimedNote[] = []
-  for (const { start, bar, beats } of eachBar(bars, plan, state, until))
+  for (const { start, bar, beats, n } of eachBar(bars, plan, state, until)) {
+    const shift = chorusShift(plan.keys ?? 'off', chorusOf(plan, n))
     for (const v of notes) {
       if (v.bar !== bar || v.at >= beats) continue
       const time = start + swing(v.at, v.straight) * beat
-      if (time >= from && time < until) out.push({ time, length: (swing(v.at + v.beats, v.straightEnd) - swing(v.at, v.straight)) * beat, midi: v.midi })
+      if (time >= from && time < until) out.push({ time, length: (swing(v.at + v.beats, v.straightEnd) - swing(v.at, v.straight)) * beat, midi: v.midi + shift })
     }
+  }
   return out
 }
 

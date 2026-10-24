@@ -65,6 +65,35 @@
           <UiCheckbox v-if="groove" v-model="drums">Drums</UiCheckbox>
         </template>
       </template>
+      <!-- practice tools (#509): each time through the form, the next key, or a little faster -->
+      <template v-if="practiceOn && click.hasForm.value">
+        <SegmentedControl v-model="keys" legend="All keys" :name="`click-keys-${home}`" :options="KEYS" />
+        <SegmentedControl v-model="ramp" legend="Ramp" :name="`click-ramp-${home}`" :options="RAMPS" />
+      </template>
+      <!-- the mixer (#509): a level and a mute for each sound that plays, and the duo presets -->
+      <div v-if="mixerOn" role="group" aria-label="Mix" class="space-y-2">
+        <div v-if="harmonyOn && click.hasHarmony.value" class="flex items-center gap-2">
+          <UiText>Mix</UiText>
+          <UiListbox v-model="preset" aria-label="Mix" class="min-w-36">
+            <template #selected="{ value }"><UiListboxLabel>{{ PRESET_LABELS[value as MixPreset | 'custom'] }}</UiListboxLabel></template>
+            <UiListboxOption v-for="p in MIX_PRESETS" :key="p" :value="p"><UiListboxLabel>{{ PRESET_LABELS[p] }}</UiListboxLabel></UiListboxOption>
+          </UiListbox>
+        </div>
+        <div v-for="t in mixTracks" :key="t" class="flex items-center gap-2">
+          <UiText class="w-14">{{ TRACK_LABELS[t] }}</UiText>
+          <input
+            type="range"
+            min="0"
+            max="100"
+            step="5"
+            :value="Math.round(click.settings.value.mix[t].level * 100)"
+            :aria-label="`${TRACK_LABELS[t]} level`"
+            class="w-28 accent-zinc-950 dark:accent-white"
+            @input="setTrack(t, { level: Number(($event.target as HTMLInputElement).value) / 100 })"
+          >
+          <UiCheckbox :model-value="click.settings.value.mix[t].mute" @update:model-value="setTrack(t, { mute: $event })">Mute<span class="sr-only"> {{ TRACK_LABELS[t] }}</span></UiCheckbox>
+        </div>
+      </div>
       <SegmentedControl v-model="sound" legend="Sound" :name="`click-sound-${home}`" :options="SOUNDS" />
     </RailPopover>
     <span data-testid="click-lights" aria-hidden="true" class="flex items-center gap-1.5">
@@ -81,6 +110,7 @@
     </span>
     <UiText v-if="click.unavailable.value" role="status" class="text-amber-800! dark:text-amber-400!">Sound isn’t available in this browser.</UiText>
     <UiText v-else-if="!folded" class="min-w-0 truncate max-sm:order-last">{{ metreText }}</UiText>
+    <UiText v-if="practiceOn && click.running.value && keys !== 'off'" role="status">{{ SHIFTS[click.shift.value + 6] }}</UiText>
     <span class="ml-auto flex items-center gap-1">
       <UiButton
         plain
@@ -98,8 +128,8 @@
 
 <script setup lang="ts">
 import { ChevronDownIcon, ChevronUpIcon, MinusIcon, PlayIcon, PlusIcon, StopIcon, XMarkIcon } from '@heroicons/vue/16/solid'
-import { CLICK_PATTERNS, type ClickFeel, type ClickPattern, clampTempo, type GrooveSet, patternFits } from '@chord-scale-maker/engine'
-import { CLICK, type Click, type ClickBass, type ClickChart, type ClickSettings } from '~/composables/useClick'
+import { CLICK_PATTERNS, type ClickFeel, type ClickPattern, clampTempo, type GrooveSet, type KeyCycle, MIX_PRESETS, type MixPreset, type MixTrack, patternFits, presetOf, type TrackMix, withPreset } from '@chord-scale-maker/engine'
+import { CLICK, type Click, type ClickBass, type ClickChart, type ClickRamp, type ClickSettings } from '~/composables/useClick'
 import type { ClickSound } from '~/utils/clickSounds'
 
 /**
@@ -143,6 +173,19 @@ const BASSES: readonly { value: ClickBass; label: string }[] = [
   { value: 'roots', label: 'Roots' },
   { value: 'two', label: 'Two-feel' },
 ]
+const KEYS: readonly { value: KeyCycle; label: string }[] = [
+  { value: 'off', label: 'Off' },
+  { value: 'fourths', label: 'Up 4ths' },
+  { value: 'half', label: 'Up ½ steps' },
+]
+const RAMPS = [
+  { value: '0', label: 'Off' },
+  { value: '2', label: '+2' },
+  { value: '4', label: '+4' },
+  { value: '8', label: '+8' },
+] as const
+// the chorus's key, from the written one: −6 to +5 semitones
+const SHIFTS = ['A tritone away', 'Down a 4th', 'Down a major 3rd', 'Down a minor 3rd', 'Down a whole step', 'Down a half step', 'As written', 'Up a half step', 'Up a whole step', 'Up a minor 3rd', 'Up a major 3rd', 'Up a 4th']
 const SOUNDS: readonly { value: ClickSound; label: string }[] = [
   { value: 'wood', label: 'Wood' },
   { value: 'beep', label: 'Beep' },
@@ -186,6 +229,37 @@ const groove = setting('groove')
 const drums = setting('drums')
 const GROOVE_LABELS: Readonly<Record<GrooveSet, string>> = { swing: 'Swing', ballad: 'Ballad', bossa: 'Bossa' }
 const bass = setting('bass')
+const mix = setting('mix')
+const keys = setting('keys')
+const rampSetting = setting('ramp')
+const ramp = computed({
+  get: (): '0' | '2' | '4' | '8' => String(rampSetting.value) as '0' | '2' | '4' | '8',
+  set: (v: '0' | '2' | '4' | '8') => (rampSetting.value = Number(v) as ClickRamp),
+})
+const practiceOn = useFeature('practiceTools') && useFeature('hearLine')
+const mixerOn = useFeature('mixer') && useFeature('hearLine')
+const TRACK_LABELS: Readonly<Record<MixTrack, string>> = { click: 'Click', line: 'Line', rhythm: 'Rhythm', piano: 'Piano', bass: 'Bass', drums: 'Drums' }
+const PRESET_LABELS: Readonly<Record<MixPreset | 'custom', string>> = { band: 'Band', 'piano-duo': 'Piano duo', 'bass-duo': 'Bass duo', 'no-piano': 'No piano', 'no-bass': 'No bass', custom: 'Your own' }
+const preset = computed({
+  get: (): MixPreset | 'custom' => presetOf(mix.value) ?? 'custom',
+  set: (p: MixPreset | 'custom') => p !== 'custom' && (mix.value = withPreset(mix.value, p)),
+})
+// the sounds that play: the click, then each part that's on
+const mixTracks = computed((): MixTrack[] => {
+  const s = click.settings.value
+  const harmony = harmonyOn && click.hasHarmony.value
+  return [
+    'click' as const,
+    ...(hearOn && click.hasLine.value && s.hear ? ['line' as const] : []),
+    ...(hearOn && click.hasRhythm.value && s.hearRhythm ? ['rhythm' as const] : []),
+    ...(harmony && s.piano ? ['piano' as const] : []),
+    ...(harmony && s.bass !== 'off' ? ['bass' as const] : []),
+    ...(harmony && click.grooveSet.value && s.groove && s.drums ? ['drums' as const] : []),
+  ]
+})
+function setTrack(t: MixTrack, change: Partial<TrackMix>): void {
+  mix.value = { ...mix.value, [t]: { ...mix.value[t], ...change } }
+}
 const harmonyOn = useFeature('harmony') && useFeature('hearLine')
 const swingPercent = computed({
   get: (): number => Math.round(click.swing.value * 100),
