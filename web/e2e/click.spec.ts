@@ -269,7 +269,7 @@ test('a swing chart’s Swing groove and its Drums play this site’s kit with t
   await page.keyboard.press('Escape')
   await clickBar(page).getByRole('button', { name: 'Start' }).click()
   await expect(clickBar(page).locator('[data-testid=click-lights] i[data-on]')).toHaveCount(1)
-  await expect.poll(() => new Set(asked).size).toBe(8)
+  await expect.poll(() => new Set(asked).size).toBe(11)
   await page.reload()
   await clickUntil(page, page.getByRole('button', { name: 'Click', exact: true }), clickBar(page))
   await clickBar(page).getByRole('button', { name: 'Click settings' }).click()

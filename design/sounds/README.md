@@ -57,7 +57,11 @@ Licences: CC0 preferred; a CC-BY set is credited on the About page.
   (`HiHat_Close_rr1` the foot's chick as `hat`, `HiHat_HitC_v2_rr1` as `hat-tip`, `HiHat_HitO_rr1` as `hat-open`),
   `Membranophones/Struck Membranophones/Snare Drum, Modern 2/Snare3M_Xstick_v2_rr1` (cross-stick, `stick`) and
   `Bass Drum 1/BDrumNew_hit_v2_rr1` (`kick`, a soft concert bass drum hit standing in for a jazz kick).
-- **Not recorded:** VCSL has no brushes, so the sweep and the tap are synthesized (band-passed noise, `clickSounds.ts`).
+- **Brushes:** Karoryfer Samples' Swirly Drums (<https://github.com/sfzinstruments/karoryfer.swirly-drums>, v1.104),
+  CC0 1.0 (its `license` file; the store page says it's now free): `Samples/snare_stir/stir_dl4_rr1` (a 6 s snare stir,
+  cut to 2.5 s as `stir`: each sweep is a 0.6 s swell from a random point in it), `Samples/snare_main/snare_hit_vl7_rr1_top`
+  (`brush`, the tap) and `_vl3_rr1_top` (`brush-soft`, below half velocity), each 0.4 s. Until they load, the brushes
+  are synthesized (band-passed noise, `clickSounds.ts`). Credited on About.
 - **Edits:** mono 16-bit 24 kHz, onset trim, peak 0.9 (as `piano/`); ride 2 s, bell 1.5 s, open hat 0.8 s, kick 0.6 s,
   the rest 0.3 s, each with a short fade. Levels per voice are `DRUM_KIT`'s gains.
 - **Size:** 8 files, 384 KB.
