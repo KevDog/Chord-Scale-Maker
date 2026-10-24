@@ -1,6 +1,6 @@
-import { CONCERT, chordFormula, chordFromSlug, chordQualityOf, chordScales, chordSlug, chordTitle, type ChordToken, chordTokens, chordUsage, glyphs, noteText, parseRoot, rootName, type ScaleOption, spellFrom } from '@chord-scale-maker/engine'
+import { CONCERT, chordFormula, chordFromSlug, chordQualityOf, chordScales, chordSlug, chordTitle, type ChordToken, chordTokens, chordUsage, glyphs, noteText, parseRoot, rootName, type Row, type ScaleOption, spellFrom } from '@chord-scale-maker/engine'
 import { LIBRARY, tuneOf } from './library'
-import { scalePath } from './scalePage'
+import { scalePageTitle, scalePath } from './scalePage'
 import { canonicalUrl, type PageHead, SITE_URL, songPath } from './site'
 import { jsonLd } from './structuredData'
 
@@ -43,8 +43,8 @@ export type ChordPage = Readonly<{
   /** on C, concert: "C E♭ G B♭" */
   notes: string
   formula: string
-  /** its scales on C ("E♭ Major Pentatonic", as the app writes it: source), each linked to its page */
-  scales: readonly Readonly<{ scale: string; source: string; path: string | null; note: string; tags: readonly ChordScaleTag[] }>[]
+  /** its scales on C ("E♭ Major Pentatonic", as the app writes it: source), each linked to its page, titled as it is there */
+  scales: readonly Readonly<{ scale: string; source: string; path: string | null; pageTitle: string | null; note: string; tags: readonly ChordScaleTag[] }>[]
   tunes: readonly Readonly<{ title: string; path: string }>[]
   /** the tunes past the ones listed */
   more: number
@@ -64,11 +64,14 @@ export function chordPage(slug: string): ChordPage | null {
       .map((n) => noteText(rootName(n)))
       .join(' '),
     formula: glyphs(chordFormula(quality)),
-    scales: chordScales(quality).map((o) => ({ scale: glyphs(o.scale), source: o.scale, path: scalePath(o.scale), note: o.note, tags: tagsOf(o) })),
+    scales: chordScales(quality).map((o) => ({ scale: glyphs(o.scale), source: o.scale, path: scalePath(o.scale), pageTitle: scalePageTitle(o.scale), note: o.note, tags: tagsOf(o) })),
     tunes: using.slice(0, TUNES_SHOWN).map((s) => ({ title: titles.get(s) ?? s, path: songPath(s) })),
     more: Math.max(0, using.length - TUNES_SHOWN),
   }
 }
+
+/** a row for each of the page's scales, on the chord on C, in the page's order: what its staves draw (#523) */
+export const chordScaleRows = (page: ChordPage): readonly Row[] => page.scales.map((s) => ({ section: '', bar: '', chord: chordOnC(page.quality), scale: s.source }))
 
 const CONTEXT = 'https://schema.org'
 

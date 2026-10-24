@@ -36,14 +36,25 @@ test.describe('without JavaScript', () => {
   })
 })
 
-test('a chord page draws its staff, written for the instrument', async ({ page }) => {
+test('a chord page draws the chord and each of its scales, written for the instrument (#523)', async ({ page }) => {
   await page.goto('/chords/minor-7')
-  await expect(staves(page)).toHaveCount(1)
+  const scales = await page.getByRole('region', { name: 'Scales' }).locator('dt').count()
+  expect(scales).toBeGreaterThan(3)
+  await expect(staves(page)).toHaveCount(1 + scales)
   const practice = page.getByRole('region', { name: 'Practice it' })
+  await expect(practice.getByRole('heading', { name: 'The chord' })).toBeVisible()
   await expect(practice).toContainText('C Dorian')
+  await expect(practice.getByRole('link', { name: 'Dorian scale', exact: true })).toHaveAttribute('href', '/scales/dorian')
   await chooseInstrument(page, 'Tenor')
   await expect(practice).toContainText('D Dorian')
+  await expect(practice).not.toContainText('C Dorian')
+  await expect(staves(page)).toHaveCount(1 + scales)
   await expect(practice.getByText('Spell Scale')).toHaveCount(0) // a reference page spells from the root
+})
+
+test('a chord page says which scale each level reaches for, in How it decides (#523)', async ({ page }) => {
+  await page.goto('/chords/minor-7')
+  await expect(page.getByRole('region', { name: 'Scales' }).getByRole('link', { name: 'How it decides' })).toHaveAttribute('href', '/how-it-decides#scale.level')
 })
 
 test('Chords is in the menu bar, beside Scales', async ({ page }) => {

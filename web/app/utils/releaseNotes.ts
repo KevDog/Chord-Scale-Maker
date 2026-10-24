@@ -8,6 +8,12 @@ export type ReleaseNote = Readonly<{ date: string; items: readonly ReleaseItem[]
 
 export const RELEASE_NOTES: readonly ReleaseNote[] = [
   {
+    date: '2026-10-24',
+    items: [
+      { text: 'A chord page draws the chord, then every scale it takes with the chord tones lit, all written for your instrument, each marked Default, Basic or Advanced and linked to its scale’s page. How it decides says which scale each level reaches for.' },
+    ],
+  },
+  {
     date: '2026-10-23',
     items: [
       { text: 'A Line poured into a rhythm beams each group with its stems all one way, so a beam no longer runs through its notes, and on a line that mixes busy and sparse bars (sextuplets beside quarter-note triplets) the busy bars get more of the line.', pr: 581 },

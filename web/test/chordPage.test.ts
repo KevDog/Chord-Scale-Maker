@@ -1,6 +1,6 @@
 import { CHORD_QUALITIES, chordSlug } from '@chord-scale-maker/engine'
 import { describe, expect, it } from 'vitest'
-import { CHORD_GROUPS, chordHead, chordPage, chordPath, chordQualityPath } from '~/utils/chordPage'
+import { CHORD_GROUPS, chordHead, chordPage, chordPath, chordQualityPath, chordScaleRows } from '~/utils/chordPage'
 
 describe('chordHead', () => {
   it('gives a chord its title, a description naming the formula, and structured data', () => {
@@ -33,7 +33,7 @@ describe('chordPage', () => {
     const p = chordPage('minor-7')
     expect(p?.notes).toBe('C E♭ G B♭')
     expect(p?.formula).toBe('1 ♭3 5 ♭7')
-    expect(p?.scales[0]).toMatchObject({ scale: 'C Dorian', path: '/scales/dorian', tags: ['default'] })
+    expect(p?.scales[0]).toMatchObject({ scale: 'C Dorian', path: '/scales/dorian', pageTitle: 'Dorian', tags: ['default'] })
     expect(p?.scales.find((s) => s.scale === 'E♭ Major Pentatonic')?.path).toBe('/scales/major-pentatonic')
     expect(p?.tunes.length).toBeGreaterThan(0)
     expect(p?.tunes.length).toBeLessThanOrEqual(30)
@@ -51,6 +51,16 @@ describe('chordPage', () => {
   })
   it('is null for an unknown slug', () => {
     expect(chordPage('nope')).toBeNull()
+  })
+})
+
+describe('chordScaleRows', () => {
+  it('a row per scale, on the chord on C, in the page’s order (#523)', () => {
+    const p = chordPage('minor-7')!
+    const rows = chordScaleRows(p)
+    expect(rows.map((r) => r.scale)).toEqual(p.scales.map((s) => s.source))
+    expect(new Set(rows.map((r) => r.chord))).toEqual(new Set(['Cm7']))
+    expect(chordScaleRows(chordPage('major')!)[0]?.chord).toBe('C')
   })
 })
 
