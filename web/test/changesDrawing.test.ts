@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import * as vf from 'vexflow/bravura'
 import { type ChangesBar, type ChangesChord, type ChangesLine, type GuideNote, type Letter, type Pitched, PULSE_SHORT_LABELS, type RhythmCardModel, type RhythmNote } from '@chord-scale-maker/engine'
-import { arpeggioAria, balancedSplit, beamRuns, beatXs, bracketsCross, cardAria, cardFit, drawStepMarks, DURATIONS, evenChunks, feelAria, feelMark, fitBars, guideAria, mergeNames, restatedAccidental, rhythmAria, stepAria, stepNumeral, targetsAria, SLASH_TARGET_ROW, targetRow, tupletsOf, voicedBand, voltaShift, withTargets } from '~/utils/changesDrawing'
+import { arpeggioAria, balancedSplit, beamRuns, pouredBeams, beatXs, bracketsCross, cardAria, cardFit, drawStepMarks, DURATIONS, evenChunks, feelAria, feelMark, fitBars, guideAria, mergeNames, restatedAccidental, rhythmAria, stepAria, stepNumeral, targetsAria, SLASH_TARGET_ROW, targetRow, tupletsOf, voicedBand, voltaShift, withTargets } from '~/utils/changesDrawing'
 
 const chord = (beat: number, text: string, guide: string): ChangesChord => ({
   beat,
@@ -183,6 +183,7 @@ describe('fitBars', () => {
     expect(fitBars(FOUR, none, [0, 0, 0, 0])).toEqual(even) // notes that fit: the line as before
     expect(fitBars(FOUR, none, [0.2, 0.2, 0.2, 0.2])).toEqual(even)
     expect(fitBars(FOUR, none, [0.4, 0.1, 0.1, 0.1]).shares.map((s) => +s.toFixed(6))).toEqual([0.4, 0.2, 0.2, 0.2])
+    expect(fitBars(FOUR, none, [0.36, 0.09, 0.09, 0.09]).shares.map((s) => +s.toFixed(6))).toEqual([0.4, 0.2, 0.2, 0.2]) // the room past the needs shared by the root of each bar's: a crowded bar isn't left at its tightest (sextuplets beside quarter-note triplets), nor a sparse one squeezed
     expect(fitBars(FOUR, none, [0.45, 0.45, 0.45, 0.45])).toMatchObject({ notes: 2, fits: 4 }) // the names still fit: no break of their own
     expect(fitBars(FOUR, none, [0.39, 0.39, 0.39, 0.39]).notes).toBe(2) // 1.17 of the line: names at 0.8 would keep 3
     expect(fitBars(FOUR, [[], [], null, null], [0.45, 0.45]).shares.map((s) => +s.toFixed(6))).toEqual([0.5, 0.5, 0, 0]) // a crowded line's bars spread over the room past its end, not their need alone
@@ -330,6 +331,13 @@ describe('beamRuns (rhythm-on-lines spec §8)', () => {
   it('beams runs of two or more pitched notes sharing a mark beam; a rest splits a run', () => {
     expect(beamRuns([n(0), n(0, false), n(0), n(1), n(1), n(1)])).toEqual([[3, 4, 5]])
     expect(beamRuns([n(0), n(0), n(null), n(2), n(2)])).toEqual([[0, 1], [3, 4]])
+  })
+  it('turns every stem of a beam one way, by the notes together: no beam joins an up stem to a down one', () => {
+    const ticks = ['a/4', 'c/5', 'e/5', 'g/5', 'e/5', 'd/5', 'b/4', 'f/4'].map((k) => new vf.StaveNote({ keys: [k], duration: '8', autoStem: true }))
+    expect(new Set(ticks.map((t) => t.getStemDirection())).size).toBe(2) // alone, each its own way
+    const beams = pouredBeams(vf, [n(0), n(0), n(0), n(0), n(1), n(1), n(1), n(1)], ticks)
+    expect(beams).toHaveLength(2)
+    for (const b of beams) expect(new Set(b.getNotes().map((t) => (t as InstanceType<typeof vf.StaveNote>).getStemDirection())).size).toBe(1)
   })
 })
 

@@ -769,7 +769,10 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   last glyph clears the barline by 6), and every bar takes its notes' need (`fitBars` rooms); a line whose notes fit
   lays out as before; names shrink (to `BREAK_SCALE`) before notes give up room. A crowded line's bars spread over
   the whole line, the slots past its last bar giving up theirs (`waterFill` within its bars); a short line that isn't
-  crowded keeps the four-bar grid. Where a line's notes still can't all
+  crowded keeps the four-bar grid. On a crowded line the room past the needs goes by the square root of each bar's
+  notes' room (`waterFill` weights), so sextuplets beside quarter-note triplets aren't left at their tightest nor the
+  triplets squeezed (#581). A poured bar's beam turns all its stems one way, by its notes together (`pouredBeams`,
+  VexFlow's `autoStem`). Where a line's notes still can't all
   fit, that line alone splits, balanced (`balancedSplit`: the fewest even lines that each fit, measured as the lines
   they become; 4 → 2 2, else 1 1 1 1; 3 → 2 1, else 1 1 1; never 3 1): `ChangesSystem` emits `crowded` with the bars
   that start the new lines and `ChangesSheet` adds them to its `breaks`, as for names. Straight 16ths in 4/4 keep four
