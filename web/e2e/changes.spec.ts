@@ -673,33 +673,30 @@ test('a pasted chart in 7/4 draws a 7/4 time signature', async ({ page }) => {
   await expect.poll(() => sig.evaluate((el) => Array.from(el.textContent ?? '').map((c) => c.codePointAt(0)))).toEqual([0xe087, 0xe084]) // Bravura's 7 over 4, once the text is read
 })
 
-// the rhythm line (rhythm spec §8, §9): its controls show from Intermediate
-test.describe('the rhythm line', () => {
+// a rhythm with the Line off (#573): a lead sheet, the rhythm on a card over the first line; its controls show from Intermediate
+test.describe('the rhythm with the Line off', () => {
   test.use({ interfaceLevel: 'intermediate' })
 
-  test('8ths in 5 with accents: the caption names its cycle, and Saindon’s bracket marks bars 1 and 6', async ({ page }) => {
+  test('8ths in 5 with accents: plain slashes, the caption names its cycle, and the card shows it, Saindon’s bracket on its first bar', async ({ page }) => {
     await page.goto('/song/f-jazz-blues')
     await chooseRhythm(page, '8ths', { In: 'In 5', Variation: 'with accents' })
     await rhythmDrawn(page)
     await expect(page.locator('section header p').first()).toContainText('back on one every 5 bars')
-    await expect(lines(page).first()).toHaveAttribute('aria-label', /; rhythm: 8ths in 5, with accents · back on one every 5 bars$/)
-    await expect(page.locator('[data-rhythm-bracket="A 1"]')).toHaveCount(1)
-    await expect(page.locator('[data-rhythm-bracket="A 6"]')).toHaveCount(1)
-    await expect(page.locator('[data-rhythm-bracket]')).toHaveCount(3) // and bar 11, the next landing
+    await expect.poll(() => lines(page).evaluateAll((svgs) => svgs.map((svg) => svg.querySelectorAll('.vf-stavenote').length / svg.querySelectorAll('.vf-stave').length))).toEqual([4, 4, 4]) // a quarter slash a beat
+    await expect(lines(page).first().locator('.vf-beam')).toHaveCount(0)
+    const card = page.locator('section [data-slot="rhythm-card"]')
+    await expect(card).toHaveCount(1) // over the first line only
+    await expect(card.locator('svg')).toHaveAttribute('aria-label', 'Rhythm card: 8ths in 5, with accents, 4 bars, continues')
+    await expect(card.locator('[data-rhythm-bracket="1"]')).toHaveCount(1)
+    await expect(page.locator('svg[aria-label^="Bars:"] [data-rhythm-bracket]')).toHaveCount(0)
     await expect(page.getByText(/Couldn.t draw/)).toHaveCount(0)
   })
 
-  test('a tied unit held over a line’s last barline: a half-tie ends the line', async ({ page }) => {
-    await page.goto('/song/f-jazz-blues') // 4 bars a line: 32 8ths, so in 3 the statement from the 31st holds into bar 5
-    await chooseRhythm(page, '8ths', { In: 'In 3', Variation: 'tied' })
-    await rhythmDrawn(page)
-    const reach = (svg: Locator) =>
-      svg.evaluate((el) => {
-        const boxes = Array.from(el.querySelectorAll('.vf-stavetie path')).map((p) => (p as SVGGraphicsElement).getBBox())
-        return { width: Number(el.getAttribute('viewBox')?.split(' ')[2] ?? 0), right: Math.max(...boxes.map((b) => b.x + b.width)), left: Math.min(...boxes.map((b) => b.x)) }
-      })
-    await expect.poll(async () => { const r = await reach(lines(page).nth(0)); return r.width - r.right }).toBeLessThan(15) // open to the line's end
-    await expect.poll(async () => (await reach(lines(page).nth(1))).left).toBeLessThan(40) // and a half-tie in, before line 2's first note
+  test('Line options shows the card under the Rhythm as it’s chosen', async ({ page }) => {
+    await page.goto('/song/f-jazz-blues')
+    await chooseRhythm(page, 'Upbeats')
+    await openPanel(page, 'Line options')
+    await expect(page.getByRole('dialog').locator('[data-slot="rhythm-card"] svg')).toHaveAttribute('aria-label', /^Rhythm card: Upbeats/)
   })
 
   test('Target beats: two dots a bar in 4/4, on beats 1 and 3', async ({ page }) => {
@@ -743,20 +740,15 @@ test.describe('the tuplet pulses', () => {
     await page.goto('/song/f-jazz-blues') // 4/4, 4 bars a line
     await chooseRhythm(page, 'Quarter-note quintuplets', { In: 'In 5', Variation: 'with accents' })
     await rhythmDrawn(page)
-    const line = lines(page).first()
-    await expect(line.locator('.vf-tuplet')).toHaveCount(4)
-    await expect(line.locator('.vf-tuplet text')).toHaveText(Array(4).fill(String.fromCodePoint(0xe885))) // Bravura's tuplet 5
+    const card = page.locator('section [data-slot="rhythm-card"]') // the Line off: on the card, a bar's cycle
+    await expect(card.locator('.vf-tuplet')).toHaveCount(1)
+    await expect(card.locator('.vf-tuplet text')).toHaveText([String.fromCodePoint(0xe885)]) // Bravura's tuplet 5
     await expect(page.getByText(/Couldn.t draw/)).toHaveCount(0)
   })
 
   // Task 3.2: a bar of 28 septuplet 16ths can't fit a quarter of a line (each note keeps its glyph's room), so it ran on
   // under the next bar, its tuplets over that bar's; now a bar takes its notes' room and each line splits, balanced: two bars a line, every line
   for (const [what, open] of [
-    ['the rhythm line', async (page: Page) => {
-      await page.addInitScript(() => localStorage.setItem('csm-rhythm', 'unit:16s:7:accents'))
-      await page.goto('/song/f-jazz-blues')
-      await rhythmDrawn(page)
-    }],
     ['a poured Line', async (page: Page) => {
       await page.addInitScript(() => Object.entries({ 'csm-rhythm': 'unit:16s:7:accents', 'csm-rhythm-start': 'beat', 'csm-anticipate': '0' }).forEach(([k, v]) => localStorage.setItem(k, v)))
       await writeChart(page, 'title: T\nkey: C\n\nsection: A\n1 | CMaj7\n2 | Dm7\n3 | G7\n4 | CMaj7\n')
@@ -1014,8 +1006,8 @@ test.describe('Feel', () => {
     await showTargets(page)
     await rhythmDrawn(page)
     await expect(page.locator('section header p').first()).toContainText('feel in 2')
-    await expect(lines(page).first()).toHaveAttribute('aria-label', /; rhythm: .* · feel in 2/)
-    await expect(lines(page).first()).not.toHaveAttribute('aria-label', /feel in 2.*feel in 2/) // the caption carries it once
+    await expect(lines(page).first()).toHaveAttribute('aria-label', /feel in 2/)
+    await expect(lines(page).first()).not.toHaveAttribute('aria-label', /feel in 2.*feel in 2/)
     await expect(page.locator('[data-feel-mark]')).toHaveText(['in 2'])
     await expect(page.locator('[data-slot="system"]').first().locator('[data-target-beat]')).toHaveCount(8)
   })
@@ -1225,11 +1217,11 @@ test.describe('Start, Timing and Restate', () => {
     await other.close()
   })
 
-  test('with the Line Off, Start and Timing are hidden and the rhythm line draws', async ({ page }) => {
+  test('with the Line Off, Start and Timing are hidden and the rhythm shows on its card', async ({ page }) => {
     await page.goto('/song/f-jazz-blues')
     await chooseRhythm(page, '8ths', { In: 'In 3' })
     await rhythmDrawn(page)
-    await expect(lines(page).first()).toHaveAttribute('aria-label', /; rhythm: 8ths in 3/)
+    await expect(page.locator('section [data-slot="rhythm-card"] svg')).toHaveAttribute('aria-label', /^Rhythm card: 8ths in 3/)
     await expect(lines(page).first()).not.toHaveAttribute('aria-label', /7th chords/)
     await openPanel(page, 'Line options')
     await expect(listbox(page, 'Start')).toHaveCount(0)

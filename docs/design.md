@@ -739,9 +739,11 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 
 ### The rhythm line on Changes (flag `rhythm`, on; [spec](superpowers/specs/2026-10-22-rhythm-line-design.md))
 
-- **What:** a pitch-free rhythm drawn on the Changes sheet in place of the beat slashes, laid over the chart's own bars. A view
-  preference like the level, never written into chart rows. With the Line off it draws as the rhythm line; with a Line on, the
-  Line plays in it (below).
+- **What:** a pitch-free rhythm laid over the chart's own bars. A view preference like the level, never written into chart
+  rows. With the Line off the sheet stays a lead sheet (beat slashes, a path's step marks over them) and the rhythm shows on a
+  card over the first line, one cycle as the Scales staves' cards are drawn (`RhythmCard.vue`, #573; the rhythm line that
+  replaced the slashes, Phase 1 §8, is gone); Line options shows the same card under the Rhythm. With a Line on, the Line plays
+  in it (below). Hear rhythm taps it either way.
 - **Engine** (`engine/src/rhythm/`, pure): the text form (`parseRhythm`, `formatRhythm`: `8: >xx.x_`, pulses `4`, `8`, `8t`,
   `16`), the library of ids generated from formulas (`unit:<pulse>:<g>:<variation>` after Saindon, `run:<pulse>:<n>:<k>`
   after Bergonzi, `card:*`, `custom:*`; `isRhythmId`, `rhythmLabel`), `layRhythm(id, bars)` (events per bar, ties split at
@@ -1049,8 +1051,8 @@ paper and its focus-mode pages, the rail, the More menu, the header, the library
   about 9.6in, even when every note has ledger lines (e.g. trombone from B). Autumn Leaves prints on 2 pages.
 - **Changes:** 8 four-bar lines a page with guide tones off, so a 32-bar AABA prints on one page.
   - With a line on, `changesLinesPerPage` (`engine/src/changes.ts`) gives fewer: 6 with a line on and
-    numerals and scales, one more with both rows off; an arpeggio or Pentatonic line the same; a rhythm line with tuplets, or
-    a rhythm poured into a Line, one fewer. `print.spec.ts` prints the tallest
+    numerals and scales, one more with both rows off; an arpeggio or Pentatonic line the same; a rhythm poured into a Line,
+    one fewer. With the Line off and a rhythm, the plain count less one for the rhythm card. `print.spec.ts` prints the tallest
     case (one line, numerals, scales, an ending and a bass part, guide tones or 7th chords) a sheet page to a letter page.
   - The chord row and spacing are shorter in print; lines with a clef or guide tones close up (`print:space-y-0`).
   - Print always uses 4 bars a line; a line whose notes need more room splits 2 2 (sextuplets, septuplets), and pages

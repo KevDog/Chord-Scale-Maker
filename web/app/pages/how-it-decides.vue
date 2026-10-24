@@ -696,8 +696,8 @@
         <DecisionSection v-if="hearLineOn" id="hear.rhythm">
           <UiText>
             <strong :class="EM">Hear rhythm</strong> taps the Changes sheet's rhythm on a rim, a short knock unlike the click,
-            at the attacks drawn: the rhythm line's with the Line off, or the Line's with a Line poured into the rhythm, so the
-            two always agree. Accented notes sound louder; a rest, or a note tied over from the one before, strikes nothing. A
+            at the rhythm's attacks: as its card shows them with the Line off, or the Line's with a Line poured into the rhythm, so
+            what you see and hear always agree. Accented notes sound louder; a rest, or a note tied over from the one before, strikes nothing. A
             guide tone line without Restate takes no rhythm, so there is nothing to tap. It swings as Hear line does.
           </UiText>
           <UiText>

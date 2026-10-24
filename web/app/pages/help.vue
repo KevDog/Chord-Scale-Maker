@@ -244,9 +244,11 @@
         <div v-if="rhythmOn" class="space-y-3" data-controls-group>
           <UiSubheading id="rhythm" :level="3" class="scroll-mt-6">Rhythm</UiSubheading>
           <UiText>
-            The sheets say which notes to play. A rhythm says when. On the Changes sheet it draws slashes with stems, beams, rests, ties
-            and accents in place of the beat slashes, over the chart's own bars. It's a view setting, like the level: it isn't saved into
-            the chart. It shows from the Intermediate interface up.
+            The sheets say which notes to play. A rhythm says when. On the Changes sheet with the Line off, the sheet stays a lead
+            sheet, four slashes a bar, and the rhythm shows on a card over the first line: one cycle of it, in slashes with stems,
+            beams, rests, ties and accents, to play over the changes. With a Line on, the Line plays in the rhythm. The Rhythm control
+            shows the same card as you choose. It's a view setting, like the level: it isn't saved into the chart. It shows from the
+            Intermediate interface up.
           </UiText>
           <dl class="space-y-4 text-base/6 sm:text-sm/6">
             <div>

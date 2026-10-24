@@ -340,7 +340,9 @@ describe('the Changes sheet', () => {
     // a poured rhythm (rhythm-on-lines spec §9) is a line taller still: one fewer
     expect(changesLinesPerPage('up-root', { numerals: true, scales: true }, true, true)).toBe(5)
     expect(changesLinesPerPage('up-root', { numerals: true, scales: true }, true, false)).toBe(6)
-    expect(changesLinesPerPage('off', { numerals: true, scales: true }, true, true)).toBe(6)
+    // with the Line off a rhythm is a card over the first line (#573): the plain sheet's count, one fewer, tuplets or none
+    expect(changesLinesPerPage('off', { numerals: true, scales: true }, true)).toBe(7)
+    expect(changesLinesPerPage('off', { numerals: true, scales: true, pentatonics: true }, true, false, true)).toBe(6)
   })
 })
 
@@ -1371,17 +1373,16 @@ describe('the rhythm line and target beats (rhythm spec §8)', () => {
     expect(bars(sheet).map((b) => b.rhythm)).toEqual(rhythmNotes(layRhythm('unit:8:5:tied', [4, 4, 4, 4], [3])!))
   })
 
-  it('counts a rhythm as a voiced line on a printed page', () => {
-    expect(changesLinesPerPage('off', { numerals: true, scales: true }, true)).toBe(6)
+  it('counts a rhythm with the Line off as its card: the plain sheet’s count, one fewer (#573)', () => {
+    expect(changesLinesPerPage('off', { numerals: true, scales: true }, true)).toBe(7)
     expect(changesLinesPerPage('off', { numerals: true, scales: true })).toBe(8)
   })
 
-  // Task 3.2: the tuplets' numbers stand over the beams, the tallest rhythm line (measured on Autumn Leaves, trombone from B)
-  it('counts a rhythm line with tuplets one line fewer on a printed page; a poured Line already takes one fewer', () => {
-    expect(changesLinesPerPage('off', { numerals: true, scales: true }, true, false, true)).toBe(5)
-    expect(changesLinesPerPage('off', { numerals: false, scales: false }, true, false, true)).toBe(6)
-    expect(changesLinesPerPage('off', { numerals: true, scales: true }, true, false, false)).toBe(6)
+  // Task 3.2: the tuplets' numbers stand over the beams (measured on Autumn Leaves, trombone from B)
+  it('counts a Line with tuplets one line fewer on a printed page, as a poured Line already takes', () => {
+    expect(changesLinesPerPage('up-root', { numerals: true, scales: true }, true, false, true)).toBe(5)
     expect(changesLinesPerPage('up-root', { numerals: true, scales: true }, true, true, true)).toBe(5)
+    expect(changesLinesPerPage('off', { numerals: true, scales: true }, true, false, true)).toBe(7) // the Line off: the card, not the tuplets
   })
 
   it('tells a sheet whose rhythm draws tuplets, on its rhythm line or poured into a Line', () => {

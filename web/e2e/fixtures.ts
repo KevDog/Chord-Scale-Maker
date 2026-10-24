@@ -481,10 +481,16 @@ export async function restateOn(page: Page): Promise<void> {
   })
 }
 
-/** wait until every Changes line has been drawn with its rhythm */
+/** wait until the Changes sheet shows its rhythm: with the Line off, its card over the first line (#573); with a Line, every line poured into it */
 export async function rhythmDrawn(page: Page): Promise<void> {
   await expect
-    .poll(() => page.locator('svg[aria-label^="Bars:"]').evaluateAll((els) => els.length > 0 && els.every((e) => e.getAttribute('aria-label')?.includes('; rhythm: '))))
+    .poll(() =>
+      page.evaluate(() => {
+        const lines = Array.from(document.querySelectorAll('svg[aria-label^="Bars:"]'))
+        const card = document.querySelector('section [data-slot="rhythm-card"] svg[aria-label^="Rhythm card:"]')
+        return lines.length > 0 && (!!card || lines.every((e) => e.getAttribute('aria-label')?.includes('; rhythm: ')))
+      }),
+    )
     .toBe(true)
 }
 

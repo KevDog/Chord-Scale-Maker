@@ -14,6 +14,8 @@
       </template>
       <template #default="{ page }">
         <div class="space-y-4 print:space-y-0">
+          <!-- with the Line off the sheet is a lead sheet, its rhythm a card over the first line (#573) -->
+          <RhythmCard v-if="rhythmCard && page.lines[0]?.index === 0" :rhythm="rhythmCard" :beats="built.beats" />
           <ChangesSystem
             v-for="l in page.lines"
             :key="l.index"
@@ -89,7 +91,7 @@ const props = defineProps<{
   numerals: boolean
   scales: boolean
   approach?: Approach // the figure into each guide tone of the guide tone line (#298); undefined: none
-  rhythm?: RhythmId // the rhythm line in place of the slashes with the Line off (rhythm spec §8), else poured into a Line that takes it (rhythm-on-lines spec §1); undefined: off
+  rhythm?: RhythmId // with the Line off, a card over the first line, the bars plain (#573); else poured into a Line that takes it (rhythm-on-lines spec §1); undefined: off
   targets?: boolean // a dot over each bar's target beats (rhythm spec §7)
   rhythmStart?: RhythmStart // a Line's pick-ups into each chord under the rhythm (rhythm-on-lines spec §3); undefined: on the beat
   anticipate?: number // its Timing: beats each chord arrives early (negative: late) (§2); undefined: 0
@@ -134,6 +136,8 @@ const line = computed((): ChangesLineChoice => props.line ?? 'off')
 const lineName = computed(() => (typeof line.value === 'object' ? ({ pentatonic: 'pentatonic', 'triad-pair': 'triad pair', quartal: 'quartal', cells: 'cells' } as const)[line.value.kind] : undefined))
 const arpeggio = computed(() => !!lineName.value || isArpeggioPattern(line.value))
 const built = computed(() => buildChanges(props.doc, props.part, barsPerLine.value, true, line.value, props.view, props.overlay ?? null, props.approach ?? 'none', { rhythm: props.rhythm ?? 'off', targets: props.targets ?? false, start: props.rhythmStart ?? 'beat', anticipate: props.anticipate ?? 0, restate: props.restate ?? false, rhythmPath: props.rhythmPath, feel: props.feel ?? 4 }))
+/** the rhythm to show on its card: the Line off, a rhythm on */
+const rhythmCard = computed((): RhythmId | null => (line.value === 'off' && props.rhythm && props.rhythm !== 'off' ? props.rhythm : null))
 // Hear line (#507) and Hear rhythm (#521): the drawn Line and rhythm, for the click to sound, in the form's order (#559) (none on a page without a click)
 const click = inject(CLICK, null)
 if (click && useFeature('hearLine')) {
@@ -179,7 +183,7 @@ function onAlt(key: string, then: 'edit' | 'next' | 'prev' | 'close'): void {
 /** the plan counts: a path, the chord basis or a pick (the engine's post-pass rule) */
 const pentatonic = computed((): PentatonicPlan | null => (props.overlay?.kind === 'pentatonic' ? props.overlay : null))
 const counted = computed(() => !!pentatonic.value && (pentatonic.value.counts || pentatonic.value.basis === 'chord' || built.value.lines.some((l) => l.bars.some((b) => b.chords.some((c) => c.pentatonic?.picked)))))
-// 8 lines with slashes (a 32-bar AABA, one section a line pair); fewer with a guide tone or rhythm line, whose notes and labels are taller, and its tuplets (Task 3.2)
+// 8 lines with slashes (a 32-bar AABA, one section a line pair); fewer with a guide tone line, whose notes and labels are taller, and its tuplets (Task 3.2), and one fewer for a rhythm's card (#573)
 const linesPerPage = computed(() => changesLinesPerPage(line.value, { numerals: props.numerals, scales: props.scales, pentatonics: props.overlay?.kind === 'pentatonic', hexatonics: props.overlay?.kind === 'hexatonic', quartals: props.overlay?.kind === 'quartal' }, !!built.value.rhythmCaption, line.value !== 'off' && !!built.value.rhythmCaption, drawsTuplets(built.value.lines)))
 const subtitleText = computed(() => [pageSubtitle(props.subtitle, props.instrumentLabel, 'Changes'), built.value.pentatonicCaption, built.value.rhythmCaption].filter(Boolean).join(' · '))
 const pages = computed(() =>

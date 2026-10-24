@@ -188,9 +188,9 @@
                             </UiListbox>
                             <ToggleButton v-if="cells in CELL_SYSTEMS" v-model="cellsPhrase" title="Aim each cell at the next chord, and color long dominants">Phrase</ToggleButton>
                           </EaseReveal>
-                          <!-- the rhythm (rhythm spec §9): the rhythm line with the Line off, else poured into the Line (rhythm-on-lines spec §1); a unit, a run, a card or your own; its detail under it -->
+                          <!-- the rhythm (rhythm spec §9): a card over the sheet with the Line off (#573), else poured into the Line (rhythm-on-lines spec §1); a unit, a run, a card or your own; its card and detail under it -->
                           <div v-if="rhythmOn && shows('rhythm')" class="flex flex-col gap-2">
-                            <RhythmControls v-model="rhythm" v-model:path="rhythmPath" paths :describedby="rhythmHelp ? 'rhythm-help' : undefined" />
+                            <RhythmControls v-model="rhythm" v-model:path="rhythmPath" paths :beats="props.beats" :describedby="rhythmHelp ? 'rhythm-help' : undefined" />
                             <!-- Feel (Phase 4 spec §7): with or without a rhythm, as it groups the plain slashes and the target beats too -->
                             <UiListbox v-if="gearsOn && shows('feel')" v-model="feel" class="w-full" aria-label="Feel" title="Group the beats in 4, in 2 (half time) or in 1">
                               <template #selected="{ value }"><UiListboxLabel>Feel: {{ FEEL_LABELS[value] }}</UiListboxLabel></template>
@@ -268,7 +268,7 @@
               <Transition name="ease-fade">
                 <UiField v-if="(sheet === 'scales' || (sheet === 'arpeggios' && arpMotion !== 'block')) && rhythmSheetsOn && shows('rhythm')">
                   <UiLabel class="pl-3">Rhythm</UiLabel>
-                  <RhythmControls v-model="rhythm" popover :inline="compact" />
+                  <RhythmControls v-model="rhythm" popover :inline="compact" :beats="props.beats" />
                 </UiField>
               </Transition>
               <!-- Notes per bar beside it (spec §2, §9): it leaves at once, so leaving the Scales sheet never wraps the rail while both fade -->
@@ -377,7 +377,7 @@
     /** keyStart: the chart's key, written for the instrument (what "From key" starts on) */
     /** compact: a phone with compactRail on: the rail keeps Work on, Instrument and the slot's rail actions; Controls opens the rest */
     /** stickyRail: the rail sticks over the sheet (lg up): while editing */
-    const props = defineProps<{ lockLabels?: boolean; keyStart: string; compact?: boolean; stickyRail?: boolean; lineTakesRhythm?: boolean }>()
+    const props = defineProps<{ lockLabels?: boolean; keyStart: string; compact?: boolean; stickyRail?: boolean; lineTakesRhythm?: boolean; beats?: number }>()
     defineSlots<{ version?: () => unknown; level?: () => unknown; changes?: () => unknown; actions?: (p: { place: 'rail' | 'dialog'; after: (run: () => void) => void }) => unknown }>()
     const controlsOpen = ref(false)
     watch(() => props.compact, () => (controlsOpen.value = false))
@@ -480,7 +480,7 @@
     const rangeNotes = computed(() => rangeChoices(instrument.value))
     const setRange = (want: { lo: number; hi: number }, moved: 'lo' | 'hi'): void => void (range.value = fitRange(instrument.value, want, moved))
 
-    /** the rhythm line and target beats (rhythm spec §9) */
+    /** the rhythm and target beats (rhythm spec §9) */
     const rhythm = defineModel<RhythmId>('rhythm', { default: 'off' })
     // Your rhythm…'s text lives here, not in RhythmControls, so text that doesn't read survives Line options closing
     provide(RHYTHM_TEXT, useRhythmText(rhythm, () => shows('rhythm'), () => shows('rhythm-gears')))

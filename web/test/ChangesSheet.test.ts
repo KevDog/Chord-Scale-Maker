@@ -224,3 +224,19 @@ describe('ChangesSheet and Hear line (#507)', () => {
     }
   })
 })
+
+describe('ChangesSheet and its rhythm (#573)', () => {
+  const withLine = (line: ChangesLineChoice) =>
+    mountSuspended(ChangesSheet, {
+      props: { doc, title: 'T', subtitle: '', part: CONCERT, instrumentLabel: '', numerals: false, scales: false, line, rhythm: 'unit:16:3:accents' },
+      global: { stubs: { ChangesSystem: true } },
+    })
+
+  it('with the Line off, a lead sheet: the rhythm on a card over the first line', async () => {
+    expect((await withLine('off')).findAll('[data-slot=rhythm-card]')).toHaveLength(1)
+  })
+
+  it('with a Line on, no card: the Line plays the rhythm', async () => {
+    expect((await withLine('third')).find('[data-slot=rhythm-card]').exists()).toBe(false)
+  })
+})
