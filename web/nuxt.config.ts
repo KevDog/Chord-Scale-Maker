@@ -114,6 +114,7 @@ export default defineNuxtConfig({
         backup: true, // Back up… and Restore from backup… in the library (#466)
         alternates: true, // alternate changes on a chart (#215; docs/superpowers/specs/2026-10-21-alternate-changes-design.md)
         metronome: true, // the click on the song page (#254; docs/superpowers/specs/2026-10-21-metronome-design.md)
+        landTargets: false, // Land on targets: with Target beats, the Line strikes a chord tone on each (moving with Anticipate and Resolve late)
         hearLine: true, // Hear line: the Changes sheet's Line sounds with the click (#507; docs/superpowers/specs/2026-10-23-hear-line-design.md)
         grooveSwing: false, // the swing pattern set: drums, comping and a walking bass (#509; docs/superpowers/specs/2026-10-24-pattern-sets-design.md)
         grooveBallad: false, // the ballad pattern set: brushes, a held piano and a bass in two (#509)
