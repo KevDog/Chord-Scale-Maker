@@ -19,6 +19,11 @@ export type ClickAudio = Readonly<{
   hit: (time: number, accent: boolean) => void
   /** the lead's samples, fetched once: true once they play, false if they couldn't load (the synthesized lead plays on) */
   loadLead: () => Promise<boolean>
+  /** Hear changes' piano and bass (#508): a note at midi (concert pitch), from time for length seconds; call what it returns to stop it */
+  comp: (midi: number, time: number, length: number) => () => void
+  bass: (midi: number, time: number, length: number) => () => void
+  /** the piano's and the bass's samples, as loadLead loads the lead's */
+  loadHarmony: () => Promise<boolean>
   resume: () => Promise<void>
   suspend: () => Promise<void>
   close: () => Promise<void>
@@ -95,7 +100,7 @@ const LEAD = { peak: 0.35, attack: 0.01, release: 0.06, held: 0.9, cutoff: 2400 
  * Hear line's lead (#507): a triangle and a quieter sine an octave up through a low-pass, a short attack and release,
  * held for most of the note so a repeated note is heard again; what it returns fades it out at once (a Stop)
  */
-export function playNote(ctx: AudioContext, out: AudioNode, midi: number, time: number, length: number): () => void {
+export function playNote(ctx: AudioContext, out: AudioNode, midi: number, time: number, length: number, peak: number = LEAD.peak): () => void {
   const freq = 440 * 2 ** ((midi - 69) / 12)
   const end = time + Math.max(length * LEAD.held, LEAD.attack + 0.02)
   const env = ctx.createGain()
@@ -104,8 +109,8 @@ export function playNote(ctx: AudioContext, out: AudioNode, midi: number, time: 
   filter.frequency.value = LEAD.cutoff
   filter.connect(env).connect(out)
   env.gain.setValueAtTime(0, time)
-  env.gain.linearRampToValueAtTime(LEAD.peak, time + LEAD.attack)
-  env.gain.setValueAtTime(LEAD.peak, end)
+  env.gain.linearRampToValueAtTime(peak, time + LEAD.attack)
+  env.gain.setValueAtTime(peak, end)
   env.gain.linearRampToValueAtTime(0, end + LEAD.release)
   for (const [wave, mult, level] of [['triangle', 1, 1], ['sine', 2, 0.25]] as const) {
     const osc = ctx.createOscillator()
@@ -135,6 +140,41 @@ export const LEAD_SET: SampleSet = {
   gain: 0.7,
 }
 
+/** Hear changes' piano (#539): the same Upright Piano, its softest dynamic, A2 to A5 every major third, longer for held chords */
+export const COMP_SET: SampleSet = {
+  base: '/sounds/comp/',
+  layers: [{ upTo: 1, zones: Array.from({ length: 10 }, (_, i) => 45 + 4 * i).map((midi) => ({ midi, file: `${midi}.wav` })) }],
+  release: 0.2,
+  voices: 12,
+  gain: 0.35,
+}
+
+/** Hear changes' bass (#539): VSCO 2 CE's Solo Contrabass, pizzicato, E1 to E3 */
+export const BASS_SET: SampleSet = {
+  base: '/sounds/bass/',
+  layers: [{ upTo: 1, zones: [28, 30, 31, 34, 36, 38, 40, 42, 44, 45, 49, 52].map((midi) => ({ midi, file: `${midi}.wav` })) }],
+  release: 0.08,
+  voices: 2,
+  gain: 0.9,
+}
+/** the synthesized stand-ins' peaks: four piano notes at once, and a bass under them */
+const STAND_IN = { comp: 0.08, bass: 0.3 } as const
+
+/** a set's sampler, loaded once a context; a failure is forgotten, so the next play tries again */
+function lazySampler(ctx: AudioContext, out: AudioNode, set: SampleSet) {
+  let sampler: Sampler | null = null
+  let loading: Promise<boolean> | null = null
+  return {
+    get: () => sampler,
+    load: (): Promise<boolean> =>
+      (loading ??= loadSampler(ctx, out, set).then((s) => {
+        sampler = s
+        if (!s) loading = null
+        return !!s
+      })),
+  }
+}
+
 /** the browser's audio, or null where there is none; create it only inside a user's gesture (autoplay rules) */
 export function webAudio(): ClickAudio | null {
   try {
@@ -142,20 +182,18 @@ export function webAudio(): ClickAudio | null {
     const out = ctx.createGain()
     out.gain.value = 0.8
     out.connect(ctx.destination)
-    let lead: Sampler | null = null
-    let loading: Promise<boolean> | null = null
-    const loadLead = (): Promise<boolean> =>
-      (loading ??= loadSampler(ctx, out, LEAD_SET).then((s) => {
-        lead = s
-        if (!s) loading = null // the next Play tries again
-        return !!s
-      }))
+    const lead = lazySampler(ctx, out, LEAD_SET)
+    const comp = lazySampler(ctx, out, COMP_SET)
+    const bass = lazySampler(ctx, out, BASS_SET)
     return {
       now: () => ctx.currentTime,
       play: (kind, time, sound) => playClick(ctx, out, kind, time, sound),
-      note: (midi, time, length) => (lead ? lead.note(midi, time, length) : playNote(ctx, out, midi, time, length)),
+      note: (midi, time, length) => lead.get()?.note(midi, time, length) ?? playNote(ctx, out, midi, time, length),
+      comp: (midi, time, length) => comp.get()?.note(midi, time, length) ?? playNote(ctx, out, midi, time, length, STAND_IN.comp),
+      bass: (midi, time, length) => bass.get()?.note(midi, time, length) ?? playNote(ctx, out, midi, time, length, STAND_IN.bass),
       hit: (time, accent) => playRim(ctx, out, time, accent),
-      loadLead,
+      loadLead: lead.load,
+      loadHarmony: async () => (await Promise.all([comp.load(), bass.load()])).every(Boolean),
       resume: () => ctx.resume(),
       suspend: () => ctx.suspend(),
       close: () => ctx.close(),

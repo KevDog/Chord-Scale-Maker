@@ -84,7 +84,7 @@ import { SHEET_PAGED } from '~/utils/sheetPaged'
 import { CLICK } from '~/composables/useClick'
 import { PlusIcon, Square2StackIcon } from '@heroicons/vue/16/solid'
 import type { SheetChordEdit, SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
-import { type Approach, barKey, type Feel, type RhythmId, type RhythmPath, type RhythmStart, breakLines, buildChanges, otherChords, changesLinesPerPage, drawsTuplets, type ChangesSet, type ChartDoc, type ChordAt, type ChordPreview, chunk, type GridPos, isArpeggioPattern, pageSubtitle, type OverlayPlan, type Part, type PentatonicPlan, type PickKind, type ScaleView, showHexatonics, showPentatonics, showQuartals, type ChangesLineChoice, playOrder, PULSE_SHORT_LABELS, rhythmHits, type RhythmStepCard, voiceNotes } from '@chord-scale-maker/engine'
+import { type Approach, barKey, bassNotes, pianoNotes, type Feel, type RhythmId, type RhythmPath, type RhythmStart, breakLines, buildChanges, otherChords, changesLinesPerPage, drawsTuplets, type ChangesSet, type ChartDoc, type ChordAt, type ChordPreview, chunk, type GridPos, isArpeggioPattern, pageSubtitle, type OverlayPlan, type Part, type PentatonicPlan, type PickKind, type ScaleView, showHexatonics, showPentatonics, showQuartals, type ChangesLineChoice, playOrder, PULSE_SHORT_LABELS, rhythmHits, type RhythmStepCard, voiceNotes } from '@chord-scale-maker/engine'
 
 /** the Changes sheet (docs/plan-changes.md): the chart as a study lead sheet, 4 bars a line (2 on phones), fewer where the chords' names don't fit */
 const { shows } = useInterface()
@@ -148,14 +148,18 @@ const built = computed(() => buildChanges(props.doc, props.part, barsPerLine.val
 const stepName = (c: RhythmStepCard): string => [c.group === null ? '' : stepNumeral(c.group), c.pulse === null ? '' : PULSE_SHORT_LABELS[c.pulse]].filter(Boolean).join(' ')
 // Hear line (#507) and Hear rhythm (#521): the drawn Line and rhythm, for the click to sound, in the form's order (#559) (none on a page without a click)
 const click = inject(CLICK, null)
+const harmonyOn = useFeature('harmony')
 if (click && useFeature('hearLine')) {
   watchEffect(() => {
     const bars = built.value.lines.flatMap((l) => l.bars)
     click.setLine({ notes: voiceNotes(bars, props.part.trans), bars: bars.length })
     click.setRhythm({ hits: rhythmHits(bars), bars: bars.length })
     click.setForm({ order: playOrder(bars), beats: bars.map((b) => b.beats) })
+    // Hear changes (#508): the chart's voicings and bass, at concert pitch (the chords as the chart has them)
+    click.setHarmony(harmonyOn ? { piano: pianoNotes(bars), roots: bassNotes(bars, 'roots'), two: bassNotes(bars, 'two'), bars: bars.length } : null)
   })
   onBeforeUnmount(() => {
+    click.setHarmony(null)
     click.setLine(null)
     click.setRhythm(null)
     click.setForm(null)

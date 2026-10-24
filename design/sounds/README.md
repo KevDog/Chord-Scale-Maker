@@ -20,3 +20,19 @@ Licences: CC0 preferred; a CC-BY set is credited on the About page.
   0.9. Pitch checked by autocorrelation (A2 = 110 Hz, A4 = 444 Hz).
 - **Size:** 15 files, 1.8 MB.
 - **Fetch:** `https://raw.githubusercontent.com/sgossner/VSCO-2-CE/master/Keys/Upright%20Piano/Player_dyn2_rr1_<nnn>.wav`.
+
+## comp: Hear changes' piano (#539, #508)
+
+- **Source:** the same VSCO 2 CE Upright Piano as `piano/`, its softest dynamic, `Player_dyn1_rr1_012.wav` … `_030.wav`
+  (every other file: MIDI 45, A2, to 81, A5, every major third); saved as `<midi>.wav`.
+- **Edits:** as `piano/`, cut to 4 s with a 0.8 s fade (a voicing is held to the next chord, and struck again each bar).
+- **Size:** 10 files, 1.8 MB.
+
+## bass: Hear changes' bass (#539, #508)
+
+- **Source:** VSCO 2 CE, `Strings/Solo Contrabass/Pizz/`, the first dynamic's first round-robin (`BKCtbss_Pizz_<note>_v1_rr1.wav`).
+  Licence: CC0 1.0. The set names its notes an octave low (`E0` is E1, MIDI 28; checked by a harmonic-product pitch
+  estimate: C1 → 65.4 Hz, A1 → 110 Hz). Taken: E0 F♯0 G0 A♯0 C1 D1 E1 F♯1 G♯1 A1 C♯2 E2, saved as `<midi>.wav` (28 … 52);
+  `G#2` and `B2` left out (above the bass's range, and `B2` didn't read as its name).
+- **Edits:** as `piano/` (mono 16-bit 24 kHz, onset trim, peak 0.9), cut to 2 s with a 0.4 s fade.
+- **Size:** 12 files, 1.0 MB.

@@ -104,8 +104,8 @@ describe('useClick', () => {
   it('keeps its settings in this browser', () => {
     localStorage.clear()
     const c = useClick(chart(), ref(undefined), { audio: fakeAudio })
-    c.settings.value = { hat: true, countIn: 2, sound: 'beep', folded: true, hear: true, hearRhythm: false }
-    expect(useClick(chart(), ref(undefined), { audio: fakeAudio }).settings.value).toEqual({ hat: true, countIn: 2, sound: 'beep', folded: true, hear: true, hearRhythm: false })
+    c.settings.value = { hat: true, countIn: 2, sound: 'beep', folded: true, hear: true, hearRhythm: false, piano: false, bass: 'off' }
+    expect(useClick(chart(), ref(undefined), { audio: fakeAudio }).settings.value).toEqual({ hat: true, countIn: 2, sound: 'beep', folded: true, hear: true, hearRhythm: false, piano: false, bass: 'off' })
   })
 
   it('back from a hidden tab, books no beat twice', async () => {
@@ -502,6 +502,76 @@ describe('useClick', () => {
       const c = useClick(chart(), ref(undefined), { audio: () => null })
       await c.play('a', phrase)
       expect([c.playing.value, c.unavailable.value]).toEqual([null, true])
+    })
+  })
+
+  describe('Hear changes (#508)', () => {
+    const harmony = {
+      piano: [53, 57, 60, 64].map((midi) => ({ bar: 0, at: 0, beats: 4, midi })),
+      roots: [{ bar: 0, at: 0, beats: 4, midi: 38 }],
+      two: [
+        { bar: 0, at: 0, beats: 2, midi: 38 },
+        { bar: 0, at: 2, beats: 2, midi: 33 },
+      ],
+      bars: 1,
+    }
+    async function hearing(piano: boolean, bass: 'off' | 'roots' | 'two') {
+      const audio = fakeAudio()
+      const t = timers()
+      const c = useClick(ref({ beats: 4 as const, style: 'Ballad', metreChanges: false }), ref(undefined), { audio: () => audio, ...t })
+      c.settings.value = { ...c.settings.value, piano, bass }
+      c.setHarmony(harmony)
+      await c.start()
+      for (let at = 0; at < 3.5; at += 0.05) { // the first bar of the Ballad's (66 bpm, 3.64 s)
+        audio.clock.t = at
+        t.tick()
+      }
+      return { audio, c }
+    }
+
+    it('starts off, and is remembered in this browser', () => {
+      localStorage.removeItem('csm-click')
+      const c = useClick(chart(), ref(undefined), { audio: fakeAudio })
+      expect([c.settings.value.piano, c.settings.value.bass]).toEqual([false, 'off'])
+      c.settings.value = { ...c.settings.value, piano: true, bass: 'two' }
+      const again = useClick(chart(), ref(undefined), { audio: fakeAudio }).settings.value
+      expect([again.piano, again.bass]).toEqual([true, 'two'])
+    })
+
+    it('Piano sounds the voicings with the click', async () => {
+      const { audio } = await hearing(true, 'off')
+      expect(audio.comps.map((n) => n.midi)).toEqual([53, 57, 60, 64])
+      expect(audio.basses).toEqual([])
+    })
+
+    it('Bass plays roots, or roots and 5ths in two', async () => {
+      expect((await hearing(false, 'roots')).audio.basses.map((n) => n.midi)).toEqual([38])
+      const { audio } = await hearing(false, 'two')
+      expect(audio.basses.map((n) => n.midi)).toEqual([38, 33])
+      expect(audio.basses[1]!.time).toBeCloseTo((2 * 60) / 66)
+      expect(audio.comps).toEqual([])
+    })
+
+    it('Start loads the piano and bass first, only with either on', async () => {
+      expect((await hearing(false, 'off')).audio.harmonyLoads.n).toBe(0)
+      expect((await hearing(true, 'off')).audio.harmonyLoads.n).toBe(1)
+      expect((await hearing(false, 'roots')).audio.harmonyLoads.n).toBe(1)
+    })
+
+    it('turning Piano or Bass on while the click runs loads them', async () => {
+      const { audio, c } = await hearing(false, 'off')
+      c.settings.value = { ...c.settings.value, bass: 'roots' }
+      c.settings.value = { ...c.settings.value, piano: true } // already loading: on is on
+      expect(audio.harmonyLoads.n).toBe(1)
+    })
+
+    it('says whether there are changes to hear', () => {
+      const c = useClick(chart(), ref(undefined), { audio: fakeAudio })
+      expect(c.hasHarmony.value).toBe(false)
+      c.setHarmony(harmony)
+      expect(c.hasHarmony.value).toBe(true)
+      c.setHarmony(null)
+      expect(c.hasHarmony.value).toBe(false)
     })
   })
 })

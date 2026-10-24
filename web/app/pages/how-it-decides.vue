@@ -735,6 +735,29 @@
             <strong :class="EM">What you can change:</strong> the click's tempo and feel, and Practice's notes.
           </UiText>
         </DecisionSection>
+
+        <DecisionSection v-if="harmonyOn" id="hear.harmony">
+          <UiText>
+            With the Changes sheet, <strong :class="EM">Piano</strong> and <strong :class="EM">Bass</strong>, under the
+            click's ⋯, play the chart's changes with the click, at concert pitch, in the form's order. The piano plays
+            rootless voicings, after Levine: four notes, the chord's 3rd and 7th with two of its 5th, 9th, 11th and 13th,
+            from the 3rd up or from the 7th up. A dominant gets its 9th and 13th, a minor 7th its 5th and 9th, a major 7th its
+            5th and 9th, a half-diminished its ♭5 and the 9th or 11th; a sus chord its 4th, 5th and 9th; a 6 chord its 5th, 6th
+            and 9th. Each tension is the one the chord's scale has at the sheet's level, so the altered scale at Advanced
+            sounds a ♭9 and a ♭13, and Lydian a ♯11 in place of the 5th. Each chord takes whichever of its two shapes, and
+            whichever octave, moves least from the chord before, its lowest note from C3 to C♯4. A chord is struck where it
+            starts, held to the next one, and struck again each bar it's held through.
+          </UiText>
+          <UiText>
+            The bass plays each chord's root where the chord starts (a slash chord's bass note), in the octave nearest the
+            last, from E1 to C3. On <strong :class="EM">Two-feel</strong>, in an even metre, a chord held for a whole bar
+            plays its root on 1 and its 5th, below, on 3; in 3/4 it plays the root for the bar.
+          </UiText>
+          <UiText>
+            <strong :class="EM">What you can change:</strong> the sheet's level (its scales choose the tensions), Piano, and
+            Bass: Off, Roots or Two-feel.
+          </UiText>
+        </DecisionSection>
       </section>
     </article>
     <PageIndex :sections="SECTIONS" column :current="current" />
@@ -754,6 +777,7 @@ const approachesOn = useFeature('approaches')
 const patternsOn = useFeature('patterns')
 const metronomeOn = useFeature('metronome')
 const hearLineOn = useFeature('hearLine')
+const harmonyOn = hearLineOn && useFeature('harmony')
 
 /** the ranking examples, from the engine as the sheets rank them */
 const PENT_EXAMPLE = pentatonicChoices('Cmaj7', 'C Ionian', CONCERT).slice(0, 3)

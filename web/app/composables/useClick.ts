@@ -1,5 +1,5 @@
 import type { InjectionKey, Ref } from 'vue'
-import { type Beats, type ClickFeel, type ClickForm, type ClickPattern, type ClickPlan, type ClickState, type Feel, type PhraseNote, type RhythmHit, type TimedClick, type VoiceNote, CLICK_PATTERNS, clampSwing, clampTempo, defaultFeel, defaultPattern, defaultTempo, formBar, SWING, scheduleClicks, scheduleRhythm, scheduleVoice, tapTempo, timePhrase } from '@chord-scale-maker/engine'
+import { type BassStyle, type Beats, type ClickFeel, type ClickForm, type ClickPattern, type ClickPlan, type ClickState, type Feel, type PhraseNote, type RhythmHit, type TimedClick, type VoiceNote, CLICK_PATTERNS, clampSwing, clampTempo, defaultFeel, defaultPattern, defaultTempo, formBar, SWING, scheduleClicks, scheduleRhythm, scheduleVoice, tapTempo, timePhrase } from '@chord-scale-maker/engine'
 import { type ClickAudio, type ClickSound, CLICK_SOUNDS, webAudio } from '~/utils/clickSounds'
 import { readStored, writeStored } from '~/utils/storage'
 
@@ -12,8 +12,15 @@ import { readStored, writeStored } from '~/utils/storage'
  * meter (setForm, #559); a staff's Play
  * (play) sounds its phrase at the click's tempo and feel, on the click's next bar while it runs, else at once.
  */
-/** folded: the bar shows only Start/Stop, the tempo and the lights; hear: Hear line, the Line sounds with the click; hearRhythm: Hear rhythm, its rhythm taps with it */
-export type ClickSettings = Readonly<{ hat: boolean; countIn: 0 | 1 | 2; sound: ClickSound; folded: boolean; hear: boolean; hearRhythm: boolean }>
+/**
+ * folded: the bar shows only Start/Stop, the tempo and the lights; hear: Hear line, the Line sounds with the click;
+ * hearRhythm: Hear rhythm, its rhythm taps with it; piano, bass: Hear changes (#508), the chart's voicings and its bass
+ */
+export type ClickSettings = Readonly<{ hat: boolean; countIn: 0 | 1 | 2; sound: ClickSound; folded: boolean; hear: boolean; hearRhythm: boolean; piano: boolean; bass: ClickBass }>
+export type ClickBass = 'off' | BassStyle
+export const CLICK_BASSES: readonly ClickBass[] = ['off', 'roots', 'two']
+/** the changes to hear (#508): the piano's voicings, the bass in roots and in two, and the drawn bars they loop over */
+export type ClickHarmony = Readonly<{ piano: readonly VoiceNote[]; roots: readonly VoiceNote[]; two: readonly VoiceNote[]; bars: number }>
 /** the Line to hear: its notes and the drawn bars it loops over */
 export type ClickLine = Readonly<{ notes: readonly VoiceNote[]; bars: number }>
 /** the rhythm to hear: its attacks and the drawn bars it loops over */
@@ -35,13 +42,15 @@ const PHRASE_LEAD = 0.05
 export const LEAD_BOUND = 1000
 
 /** the lead's samples (#538), or the bound, whichever comes first */
-const leadReady = (audio: ClickAudio): Promise<unknown> => Promise.race([audio.loadLead(), new Promise((r) => setTimeout(r, LEAD_BOUND))])
+const leadReady = (audio: ClickAudio): Promise<unknown> => ready(audio.loadLead())
+/** a set's samples, or the bound */
+const ready = (load: Promise<boolean>): Promise<unknown> => Promise.race([load, new Promise((r) => setTimeout(r, LEAD_BOUND))])
 
 /** how often the scheduler runs (ms) and how far ahead it books (s): further while the tab is hidden, as browsers slow its timers */
 export const LOOKAHEAD = { interval: 25, ahead: 0.1, hiddenAhead: 1.2 } as const
 
 const SETTINGS_KEY = 'csm-click'
-const DEFAULT_SETTINGS: ClickSettings = { hat: false, countIn: 0, sound: 'wood', folded: false, hear: false, hearRhythm: true }
+const DEFAULT_SETTINGS: ClickSettings = { hat: false, countIn: 0, sound: 'wood', folded: false, hear: false, hearRhythm: true, piano: false, bass: 'off' }
 
 function parseSettings(raw: string | null): ClickSettings {
   try {
@@ -53,6 +62,8 @@ function parseSettings(raw: string | null): ClickSettings {
       folded: typeof v.folded === 'boolean' ? v.folded : DEFAULT_SETTINGS.folded,
       hear: typeof v.hear === 'boolean' ? v.hear : DEFAULT_SETTINGS.hear,
       hearRhythm: typeof v.hearRhythm === 'boolean' ? v.hearRhythm : DEFAULT_SETTINGS.hearRhythm,
+      piano: typeof v.piano === 'boolean' ? v.piano : DEFAULT_SETTINGS.piano,
+      bass: CLICK_BASSES.includes(v.bass as ClickBass) ? (v.bass as ClickBass) : DEFAULT_SETTINGS.bass,
     }
   } catch {
     return DEFAULT_SETTINGS
@@ -198,6 +209,14 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
     rhythm.value = r
   }
 
+  const harmony = shallowRef<ClickHarmony | null>(null)
+  const hasHarmony = computed(() => !!harmony.value?.piano.length || !!harmony.value?.roots.length)
+  /** the Changes sheet's changes, or null with none (another sheet) */
+  const setHarmony = (h: ClickHarmony | null): void => {
+    harmony.value = h
+  }
+  const hearsHarmony = (): boolean => settings.value.piano || settings.value.bass !== 'off'
+
   let audio: ClickAudio | null = null
   let timer: number | null = null
   let state: ClickState = { barStart: 0, bar: 0 }
@@ -222,6 +241,9 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
     const next = scheduleClicks(plan.value, state, from, until)
     for (const e of next.events) if (e.kind !== 'tick') audio.play(e.kind, e.time, settings.value.sound)
     if (settings.value.hear && line.value) for (const n of scheduleVoice(line.value.notes, line.value.bars, plan.value, state, from, until)) audio.note(n.midi, n.time, n.length)
+    const h = harmony.value
+    if (h && settings.value.piano) for (const n of scheduleVoice(h.piano, h.bars, plan.value, state, from, until)) audio.comp(n.midi, n.time, n.length)
+    if (h && settings.value.bass !== 'off') for (const n of scheduleVoice(settings.value.bass === 'two' ? h.two : h.roots, h.bars, plan.value, state, from, until)) audio.bass(n.midi, n.time, n.length)
     if (settings.value.hearRhythm && rhythm.value) for (const h of scheduleRhythm(rhythm.value.hits, rhythm.value.bars, plan.value, state, from, until)) audio.hit(h.time, h.accent)
     state = next.state
     booked = Math.max(booked, until) // a shorter lookahead (the tab shown again) mustn't reopen what's booked
@@ -254,8 +276,8 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
       return
     }
     if (mine !== run) return // stopped, or started again, while resuming
-    if (settings.value.hear) {
-      await leadReady(audio)
+    if (settings.value.hear || hearsHarmony()) {
+      await Promise.all([settings.value.hear ? leadReady(audio) : null, hearsHarmony() ? ready(audio.loadHarmony()) : null])
       if (mine !== run) return
     }
     state = { barStart: audio.now(), bar: 0 }
@@ -327,6 +349,13 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
       if (hear && running.value && audio) void audio.loadLead()
     },
   )
+  watch(
+    hearsHarmony,
+    (on) => {
+      if (on && running.value && audio) void audio.loadHarmony()
+    },
+    { flush: 'sync' },
+  )
 
   function stop(): void {
     stopPhrase()
@@ -366,7 +395,7 @@ export function useClick(chart: Readonly<Ref<ClickChart>>, storageKey: Readonly<
     audio = null
   }
 
-  return { shown, running, unavailable, tempo, feel, pattern, swing, settings, beat, counting, hasLine, setLine, hasRhythm, setRhythm, hasForm, setForm, playing, play, stopPhrase, start, stop, toggle, tap, show, hide, dispose }
+  return { shown, running, unavailable, tempo, feel, pattern, swing, settings, beat, counting, hasLine, setLine, hasRhythm, setRhythm, hasHarmony, setHarmony, hasForm, setForm, playing, play, stopPhrase, start, stop, toggle, tap, show, hide, dispose }
 }
 
 export type Click = ReturnType<typeof useClick>

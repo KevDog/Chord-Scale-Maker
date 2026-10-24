@@ -225,6 +225,32 @@ describe('ChangesSheet and Hear line (#507)', () => {
   })
 })
 
+describe('ChangesSheet and Hear changes (#508)', () => {
+  it('hands the click its voicings and bass with the flag on, and takes them back when it goes', async () => {
+    const features = useRuntimeConfig().public.features as Record<string, unknown>
+    const was = { ...features }
+    const mount = async () => {
+      const click = useClick(ref({ beats: 4 as const, style: '', metreChanges: false }), ref(undefined), { audio: () => null })
+      const w = await mountSuspended(ChangesSheet, {
+        props: { doc, title: 'T', subtitle: '', part: { clef: 'treble', trans: 'Bb' }, instrumentLabel: '', numerals: false, scales: false, line: 'off' },
+        global: { provide: { [CLICK as symbol]: click } },
+      })
+      return { click, w }
+    }
+    try {
+      Object.assign(features, { hearLine: true, harmony: false })
+      expect((await mount()).click.hasHarmony.value).toBe(false)
+      Object.assign(features, { harmony: true })
+      const { click, w } = await mount()
+      expect(click.hasHarmony.value).toBe(true)
+      w.unmount()
+      expect(click.hasHarmony.value).toBe(false)
+    } finally {
+      Object.assign(features, was)
+    }
+  })
+})
+
 describe('ChangesSheet and its rhythm (#573)', () => {
   const withLine = (line: ChangesLineChoice) =>
     mountSuspended(ChangesSheet, {
