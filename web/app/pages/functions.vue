@@ -17,7 +17,7 @@
     <section class="scroll-mt-6 space-y-4" aria-labelledby="writing">
       <UiSubheading id="writing">Writing a function</UiSubheading>
       <UiText>
-        A chart row may end with the chord's function, after the scale: <UiCode>A | 5 | A7 | | V7/ii</UiCode>. Leave
+        A chart row may end with the chord's function, after the scale: <UiCode>5 | A7 | | V7/ii</UiCode>. Leave
         the scale cell blank and the scale follows the function, at the level the sheet is set to; a scale written in
         the cell is played as written instead. The function is read as:
       </UiText>

@@ -124,7 +124,7 @@ test('the navbar: Library, Scales and Composers, then a Help menu of the other p
   await help.focus()
   await page.keyboard.press('Enter')
   const items = page.getByRole('menu').getByRole('menuitem')
-  await expect(items).toHaveText(['How it works', 'How it decides', 'Functions', 'About', 'Contact'])
+  await expect(items).toHaveText(['How it works', 'How it decides', 'Functions', 'Chart format', 'About', 'Contact'])
   await page.keyboard.press('Escape')
   await expect(page.getByRole('menu')).toHaveCount(0)
   await expect(help).toBeFocused()
@@ -139,7 +139,7 @@ test('on a phone, the menu lists every page flat', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 800 })
   await page.goto('/')
   await page.getByRole('button', { name: 'Open navigation' }).click()
-  await expect(page.getByRole('dialog').getByRole('link')).toHaveText(['Library', 'Scales', 'Chords', 'Composers', 'How it works', 'How it decides', 'Functions', 'About', 'Contact'])
+  await expect(page.getByRole('dialog').getByRole('link')).toHaveText(['Library', 'Scales', 'Chords', 'Composers', 'How it works', 'How it decides', 'Functions', 'Chart format', 'About', 'Contact'])
 })
 
 test('Help is in the navbar and footer, and its contents jump to each section', async ({ page }) => {

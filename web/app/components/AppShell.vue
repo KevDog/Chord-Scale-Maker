@@ -55,6 +55,7 @@
           <NuxtLink to="/how-it-decides" class="hover:text-zinc-950 dark:hover:text-white">How it decides</NuxtLink>
           <NuxtLink to="/release-notes" class="hover:text-zinc-950 dark:hover:text-white">Release notes</NuxtLink>
           <NuxtLink to="/functions" class="hover:text-zinc-950 dark:hover:text-white">Functions</NuxtLink>
+          <NuxtLink to="/chart-format" class="hover:text-zinc-950 dark:hover:text-white">Chart format</NuxtLink>
           <NuxtLink to="/scales" class="hover:text-zinc-950 dark:hover:text-white">Scales</NuxtLink>
           <NuxtLink to="/chords" class="hover:text-zinc-950 dark:hover:text-white">Chords</NuxtLink>
           <NuxtLink to="/composers" class="hover:text-zinc-950 dark:hover:text-white">Composers</NuxtLink>

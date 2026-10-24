@@ -8,7 +8,7 @@ import { barAt, barLength, barStart, type Clock } from './metre'
 import { type HexPick, livePick, type PentPick, pickTarget, type QuartPick } from './chordPicks'
 import type { Approach } from './approaches'
 import { arpeggioTones, arpeggioVoices, isArpeggioPattern, type SheetLine } from './arpeggios'
-import { type GuideInput, type GuideNote, guideVoices } from './guideTones'
+import { type GuideInput, type GuideNote, guideVoices, voiceAccidentals } from './guideTones'
 import { keySignature } from './keySignature'
 import { type CellsLine, cellsVoices } from './cells'
 import { type PentatonicLine, pentatonicVoices } from './pentatonicLine'
@@ -23,7 +23,7 @@ import { abbreviateScale } from './scales'
 import { type QuartalNotesChoice, type QuartalStack, rankedStacks } from './quartal'
 import { type QuartalLine, quartalVoices } from './quartalLine'
 import { chunk, orNull } from './util'
-import { type Feel, type FeelSlash, feelSlashes, feelTargets, layRhythm, markTargets, phrasingCaption, type Pulse, rhythmCaption, type RhythmId, type RhythmNote, rhythmNotes, type RhythmPath, type RhythmPlan, type RhythmStart, type RhythmStepCard, rhythmStepCards, rhythmStepMarks, rhythmSteps } from './rhythm'
+import { type Feel, type FeelSlash, feelSlashes, feelTargets, landTargets, layRhythm, markTargets, phrasingCaption, type Pulse, rhythmCaption, type RhythmId, type RhythmNote, rhythmNotes, type RhythmPath, type RhythmPlan, type RhythmStart, type RhythmStepCard, rhythmStepCards, rhythmStepMarks, rhythmSteps, targetLandings } from './rhythm'
 
 /**
  * The Changes sheet (docs/plan-changes.md): the chart as a study lead sheet. Bars of slashes in the chart's metre
@@ -488,8 +488,8 @@ export function takesRhythm(line: ChangesLineChoice, restate: boolean): boolean 
   return true
 }
 
-/** view: the level the sheet plays blank cells at (resolve.ts); the guide tones read the chords only; overlay: the row under the chords, the pentatonics' rungs by section or the hexatonics (null: no row); approach: the figure into the guide tone line's notes, and the 7th Chords and Cells lines' first note over each chord (#381); options: rhythm, over the bars as drawn: the rhythm line with the Line off (rhythm spec §8), else poured into a Line that takes it (rhythm-on-lines spec §1); targets, each bar's target beats (§7); start, anticipate and restate, how a Line plays the rhythm (rhythm-on-lines spec §3, §2, §5), inert without one; rhythmPath, the Groups and Gears paths the rhythm steps through, with their marks and caption (Phase 4 spec §3); feel, in 4, 2 or 1: the slashes, beat-grouped beams, target beats and caption (Phase 4 spec §4), display only */
-export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatures = false, line: ChangesLineChoice = 'off', view: ScaleView = STANDARD, overlay: OverlayPlan | null = null, approach: Approach = 'none', { rhythm = 'off', targets = false, start = 'beat', anticipate = 0, restate = false, rhythmPath, feel = 4 }: Readonly<{ rhythm?: RhythmId; targets?: boolean; start?: RhythmStart; anticipate?: number; restate?: boolean; rhythmPath?: RhythmPath; feel?: Feel }> = {}): ChangesSheet {
+/** view: the level the sheet plays blank cells at (resolve.ts); the guide tones read the chords only; overlay: the row under the chords, the pentatonics' rungs by section or the hexatonics (null: no row); approach: the figure into the guide tone line's notes, and the 7th Chords and Cells lines' first note over each chord (#381); options: rhythm, over the bars as drawn: the rhythm line with the Line off (rhythm spec §8), else poured into a Line that takes it (rhythm-on-lines spec §1); targets, each bar's target beats (§7); land, the Line strikes a chord tone on each target beat, the targets moving with its timing (landTargets); start, anticipate and restate, how a Line plays the rhythm (rhythm-on-lines spec §3, §2, §5), inert without one; rhythmPath, the Groups and Gears paths the rhythm steps through, with their marks and caption (Phase 4 spec §3); feel, in 4, 2 or 1: the slashes, beat-grouped beams, target beats and caption (Phase 4 spec §4), display only */
+export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatures = false, line: ChangesLineChoice = 'off', view: ScaleView = STANDARD, overlay: OverlayPlan | null = null, approach: Approach = 'none', { rhythm = 'off', targets = false, land = false, start = 'beat', anticipate = 0, restate = false, rhythmPath, feel = 4 }: Readonly<{ rhythm?: RhythmId; targets?: boolean; land?: boolean; start?: RhythmStart; anticipate?: number; restate?: boolean; rhythmPath?: RhythmPath; feel?: Feel }> = {}): ChangesSheet {
   const pentatonic = overlay?.kind === 'pentatonic' ? overlay : null
   const { layout, rows, beats, timeline, clock, t } = laidOut(doc)
   const { diagnostics } = timeline
@@ -731,18 +731,62 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
   // clock, not the drawn order), as its arpeggio tones' pitch classes, spelled from the scale the sheet shows (not
   // ChangesChord.scale, the written display label); null when it can't be read
   // sorted by start once (stable: of chords starting together, the last drawn), each one's tones read once (#505)
-  const byStart = (targets ? drawn((i, row) => resolved.get(i)?.scale ?? qualityScale(row)) : []).toSorted((a, b) => a.start - b.start)
-  const tonesOf = byStart.map((x) => arpeggioTones(part, x.chord, x.scale)?.map(pcOf) ?? null)
-  const tonesAt = (bar: number) => (beat: number): readonly number[] | null => {
-    const at = barStart(clock, bar) + beat
+  const byStart = (targets || land ? drawn((i, row) => resolved.get(i)?.scale ?? qualityScale(row)) : []).toSorted((a, b) => a.start - b.start)
+  const spelledOf = byStart.map((x) => arpeggioTones(part, x.chord, x.scale))
+  const tonesOf = spelledOf.map((t) => t?.map(pcOf) ?? null)
+  /** the chord sounding at a clock beat, as an index into byStart (-1: none yet) */
+  const chordIndexAt = (at: number): number => {
     let lo = 0 // the first chord starting after the note
     for (let hi = byStart.length; lo < hi; ) {
       const mid = (lo + hi) >> 1
       if (byStart[mid]!.start <= at) lo = mid + 1
       else hi = mid
     }
-    return tonesOf[lo - 1] ?? null
+    return lo - 1
   }
+  const tonesAt = (bar: number) => (beat: number): readonly number[] | null => tonesOf[chordIndexAt(barStart(clock, bar) + beat)] ?? null
+  // Chord tones on strong beats (land): each drawn bar's targets, moved with the Line's timing (a target on a chord change lands where
+  // the Line changes chord; the first chord and a 2nd ending's don't move), each struck as a tone of the chord the
+  // Line plays there (its changes moved the same way), a beat once; by clock bar, each voice with its targets and their chords' tones
+  const landed = new Map<number, Readonly<{ voice: readonly GuideNote[]; targets: readonly number[]; tonesAt: (beat: number) => readonly number[] | null }>>()
+  if (land && voices) {
+    const shift = poured ? anticipate : 0
+    const firstStart = byStart[0]?.start
+    const breakStarts = breaks.map((d) => barStart(clock, clockBars[d] ?? 0))
+    const moves = (at: number): boolean => at !== firstStart && !breakStarts.some((b) => Math.abs(b - at) < 1e-9)
+    // the Line's chord at a clock beat: the last to start by then, each start moved as the Line's change is
+    const lineStarts = byStart.map((x, k) => ({ k, at: moves(x.start) ? x.start - shift : x.start })).toSorted((a, b) => a.at - b.at)
+    const lineChordAt = (at: number): number => lineStarts.findLast((x) => x.at <= at + 1e-9)?.k ?? -1
+    const found = targetLandings(
+      clockBars.map((bar, d) => {
+        const from = barStart(clock, bar)
+        const len = lengths[d] ?? 0
+        const changes = shift ? byStart.filter((x) => x.start >= from && x.start < from + len && moves(x.start)).map((x) => x.start - from) : []
+        return { beats: len, targets: feelTargets(len, feel), changes }
+      }),
+      shift,
+    )
+    let before: number | null = null // the clock bar drawn before, whose last note may tie into this one
+    clockBars.forEach((bar, d) => {
+      const at = (found[d] ?? []).filter((beat, i, all) => all.findIndex((x) => Math.abs(x - beat) < 1e-9) === i).map((beat) => ({ beat, chord: lineChordAt(barStart(clock, bar) + beat) }))
+      const base = voices.bars.get(bar) ?? []
+      const voice = landTargets(base, at.map((l) => ({ beat: l.beat, tones: spelledOf[l.chord] ?? null })), { split: !poured, band: rangeOf(part) })
+      // struck again where the line came tied in: the bar before no longer ties into it
+      const prev = before === null ? undefined : landed.get(before)
+      if (prev && base[0]?.tiedIn && !voice[0]?.tiedIn) {
+        const last = prev.voice.findLastIndex((n) => n.pitch !== null)
+        landed.set(before!, { ...prev, voice: prev.voice.map((n, i) => (i === last ? { ...n, tie: false } : n)) })
+      }
+      landed.set(bar, { voice: voiceAccidentals(voice, keySig), targets: at.map((l) => l.beat), tonesAt: (beat) => tonesOf[at.find((l) => Math.abs(l.beat - beat) < 1e-9)?.chord ?? -1] ?? null })
+      before = bar
+    })
+  }
+  const landedOrMarked = (bar: number): readonly GuideNote[] => {
+    const l = landed.get(bar)
+    return l ? markTargets(l.voice, l.targets, l.tonesAt) : markTargets(voices?.bars.get(bar) ?? [], feelTargets(barLength(clock, bar), feel), tonesAt(bar))
+  }
+  /** a bar's Line as played: landed, or as built */
+  const lineVoice = (bar: number): readonly GuideNote[] => landed.get(bar)?.voice ?? voices?.bars.get(bar) ?? []
   let lastKey = ''
   const lastForm = blocks.findLastIndex((b) => b.part === 'form')
   const lines = blocks.flatMap((block, k) => {
@@ -794,7 +838,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
         beats: barLength(clock, bar) as Beats,
         timeSignature: null,
         chords,
-        voice: targets ? markTargets(voices?.bars.get(bar) ?? [], feelTargets(barLength(clock, bar), feel), tonesAt(bar)) : (voices?.bars.get(bar) ?? []),
+        voice: targets ? landedOrMarked(bar) : lineVoice(bar),
         rhythm: [],
         slashes: feelSlashes(barLength(clock, bar), feel),
         targets: [],

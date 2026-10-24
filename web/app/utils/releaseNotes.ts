@@ -11,6 +11,7 @@ export const RELEASE_NOTES: readonly ReleaseNote[] = [
     date: '2026-10-24',
     items: [
       { text: 'A drop-down menu low in the window, like the click settings’ Click on, now opens upward instead of running off the bottom of the page.', pr: 600 },
+      { text: 'A new Chart format page, under Help, lists every line a chart’s source can hold (the header’s fields, sections, rows, alternates and the @ changes inside a section), with an annotated example and every message the editor gives for a line it can’t read.', pr: 595 },
       { text: 'Hear line and Play sound a grand piano now, the Salamander Grand (a Yamaha C5), sampled every minor third for a truer tone across the range; the sound files load again the first time you play.', pr: 594 },
       { text: 'The click has a third sound, Stick: a recorded stick in place of a synthesized tick, kept for offline use. Choose it under the click’s ⋯. Until it loads, or if it can’t, the click plays Wood.', pr: 587 },
       { text: 'A shuffle’s Swing dial now starts at 72%, a little further than the two thirds other swing styles start at; moving it still sticks.', pr: 588 },

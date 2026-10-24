@@ -180,6 +180,8 @@
                               <UiListboxOption v-for="a in APPROACHES" :key="a" :value="a"><UiListboxLabel>{{ APPROACH_LABELS[a] }}</UiListboxLabel></UiListboxOption>
                             </UiListbox>
                           </EaseReveal>
+                          <!-- any Line: a chord tone on each strong beat (#596) -->
+                          <ToggleButton v-if="landOn && lineMode !== 'off'" v-model="land" class="self-start" title="Play a chord tone on each bar's strong beats (1 and 3 in 4/4), moving with Anticipate and Resolve late (after Galper)">Chord tones on strong beats</ToggleButton>
                           <!-- the Cells line's Order, and for a system its Phrase (#376) -->
                           <EaseReveal :show="phraseOn && shows('cells') && lineMode === 'cells' && overlay === 'off'" inner-class="flex flex-col items-start gap-2">
                             <UiListbox v-model="cellsOrder" class="w-full" aria-label="Order" title="Play every cell as written, reversed, rotated or with its pairs swapped">
@@ -458,8 +460,8 @@
     // the Cells line shares the 7th Chords slot (#298): the radio reads 7th Chords while a cell is chosen, and picking
     // a cell sets the mode and the cell, a pattern the mode and the pattern; leaving the slot for another mode and coming back restores 7th Chords
     const inSlot = computed(() => lineMode.value === 'arpeggio' || lineMode.value === 'cells')
-    /** the line has detail to set (Line options): the guide tone line, a slot's pattern or direction, an Approach; or the rhythm, whatever the line */
-    const lineHasOptions = computed(() => lineMode.value === 'guide' || inSlot.value || (approachesOn && shows('approaches') && approachApplies(lineMode.value, overlay.value)) || (rhythmOn && shows('rhythm')))
+    /** the line has detail to set (Line options): the guide tone line, chord tones on strong beats, a slot's pattern or direction, an Approach; or the rhythm, whatever the line */
+    const lineHasOptions = computed(() => lineMode.value === 'guide' || (landOn && lineMode.value !== 'off') || inSlot.value || (approachesOn && shows('approaches') && approachApplies(lineMode.value, overlay.value)) || (rhythmOn && shows('rhythm')))
     const lineRadio = computed<LineMode>({
       get: () => (lineMode.value === 'cells' ? 'arpeggio' : lineMode.value),
       set: (v) => { if (!(v === 'arpeggio' && inSlot.value)) lineMode.value = v },
@@ -490,6 +492,8 @@
     provide(RHYTHM_PATH_LISTS, useRhythmPathLists(rhythmPath))
     const targets = defineModel<boolean>('targets', { default: false })
     const rhythmOn = useFeature('rhythm')
+    const land = defineModel<boolean>('land', { default: false })
+    const landOn = useFeature('landTargets')
     /** Feel in 4, 2 or 1 (Phase 4 spec §7), with the rhythmGears flag on */
     const gearsOn = useFeature('rhythmGears')
     const feel = defineModel<Feel>('feel', { default: 4 })

@@ -775,7 +775,10 @@
           <UiText>
             With the <strong :class="EM">Swing groove</strong> on, the piano comps and the bass walks in place of the held
             chords and roots. The piano strikes each chord's voicing (the same voicings as Piano's) in a comping rhythm drawn
-            for it, the Charleston among them, never past the chord. The bass walks in quarters from E1 to G3: the chord's root
+            for it from a dozen (the Charleston, 2 and 4, pushes on the and of 2, held chords), never the last chord's
+            rhythm again and never past the chord. After its first strike a voicing moves: its lowest note an octave up, or
+            its top three alone. About one chord in four is anticipated, struck on the and of 4 before it and held over the
+            bar line, and now and then a bar is left empty. The bass walks in quarters from E1 to G3: the chord's root
             (a slash chord's bass) on its first beat, its last a half step from the next chord's root, two times in three, or
             that root's 5th, and the beats between stepping through the chord's scale toward it, its chord tones likelier. A
             3/4 bar plays the root for two beats and a lead-in on 3.
@@ -783,7 +786,8 @@
           <UiText>
             <strong :class="EM">Drums</strong> plays a ride cymbal's ding, ding-a (the skip note after 2 and 4, after 2 in
             3/4), 2 and 4 leaning, with the hi-hat's foot on 2 and 4 (on 2 and 3 in 3/4); the skip note swings as the dial
-            says. The choices are drawn from the chart's title, so a chart plays the same groove every time.
+            says. The choices are drawn from the chart's title, so a chart plays the same groove every time. With Drums on,
+            in any groove, the drums keep time: the click is silent but for its count-in.
           </UiText>
           <UiText>
             <strong :class="EM">What you can change:</strong> the groove and Drums, the Swing dial, and the sheet's level.

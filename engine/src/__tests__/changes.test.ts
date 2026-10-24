@@ -1330,6 +1330,38 @@ describe('the rhythm line and target beats (rhythm spec §8)', () => {
     expect(bars(m).map((b) => b.voice.map((x) => x.target ?? null))).toEqual([['tone', null, 'other', null], ['tone', null, 'tone', null]])
   })
 
+  describe('Land on targets', () => {
+    const minor = parseChart('key: Am\n\nsection: A\n1 | Am7\n2 | Dm7\n3 | F7\n4 | E7b9\n').value
+    /** each bar's struck notes on its target beats, by beat, and their marks */
+    const onTargets = (sheet: ChangesSheet) => bars(sheet).map((b) => [0, 2].map((t) => b.voice.find((n) => Math.abs(n.beat - t) < 1e-9 && n.pitch && !n.tiedIn)?.target ?? null))
+
+    it('strikes a chord tone on every target: a guide tone held through beat 3 is struck again there', () => {
+      const held = buildChanges(minor, CONCERT, 4, false, 'seventh', undefined, null, 'below-above', { targets: true })
+      expect(onTargets(held)).toContainEqual(['tone', null]) // without Land: held through 3
+      const landed = buildChanges(minor, CONCERT, 4, false, 'seventh', undefined, null, 'below-above', { targets: true, land: true })
+      expect(onTargets(landed)).toEqual(Array(4).fill(['tone', 'tone']))
+    })
+
+    it('moves a note that isn’t a chord tone off each target, on every Line', () => {
+      const missed = (land: boolean) => LINES.filter(([line, overlay]) => bars(buildChanges(minor, CONCERT, 4, false, line, undefined, overlay, 'none', { targets: true, land })).some((b) => b.voice.some((n) => n.target === 'other')))
+      expect(missed(false).length).toBeGreaterThan(0) // (guard) some Line misses a target without Land
+      expect(missed(true)).toEqual([])
+    })
+
+    it('moves a target on a chord change with the Timing, judged against the chord the Line plays there', () => {
+      const m = buildChanges(two, CONCERT, 4, false, 'up-root', undefined, null, 'none', { rhythm: 'card:downbeats', anticipate: 2, targets: true, land: true })
+      expect(bars(m).map(letters)).toEqual([['C', 'E', 'D', 'F'], ['A', 'C', 'A', 'F']])
+      expect(bars(m).map((b) => b.voice.map((x) => x.target ?? null))).toEqual([['tone', null, 'tone', null], [null, null, 'tone', null]])
+    })
+
+    it('lands without Target beats too, marking nothing', () => {
+      const plain = buildChanges(minor, CONCERT, 4, false, 'seventh', undefined, null, 'below-above', { land: true })
+      const marked = buildChanges(minor, CONCERT, 4, false, 'seventh', undefined, null, 'below-above', { land: true, targets: true })
+      expect(bars(plain).map(letters)).toEqual(bars(marked).map(letters))
+      expect(bars(plain).every((b) => b.voice.every((n) => n.target === undefined))).toBe(true)
+    })
+  })
+
   it('colors the Line with Rhythm Off when Target beats are on (D18)', () => {
     expect(bars(buildChanges(two, CONCERT, 4, false, 'up-root', undefined, null, 'none', { targets: true }))[0]!.voice.map((x) => x.target ?? null)).toEqual(['tone', null, 'tone', null])
   })
