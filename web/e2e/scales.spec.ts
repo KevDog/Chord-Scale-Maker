@@ -102,10 +102,10 @@ test.describe('the Scales sheet’s rhythm', () => {
   test.use({ interfaceLevel: 'intermediate' })
 
   test('a rhythm card under each staff', async ({ page }) => {
+    await page.addInitScript(() => localStorage.setItem('csm-rhythm', 'unit:8:5:accents')) // off Intermediate's list (#577): in force, with the notice
     await page.goto('/song/f-blues')
     await chooseSheet(page, 'Scales')
     await expect(staves(page).first()).toBeVisible()
-    await chooseRhythm(page, '8ths', { In: 'In 5', Variation: 'with accents' })
     const count = await page.locator('[data-slot=scale-staff]').count()
     expect(count).toBeGreaterThan(0)
     await expect(page.locator('[data-slot=scale-staff]:not(:has([data-slot=rhythm-card]))')).toHaveCount(0)
@@ -167,7 +167,7 @@ test.describe('the Scales sheet’s rhythm', () => {
     const first = staves(page).first()
     await expect(first).toHaveAttribute('data-time-sig', '4/4')
     await expect(first).not.toHaveAttribute('aria-label', /; rhythm: /)
-    await chooseRhythm(page, '8ths', { In: 'In 3', Variation: 'with accents' })
+    await chooseRhythm(page, '8ths in 3, with accents')
     await expect(first).toHaveAttribute('aria-label', /^[^;]+ rest; rhythm: 8ths in 3, with accents$/)
   })
 

@@ -81,7 +81,7 @@ test.describe('the Arpeggios sheet’s rhythm', () => {
     await page.goto('/song/autumn-leaves')
     await chooseSheet(page, 'Arpeggios')
     await expect(staves(page)).toHaveCount(14)
-    await chooseRhythm(page, '8ths', { In: 'In 3', Variation: 'with accents' })
+    await chooseRhythm(page, '8ths in 3, with accents') // a ready-made rhythm: Intermediate's list (#577)
     await expect(page.locator('svg[data-time-sig="4/4"]')).toHaveCount(14)
     // Cm7, 7th Chord, Up: its nine notes, eight in the first bar, the last and its rests in the second (spec §4's table)
     const first = staves(page).first()

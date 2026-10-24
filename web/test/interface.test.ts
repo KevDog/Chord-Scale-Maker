@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { RHYTHM_PATH_OFF } from '@chord-scale-maker/engine'
-import { CONTROL_TIERS, hiddenSettings, initialLevel, INTERFACE_LEVELS, isInterfaceLevel, levelLabel, shows, type ViewSettings } from '~/utils/interface'
+import { CONTROL_TIERS, hiddenSettings, INTERMEDIATE_RHYTHMS, initialLevel, INTERFACE_LEVELS, isInterfaceLevel, levelLabel, shows, type ViewSettings } from '~/utils/interface'
 
 const DEFAULTS: ViewSettings = { sheet: 'changes', scaleLevel: 'standard', numerals: true, scaleNames: true, lineMode: 'off', spell: 'key', practice: null, overlay: 'off', picks: false, approach: 'none', rhythm: 'off', targets: false, rhythmStart: 'beat', anticipate: 0, rhythmLine: false, notesPerBar: 'whole', rhythmPath: RHYTHM_PATH_OFF, feel: 4 }
 
@@ -26,6 +26,7 @@ describe('interface levels', () => {
       'notes-per-bar': 'intermediate',
       'rhythm-phrasing': 'everything',
       'rhythm-gears': 'everything',
+      'rhythm-detail': 'everything',
       feel: 'everything',
       'scale-choice': 'intermediate',
       'form-editing': 'intermediate',
@@ -116,10 +117,10 @@ describe('hiddenSettings', () => {
     const up = { ...RHYTHM_PATH_OFF, groups: [3, 4, 5, 6, 7] }
     const gears = { ...RHYTHM_PATH_OFF, gears: ['8', '16'] as const }
     expect(hiddenSettings('intermediate', { ...DEFAULTS, rhythm: 'unit:8:3:accents', rhythmPath: up })).toEqual({ settings: ['rhythm-gears'], needs: 'everything' })
-    expect(hiddenSettings('intermediate', { ...DEFAULTS, rhythm: 'custom:8:>xx', rhythmPath: gears })).toEqual({ settings: ['rhythm-gears'], needs: 'everything' })
+    expect(hiddenSettings('intermediate', { ...DEFAULTS, rhythm: 'custom:8:>xx', rhythmPath: gears })).toEqual({ settings: ['rhythm-gears', 'rhythm-detail'], needs: 'everything' })
     expect(hiddenSettings('essentials', { ...DEFAULTS, lineMode: 'arpeggio', rhythmLine: true, rhythm: 'unit:8:3:accents', rhythmPath: up })).toEqual({ settings: ['line', 'rhythm', 'rhythm-gears'], needs: 'everything' })
     expect(hiddenSettings('everything', { ...DEFAULTS, rhythm: 'unit:8:3:accents', rhythmPath: up })).toBeNull()
-    expect(hiddenSettings('intermediate', { ...DEFAULTS, rhythm: 'custom:8:>xx', rhythmPath: up })).toBeNull() // Groups act on a unit only
+    expect(hiddenSettings('intermediate', { ...DEFAULTS, rhythm: 'custom:8:>xx', rhythmPath: up })).toEqual({ settings: ['rhythm-detail'], needs: 'everything' }) // Groups act on a unit only
     expect(hiddenSettings('intermediate', { ...DEFAULTS, rhythm: 'run:8:4:0', rhythmPath: up })).toBeNull() // nor on a per-bar rhythm
     expect(hiddenSettings('intermediate', { ...DEFAULTS, rhythm: 'off', rhythmPath: up })).toBeNull()
     expect(hiddenSettings('intermediate', { ...DEFAULTS, sheet: 'scales', rhythm: 'unit:8:3:accents', rhythmPath: up })).toBeNull() // paths are the Changes' (D13)
@@ -174,5 +175,24 @@ describe('initialLevel', () => {
   it('treats an unknown stored value as unset', () => {
     expect(initialLevel('pro', ['csm-interface'])).toBe('essentials')
     expect(initialLevel('pro', ['csm-interface', 'csm-level:x'])).toBe('everything')
+  })
+})
+
+describe('the Intermediate rhythms (#577)', () => {
+  it('lists the presets: each pulse with accents on the beat, 8ths in 3, a run of 8ths, the cards', () => {
+    expect(INTERMEDIATE_RHYTHMS).toEqual(['unit:4:4:accents', 'unit:8:2:accents', 'unit:8t:3:accents', 'unit:16:4:accents', 'unit:8:3:accents', 'run:8:4:0', 'card:downbeats', 'card:upbeats', 'card:halves'])
+  })
+
+  it('names another rhythm in force at Intermediate under rhythm-detail, where it draws', () => {
+    expect(hiddenSettings('intermediate', { ...DEFAULTS, rhythm: 'unit:8:5:rests' })).toEqual({ settings: ['rhythm-detail'], needs: 'everything' })
+    expect(hiddenSettings('intermediate', { ...DEFAULTS, sheet: 'scales', rhythm: 'run:16:3:2' })).toEqual({ settings: ['rhythm-detail'], needs: 'everything' })
+    expect(hiddenSettings('essentials', { ...DEFAULTS, rhythm: 'unit:8:5:rests' })).toEqual({ settings: ['rhythm', 'rhythm-detail'], needs: 'everything' })
+    expect(hiddenSettings('everything', { ...DEFAULTS, rhythm: 'unit:8:5:rests' })).toBeNull()
+    expect(hiddenSettings('intermediate', { ...DEFAULTS, lineMode: 'guide', rhythm: 'unit:8:5:rests' })).toBeNull() // a Line that doesn't take it
+    for (const rhythm of INTERMEDIATE_RHYTHMS) expect(hiddenSettings('intermediate', { ...DEFAULTS, rhythm })).toBeNull()
+  })
+
+  it('leaves a tuplet pulse to rhythm-gears alone', () => {
+    expect(hiddenSettings('intermediate', { ...DEFAULTS, rhythm: 'unit:8q:5:rests' })).toEqual({ settings: ['rhythm-gears'], needs: 'everything' })
   })
 })
