@@ -10,7 +10,7 @@ export const RELEASE_NOTES: readonly ReleaseNote[] = [
   {
     date: '2026-10-24',
     items: [
-      { text: 'Hear line and Play sound a recorded piano in place of the synthesized tone: sound files from this site, loaded the first time you play and then kept for offline use. Until they load, or if they can’t, the tone plays as before.', pr: 583 },
+      { text: 'Hear line and Play sound a recorded piano in place of the synthesized tone: sound files from this site, loaded the first time you play and then kept for offline use. Until they load, or if they can’t, the tone plays as before.', pr: 584 },
     ],
   },
   {
