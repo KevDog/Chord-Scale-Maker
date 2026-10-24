@@ -20,35 +20,38 @@ Licences: CC0 preferred; a CC-BY set is credited on the About page.
 - **Size:** 3 files, 37 KB. Precached by the service worker (`web/build/sw.ts`), unlike the larger sets.
 - **Fetch:** `https://raw.githubusercontent.com/sgossner/VSCO-2-CE/master/Percussion/<file>`.
 
-## piano: Hear line and Play's lead (#538)
+## grand: Hear line and Play's lead (#538)
 
-- **Source:** VSCO 2 Community Edition, `Keys/Upright Piano/`, by Simon Dalzell of Ivy Audio for Versilian Studios
-  (<https://github.com/sgossner/VSCO-2-CE>). Licence: CC0 1.0 (the repo's `LICENSE`); the set's `Info.txt` encourages
-  credit to both, given on the About page.
-- **Files:** `Player_dyn2_rr1_006.wav` … `_034.wav`, every other file (the set's `MappingChart.txt`: file *n* is MIDI
-  21 + *n*), so a sample every major third from A1 (33) to F6 (89); saved as `<midi>.wav`. The second of three dynamics,
-  soft enough to sit under a player.
-- **Edits:** `afconvert -f WAVE -d LEI16@24000 -c 1` (stereo 44.1 kHz → mono 16-bit 24 kHz), then trimmed to the onset
-  (the first sample over 1% of the peak), cut to 2.5 s with a linear fade over the last 0.5 s, and peak-normalized to
-  0.9. Pitch checked by autocorrelation (A2 = 110 Hz, A4 = 444 Hz).
-- **Size:** 15 files, 1.8 MB.
-- **Fetch:** `https://raw.githubusercontent.com/sgossner/VSCO-2-CE/master/Keys/Upright%20Piano/Player_dyn2_rr1_<nnn>.wav`.
+- **Source:** Salamander Grand Piano v3 by Alexander Holm, a Yamaha C5 (<https://github.com/sfzinstruments/SalamanderGrandPiano>,
+  originally <https://archive.org/details/SalamanderGrandPianoV3>). Licence: **CC BY 3.0** (the repo's `LICENSE`):
+  credit on the About page, naming the author, the licence and that the samples were edited.
+- **Files:** `Samples/<note>v10.flac`, the tenth of sixteen velocity layers, every minor third from A1 (33) to F♯6 (90)
+  (scientific octaves: A0 is MIDI 21); saved as `<midi>.wav`.
+- **Edits:** `afconvert -f WAVE -d LEI16@24000 -c 1` (stereo 48 kHz FLAC → mono 16-bit 24 kHz WAV), then trimmed to the
+  onset (the first sample over 1% of the peak), cut to 2.5 s with a linear fade over the last 0.5 s, and peak-normalized
+  to 0.9. Pitch checked by the harmonic-product estimate, and the top notes by a fundamental scan: each its name.
+- **Size:** 20 files, 2.3 MB.
 
-## comp: Hear changes' piano (#539, #508)
+## grand-comp: Hear changes' piano (#539, #508)
 
-- **Source:** the same VSCO 2 CE Upright Piano as `piano/`, its softest dynamic, `Player_dyn1_rr1_012.wav` … `_030.wav`
-  (every other file: MIDI 45, A2, to 81, A5, every major third); saved as `<midi>.wav`.
-- **Edits:** as `piano/`, cut to 4 s with a 0.8 s fade (a voicing is held to the next chord, and struck again each bar).
-- **Size:** 10 files, 1.8 MB.
+- **Source:** the same Salamander Grand, layer 6 (softer, to sit under a player), `<note>v6.flac` from A2 (45) to A5 (81)
+  every minor third; saved as `<midi>.wav`.
+- **Edits:** as `grand/`, cut to 4 s with a 0.8 s fade (a voicing is held to the next chord, and struck again each bar).
+- **Size:** 13 files, 2.4 MB.
 
-## bass: Hear changes' bass (#539, #508)
+New folders, not `piano/` and `comp/`: the service worker keeps `/sounds/` cache-first across builds. They replace VSCO
+2 CE's Upright Piano.
 
-- **Source:** VSCO 2 CE, `Strings/Solo Contrabass/Pizz/`, the first dynamic's first round-robin (`BKCtbss_Pizz_<note>_v1_rr1.wav`).
-  Licence: CC0 1.0. The set names its notes an octave low (`E0` is E1, MIDI 28; checked by a harmonic-product pitch
-  estimate: C1 → 65.4 Hz, A1 → 110 Hz). Taken: E0 F♯0 G0 A♯0 C1 D1 E1 F♯1 G♯1 A1 C♯2 E2, saved as `<midi>.wav` (28 … 52);
-  `G#2` and `B2` left out (above the bass's range, and `B2` didn't read as its name).
-- **Edits:** as `piano/` (mono 16-bit 24 kHz, onset trim, peak 0.9), cut to 2 s with a 0.4 s fade.
-- **Size:** 12 files, 1.0 MB.
+## upright-bass: Hear changes' bass (#539, #508)
+
+- **Source:** D. Smolken's double bass (<https://github.com/sfzinstruments/dsmolken.double-bass>): a 1958 Otto Rubner
+  bass on Thomastik-Infeld Spirocore strings, CC0 1.0 (its `LICENSE`; the readme: "Royalty-free for all commercial and
+  non-commercial use"). `pizz/pizz_<note>_ma.wav`, the mezzo dynamic's first take, at the SFZ's key centres (SFZ
+  octaves: C1 is MIDI 24): E♭1 G1 B♭1 D2 F2 A2 C3 E3 G3 A3, saved as `<midi>.wav` (27 … 57). Pitch classes checked
+  by the harmonic-product estimate (E♭1 and E3 read an octave up, the estimator's octave error on a weak fundamental).
+- **Edits:** as `grand/` (mono 16-bit 24 kHz, onset trim, peak 0.9), cut to 2 s with a 0.4 s fade.
+- **Size:** 10 files, 0.95 MB. A new folder, not `bass/`: the service worker keeps `/sounds/` cache-first across
+  builds, so a replaced file under an old name would stay stale. Replaces VSCO 2 CE's orchestral Solo Contrabass.
 
 ## drums: the pattern sets' kit (#540, #509)
 
@@ -57,7 +60,11 @@ Licences: CC0 preferred; a CC-BY set is credited on the About page.
   (`HiHat_Close_rr1` the foot's chick as `hat`, `HiHat_HitC_v2_rr1` as `hat-tip`, `HiHat_HitO_rr1` as `hat-open`),
   `Membranophones/Struck Membranophones/Snare Drum, Modern 2/Snare3M_Xstick_v2_rr1` (cross-stick, `stick`) and
   `Bass Drum 1/BDrumNew_hit_v2_rr1` (`kick`, a soft concert bass drum hit standing in for a jazz kick).
-- **Not recorded:** VCSL has no brushes, so the sweep and the tap are synthesized (band-passed noise, `clickSounds.ts`).
-- **Edits:** mono 16-bit 24 kHz, onset trim, peak 0.9 (as `piano/`); ride 2 s, bell 1.5 s, open hat 0.8 s, kick 0.6 s,
+- **Brushes:** Karoryfer Samples' Swirly Drums (<https://github.com/sfzinstruments/karoryfer.swirly-drums>, v1.104),
+  CC0 1.0 (its `license` file; the store page says it's now free): `Samples/snare_stir/stir_dl4_rr1` (a 6 s snare stir,
+  cut to 2.5 s as `stir`: each sweep is a 0.6 s swell from a random point in it), `Samples/snare_main/snare_hit_vl7_rr1_top`
+  (`brush`, the tap) and `_vl3_rr1_top` (`brush-soft`, below half velocity), each 0.4 s. Until they load, the brushes
+  are synthesized (band-passed noise, `clickSounds.ts`). Credited on About.
+- **Edits:** mono 16-bit 24 kHz, onset trim, peak 0.9 (as `grand/`); ride 2 s, bell 1.5 s, open hat 0.8 s, kick 0.6 s,
   the rest 0.3 s, each with a short fade. Levels per voice are `DRUM_KIT`'s gains.
 - **Size:** 8 files, 384 KB.

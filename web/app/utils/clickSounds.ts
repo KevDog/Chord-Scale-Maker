@@ -187,30 +187,30 @@ export function playNote(ctx: AudioContext, out: AudioNode, midi: number, time: 
 }
 
 /**
- * Hear line's lead (#538): VSCO 2 CE's Upright Piano, its second dynamic, a sample every major third from A1 to F6
- * (design/sounds/README.md); below and above, the outermost shifted
+ * Hear line's lead (#538): Alexander Holm's Salamander Grand Piano (a Yamaha C5, CC BY 3.0), its tenth of sixteen
+ * velocity layers, a sample every minor third from A1 to F♯6 (design/sounds/README.md); below and above, the outermost shifted
  */
 export const LEAD_SET: SampleSet = {
-  base: '/sounds/piano/',
-  layers: [{ upTo: 1, zones: Array.from({ length: 15 }, (_, i) => 33 + 4 * i).map((midi) => ({ midi, file: `${midi}.wav` })) }],
+  base: '/sounds/grand/',
+  layers: [{ upTo: 1, zones: Array.from({ length: 20 }, (_, i) => 33 + 3 * i).map((midi) => ({ midi, file: `${midi}.wav` })) }],
   release: 0.12,
   voices: 8,
   gain: 0.7,
 }
 
-/** Hear changes' piano (#539): the same Upright Piano, its softest dynamic, A2 to A5 every major third, longer for held chords */
+/** Hear changes' piano (#539): the same Salamander Grand, its sixth velocity layer, A2 to A5 every minor third, longer for held chords */
 export const COMP_SET: SampleSet = {
-  base: '/sounds/comp/',
-  layers: [{ upTo: 1, zones: Array.from({ length: 10 }, (_, i) => 45 + 4 * i).map((midi) => ({ midi, file: `${midi}.wav` })) }],
+  base: '/sounds/grand-comp/',
+  layers: [{ upTo: 1, zones: Array.from({ length: 13 }, (_, i) => 45 + 3 * i).map((midi) => ({ midi, file: `${midi}.wav` })) }],
   release: 0.2,
   voices: 12,
   gain: 0.35,
 }
 
-/** Hear changes' bass (#539): VSCO 2 CE's Solo Contrabass, pizzicato, E1 to E3 */
+/** Hear changes' bass (#539): D. Smolken's 1958 Otto Rubner double bass on Spirocores, pizzicato, E♭1 to A3 (CC0) */
 export const BASS_SET: SampleSet = {
-  base: '/sounds/bass/',
-  layers: [{ upTo: 1, zones: [28, 30, 31, 34, 36, 38, 40, 42, 44, 45, 49, 52].map((midi) => ({ midi, file: `${midi}.wav` })) }],
+  base: '/sounds/upright-bass/',
+  layers: [{ upTo: 1, zones: [27, 31, 34, 38, 41, 45, 48, 52, 55, 57].map((midi) => ({ midi, file: `${midi}.wav` })) }],
   release: 0.08,
   voices: 2,
   gain: 0.9,
@@ -220,7 +220,8 @@ const STAND_IN = { comp: 0.08, bass: 0.3 } as const
 
 /**
  * the kit (#540): VCSL's recordings (CC0; design/sounds/README.md), a soft ride below half velocity; the brushes
- * synthesized from the hat's noise (VCSL has no brushes). gain: at full velocity
+ * Karoryfer's Swirly Drums (CC0): a sweep a swell cut from a snare stir, a tap a brushed snare hit. Until they
+ * load, the brushes are synthesized from the hat's noise. gain: at full velocity
  */
 export const DRUM_KIT: Readonly<Record<DrumKind, Readonly<{ file: string | null; soft?: string; gain: number }>>> = {
   ride: { file: 'ride.wav', soft: 'ride-soft.wav', gain: 0.45 },
@@ -230,12 +231,15 @@ export const DRUM_KIT: Readonly<Record<DrumKind, Readonly<{ file: string | null;
   open: { file: 'hat-open.wav', gain: 0.3 },
   stick: { file: 'stick.wav', gain: 0.45 },
   kick: { file: 'kick.wav', gain: 0.5 },
-  sweep: { file: null, gain: 0.12 },
-  brush: { file: null, gain: 0.3 },
+  sweep: { file: 'stir.wav', gain: 0.5 },
+  brush: { file: 'brush.wav', soft: 'brush-soft.wav', gain: 0.4 },
 }
 const DRUM_FILES = [...new Set(Object.values(DRUM_KIT).flatMap((d) => [d.file, d.soft].filter((f): f is string => !!f)))]
 
 /** a brush (#540): the hat's noise through a band-pass, swept (a long swell and fade) or tapped (a short burst) */
+/** a sampled sweep's swell, in seconds */
+const SWEEP = { rise: 0.25, length: 0.6 } as const
+
 function playBrush(ctx: AudioContext, out: AudioNode, time: number, peak: number, swept: boolean): void {
   const noise = ctx.createBufferSource()
   noise.buffer = noiseFor(ctx)
@@ -330,15 +334,25 @@ export function webAudio(): ClickAudio | null {
     function drum(kind: DrumKind, time: number, velocity: number): void {
       const d = DRUM_KIT[kind]
       const peak = d.gain * Math.min(1, Math.max(0, velocity))
-      if (kind === 'sweep' || kind === 'brush') return playBrush(ctx, track.drums, time, peak, kind === 'sweep')
       const buffer = kit.get(d.soft && velocity < 0.5 ? d.soft : (d.file ?? ''))
-      if (!buffer) return playDrumStandIn(ctx, track.drums, kind, time, peak)
+      if (!buffer) {
+        if (kind === 'sweep' || kind === 'brush') return playBrush(ctx, track.drums, time, peak, kind === 'sweep')
+        return playDrumStandIn(ctx, track.drums, kind, time, peak)
+      }
       const source = ctx.createBufferSource()
       source.buffer = buffer
       const env = ctx.createGain()
-      env.gain.value = peak
       source.connect(env).connect(track.drums)
-      source.start(time)
+      if (kind !== 'sweep') {
+        env.gain.value = peak
+        return source.start(time)
+      }
+      // a sweep: a swell cut from somewhere in the stir, so no two sound alike
+      const offset = Math.random() * Math.max(0, buffer.duration - SWEEP.length)
+      env.gain.setValueAtTime(0.0001, time)
+      env.gain.exponentialRampToValueAtTime(peak, time + SWEEP.rise)
+      env.gain.exponentialRampToValueAtTime(0.0001, time + SWEEP.length)
+      source.start(time, offset, SWEEP.length + 0.02)
     }
     return {
       now: () => ctx.currentTime,
