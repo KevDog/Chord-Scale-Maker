@@ -744,7 +744,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   card over the first line, one cycle as the Scales staves' cards are drawn (`RhythmCard.vue`, #573; the rhythm line that
   replaced the slashes, Phase 1 §8, is gone); Line options shows the same card under the Rhythm. With a Line on, the Line plays
   in it (below). With a Groups or Gears path acting, a card a step instead, in a row, each named as its step mark (③, the
-  pulse's short name; `rhythmStepCards` in `rhythm/path.ts`, `ChangesSheet.rhythmCards`, #574). Hear rhythm taps it either way.
+  pulse's short name; `rhythmStepCards` in `rhythm/path.ts`, `ChangesSheet.rhythmCards`, #575). Hear rhythm taps it either way.
 - **Engine** (`engine/src/rhythm/`, pure): the text form (`parseRhythm`, `formatRhythm`: `8: >xx.x_`, pulses `4`, `8`, `8t`,
   `16`), the library of ids generated from formulas (`unit:<pulse>:<g>:<variation>` after Saindon, `run:<pulse>:<n>:<k>`
   after Bergonzi, `card:*`, `custom:*`; `isRhythmId`, `rhythmLabel`), `layRhythm(id, bars)` (events per bar, ties split at

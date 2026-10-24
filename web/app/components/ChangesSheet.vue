@@ -14,7 +14,7 @@
       </template>
       <template #default="{ page }">
         <div class="space-y-4 print:space-y-0">
-          <!-- with the Line off the sheet is a lead sheet, its rhythm a card over the first line (#573); a path's, a card a step, named (#574) -->
+          <!-- with the Line off the sheet is a lead sheet, its rhythm a card over the first line (#573); a path's, a card a step, named (#575) -->
           <template v-if="built.rhythmCards.length && page.lines[0]?.index === 0">
             <RhythmCard v-if="built.rhythmCards.length === 1 && !stepName(built.rhythmCards[0]!)" :rhythm="built.rhythmCards[0]!.id" :beats="built.beats" />
             <ol v-else data-slot="rhythm-steps" class="grid grid-cols-2 gap-x-6 gap-y-2 sm:grid-cols-4 print:grid-cols-4">
@@ -144,7 +144,7 @@ const line = computed((): ChangesLineChoice => props.line ?? 'off')
 const lineName = computed(() => (typeof line.value === 'object' ? ({ pentatonic: 'pentatonic', 'triad-pair': 'triad pair', quartal: 'quartal', cells: 'cells' } as const)[line.value.kind] : undefined))
 const arpeggio = computed(() => !!lineName.value || isArpeggioPattern(line.value))
 const built = computed(() => buildChanges(props.doc, props.part, barsPerLine.value, true, line.value, props.view, props.overlay ?? null, props.approach ?? 'none', { rhythm: props.rhythm ?? 'off', targets: props.targets ?? false, start: props.rhythmStart ?? 'beat', anticipate: props.anticipate ?? 0, restate: props.restate ?? false, rhythmPath: props.rhythmPath, feel: props.feel ?? 4 }))
-/** a step card's name (#574): its group's numeral and its pulse, as the step marks write them; '' for a rhythm with no path */
+/** a step card's name (#575): its group's numeral and its pulse, as the step marks write them; '' for a rhythm with no path */
 const stepName = (c: RhythmStepCard): string => [c.group === null ? '' : stepNumeral(c.group), c.pulse === null ? '' : PULSE_SHORT_LABELS[c.pulse]].filter(Boolean).join(' ')
 // Hear line (#507) and Hear rhythm (#521): the drawn Line and rhythm, for the click to sound, in the form's order (#559) (none on a page without a click)
 const click = inject(CLICK, null)

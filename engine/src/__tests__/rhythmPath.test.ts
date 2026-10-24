@@ -192,7 +192,7 @@ describe('layRhythm by steps (Phase 4 spec §3 "Laying", D14)', () => {
 
 const range6 = [0, 1, 2, 3, 4, 5]
 
-describe('rhythmStepCards (#574)', () => {
+describe('rhythmStepCards (#575)', () => {
   it('one card a step, in the order the form first plays it, each named by what the path changes', () => {
     const steps = rhythmSteps('unit:8:3:accents', path({ groups: [3, 4, 5] }), [0, 1, 2, 0, 1])
     expect(rhythmStepCards('unit:8:3:accents', path({ groups: [3, 4, 5] }), steps)).toEqual([

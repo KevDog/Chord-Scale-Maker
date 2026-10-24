@@ -1385,7 +1385,7 @@ describe('the rhythm line and target beats (rhythm spec §8)', () => {
     expect(changesLinesPerPage('off', { numerals: true, scales: true }, true, false, true)).toBe(7) // the Line off: the card, not the tuplets
   })
 
-  it('gives the Line-off sheet a rhythm card a step of its path, none with a Line on (#574)', () => {
+  it('gives the Line-off sheet a rhythm card a step of its path, none with a Line on (#575)', () => {
     const doc = parseChart('key: C\n\nsection: A\n1 | Dm7\n2 | G7\n\nsection: B\n1 | CMaj7\n2 | A7\n').value
     const groups = { groups: [3, 4], gears: null, step: { unit: 'section', bars: 4 } } as const
     const cards = (line: ChangesLineChoice, rhythmPath?: typeof groups) => buildChanges(doc, CONCERT, 4, false, line, undefined, null, 'none', { rhythm: 'unit:8:3:accents', rhythmPath }).rhythmCards

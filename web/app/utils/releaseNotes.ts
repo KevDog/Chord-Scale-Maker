@@ -10,7 +10,7 @@ export const RELEASE_NOTES: readonly ReleaseNote[] = [
   {
     date: '2026-10-23',
     items: [
-      { text: 'With the Line off and a Groups or Gears path, the card over the Changes sheet shows every step: a small card for each grouping or pulse the form plays, in order, each named as its mark on the sheet (③, 8ths).', pr: 574 },
+      { text: 'With the Line off and a Groups or Gears path, the card over the Changes sheet shows every step: a small card for each grouping or pulse the form plays, in order, each named as its mark on the sheet (③, 8ths).', pr: 575 },
       { text: 'With the Line off, a rhythm no longer turns the Changes sheet into a rhythm part: the sheet stays a lead sheet, four slashes a bar, and the rhythm shows once, on a card over the first line, to play over the changes. Line options shows the same card under the Rhythm as you choose it. With a Line on, the Line still plays in the rhythm.', pr: 573 },
       { text: 'Hear what you practise. Under the click’s ⋯, Hear line plays the Changes sheet’s Line with the click, at concert pitch, and Hear rhythm taps its rhythm on a rim; both follow the form as written (repeats, endings, D.S. and D.C., to the Coda or Fine), each bar in its own meter, then go round again. The Swing dial sets how far the 8ths swing, from straight to a dotted 8th and a 16th; the chart remembers it.', pr: 571 },
       { text: 'Play, by each Scales and Arpeggios staff’s label and each pentatonic on a Changes label’s ladder, sounds it at the click’s tempo: a scale up and down (only your Practice notes, with Practice on), an arpeggio as drawn. With the click running, it comes in on the next bar.', pr: 571 },

@@ -183,7 +183,7 @@ export type ChangesLine = Readonly<{ bars: readonly ChangesBar[]; sectionEnd: bo
 /** pentatonicCaption: the path a preset plays (#276), "Pentatonics: Fifths · every 4 bars"; null otherwise */
 /** beats: the song's metre (each bar has its own, ChangesBar.beats) */
 /** rhythmCaption: the rhythm line's label and cycle, "Rhythm: 8ths in 5 · back on one every 5 bars"; null with no rhythm drawn */
-/** rhythmCards: with the Line off and a rhythm, its card a step of its path (#574), else one; [] otherwise */
+/** rhythmCards: with the Line off and a rhythm, its card a step of its path (#575), else one; [] otherwise */
 export type ChangesSheet = Readonly<{ lines: readonly ChangesLine[]; beats: Beats; diagnostics: readonly string[]; pentatonicCaption: string | null; rhythmCaption: string | null; rhythmCards: readonly RhythmStepCard[] }>
 
 /** a run of rows in one section, as the chart plays them; a copy names the section it repeats */

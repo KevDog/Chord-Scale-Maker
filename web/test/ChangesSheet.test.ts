@@ -236,7 +236,7 @@ describe('ChangesSheet and its rhythm (#573)', () => {
     expect((await withLine('off')).findAll('[data-slot=rhythm-card]')).toHaveLength(1)
   })
 
-  it('with a path, a card a step, named as the step marks are (#574)', async () => {
+  it('with a path, a card a step, named as the step marks are (#575)', async () => {
     const w = await mountSuspended(ChangesSheet, {
       props: { doc, title: 'T', subtitle: '', part: CONCERT, instrumentLabel: '', numerals: false, scales: false, line: 'off', rhythm: 'unit:8:3:accents', rhythmPath: { groups: [3, 4], gears: null, step: { unit: 'bars', bars: 2 } } },
       global: { stubs: { ChangesSystem: true } },

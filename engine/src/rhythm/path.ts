@@ -115,7 +115,7 @@ export function rhythmStepMarks(id: RhythmId, path: RhythmPath | undefined, step
   return out
 }
 
-/** a step's rhythm card (#574): its id, and what the path changes there: its group under Groups, its pulse under Gears */
+/** a step's rhythm card (#575): its id, and what the path changes there: its group under Groups, its pulse under Gears */
 export type RhythmStepCard = Readonly<{ id: RhythmId; group: number | null; pulse: Pulse | null }>
 
 /**
