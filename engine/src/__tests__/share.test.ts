@@ -164,6 +164,12 @@ describe('share links', () => {
     expect(shareViewFrom({ sheet: 'changes', rhythm: 'bogus', targets: 'yes' })).toEqual({ sheet: 'changes' })
   })
 
+  it('keeps Land on targets, only as on', () => {
+    expect(shareViewFrom({ targets: true, land: true })).toEqual({ targets: true, land: true })
+    expect(shareViewFrom({ sheet: 'changes', land: false })).toEqual({ sheet: 'changes' })
+    expect(shareViewFrom({ sheet: 'changes', land: 'yes' })).toEqual({ sheet: 'changes' })
+  })
+
   it('drops the rhythm settings at their defaults, as a link never writes them (#505)', () => {
     expect(shareViewFrom({ sheet: 'changes', rhythm: 'off', targets: false, rhythmStart: 'beat', anticipate: 0, restate: false })).toEqual({ sheet: 'changes' })
   })

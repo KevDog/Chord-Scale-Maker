@@ -72,6 +72,8 @@ export type ShareView = Readonly<{
   /** the Changes sheet's rhythm line and its target beats (rhythm spec §9); absent: off */
   rhythm?: RhythmId
   targets?: boolean
+  /** with the target beats, the Line lands a chord tone on each; absent: off */
+  land?: true
   /** where the rhythm starts, its timing and Restate (rhythm spec §10); absent: on the beat, on time, off */
   rhythmStart?: RhythmStart
   anticipate?: number
@@ -183,6 +185,7 @@ export function shareViewFrom(v: unknown): ShareView | undefined {
     ...(isApproach(o.approach) ? { approach: o.approach } : {}),
     ...(typeof o.rhythm === 'string' && isRhythmId(o.rhythm) && o.rhythm !== 'off' ? { rhythm: o.rhythm } : {}),
     ...(o.targets === true ? { targets: true } : {}),
+    ...(o.land === true ? { land: true as const } : {}),
     ...(isRhythmStart(o.rhythmStart) && o.rhythmStart !== 'beat' ? { rhythmStart: o.rhythmStart } : {}),
     ...(isAnticipate(o.anticipate) && o.anticipate !== 0 ? { anticipate: o.anticipate } : {}),
     ...(o.restate === true ? { restate: true as const } : {}),

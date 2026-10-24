@@ -1,5 +1,5 @@
 import type { Locator, Page } from '@playwright/test'
-import { chooseFeel, chooseGears, chooseGroups, chooseInstrument, chooseInterface, chooseRhythm, chooseRhythmStep, chooseSheet, chooseStart, closePanel, type Drawn, drawn, expect, openPanel, GLYPH, arpeggiosDrawn, guidesDrawn, openEditor, restateOn, rhythmDrawn, sheetChord, showArpeggios, showApproach, showCell, showGuides, showOrder, showTargets, test, writeChart } from './fixtures'
+import { chooseFeel, chooseGears, chooseGroups, chooseInstrument, chooseInterface, chooseRhythm, chooseRhythmStep, chooseSheet, chooseStart, closePanel, type Drawn, drawn, expect, openPanel, GLYPH, arpeggiosDrawn, guidesDrawn, inControls, openEditor, restateOn, rhythmDrawn, sheetChord, showArpeggios, showApproach, showCell, showGuides, showOrder, showTargets, test, writeChart } from './fixtures'
 
 const lines = (page: Page) => page.locator('svg[aria-label^="Bars:"]')
 /** the sheet itself, not the controls above it (whose menus name the same scales) */
@@ -728,6 +728,29 @@ test.describe('the rhythm with the Line off', () => {
     await expect(first.locator('[data-target-beat="0"]')).toHaveCount(4)
     await expect(first.locator('[data-target-beat="2"]')).toHaveCount(4)
     await expect(lines(page).first()).toHaveAttribute('aria-label', /; target beats: 1 and 3$/)
+  })
+
+  test('Land on targets: the Line strikes a chord tone on every target beat, and a link carries it', async ({ page, browser }) => {
+    await page.goto('/song/summertime-jazz-mind-accelerator')
+    await showGuides(page, 'From 7th')
+    await showApproach(page, 'Below and above (chromatic)')
+    await showTargets(page)
+    /** each bar of the first line's target tones, as its aria-label names them */
+    const tones = async (p: Page): Promise<string[][]> => ((await lines(p).first().getAttribute('aria-label')) ?? '').split('; target tones: ')[1]?.split(' | ').map((b) => b.split(', ')) ?? []
+    await expect.poll(async () => (await tones(page)).some((b) => b.length < 2)).toBe(true) // a guide tone held through beat 3
+    await inControls(page, () => page.getByRole('button', { name: 'Land on targets' }).click())
+    await expect.poll(async () => (await tones(page)).map((b) => b.length)).toEqual([2, 2, 2, 2])
+    expect((await tones(page)).flat().some((t) => t.includes('not a chord tone'))).toBe(false)
+    await page.getByRole('button', { name: 'Share' }).click()
+    const box = page.getByRole('dialog').getByLabel('Link')
+    await expect(box).toHaveValue(/\/song#s=[A-Za-z0-9_-]+$/)
+    const link = await box.inputValue()
+    const other = await browser.newContext() // fresh storage: its own Land is off
+    await chooseInterface(other, 'intermediate')
+    const visitor = await other.newPage()
+    await visitor.goto(link)
+    await expect.poll(async () => (await tones(visitor)).map((b) => b.length)).toEqual([2, 2, 2, 2])
+    await other.close()
   })
 
   test('a share link carries the rhythm: it opens reading Upbeats', async ({ page, browser }) => {

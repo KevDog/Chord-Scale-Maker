@@ -385,7 +385,16 @@
             <div>
               <dt id="rhythm-target-tones" class="scroll-mt-6 font-semibold text-zinc-950 dark:text-white">Target tones</dt>
               <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
-                On a Line with Target beats on, a chord tone on a dot is lit and any other note on a dot is gray (Galper, pp. 47–49). Nothing moves a note onto a dot. A screen reader hears the target beats and the notes on them, each one that isn't a chord tone named so.
+                On a Line with Target beats on, a chord tone on a dot is lit and any other note on a dot is gray (Galper, pp. 47–49). Nothing moves a note onto a dot<template v-if="landOn">, unless Land on targets is on</template>. A screen reader hears the target beats and the notes on them, each one that isn't a chord tone named so.
+              </dd>
+            </div>
+            <div v-if="landOn">
+              <dt id="rhythm-land" class="scroll-mt-6 font-semibold text-zinc-950 dark:text-white">Land on targets</dt>
+              <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
+                Beside Target beats when a Line is on: the Line plays a chord tone on every dot, so each one is lit. A note on a dot that isn't a chord tone moves to the
+                nearest one, and a note held through a dot (a guide tone's dotted half, say) is struck again there. Under a rhythm the rhythm keeps its attacks, so only the
+                notes it strikes on a dot move. With Anticipate or Resolve late, a dot on a chord change moves with the change: the note that lands the new chord early or
+                late is the target, and it's judged against that chord.
               </dd>
             </div>
             <div v-if="rhythmSheetsOn">
@@ -819,6 +828,7 @@ const practiceToolsOn = hearLineOn && useFeature('practiceTools')
 const grooveOn = { swing: harmonyOn && useFeature('grooveSwing'), ballad: harmonyOn && useFeature('grooveBallad'), bossa: harmonyOn && useFeature('grooveBossa') }
 const rhythmOn = useFeature('rhythm')
 const rhythmSheetsOn = useFeature('rhythmSheets')
+const landOn = useFeature('landTargets')
 const rhythmGearsOn = useFeature('rhythmGears')
 const SECTIONS = [
   { id: 'quick', title: 'The short version' },

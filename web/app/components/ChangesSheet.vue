@@ -101,6 +101,7 @@ const props = defineProps<{
   approach?: Approach // the figure into each guide tone of the guide tone line (#298); undefined: none
   rhythm?: RhythmId // with the Line off, a card over the first line, the bars plain (#573); else poured into a Line that takes it (rhythm-on-lines spec §1); undefined: off
   targets?: boolean // a dot over each bar's target beats (rhythm spec §7)
+  land?: boolean // with targets, the Line strikes a chord tone on each (landTargets)
   rhythmStart?: RhythmStart // a Line's pick-ups into each chord under the rhythm (rhythm-on-lines spec §3); undefined: on the beat
   anticipate?: number // its Timing: beats each chord arrives early (negative: late) (§2); undefined: 0
   restate?: boolean // the guide tone line restates each guide tone in the rhythm (§5)
@@ -143,7 +144,7 @@ const line = computed((): ChangesLineChoice => props.line ?? 'off')
 /** an arpeggio, Pentatonic, Triad pair or Cells line: beamed cells, no label row; lineName: the latter three's, for the aria-label */
 const lineName = computed(() => (typeof line.value === 'object' ? ({ pentatonic: 'pentatonic', 'triad-pair': 'triad pair', quartal: 'quartal', cells: 'cells' } as const)[line.value.kind] : undefined))
 const arpeggio = computed(() => !!lineName.value || isArpeggioPattern(line.value))
-const built = computed(() => buildChanges(props.doc, props.part, barsPerLine.value, true, line.value, props.view, props.overlay ?? null, props.approach ?? 'none', { rhythm: props.rhythm ?? 'off', targets: props.targets ?? false, start: props.rhythmStart ?? 'beat', anticipate: props.anticipate ?? 0, restate: props.restate ?? false, rhythmPath: props.rhythmPath, feel: props.feel ?? 4 }))
+const built = computed(() => buildChanges(props.doc, props.part, barsPerLine.value, true, line.value, props.view, props.overlay ?? null, props.approach ?? 'none', { rhythm: props.rhythm ?? 'off', targets: props.targets ?? false, land: props.land ?? false, start: props.rhythmStart ?? 'beat', anticipate: props.anticipate ?? 0, restate: props.restate ?? false, rhythmPath: props.rhythmPath, feel: props.feel ?? 4 }))
 /** a step card's name (#575): its group's numeral and its pulse, as the step marks write them; '' for a rhythm with no path */
 const stepName = (c: RhythmStepCard): string => [c.group === null ? '' : stepNumeral(c.group), c.pulse === null ? '' : PULSE_SHORT_LABELS[c.pulse]].filter(Boolean).join(' ')
 // Hear line (#507) and Hear rhythm (#521): the drawn Line and rhythm, for the click to sound, in the form's order (#559) (none on a page without a click)

@@ -69,6 +69,8 @@
                   </EaseReveal>
                   <!-- target beats (rhythm spec §9): a dot over each bar's strong beats, on the slashes or any line -->
                   <ToggleButton v-if="rhythmOn && shows('rhythm')" v-model="targets" class="whitespace-nowrap" title="A dot over each bar's strong beats: 1 and 3 in 4/4 (after Galper)">Target beats</ToggleButton>
+                  <!-- with the dots and a Line: the Line strikes a chord tone on each -->
+                  <ToggleButton v-if="landOn && rhythmOn && shows('rhythm') && targets && lineMode !== 'off'" v-model="land" class="whitespace-nowrap" title="The Line plays a chord tone on every target beat, moving with Anticipate and Resolve late (after Galper)">Land on targets</ToggleButton>
                   <!-- the row under the chords: Off, each key area's or chord's minor pentatonic, or each chord's hexatonic pair; the Pentatonic options open to its right, over the sheet, so the rail keeps its two rows (#293), stacked under it in the Controls dialog -->
                   <!-- in the rail, a fixed width that holds the options' chevron whether or not it shows, so choosing an option never rewraps the rail (#387) -->
                   <EaseReveal :show="overlayShown" :inner-class="compact ? 'flex flex-col items-start gap-2' : 'flex w-66 items-start gap-1'">
@@ -490,6 +492,8 @@
     provide(RHYTHM_PATH_LISTS, useRhythmPathLists(rhythmPath))
     const targets = defineModel<boolean>('targets', { default: false })
     const rhythmOn = useFeature('rhythm')
+    const land = defineModel<boolean>('land', { default: false })
+    const landOn = useFeature('landTargets')
     /** Feel in 4, 2 or 1 (Phase 4 spec §7), with the rhythmGears flag on */
     const gearsOn = useFeature('rhythmGears')
     const feel = defineModel<Feel>('feel', { default: 4 })
